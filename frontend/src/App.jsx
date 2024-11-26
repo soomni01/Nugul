@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Box } from "@chakra-ui/react";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -13,7 +14,7 @@ axios.interceptors.request.use(function (config) {
 function App() {
   return (
     <>
-      <div>hello</div>
+      <Box>hello</Box>
     </>
   );
 }
