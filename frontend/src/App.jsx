@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
-import { RootLayout } from "./page/root/RootRayout.jsx";
+import { RootLayout } from "./page/root/RootLayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+import { ProductList } from "./page/product/ProductList.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <MainPage />,
+      },
+      {
+        path: "product/list",
+        element: <ProductList />,
       },
     ],
   },
