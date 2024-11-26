@@ -11,6 +11,8 @@ export function Navbar() {
       <Box onClick={() => navigate("/chat")}>채팅</Box>
       <Box onClick={() => navigate("/add")}>문의하기</Box>
       <Box onClick={() => navigate(`/member/${id}`)}>마이페이지</Box>
+
+      <Box onClick={() => navigate("/member/signup")}>가입</Box>
     </Flex>
   );
 }
