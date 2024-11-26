@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { RootLayout } from "./page/root/RootRayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+import { ChatList } from "./page/chat/ChatList.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <MainPage />,
+      },
+      {
+        path: "/chat",
+        element: <ChatList />,
       },
     ],
   },
