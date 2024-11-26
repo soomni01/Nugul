@@ -3,6 +3,7 @@ import { Box, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
@@ -15,9 +16,20 @@ export function MemberSignup() {
       .post("/api/member/signup", { memberId, password, name, nickName })
       .then((res) => {
         console.log("잘됨, 페이지 이동, 토스트 출력");
+        const message = res.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
       })
       .catch((e) => {
         console.log("안됐을 때 해야하는 일, 토스트 출력");
+        const message = e.response.data.message;
+
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
       })
       .finally(() => {
         console.log("성공이든 실패든 무조건 실행");
