@@ -36,7 +36,7 @@ public class AppConfiguration {
         http.csrf(c -> c.disable());
         http.oauth2ResourceServer(configurer -> configurer.jwt(Customizer.withDefaults()));
 
-        
+
         return http.build();
     }
 

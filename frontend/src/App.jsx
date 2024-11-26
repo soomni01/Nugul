@@ -1,6 +1,7 @@
-import axios from "axios";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { RootLayout } from "./components/root/RootLayout.jsx";
+import axios from "axios";
+import { RootLayout } from "./page/root/RootRayout.jsx";
+import { MainPage } from "./page/main/MainPage.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -11,10 +12,6 @@ axios.interceptors.request.use(function (config) {
 
   return config;
 });
-
-function MainPage() {
-  return <div> 메인 페이지</div>;
-}
 
 const router = createBrowserRouter([
   {
