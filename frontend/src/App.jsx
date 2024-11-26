@@ -1,7 +1,6 @@
 import axios from "axios";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootLayout } from "./components/root/RootLayout.jsx";
-import { Box } from "@chakra-ui/react";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -14,7 +13,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 function MainPage() {
-  return <Box>메인 화면 입니다.</Box>;
+  return <div> 메인 페이지</div>;
 }
 
 const router = createBrowserRouter([
