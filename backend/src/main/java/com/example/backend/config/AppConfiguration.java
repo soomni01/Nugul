@@ -37,8 +37,7 @@ public class AppConfiguration {
         http.oauth2ResourceServer(configurer -> configurer.jwt(Customizer.withDefaults()));
         return http.build();
     }
-
-
+    
     @Bean
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(pub).build();
