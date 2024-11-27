@@ -1,7 +1,5 @@
 package com.example.backend.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -9,10 +7,9 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocketMessageBroker
+@EnableWebSocketMessageBroker   // 웹 소켓 서버를 사용하겟다는 설정
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketConfig.class);
 
     // stomp 클라이언트 생성 관련 코드
     @Override
@@ -31,10 +28,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 클라이언트에서 보낸 메시지를 받을 prefix
         //메시지를 받아서 처리할 경로 , > localhost:8080/app << 에서 이를 처리하는 로직 실행
-        registry.setApplicationDestinationPrefixes("/app");
+        registry.setApplicationDestinationPrefixes("/send");
+
         // 해당 주소를 구독하고 있은 클라이언트 들에게 메시지 전달
         // 채팅방 번호로 바꾸면 되고
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/room");
 
 
     }

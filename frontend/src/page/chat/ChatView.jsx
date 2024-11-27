@@ -16,8 +16,15 @@ export function ChatView() {
       connectHeaders: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      //  원래는 시작하자마자 메시지를 보낼 필요는 없음  , 인풋에 입력한걸 전송할때 보낼꺼니가
+      // TODO 실행확인용으로  남겨두었고 나중에 변경해야함
       onConnect: () => {
         console.log("Connected to socket");
+
+        client.subscribe("/topic/messages", function (messageOutput) {
+          // 발행된 메시지 출력
+          console.log("Received message: ", messageOutput.body);
+        });
       },
       onStompError: (err) => {
         console.error(err);
@@ -27,8 +34,37 @@ export function ChatView() {
     client.activate();
   }, []);
 
-  let handleSubmitClick = () => {
-    //  전송 관련 함수
+  function connect() {
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/wschat",
+      connectHeaders: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      //  원래는 시작하자마자 메시지를 보낼 필요는 없음  , 인풋에 입력한걸 전송할때 보낼꺼니가
+      // TODO 실행확인용으로  남겨두었고 나중에 변경해야함
+      onConnect: () => {
+        console.log("Connected to socket");
+        client.subscribe("/room/1", function (messageOutput) {
+          // 발행된 메시지 출력
+          console.log("Received message: ", messageOutput.body);
+        });
+      },
+      onStompError: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  const sendMessage = () => {
+    if (clientMessage.trim()) {
+      // 메시지 비어있으면 보내지 않음
+    }
+    const stompClient = new Client();
+    stompClient.send("/send/1",{},JSON.stringify({
+      ''
+    }))
+
+    stompClient.setClientMessage("");
   };
 
   return (
@@ -37,7 +73,6 @@ export function ChatView() {
       <Flex>
         <Box bg={"red.300"} h={500}>
           <h3> 클라이언트</h3>
-          <Box> {clientMessage}</Box>
 
           <Field>
             <Input
@@ -48,19 +83,17 @@ export function ChatView() {
               }}
             />
           </Field>
-          <Button variant={"outline"} onClick={handleSubmitClick}>
-            버튼
+          <Button variant={"outline"} onClick={sendMessage}>
+            전송
           </Button>
         </Box>
         <Box bg={"blue.300"}>
-          <h3> 서버 </h3>
+          <h3> 서버에서 보내준 내용 </h3>
           <Field>
             <Input type={"text"} />
           </Field>
-          <Button variant={"outline"} onClick={handleSubmitClick}>
-            {" "}
-            버튼
-          </Button>
+
+          <Button variant={"outline"}> 전송</Button>
         </Box>
       </Flex>
     </Box>
