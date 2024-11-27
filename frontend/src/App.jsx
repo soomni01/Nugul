@@ -2,47 +2,52 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx"; // 경로 수정
 import { MainPage } from "./page/main/MainPage.jsx";
-import AdminLayout from "./page/admin/AdminLayout.jsx";
-import DashBoard from "./page/admin/DashBoard.jsx";
-import MemberList from "./page/admin/MemberList.jsx"; // MemberList import
-import ReportList from "./page/admin/ReportList.jsx"; // ReportList import
+import AdminLayout from "./page/admin/AdminLayout.jsx"; // AdminLayout import
+import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
+import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
+import { AdminReportList } from "./page/admin/AdminReportList.jsx"; // DashBoard import
 
+// Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 
+// 관리자 여부에 따라 기본 경로 변경 로직
 const router = createBrowserRouter([
   {
-    path: "/", // 기본 경로
-    element: <RootLayout />, // 기본 레이아웃 (웹사이트의 메인 레이아웃)
+    path: "/",
+    element: <RootLayout />,
     children: [
       {
-        index: true, // 기본 페이지
-        element: <MainPage />, // 메인 페이지 컴포넌트
+        index: true,
+        element:
+          localStorage.getItem("userRole") === "admin" ? (
+            <AdminDashBoard /> // 관리자는 대시보드 페이지로
+          ) : (
+            <MainPage /> // 일반 사용자는 메인 페이지로
+          ),
       },
     ],
   },
   {
-    path: "/admin", // /admin 경로
-    element: <AdminLayout />, // AdminLayout을 적용
+    path: "/admin",
+    element: <AdminLayout />,
     children: [
       {
-        index: true, // /admin 경로에서 기본 페이지 (대시보드)
-        element: <DashBoard />,
+        path: "dashboard",
+        element: <AdminDashBoard />,
       },
       {
-        path: "members", // /admin/members 경로에서 사용자 관리 페이지
-        element: <MemberList />,
+        path: "members",
+        element: <AdminMemberList />,
       },
       {
-        path: "reports", // /admin/reports 경로에서 신고 관리 페이지
-        element: <ReportList />,
+        path: "reports",
+        element: <AdminReportList />,
       },
     ],
   },
