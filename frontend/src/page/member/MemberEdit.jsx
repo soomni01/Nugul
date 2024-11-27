@@ -12,8 +12,9 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MemberEdit() {
   const { memberId } = useParams();
@@ -23,6 +24,8 @@ export function MemberEdit() {
   const [name, setName] = useState("");
   const [nickName, setNickName] = useState("");
   const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`/api/member/${memberId}`).then((res) => {
@@ -34,13 +37,35 @@ export function MemberEdit() {
   }, []);
 
   function handleSaveClick() {
-    axios.put("/api/member/update", {
-      memberId: member.memberId,
-      password,
-      name,
-      nickName,
-      oldPassword,
-    });
+    axios
+      .put("/api/member/update", {
+        memberId: member.memberId,
+        password,
+        name,
+        nickName,
+        oldPassword,
+      })
+      .then((res) => {
+        const message = res.data.message;
+
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        navigate(`/member/${memberId}`);
+      })
+      .catch((e) => {
+        const message = e.response.data.message;
+
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .finally(() => {
+        setOpen(false);
+        setPassword("");
+      });
   }
 
   if (member == null) {
