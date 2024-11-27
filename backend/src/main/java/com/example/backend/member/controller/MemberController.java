@@ -4,10 +4,7 @@ import com.example.backend.member.dto.Member;
 import com.example.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -16,6 +13,20 @@ import java.util.Map;
 @RequestMapping("/api/member")
 public class MemberController {
     final MemberService service;
+
+    @GetMapping("check")
+    public ResponseEntity<Map<String, Object>> checkId(@RequestParam String id) {
+        if (service.checkId(id)) {
+            return ResponseEntity.ok().body(Map.of(
+                    "message", Map.of("type", "warning", "text", "이미 사용중인 아이디 입니다."),
+                    "available", false)
+            );
+        } else {
+            return ResponseEntity.ok().body(Map.of(
+                    "message", Map.of("type", "info", "text", "사용 가능한 아이디 입니다."),
+                    "available", true));
+        }
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<Map<String, Object>> signup(@RequestBody Member member) {
