@@ -36,6 +36,9 @@ const router = createBrowserRouter([
   },
 ]);
 
+const k = import.meta.env.VITE_KAKAO_APP_KEY;
+console.log(k);
+
 function App() {
   return <RouterProvider router={router} />;
 }
