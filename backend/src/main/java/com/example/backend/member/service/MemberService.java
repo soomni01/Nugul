@@ -1,6 +1,7 @@
 package com.example.backend.member.service;
 
 import com.example.backend.member.dto.Member;
+import com.example.backend.member.dto.MemberEdit;
 import com.example.backend.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,17 @@ public class MemberService {
         if (db != null) {
             if (db.getPassword().equals(member.getPassword())) {
                 cnt = mapper.deleteById(member.getMemberId());
+            }
+        }
+        return cnt == 1;
+    }
+
+    public boolean update(MemberEdit member) {
+        int cnt = 0;
+        Member db = mapper.selectById(member.getMemberId());
+        if (db != null) {
+            if (db.getPassword().equals(member.getOldPassword())) {
+                cnt = mapper.update(member);
             }
         }
         return cnt == 1;

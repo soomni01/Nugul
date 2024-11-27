@@ -1,10 +1,8 @@
 package com.example.backend.member.mapper;
 
 import com.example.backend.member.dto.Member;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.backend.member.dto.MemberEdit;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,11 +27,19 @@ public interface MemberMapper {
             ORDER BY member_id
             """)
     List<Member> selectAll();
-    
+
 
     @Delete("""
             DELETE FROM member
             WHERE member_id=#{memberId}
             """)
     int deleteById(String memberId);
+
+    @Update("""
+            UPDATE member
+            SET password = #{password} ,
+            nickname=#{nickName}
+            WHERE member_id=#{memberId}
+            """)
+    int update(MemberEdit member);
 }

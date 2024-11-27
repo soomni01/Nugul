@@ -1,6 +1,7 @@
 package com.example.backend.member.controller;
 
 import com.example.backend.member.dto.Member;
+import com.example.backend.member.dto.MemberEdit;
 import com.example.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,12 @@ import java.util.Map;
 public class MemberController {
     final MemberService service;
 
-    @DeleteMapping("remove")
+    @PutMapping("update")
+    public void update(@RequestBody MemberEdit member) {
+        service.update(member);
+    }
 
+    @DeleteMapping("remove")
     public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member) {
         if (service.remove(member)) {
             return ResponseEntity.ok(Map.of("message",
@@ -30,9 +35,9 @@ public class MemberController {
         }
     }
 
-    @GetMapping("{id}")
-    public Member getMember(@PathVariable String id) {
-        return service.get(id);
+    @GetMapping("{memberId}")
+    public Member getMember(@PathVariable String memberId) {
+        return service.get(memberId);
     }
 
     @GetMapping("list")

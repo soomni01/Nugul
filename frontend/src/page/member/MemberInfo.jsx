@@ -21,17 +21,17 @@ export function MemberInfo() {
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { id } = useParams();
+  const { memberId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/member/${id}`).then((res) => setMember(res.data));
+    axios.get(`/api/member/${memberId}`).then((res) => setMember(res.data));
   }, []);
 
   function handleDeleteClick() {
     axios
       .delete("/api/member/remove", {
-        data: { memberId: id, password },
+        data: { memberId: memberId, password },
       })
       .then((res) => {
         const message = res.data.message;
@@ -80,6 +80,9 @@ export function MemberInfo() {
           <Input type={"date"} readOnly value={member.inserted} />
         </Field>
         <Box>
+          <Button onClick={() => navigate(`/member/edit/${memberId}`)}>
+            수정
+          </Button>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
               <Button colorPalette={"red"}>탈퇴</Button>
