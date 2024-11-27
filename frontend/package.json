@@ -19,7 +19,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
-    "react-kakao-maps": "^0.0.13",
     "react-kakao-maps-sdk": "^1.1.27",
     "react-router-dom": "^6.28.0",
     "use-immer": "^0.10.0"
