@@ -8,9 +8,11 @@ import { FcAddImage } from "react-icons/fc";
 import { MapModal } from "../../components/map/MapModal.jsx";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function ProductAdd(props) {
-  const [selectedButton, setSelectedButton] = useState("sell"); // 상태를 하나로 설정
+  const [status, setStatus] = useState("sell"); // 상태를 하나로 설정
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -20,16 +22,11 @@ export function ProductAdd(props) {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
-
-  const disabled = !(
-    title.trim().length > 0 &&
-    description.trim().length > 0 &&
-    price.trim().length > 0
-  );
+  const navigate = useNavigate();
 
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
-    setSelectedButton(buttonType);
+    setStatus(buttonType);
   };
 
   // 가격 입력칸에 숫자만 입력되도록 필터링
@@ -71,7 +68,7 @@ export function ProductAdd(props) {
 
   const handleSaveClick = () => {
     setProgress(true);
-    console.log(title, category, selectedButton, price, description, location);
+    console.log(title, category, status, price, description, location);
 
     axios
       .postForm("/api/product/add", {
@@ -82,12 +79,36 @@ export function ProductAdd(props) {
         location,
         files,
       })
-      .then()
-      .catch()
+      .then((res) => res.data)
+      .then((data) => {
+        const message = data.message;
+
+        toaster.create({
+          description: message.text,
+          type: message.type,
+        });
+
+        navigate(`/`);
+      })
+      .catch((e) => {
+        const message = e.response.data.message;
+        toaster.create({
+          description: message.text,
+          type: message.type,
+        });
+      })
       .finally(() => {
+        // 성공 / 실패 상관 없이 실행
         setProgress(false);
       });
   };
+
+  const disabled = !(
+    title.trim().length > 0 &&
+    description.trim().length > 0 &&
+    price.trim().length > 0 &&
+    location?.name
+  );
 
   return (
     <Box>
@@ -176,14 +197,14 @@ export function ProductAdd(props) {
           <Flex gap={4}>
             <Button
               borderRadius="10px"
-              variant={selectedButton === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
+              variant={status === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
               onClick={() => buttonClick("sell")} // 판매하기 버튼 클릭 시
             >
               판매하기
             </Button>
             <Button
               borderRadius="10px"
-              variant={selectedButton === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
+              variant={status === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
               onClick={() => buttonClick("share")} // 나눔하기 버튼 클릭 시
             >
               나눔하기
