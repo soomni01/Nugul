@@ -13,12 +13,15 @@ import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { FcAddImage } from "react-icons/fc";
+import { MapModal } from "../../components/map/MapModal.jsx";
 
 export function ProductAdd(props) {
   const [selectedButton, setSelectedButton] = useState("sell"); // 상태를 하나로 설정
   const [price, setPrice] = useState("");
-  const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
   const [fileUrls, setFileUrls] = useState([]); // 파일 URL 목록
+  const [location, setLocation] = useState("");
+  const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
 
   // 버튼 클릭 시 해당 버튼을 표시
   function buttonClick(buttonType) {
@@ -59,6 +62,12 @@ export function ProductAdd(props) {
     const newUrls = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
     setFileUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
   }
+
+  // 선택된 장소 처리
+  const handleSelectLocation = (selectedLocation) => {
+    setLocation(selectedLocation); // 장소 업데이트
+    setIsModalOpen(false); // 모달 닫기
+  };
 
   return (
     <Box>
@@ -172,8 +181,19 @@ export function ProductAdd(props) {
           <Textarea h={200} />
         </Field>
         <Field label={"거래 희망 장소"}>
-          <Input />
+          <Input
+            value={location}
+            onClick={() => setIsModalOpen(true)} // 거래 장소 input 클릭 시 모달 열기
+            placeholder="거래 희망 장소를 선택하세요"
+            readOnly
+          />
         </Field>
+        {/* MapModal 컴포넌트 호출 */}
+        <MapModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSelectLocation={handleSelectLocation} // 장소 선택 시 처리
+        />
         <Button>상품 등록</Button>
       </Stack>
     </Box>
