@@ -4,12 +4,15 @@ import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [nickName, setNickName] = useState("");
+  const [idCheck, setIdCheck] = useState(false);
+  const navigate = useNavigate();
 
   function handleSaveClick() {
     axios
@@ -21,6 +24,7 @@ export function MemberSignup() {
           type: message.type,
           description: message.text,
         });
+        navigate("/");
       })
       .catch((e) => {
         console.log("안됐을 때 해야하는 일, 토스트 출력");
@@ -50,8 +54,13 @@ export function MemberSignup() {
           type: message.type,
           description: message.text,
         });
+
+        setIdCheck(data.available);
       });
   };
+
+  let disabled = true;
+  disabled = !idCheck;
 
   return (
     <Box>
@@ -98,7 +107,9 @@ export function MemberSignup() {
             }}
           />
         </Field>
-        <Button onClick={handleSaveClick}>저장</Button>
+        <Button disabled={disabled} onClick={handleSaveClick}>
+          가입
+        </Button>
       </Stack>
     </Box>
   );

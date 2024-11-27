@@ -82,6 +82,5 @@ public class MemberController {
             return ResponseEntity.internalServerError().body(Map.of("message",
                     Map.of("type", "error", "text", "이미 존재하는 아이디입니다.")));
         }
-
     }
 }
