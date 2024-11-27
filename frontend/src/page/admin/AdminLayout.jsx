@@ -1,61 +1,136 @@
-import { Box, Flex, Link, Text, VStack } from "@chakra-ui/react";
-import { Link as RouterLink, Outlet } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Image,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 export default function AdminLayout() {
+  const navigate = useNavigate();
+
   return (
-    <Flex minH="100vh">
+    <Flex direction="column" minH="100vh">
+      {/* 네브바 */}
+      <HStack
+        w="full"
+        bg="white"
+        color="black"
+        p={7}
+        position="fixed"
+        top="0"
+        left="0"
+        justify="space-between"
+        zIndex="1"
+        boxShadow="0px 2px 10px rgba(0, 0, 0, 0.15)"
+      ></HStack>
+
       {/* 사이드바 */}
       <Box
         w="250px"
-        bg="gray.800"
+        bg="gray"
         color="white"
         p={5}
         position="fixed"
+        top="0"
+        left="0"
         height="100vh"
+        overflowY="auto"
+        zIndex="2"
       >
-        <VStack align="start" spacing={4}>
-          <Text fontSize="lg" fontWeight="bold" mb={4}>
-            ADMIN
-          </Text>
-          <Link
-            as={RouterLink}
-            to="/admin/dashboard"
-            _hover={{ textDecoration: "none" }}
+        <Text fontSize="30px" fontWeight="bold" mb={4}>
+          {" "}
+          Admin
+        </Text>
+        <VStack align="start" spacing={6}>
+          {" "}
+          <Button
+            onClick={() => navigate("/admin/dashboard")}
+            variant={
+              location.pathname === "/admin/dashboard" ? "solid" : "ghost"
+            }
+            color={location.pathname === "/admin/dashboard" ? "white" : "black"} // 선택된 버튼 색상 변경
+            bg={
+              location.pathname === "/admin/dashboard"
+                ? "#A6A6A6"
+                : "transparent"
+            }
+            _hover={{
+              bg:
+                location.pathname === "/admin/dashboard"
+                  ? "#A6A6A6"
+                  : "#A6A6A6",
+            }}
+            justifyContent="flex-start"
+            w="100%"
+            fontSize="17px"
           >
-            대시보드
-          </Link>
-          <Link
-            as={RouterLink}
-            to="/admin/members"
-            _hover={{ textDecoration: "none" }}
+            <Flex align="center" gap={2}>
+              <Image
+                src="/image/DashBoard.png"
+                alt="Dashboard Icon"
+                boxSize="20px"
+              />
+              <Text>대시보드</Text>
+            </Flex>
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/members")}
+            variant={location.pathname === "/admin/members" ? "solid" : "ghost"}
+            color={location.pathname === "/admin/members" ? "white" : "black"}
+            bg={
+              location.pathname === "/admin/members" ? "#A6A6A6" : "transparent"
+            }
+            _hover={{
+              bg:
+                location.pathname === "/admin/members" ? "#A6A6A6" : "#A6A6A6",
+            }}
+            justifyContent="flex-start"
+            w="100%"
+            fontSize="17px"
           >
-            사용자 관리
-          </Link>
-          <Link
-            as={RouterLink}
-            to="/admin/reports"
-            _hover={{ textDecoration: "none" }}
+            <Flex align="center" gap={2}>
+              <Image src="/image/Member.png" alt="Member Icon" boxSize="20px" />
+              <Text>회원 관리</Text>
+            </Flex>
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/reports")}
+            variant={location.pathname === "/admin/reports" ? "solid" : "ghost"}
+            color={location.pathname === "/admin/reports" ? "white" : "black"}
+            bg={
+              location.pathname === "/admin/reports" ? "#A6A6A6" : "transparent"
+            }
+            _hover={{
+              bg:
+                location.pathname === "/admin/reports" ? "#A6A6A6" : "#A6A6A6",
+            }}
+            justifyContent="flex-start"
+            w="100%"
+            fontSize="17px"
           >
-            신고 관리
-          </Link>
-          <Link
-            as={RouterLink}
-            to="/admin/settings"
-            _hover={{ textDecoration: "none" }}
-          >
-            설정
-          </Link>
+            <Flex align="center" gap={2}>
+              <Image src="/image/Report.png" alt="Report Icon" boxSize="20px" />
+              <Text>신고 관리</Text>
+            </Flex>
+          </Button>
         </VStack>
       </Box>
 
       {/* 메인 콘텐츠 */}
       <Box
-        ml="250px" // 사이드바 너비만큼 마진을 줌
+        ml="250px" // 사이드바 너비만큼 마진을 주어 메인 콘텐츠를 이동
+        pt="64px" // 네브바 높이만큼 패딩을 줘서 네브바 아래로 콘텐츠가 위치하도록 설정
         p={5}
         flex="1"
         bg="gray.50"
+        height="calc(100vh - 64px)"
+        overflowY="auto"
       >
-        <Outlet /> {/* 자식 페이지를 렌더링 */}
+        <Outlet />
       </Box>
     </Flex>
   );
