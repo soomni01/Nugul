@@ -27,3 +27,13 @@ export function CategoryContainer() {
     </HStack>
   );
 }
+
+export const categories = [
+  { label: "전체", value: "all" },
+  { label: "의류", value: "clothes" },
+  { label: "잡화", value: "angular" },
+  { label: "식품", value: "food" },
+  { label: "뷰티", value: "beauty" },
+  { label: "디지털 기기", value: "digital" },
+  { label: "쿠폰", value: "coupon" },
+];

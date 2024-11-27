@@ -1,19 +1,12 @@
 import React, { useRef, useState } from "react";
-import {
-  Box,
-  createListCollection,
-  Flex,
-  Heading,
-  Input,
-  Stack,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, Input, Stack, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { FcAddImage } from "react-icons/fc";
 import { MapModal } from "../../components/map/MapModal.jsx";
+import { categories } from "../../components/category/CategoryContainer.jsx";
 
 export function ProductAdd(props) {
   const [selectedButton, setSelectedButton] = useState("sell"); // 상태를 하나로 설정
@@ -24,50 +17,39 @@ export function ProductAdd(props) {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
 
   // 버튼 클릭 시 해당 버튼을 표시
-  function buttonClick(buttonType) {
+  const buttonClick = (buttonType) => {
     setSelectedButton(buttonType);
-  }
+  };
 
   // 가격 입력칸에 숫자만 입력되도록 필터링
-  function handlePriceChange(e) {
+  const handlePriceChange = (e) => {
     const value = e.target.value;
 
     if (/^\d*$/.test(value)) {
       setPrice(value);
     }
-  }
-
-  // 카테고리 목록
-  const categories = createListCollection({
-    items: [
-      { label: "전체", value: "all" },
-      { label: "의류", value: "clothes" },
-      { label: "잡화", value: "angular" },
-      { label: "식품", value: "food" },
-      { label: "뷰티", value: "beauty" },
-      { label: "디지털 기기", value: "digital" },
-      { label: "쿠폰", value: "coupon" },
-    ],
-  });
+  };
 
   // 파일 이미지 클릭 시 input 클릭 트리거
-  function handleBoxClick() {
+  const handleBoxClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
-  }
+  };
 
-  function imageUploadButton(e) {
+  // 이미지 업로드 버튼 클릭시 이미지 표시
+  const imageUploadButton = (e) => {
     const files = Array.from(e.target.files);
     const newUrls = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
     setFileUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
-  }
+  };
 
   // 선택된 장소 처리
-  const handleSelectLocation = (selectedLocation) => {
-    setLocation(selectedLocation); // 장소 업데이트
-    setIsModalOpen(false); // 모달 닫기
+  const handleSelectLocation = ({ lat, lng, locationName }) => {
+    setLocation(`위도: ${lat}, 경도: ${lng}, 장소명: ${locationName}`);
   };
+
+  const handleSaveClick = () => {};
 
   return (
     <Box>
@@ -136,7 +118,7 @@ export function ProductAdd(props) {
                   border: "1px solid #ccc",
                 }}
               >
-                {categories.items.map((option) => (
+                {categories.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -194,7 +176,7 @@ export function ProductAdd(props) {
           onClose={() => setIsModalOpen(false)}
           onSelectLocation={handleSelectLocation} // 장소 선택 시 처리
         />
-        <Button>상품 등록</Button>
+        <Button onClick={handleSaveClick}>상품 등록</Button>
       </Stack>
     </Box>
   );
