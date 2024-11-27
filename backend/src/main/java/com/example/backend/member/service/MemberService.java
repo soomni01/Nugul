@@ -31,7 +31,15 @@ public class MemberService {
         return mapper.selectById(id);
     }
 
-    public void remove(Member member) {
-        mapper.deleteById(member.getMemberId());
+    public boolean remove(Member member) {
+        int cnt = 0;
+        Member db = mapper.selectById(member.getMemberId());
+
+        if (db != null) {
+            if (db.getPassword().equals(member.getPassword())) {
+                cnt = mapper.deleteById(member.getMemberId());
+            }
+        }
+        return cnt == 1;
     }
 }
