@@ -7,14 +7,25 @@ import { PiCurrencyKrwBold } from "react-icons/pi";
 import { FcAddImage } from "react-icons/fc";
 import { MapModal } from "../../components/map/MapModal.jsx";
 import { categories } from "../../components/category/CategoryContainer.jsx";
+import axios from "axios";
 
 export function ProductAdd(props) {
   const [selectedButton, setSelectedButton] = useState("sell"); // 상태를 하나로 설정
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
-  const [fileUrls, setFileUrls] = useState([]); // 파일 URL 목록
+  const [files, setFiles] = useState([]);
   const [location, setLocation] = useState("");
-  const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
+  const [progress, setProgress] = useState(false);
+  const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
+
+  const disabled = !(
+    title.trim().length > 0 &&
+    description.trim().length > 0 &&
+    price.trim().length > 0
+  );
 
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
@@ -40,16 +51,43 @@ export function ProductAdd(props) {
   // 이미지 업로드 버튼 클릭시 이미지 표시
   const imageUploadButton = (e) => {
     const files = Array.from(e.target.files);
-    const newUrls = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
-    setFileUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
+    const newfiles = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
+    setFiles((prev) => [...prev, ...newfiles]); // 기존 URL에 추가
   };
 
   // 선택된 장소 처리
   const handleSelectLocation = ({ lat, lng, locationName }) => {
-    setLocation(`위도: ${lat}, 경도: ${lng}, 장소명: ${locationName}`);
+    setLocation({
+      latitude: lat,
+      longitude: lng,
+      name: locationName,
+    });
   };
 
-  const handleSaveClick = () => {};
+  const handleCategoryChange = (event) => {
+    const value = event.target.value;
+    setCategory(value);
+  };
+
+  const handleSaveClick = () => {
+    setProgress(true);
+    console.log(title, category, selectedButton, price, description, location);
+
+    axios
+      .postForm("/api/product/add", {
+        title,
+        description,
+        price: parseInt(price, 10),
+        category,
+        location,
+        files,
+      })
+      .then()
+      .catch()
+      .finally(() => {
+        setProgress(false);
+      });
+  };
 
   return (
     <Box>
@@ -87,7 +125,7 @@ export function ProductAdd(props) {
             whiteSpace="nowrap" // 이미지들이 한 줄로 나열되도록
             minWidth="100px"
           >
-            {fileUrls.map((url, index) => (
+            {files.map((file, index) => (
               <Box
                 key={index}
                 width="100px"
@@ -99,7 +137,7 @@ export function ProductAdd(props) {
                 flexShrink={0} // 이미지가 축소되지 않도록 설정s
               >
                 <img
-                  src={url}
+                  src={file}
                   alt={`파일 미리보기: ${index}`}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
@@ -111,6 +149,8 @@ export function ProductAdd(props) {
           <Box minWidth="100px">
             <Field label={"카테고리"}>
               <select
+                value={category}
+                onChange={handleCategoryChange}
                 style={{
                   width: "100px",
                   padding: "8px",
@@ -128,7 +168,7 @@ export function ProductAdd(props) {
           </Box>
           <Box flex={8}>
             <Field label={"제목"}>
-              <Input />
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </Field>
           </Box>
         </Flex>
@@ -160,11 +200,15 @@ export function ProductAdd(props) {
           </InputGroup>
         </Field>
         <Field label={"상품 설명"}>
-          <Textarea h={200} />
+          <Textarea
+            h={200}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </Field>
         <Field label={"거래 희망 장소"}>
           <Input
-            value={location}
+            value={location?.name || ""}
             onClick={() => setIsModalOpen(true)} // 거래 장소 input 클릭 시 모달 열기
             placeholder="거래 희망 장소를 선택하세요"
             readOnly
@@ -176,7 +220,13 @@ export function ProductAdd(props) {
           onClose={() => setIsModalOpen(false)}
           onSelectLocation={handleSelectLocation} // 장소 선택 시 처리
         />
-        <Button onClick={handleSaveClick}>상품 등록</Button>
+        <Button
+          disabled={disabled}
+          loading={progress}
+          onClick={handleSaveClick}
+        >
+          상품 등록
+        </Button>
       </Stack>
     </Box>
   );
