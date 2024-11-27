@@ -20,13 +20,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // stomp 접속 주소 url = ws://localhost:8080/ws-chat, 프로토콜이 http가 아니다!
         registry.addEndpoint("/wschat") // 연결될 엔드포인트 ?
                 .setAllowedOriginPatterns("http://localhost:5173");
-//                .withSockJS();  // 버전 낮은 브라우저에서도 적용 가능
-        // 경로 로그 출력
-        System.out.println("STOMP WebSocket 엔드포인트: /ws-chat");
 
-        // 개발자에게 엔드포인트 정보 출력
-        logger.info("WebSocket 연결 엔드포인트: /ws-chat");
-        logger.info("WebSocket 서버가 ws://localhost:8080/ws-chat에서 대기 중");
+//                .withSockJS();  // 버전 낮은 브라우저에서도 적용 가능
+// sockJS 쓸거면 , 그 http 붙여야 하는거 같음
 
 
     }
