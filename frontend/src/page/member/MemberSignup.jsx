@@ -13,12 +13,17 @@ export function MemberSignup() {
   const [nickName, setNickName] = useState("");
   const [idCheck, setIdCheck] = useState(false);
   const [rePassword, setRePassword] = useState("");
-  const [nickNameCheck, setNickNameCheck] = useState(false);
+  const [nickNameCheck, setNickNameCheck] = useState(true);
   const navigate = useNavigate();
 
   function handleSaveClick() {
     axios
-      .post("/api/member/signup", { memberId, password, name, nickName })
+      .post("/api/member/signup", {
+        memberId,
+        password,
+        name,
+        nickName: nickName.length === 0 ? null : nickName,
+      })
       .then((res) => {
         console.log("잘됨, 페이지 이동, 토스트 출력");
         const message = res.data.message;
@@ -81,10 +86,14 @@ export function MemberSignup() {
 
   let disabled = true;
   if (idCheck) {
-    if (password === rePassword) {
-      disabled = false;
+    if (nickNameCheck) {
+      if (password === rePassword) {
+        disabled = false;
+      }
     }
   }
+
+  let nickNameCheckButtonDisabled = nickName.length === 0;
 
   return (
     <Box>
@@ -139,7 +148,11 @@ export function MemberSignup() {
                 setNickName(e.target.value);
               }}
             />
-            <Button onClick={handleNickNameCheckClick} variant={"outline"}>
+            <Button
+              disabled={nickNameCheckButtonDisabled}
+              onClick={handleNickNameCheckClick}
+              variant={"outline"}
+            >
               중복확인
             </Button>
           </Group>
