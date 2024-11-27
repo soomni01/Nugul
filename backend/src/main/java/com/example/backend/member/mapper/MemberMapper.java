@@ -24,7 +24,7 @@ public interface MemberMapper {
 
     @Select("""
             SELECT member_id, name, nickname, inserted 
-            FROM prj1126.member
+            FROM member
             ORDER BY member_id
             """)
     List<Member> selectAll();
