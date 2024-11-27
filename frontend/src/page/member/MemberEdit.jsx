@@ -84,8 +84,8 @@ export function MemberEdit() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Field>
-        <Field readOnly label={"이름"}>
-          <Input defaultValue={member.name} />
+        <Field label={"이름"}>
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
         <Field label={"별명"}>
           <Input
