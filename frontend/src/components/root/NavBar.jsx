@@ -13,6 +13,7 @@ export function Navbar() {
       <Box onClick={() => navigate(`/member/${id}`)}>마이페이지</Box>
 
       <Box onClick={() => navigate("/member/signup")}>가입</Box>
+      <Box onClick={() => navigate("/member/list")}>회원 목록</Box>
     </Flex>
   );
 }

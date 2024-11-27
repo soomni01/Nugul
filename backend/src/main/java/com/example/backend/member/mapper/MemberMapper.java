@@ -5,18 +5,27 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface MemberMapper {
     @Insert("""
-            INSERT INTO prj1126.member
+            INSERT INTO member
             (member_id,password,name,nickname)
             VALUES (#{memberId}, #{password}, #{name},#{nickName})
             """)
     int insert(Member member);
 
     @Select("""
-            SELECT * FROM prj1126.member
+            SELECT * FROM member
             WHERE member_id=#{id}
             """)
     Member selectById(String id);
+
+    @Select("""
+            SELECT member_id, name, nickname, inserted 
+            FROM prj1126.member
+            ORDER BY member_id
+            """)
+    List<Member> selectAll();
 }
