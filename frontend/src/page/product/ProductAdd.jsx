@@ -9,10 +9,9 @@ import { MapModal } from "../../components/map/MapModal.jsx";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toaster } from "../../components/ui/toaster.jsx";
 
 export function ProductAdd(props) {
-  const [status, setStatus] = useState("sell"); // 상태를 하나로 설정
+  const [paid, setPaid] = useState("sell"); // 상태를 하나로 설정
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -26,7 +25,7 @@ export function ProductAdd(props) {
 
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
-    setStatus(buttonType);
+    setPaid(buttonType);
   };
 
   // 가격 입력칸에 숫자만 입력되도록 필터링
@@ -68,7 +67,7 @@ export function ProductAdd(props) {
 
   const handleSaveClick = () => {
     setProgress(true);
-    console.log(title, category, status, price, description, location);
+    console.log(title, category, paid, price, description, location);
 
     axios
       .postForm("/api/product/add", {
@@ -76,27 +75,12 @@ export function ProductAdd(props) {
         description,
         price: parseInt(price, 10),
         category,
-        location,
-        files,
+        // location,
+        // files,
       })
       .then((res) => res.data)
-      .then((data) => {
-        const message = data.message;
-
-        toaster.create({
-          description: message.text,
-          type: message.type,
-        });
-
-        navigate(`/`);
-      })
-      .catch((e) => {
-        const message = e.response.data.message;
-        toaster.create({
-          description: message.text,
-          type: message.type,
-        });
-      })
+      .then()
+      .catch()
       .finally(() => {
         // 성공 / 실패 상관 없이 실행
         setProgress(false);
@@ -197,14 +181,14 @@ export function ProductAdd(props) {
           <Flex gap={4}>
             <Button
               borderRadius="10px"
-              variant={status === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
+              variant={paid === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
               onClick={() => buttonClick("sell")} // 판매하기 버튼 클릭 시
             >
               판매하기
             </Button>
             <Button
               borderRadius="10px"
-              variant={status === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
+              variant={paid === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
               onClick={() => buttonClick("share")} // 나눔하기 버튼 클릭 시
             >
               나눔하기
