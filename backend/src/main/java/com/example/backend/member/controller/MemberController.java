@@ -54,8 +54,8 @@ public class MemberController {
         return service.list();
     }
 
-    @GetMapping("check")
-    public ResponseEntity<Map<String, Object>> checkId(@RequestParam String id) {
+    @GetMapping(value = "check", params = "id")
+    public ResponseEntity<Map<String, Object>> check(@RequestParam String id) {
         if (service.checkId(id)) {
             return ResponseEntity.ok().body(Map.of(
                     "message", Map.of("type", "warning", "text", "이미 사용중인 아이디 입니다."),
@@ -64,6 +64,20 @@ public class MemberController {
         } else {
             return ResponseEntity.ok().body(Map.of(
                     "message", Map.of("type", "info", "text", "사용 가능한 아이디 입니다."),
+                    "available", true));
+        }
+    }
+
+    @GetMapping(value = "check", params = "nickName")
+    public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickName) {
+        if (service.checkNickName(nickName)) {
+            return ResponseEntity.ok().body(Map.of(
+                    "message", Map.of("type", "warning", "text", "이미 사용중인 별명 입니다."),
+                    "available", false)
+            );
+        } else {
+            return ResponseEntity.ok().body(Map.of(
+                    "message", Map.of("type", "info", "text", "사용 가능한 별명 입니다."),
                     "available", true));
         }
     }

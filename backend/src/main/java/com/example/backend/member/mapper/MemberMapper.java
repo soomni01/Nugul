@@ -22,6 +22,12 @@ public interface MemberMapper {
     Member selectById(String id);
 
     @Select("""
+            SELECT * FROM member
+            WHERE nickname=#{nickName}
+            """)
+    Member selectByNickName(String nickName);
+
+    @Select("""
             SELECT member_id, name, nickname, inserted 
             FROM member
             ORDER BY member_id

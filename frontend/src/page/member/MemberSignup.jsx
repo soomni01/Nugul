@@ -12,6 +12,8 @@ export function MemberSignup() {
   const [name, setName] = useState("");
   const [nickName, setNickName] = useState("");
   const [idCheck, setIdCheck] = useState(false);
+  const [rePassword, setRePassword] = useState("");
+  const [nickNameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
 
   function handleSaveClick() {
@@ -59,8 +61,30 @@ export function MemberSignup() {
       });
   };
 
+  const handleNickNameCheckClick = () => {
+    axios
+      .get("/api/member/check", {
+        params: {
+          nickName,
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        const message = data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        setNickNameCheck(data.available);
+      });
+  };
+
   let disabled = true;
-  disabled = !idCheck;
+  if (idCheck) {
+    if (password === rePassword) {
+      disabled = false;
+    }
+  }
 
   return (
     <Box>
@@ -72,6 +96,7 @@ export function MemberSignup() {
               value={memberId}
               placeholder="이메일를 입력하세요"
               onChange={(e) => {
+                setIdCheck(false);
                 setMemberId(e.target.value);
               }}
             />
@@ -89,6 +114,13 @@ export function MemberSignup() {
             }}
           />
         </Field>
+        <Field label={"암호확인"}>
+          <Input
+            placeholder="암호를 재입력하세요"
+            value={rePassword}
+            onChange={(e) => setRePassword(e.target.value)}
+          />
+        </Field>
         <Field label={"이름"} placehold>
           <Input
             value={name}
@@ -99,13 +131,18 @@ export function MemberSignup() {
           />
         </Field>
         <Field label={"별명"} placehold>
-          <Input
-            value={nickName}
-            placeholder="이름을 입력하세요"
-            onChange={(e) => {
-              setNickName(e.target.value);
-            }}
-          />
+          <Group attached w={"100%"}>
+            <Input
+              value={nickName}
+              placeholder="별명을 입력하세요"
+              onChange={(e) => {
+                setNickName(e.target.value);
+              }}
+            />
+            <Button onClick={handleNickNameCheckClick} variant={"outline"}>
+              중복확인
+            </Button>
+          </Group>
         </Field>
         <Button disabled={disabled} onClick={handleSaveClick}>
           가입

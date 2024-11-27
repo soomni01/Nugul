@@ -24,6 +24,11 @@ public class MemberService {
         return mapper.selectById(id) != null;
     }
 
+    public boolean checkNickName(String nickName) {
+        Member member = mapper.selectByNickName(nickName);
+        return member != null;
+    }
+
     public List<Member> list() {
         return mapper.selectAll();
     }
