@@ -94,7 +94,7 @@ public class MemberController {
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("message",
-                    Map.of("type", "error", "text", "이미 존재하는 아이디입니다.")));
+                    Map.of("type", "error", "text", "회원 가입 중 문제가 발생하였습니다.")));
         }
     }
 }

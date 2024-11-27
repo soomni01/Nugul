@@ -22,7 +22,7 @@ export function MemberSignup() {
         memberId,
         password,
         name,
-        nickName: nickName.length === 0 ? null : nickName,
+        nickName,
       })
       .then((res) => {
         console.log("잘됨, 페이지 이동, 토스트 출력");
@@ -146,6 +146,11 @@ export function MemberSignup() {
               placeholder="별명을 입력하세요"
               onChange={(e) => {
                 setNickName(e.target.value);
+                if (e.target.value > 0) {
+                  setNickNameCheck(false);
+                } else {
+                  setNickNameCheck(true);
+                }
               }}
             />
             <Button
