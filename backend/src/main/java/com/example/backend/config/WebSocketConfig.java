@@ -19,8 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // stomp 접속 주소 url = ws://localhost:8080/ws-chat, 프로토콜이 http가 아니다!
         registry.addEndpoint("/wschat") // 연결될 엔드포인트 ?
-                .setAllowedOriginPatterns("http://localhost:5173")
-                .withSockJS();  // 버전 낮은 브라우저에서도 적용 가능
+                .setAllowedOriginPatterns("http://localhost:5173");
+//                .withSockJS();  // 버전 낮은 브라우저에서도 적용 가능
         // 경로 로그 출력
         System.out.println("STOMP WebSocket 엔드포인트: /ws-chat");
 

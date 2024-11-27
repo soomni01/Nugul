@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Input } from "@chakra-ui/react";
-import { Client } from "@stomp/stompjs";
 import { useEffect, useRef, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
+import { Client } from "@stomp/stompjs";
 
 export function ChatView() {
   const [clientMessage, setClientMessage] = useState("");
@@ -12,53 +12,19 @@ export function ChatView() {
     // 클라이언트 생성
 
     const client = new Client({
-      // WebSocket 프로토콜을 사용해야 함
-      brokerURL: "ws://localhost:8080/wschat", //
-      // brokerURL: "/ws-chat",
-      // 연결 성공 시 콜백
+      brokerURL: "ws://localhost:8080/wschat",
+      connectHeaders: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       onConnect: () => {
-        console.log("WebSocket 연결 성공!");
-        client.send(
-          "/app/chat",
-          {},
-          JSON.stringify({ content: "Hello, Server!" }),
-        );
-
-        // /topic 경로 구독
-        client.subscribe("/topic/messages", (message) => {
-          const receivedMessage = JSON.parse(message.body);
-          console.log("받은 메시지:", receivedMessage);
-        });
+        console.log("Connected to socket");
       },
-
-      // // 디버그 메시지 출력
-      // debug: (str) => {
-      //   console.log("STOMP Debug:", str);
-      // },
-
-      // STOMP 프로토콜 에러 처리
-      onStompError: (frame) => {
-        console.log("STOMP Error:", frame.headers["message"]);
-        console.log("에러 상세:", frame.body);
+      onStompError: (err) => {
+        console.error(err);
       },
-
-      // WebSocket 연결 에러 처리
-      onWebSocketError: (event) => {
-        console.error("WebSocket 연결 에러:", event);
-      },
-
-      // 재연결 시도 간격(ms)
-      reconnectDelay: 5000,
-
-      // Heartbeat 설정
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
     });
 
-    // WebSocket 연결 활성화
     client.activate();
-    clientRef.current = client;
-    console.log(client);
   }, []);
 
   let handleSubmitClick = () => {
