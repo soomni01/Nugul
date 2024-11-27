@@ -1,19 +1,13 @@
 package com.example.backend.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Getter
-@NoArgsConstructor
+@Data
 public class ChatMessage {
 
-    private Long id;
-    private String name;
-    private String message;
+    private String content;
+    private String sender;
+    private String timestamp;
 
-    public ChatMessage(Long id, String name, String message) {
-        this.id = id;
-        this.name = name;
-        this.message = message;
-    }
+
 }

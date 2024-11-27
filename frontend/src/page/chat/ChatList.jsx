@@ -1,83 +1,48 @@
-import { Box, Heading, Input } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-
-import axios from "axios";
-import { Button } from "../../components/ui/button.jsx";
+import { useState } from "react";
+import { Client } from "@stomp/stompjs";
+import { Box } from "@chakra-ui/react";
+import * as Json from "postcss";
+import { useNavigate } from "react-router-dom";
 
 export function ChatList() {
-  // WebSocket 객체 생성 ( 서버의 Websocket) 포인트를 사용
-  // 웹 소켓 연결 객체 TODO ref 찾아보기
-  const stompClient = useRef(null);
-  const [message, setMessage] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+  const [roomId, setRoomId] = useState(1);
+  let navigate = useNavigate();
 
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+  // STOMP 클라이언트 생성
+  const client = new Client({
+    //websocketconfig 에 ,  /wschat 으로 해놓음
+    url: "ws://localhost:8080/api/wschat",
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
+  // 구독 하기 ( 웹 소켓 연결)
+  client.onConnect = function () {
+    client.subscribe("/topic", callback);
   };
 
-  useEffect(() => {
-    connect();
-    fetchMessages();
-    return () => disconnect();
-  }, []);
-
-  const connect = () => {
-    // 경로 ??
-    const socket = new WebSocket("ws://api/chat");
-    stompClient.current = Stomp.over(socket);
-    stompClient.current.connect({}, () => {
-      // 메시지 수신 (1은 roomID)
-      stompClient.current.subscribe("/sub/chatroom/1", (message) => {
-        // 누군가 발송했던 메시지를 리스트에 추가
-        const newMessage = JSON.parse(message.body);
-        setMessage((prevMessages) => [...prevMessages, newMessage]);
-      });
-    });
-  };
-  const fetchMessages = () => {
-    return axios.get("http://localhost:8080/chat/1").then((res) => {
-      setMessage(res.data);
-    });
-  };
-
-  const disconnect = () => {
-    if (stompClient.current) {
-      stompClient.current.disconnect();
+  const callback = function (message) {
+    if (message.body) {
+      let msg = Json.parse(message.body);
     }
   };
-  //메세지 전송
-  const sendMessage = () => {
-    if (stompClient.current && inputValue) {
-      //현재로서는 임의의 테스트 값을 삽입
-      const body = {
-        id: 1,
-        name: "테스트1",
-        message: inputValue,
-      };
-      stompClient.current.send(`/pub/message`, {}, JSON.stringify(body));
-      setInputValue("");
-    }
-  };
+
+  console.log(client);
+
+  // <ChatListItem></ChatListItem>
 
   return (
-    <Box my={5}>
-      <Heading>채팅 리스트 화면</Heading>
-      <Box>
-        <ul>
-          <Box>
-            <Input
-              type={"text"}
-              value={inputValue}
-              onChange={handleInputChange}
-            />
-            <Button onClick={sendMessage}>입력 </Button>
-          </Box>
-          {message.map((item, index) => (
-            <div key={index} className={"list-item"}>
-              {item.message}{" "}
-            </div>
-          ))}
-        </ul>
+    <Box>
+      채팅 리스트
+      <Box
+        onClick={() => {
+          navigate("/chat/room/" + roomId);
+        }}
+        bg={"red.300"}
+      >
+        {" "}
+        1 번 채팅방
       </Box>
     </Box>
   );
