@@ -3,6 +3,7 @@ import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
 import { ProductList } from "./page/product/ProductList.jsx";
+import { ProductAdd } from "./page/product/ProductAdd.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "product/list",
         element: <ProductList />,
+      },
+      {
+        path: "product/add",
+        element: <ProductAdd />,
       },
     ],
   },

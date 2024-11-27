@@ -1,6 +1,7 @@
 import { Box, Card, Flex, Grid, Heading, Image } from "@chakra-ui/react";
 import { CategoryContainer } from "../../components/category/CategoryContainer.jsx";
 import { Button } from "../../components/ui/button.jsx";
+import { useNavigate } from "react-router-dom";
 
 function ProductItem(props) {
   return (
@@ -23,6 +24,8 @@ function ProductItem(props) {
 }
 
 export function ProductList() {
+  const navigate = useNavigate();
+
   return (
     <Box>
       <CategoryContainer />
@@ -37,7 +40,11 @@ export function ProductList() {
           </select>
         </Flex>
 
-        <Button colorScheme="teal" size="sm">
+        <Button
+          onClick={() => navigate("/product/add")}
+          colorScheme="teal"
+          size="sm"
+        >
           판매하기
         </Button>
       </Flex>
