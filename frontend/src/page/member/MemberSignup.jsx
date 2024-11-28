@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Group, Input, Stack } from "@chakra-ui/react";
+import { Box, Group, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
+  const [idCheckMessage, setIdCheckMessage] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [nickName, setNickName] = useState("");
@@ -63,6 +64,7 @@ export function MemberSignup() {
         type: "error",
         description: "이메일 형식이 잘못되었습니다.",
       });
+      setIdCheckMessage("이메일 형식이 잘못되었습니다.");
       return;
     }
 
@@ -80,7 +82,20 @@ export function MemberSignup() {
           description: message.text,
         });
 
-        setIdCheck(data.available);
+        if (data.available) {
+          setIdCheckMessage("사용 가능합니다.");
+          setIdCheck(true);
+        } else {
+          setIdCheckMessage("이미 사용 중인 이메일입니다.");
+          setIdCheck(false);
+        }
+      })
+      .catch((e) => {
+        setIdCheckMessage("서버 오류가 발생했습니다.");
+        toaster.create({
+          type: "error",
+          description: "서버 오류가 발생했습니다.",
+        });
       });
   };
 
@@ -117,7 +132,18 @@ export function MemberSignup() {
     <Box>
       <h3>회원 가입</h3>
       <Stack gap={5}>
-        <Field label={"아이디"} helperText={"이메일 형식으로 작성하세요"}>
+        <Field
+          label={"아이디"}
+          helperText={
+            idCheckMessage ? (
+              <Text color={idCheck ? "green.500" : "red.500"}>
+                {idCheckMessage}
+              </Text>
+            ) : (
+              ""
+            )
+          }
+        >
           <Group attached w={"100%"}>
             <Input
               value={memberId}
@@ -125,6 +151,7 @@ export function MemberSignup() {
               onChange={(e) => {
                 setIdCheck(false);
                 setMemberId(e.target.value);
+                setIdCheckMessage("");
               }}
             />
             <Button onClick={handleIdCheckClick} variant={"outline"}>
@@ -135,7 +162,9 @@ export function MemberSignup() {
         <Field
           label={"암호"}
           placehold
-          helperText={"영문 대소문자, 숫자, 특수문자 조합"}
+          helperText={
+            "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
+          }
         >
           <Input
             value={password}
