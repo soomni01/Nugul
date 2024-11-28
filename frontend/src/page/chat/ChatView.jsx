@@ -4,14 +4,16 @@ import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 
 export function ChatView() {
-  const [clientMessage, setClientMessage] = useState("11");
-  const [responseMessage, setResponseMessage] = useState("");
+  // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함
+  //  그거 자체를 저장하는 배열을 만들어서 ,한 번씩 보냄
+  const [message, setMessage] = useState([]);
+  const [clientMessage, setClientMessage] = useState("");
   const clientRef = useRef(null);
-  const [chatMessage, setChatMessage] = useState([]);
+  const [stompClient, setStompClient] = useState(null);
   // 처음에 채팅 메시지를 출력받아서 보여주고 ,
+
   useEffect(() => {
     // 클라이언트 생성
-
     const client = new Client({
       brokerURL: "ws://localhost:8080/wschat",
       connectHeaders: {
@@ -24,14 +26,14 @@ export function ChatView() {
         console.log("Connected to socket");
         client.subscribe("/room/1", function (message) {
           const a = JSON.parse(message.body);
-          setResponseMessage(a);
+          setMessage((prev) => [...prev, a]);
           // setResponseMessage(clientMessage);
         });
-
-        client.publish({
-          destination: "/send/1",
-          body: JSON.stringify(clientMessage),
-        });
+        //  연결 될때 메시지를 보낼 필요는 없음
+        // client.publish({
+        //   destination: "/send/1",
+        //   body: JSON.stringify(clientMessage),
+        // });
       },
       onStompError: (err) => {
         console.error(err);
@@ -40,8 +42,21 @@ export function ChatView() {
       heartbeatOutgoing: 5000,
       reconnectDelay: 1000,
     });
+    setStompClient(client);
     client.activate();
   }, []);
+
+  const sendMessage = () => {
+    if (stompClient && stompClient.connected)
+      stompClient.publish({
+        destination: "/send/1",
+        body: JSON.stringify(clientMessage),
+      });
+    setClientMessage("");
+  };
+
+  const sender = "sender";
+  const receiver = "receiver";
 
   return (
     <Box>
@@ -49,6 +64,20 @@ export function ChatView() {
       <Flex>
         <Box bg={"red.300"} h={500}>
           <h3> 클라이언트</h3>
+          <Box>
+            {message.map((item) => (
+              <Field key={item}>
+                <Input
+                  w={"70%"}
+                  type={"text"}
+                  value={item}
+                  onChange={(e) => {
+                    setClientMessage(e.target.value);
+                  }}
+                />
+              </Field>
+            ))}
+          </Box>
 
           <Field>
             <Input
@@ -59,16 +88,29 @@ export function ChatView() {
               }}
             />
           </Field>
-          <Button variant={"outline"}>전송</Button>
+          <Button variant={"outline"} onClick={sendMessage}>
+            전송
+          </Button>
         </Box>
         <Box bg={"blue.300"}>
           <h3> 서버에서 보내준 내용 </h3>
-          {responseMessage}
+          {message.map((item) => (
+            <h3>{item}</h3>
+          ))}
           <Field>
-            <Input type={"text"} />
+            <Input
+              type={"text"}
+              value={clientMessage}
+              onChange={(e) => {
+                setClientMessage(e.target.value);
+              }}
+            />
           </Field>
 
-          <Button variant={"outline"}> 전송</Button>
+          <Button variant={"outline"} onClick={sendMessage}>
+            {" "}
+            전송
+          </Button>
         </Box>
       </Flex>
     </Box>
