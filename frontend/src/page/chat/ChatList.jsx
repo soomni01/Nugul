@@ -1,36 +1,22 @@
 import { useState } from "react";
-import { Client } from "@stomp/stompjs";
 import { Box } from "@chakra-ui/react";
-import * as Json from "postcss";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/ui/button.jsx";
 
+function ChatListItem() {
+  return <Box></Box>;
+}
+
+//  이 페이지에선,  페이지 들어오면 useEffect로 controller에 요청 보내서 , 회원 기준, 채팅창 목록 가져오고 ,
+//  그거 state로 받아서 , map 으로 뿌려주기
 export function ChatList() {
   const [roomId, setRoomId] = useState(1);
+  const [chatList, setChatList] = useState([]);
   let navigate = useNavigate();
 
-  // STOMP 클라이언트 생성
-  const client = new Client({
-    //websocketconfig 에 ,  /wschat 으로 해놓음
-    url: "ws://localhost:8080/api/wschat",
-    reconnectDelay: 5000,
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
-  });
-
-  // 구독 하기 ( 웹 소켓 연결)
-  client.onConnect = function () {
-    client.subscribe("/topic", callback);
+  const createChatRoom = () => {
+    // 추가
   };
-
-  const callback = function (message) {
-    if (message.body) {
-      let msg = Json.parse(message.body);
-    }
-  };
-
-  console.log(client);
-
-  // <ChatListItem></ChatListItem>
 
   return (
     <Box>
@@ -44,6 +30,13 @@ export function ChatList() {
         {" "}
         1 번 채팅방
       </Box>
+      {chatList.map((item) => (
+        <Box> </Box>
+      ))}
+      <Button variant={"outline"} onClick={createChatRoom}>
+        {" "}
+        버튼
+      </Button>
     </Box>
   );
 }
