@@ -50,7 +50,7 @@ public class ProductService {
         return cnt == 1;
     }
 
-    public List<Product> productList() {
+    public List<Product> getProductList() {
         return mapper.getProductList();
     }
 
@@ -60,5 +60,10 @@ public class ProductService {
         boolean locationName = product.getLocationName().trim().length() > 0;
 
         return productName && price && locationName;
+    }
+
+    public Product getProductView(int id) {
+
+        return mapper.selectById(id);
     }
 }

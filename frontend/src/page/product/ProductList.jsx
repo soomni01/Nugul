@@ -15,6 +15,7 @@ import axios from "axios";
 import { GoHeart } from "react-icons/go";
 
 function ProductItem({ product }) {
+  const navigate = useNavigate();
   return (
     // <Box h="20vw" bg="gray.100" borderRadius="md" boxShadow="sm" p={4}>
     //   {/* 상품 내용 */}
@@ -27,7 +28,12 @@ function ProductItem({ product }) {
         <Card.Description>{product.price}</Card.Description>
       </Card.Body>
       <Card.Footer gap="2">
-        <Button variant="solid">거래하기</Button>
+        <Button
+          onClick={() => navigate(`/product/view/${product.productId}`)}
+          variant="solid"
+        >
+          거래하기
+        </Button>
         <Box>
           <GoHeart />
         </Box>
@@ -75,7 +81,7 @@ export function ProductList() {
         </Flex>
 
         <Button
-          onClick={() => navigate("/product/add")}
+          onClick={() => navigate(`/product/add`)}
           colorScheme="teal"
           size="sm"
         >

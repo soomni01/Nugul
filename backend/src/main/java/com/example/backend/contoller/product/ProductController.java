@@ -17,9 +17,14 @@ public class ProductController {
 
     final ProductService service;
 
+    @GetMapping("/view/{id}")
+    public Product view(@PathVariable int id) {
+        return service.getProductView(id);
+    }
+
     @GetMapping("list")
     public List<Product> list() {
-        return service.productList();
+        return service.getProductList();
     }
 
     @PostMapping("add")

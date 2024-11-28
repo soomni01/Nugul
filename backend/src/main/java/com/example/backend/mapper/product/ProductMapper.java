@@ -32,4 +32,12 @@ public interface ProductMapper {
             ORDER BY p.product_id DESC
             """)
     List<Product> getProductList();
+
+    @Select("""
+            SELECT  *
+            FROM product
+            WHERE product_id = #{id}
+            """)
+    Product selectById(int id);
+    
 }
