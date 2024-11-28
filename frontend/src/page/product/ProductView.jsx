@@ -11,7 +11,6 @@ import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
-import { MapModal } from "../../components/map/MapModal.jsx";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -26,6 +25,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 
 function ImageFileView() {
   return null;
@@ -35,15 +35,21 @@ export function ProductView() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
+  const [markerPosition, setMarkerPosition] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
   }, []);
 
-  if (product === null) {
-    return <Spinner />;
-  }
+  useEffect(() => {
+    if (product && product.latitude && product.longitude) {
+      setMarkerPosition({
+        lat: product.latitude,
+        lng: product.longitude,
+      });
+    }
+  }, [product]);
 
   const handleDeleteClick = () => {
     axios
@@ -65,6 +71,10 @@ export function ProductView() {
       });
   };
 
+  if (product === null) {
+    return <Spinner />;
+  }
+
   return (
     <Box>
       <Heading>{id}번 상품</Heading>
@@ -72,37 +82,46 @@ export function ProductView() {
         <ImageFileView />
         <Flex gap={3}>
           <Box minWidth="100px">
-            <Field label={"카테고리"}>
+            <Field label={"카테고리"} readOnly>
               <Input value={product.category} />
             </Field>
           </Box>
           <Box flex={8}>
-            <Field label={"상품명"}>
+            <Field label={"상품명"} readOnly>
               <Input value={product.productName} />
             </Field>
           </Box>
         </Flex>
-        <Field label={"거래방식"}>
+        <Field label={"거래방식"} readOnly>
           <Flex gap={4}>
             <Button borderRadius="10px">{product.pay}</Button>
           </Flex>
         </Field>
-        <Field label={"가격"}>
+        <Field label={"가격"} readOnly>
           <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
             <Input value={product.price} />
           </InputGroup>
         </Field>
-        <Field label={"상품 설명"}>
+        <Field label={"상품 설명"} readOnly>
           <Textarea h={200} value={product.description} />
         </Field>
-        <Field label={"거래 희망 장소"}>
+        <Field label={"거래 희망 장소"} readOnly>
           <Input
             value={product.locationName}
             onClick={() => setIsModalOpen(true)} // 거래 장소 input 클릭 시 모달 열기
             readOnly
           />
         </Field>
-        <MapModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <Box>
+          <Map
+            className="map"
+            center={markerPosition || { lat: 33.450701, lng: 126.570667 }}
+            level={3}
+            style={{ width: "100%", height: "400px" }}
+          >
+            {markerPosition && <MapMarker position={markerPosition} />}
+          </Map>
+        </Box>
         <Button
           colorPalette={"cyan"}
           onClick={() => navigate(`/product/edit/${product.productId}`)}
