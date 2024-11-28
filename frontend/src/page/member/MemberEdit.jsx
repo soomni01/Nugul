@@ -1,4 +1,4 @@
-import { Box, Input, Spinner, Stack } from "@chakra-ui/react";
+import { Box, Group, Input, Spinner, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import {
   DialogActionTrigger,
@@ -23,9 +23,13 @@ export function MemberEdit() {
   const [oldPassword, setOldPassword] = useState("");
   const [name, setName] = useState("");
   const [nickName, setNickName] = useState("");
+  const [nickNameCheck, setNickNameCheck] = useState(false);
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const passwordRegEx =
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,50}$/;
 
   useEffect(() => {
     axios.get(`/api/member/${memberId}`).then((res) => {
@@ -71,6 +75,29 @@ export function MemberEdit() {
   if (member == null) {
     return <Spinner />;
   }
+
+  const handleNickNameCheckClick = () => {
+    axios
+      .get("/api/member/check", {
+        params: {
+          nickName,
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        const message = data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        setNickNameCheck(data.available);
+      });
+  };
+
+  let nickNameCheckButtonDisabled = nickName.length === 0;
+
+  const isPasswordValid = passwordRegEx.test(password);
+
   return (
     <Box>
       <h3>회원정보 수정</h3>
@@ -82,21 +109,33 @@ export function MemberEdit() {
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            isInvalid={!isPasswordValid} // 비밀번호가 유효하지 않으면 빨간색으로 표시
+            errorBorderColor="red.300"
           />
         </Field>
         <Field label={"이름"}>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
         <Field label={"별명"}>
-          <Input
-            value={nickName}
-            onChange={(e) => setNickName(e.target.value)}
-          />
+          <Group attached w={"100%"}>
+            <Input
+              value={nickName}
+              onChange={(e) => setNickName(e.target.value)}
+            />
+            <Button
+              onClick={handleNickNameCheckClick}
+              disabled={nickNameCheckButtonDisabled}
+            >
+              중복확인
+            </Button>
+          </Group>
         </Field>
         <Box>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorPalette={"blue"}>저장</Button>
+              <Button colorPalette={"blue"} disabled={!isPasswordValid}>
+                저장
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

@@ -13,10 +13,24 @@ export function MemberSignup() {
   const [nickName, setNickName] = useState("");
   const [idCheck, setIdCheck] = useState(false);
   const [rePassword, setRePassword] = useState("");
-  const [nickNameCheck, setNickNameCheck] = useState(true);
+  const [nickNameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
 
+  const emailRegEx =
+    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
+
+  const passwordRegEx =
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,50}$/;
+
   function handleSaveClick() {
+    if (!passwordRegEx.test(password)) {
+      toaster.create({
+        type: "error",
+        description:
+          "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.",
+      });
+      return;
+    }
     axios
       .post("/api/member/signup", {
         memberId,
@@ -25,7 +39,6 @@ export function MemberSignup() {
         nickName,
       })
       .then((res) => {
-        console.log("잘됨, 페이지 이동, 토스트 출력");
         const message = res.data.message;
         toaster.create({
           type: message.type,
@@ -34,7 +47,6 @@ export function MemberSignup() {
         navigate("/");
       })
       .catch((e) => {
-        console.log("안됐을 때 해야하는 일, 토스트 출력");
         const message = e.response.data.message;
 
         toaster.create({
@@ -42,12 +54,18 @@ export function MemberSignup() {
           description: message.text,
         });
       })
-      .finally(() => {
-        console.log("성공이든 실패든 무조건 실행");
-      });
+      .finally(() => {});
   }
 
   const handleIdCheckClick = () => {
+    if (!emailRegEx.test(memberId)) {
+      toaster.create({
+        type: "error",
+        description: "이메일 형식이 잘못되었습니다.",
+      });
+      return;
+    }
+
     axios
       .get("/api/member/check", {
         params: {
@@ -99,7 +117,7 @@ export function MemberSignup() {
     <Box>
       <h3>회원 가입</h3>
       <Stack gap={5}>
-        <Field label={"아이디"} placehold>
+        <Field label={"아이디"} helperText={"이메일 형식으로 작성하세요"}>
           <Group attached w={"100%"}>
             <Input
               value={memberId}
@@ -114,7 +132,11 @@ export function MemberSignup() {
             </Button>
           </Group>
         </Field>
-        <Field label={"암호"} placehold>
+        <Field
+          label={"암호"}
+          placehold
+          helperText={"영문 대소문자, 숫자, 특수문자 조합"}
+        >
           <Input
             value={password}
             placeholder="암호를 입력하세요"
@@ -123,14 +145,14 @@ export function MemberSignup() {
             }}
           />
         </Field>
-        <Field label={"암호확인"}>
+        <Field label={"암호확인"} helperText={"암호 재입력하세요"}>
           <Input
             placeholder="암호를 재입력하세요"
             value={rePassword}
             onChange={(e) => setRePassword(e.target.value)}
           />
         </Field>
-        <Field label={"이름"} placehold>
+        <Field label={"이름"} helperText={"본명을 쓰세요"}>
           <Input
             value={name}
             placeholder="이름을 입력하세요"
@@ -139,18 +161,14 @@ export function MemberSignup() {
             }}
           />
         </Field>
-        <Field label={"별명"} placehold>
+        <Field label={"별명"} helperText={"별명을 쓰세요"}>
           <Group attached w={"100%"}>
             <Input
               value={nickName}
               placeholder="별명을 입력하세요"
               onChange={(e) => {
                 setNickName(e.target.value);
-                if (e.target.value > 0) {
-                  setNickNameCheck(false);
-                } else {
-                  setNickNameCheck(true);
-                }
+                setNickNameCheck(false);
               }}
             />
             <Button
