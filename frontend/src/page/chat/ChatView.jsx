@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Input } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 
@@ -8,7 +8,7 @@ export function ChatView() {
   //  그거 자체를 저장하는 배열을 만들어서 ,한 번씩 보냄
   const [message, setMessage] = useState([]);
   const [clientMessage, setClientMessage] = useState("");
-  const clientRef = useRef(null);
+  const [serverMessage, setServerMessage] = useState("");
   const [stompClient, setStompClient] = useState(null);
   // 처음에 채팅 메시지를 출력받아서 보여주고 ,
 
@@ -51,11 +51,10 @@ export function ChatView() {
   }, []);
 
   //  TODO: dto 수정시 변경
-
-  const sendMessage = () => {
+  function sendMessage(sender, content) {
     const a = {
-      sender: "test1",
-      content: "내용",
+      sender: sender,
+      content: content,
     };
 
     if (stompClient && stompClient.connected)
@@ -65,7 +64,7 @@ export function ChatView() {
       });
 
     setClientMessage("");
-  };
+  }
 
   return (
     <Box>
@@ -74,17 +73,11 @@ export function ChatView() {
         <Box bg={"red.300"} h={500}>
           <h3> 클라이언트</h3>
           <Box>
-            {message.map((item) => (
-              <Field key={item}>
-                <Input
-                  w={"70%"}
-                  type={"text"}
-                  value={item.content}
-                  onChange={(e) => {
-                    setClientMessage(e.target.value);
-                  }}
-                />
-              </Field>
+            {message.map((item, index) => (
+              <div key={index}>
+                <p>Sender: {item.sender}</p>
+                <p>Content: {item.content}</p>
+              </div>
             ))}
           </Box>
 
@@ -97,10 +90,18 @@ export function ChatView() {
               }}
             />
           </Field>
-          <Button variant={"outline"} onClick={sendMessage}>
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              var client = "client";
+              var message = clientMessage;
+              sendMessage(client, message);
+            }}
+          >
             전송
           </Button>
         </Box>
+
         <Box bg={"blue.300"}>
           <h3> 서버에서 보내준 내용 </h3>
           {message.map((item, index) => (
@@ -119,7 +120,14 @@ export function ChatView() {
             />
           </Field>
 
-          <Button variant={"outline"} onClick={sendMessage}>
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              var server = "server";
+              var message = serverMessage;
+              sendMessage(server, message);
+            }}
+          >
             {" "}
             전송
           </Button>

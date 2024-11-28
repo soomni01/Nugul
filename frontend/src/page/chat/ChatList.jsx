@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button.jsx";
+import axios from "axios";
 
 function ChatListItem() {
   return <Box></Box>;
@@ -15,6 +16,13 @@ export function ChatList() {
   let navigate = useNavigate();
 
   const createChatRoom = () => {
+    console.log("실행 확인");
+    var productName = "아디다스 신발";
+    var writer = "작성자";
+    axios.post("/api/chat/create", {
+      productName: productName,
+      writer: writer,
+    });
     // 추가
   };
 
@@ -30,11 +38,7 @@ export function ChatList() {
         {" "}
         1 번 채팅방
       </Box>
-      {chatList.map((item) => (
-        <Box> </Box>
-      ))}
       <Button variant={"outline"} onClick={createChatRoom}>
-        {" "}
         버튼
       </Button>
     </Box>

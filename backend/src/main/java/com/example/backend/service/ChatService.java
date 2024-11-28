@@ -13,4 +13,7 @@ public class ChatService {
     private final ChatMapper mapper;
 
 
+    public void creatChatRoom(String productName, String writer) {
+        mapper.createChatRoom(productName, writer);
+    }
 }
