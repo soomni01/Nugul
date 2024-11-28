@@ -2,6 +2,7 @@ import { Box, Button, Flex, Input } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
+import axios from "axios";
 
 export function ChatView() {
   // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함
@@ -12,16 +13,15 @@ export function ChatView() {
   const [stompClient, setStompClient] = useState(null);
   // 처음에 채팅 메시지를 출력받아서 보여주고 ,
 
+  //  stomp 객체 생성 및, 연결
   useEffect(() => {
-    // 클라이언트 생성
     const client = new Client({
       brokerURL: "ws://localhost:8080/wschat",
       connectHeaders: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       //  원래는 시작하자마자 메시지를 보낼 필요는 없음  , 인풋에 입력한걸 전송할때 보낼꺼니가
-      // TODO  > 1 대신 > 뭐 채팅 번호 받아와서 변경
-
+      // TODO  > 1 대신 > 뭐 채팅 번호 받아와서 변경 (sub,pub)
       onConnect: () => {
         console.log("Connected to socket");
         client.subscribe("/room/1", function (message) {
@@ -31,13 +31,7 @@ export function ChatView() {
             ...prev,
             { sender: a.sender, content: a.content },
           ]);
-          // setResponseMessage(clientMessage);
         });
-        //  연결 될때 메시지를 보낼 필요는 없음
-        // client.publish({
-        //   destination: "/send/1",
-        //   body: JSON.stringify(clientMessage),
-        // });
       },
       onStompError: (err) => {
         console.error(err);
@@ -48,6 +42,10 @@ export function ChatView() {
     });
     setStompClient(client);
     client.activate();
+  }, []);
+
+  useEffect(() => {
+    axios.get("/api/chat/view");
   }, []);
 
   //  TODO: dto 수정시 변경
