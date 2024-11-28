@@ -17,10 +17,6 @@ import { GoHeart } from "react-icons/go";
 function ProductItem({ product }) {
   const navigate = useNavigate();
   return (
-    // <Box h="20vw" bg="gray.100" borderRadius="md" boxShadow="sm" p={4}>
-    //   {/* 상품 내용 */}
-    //   상품
-    // </Box>
     <Card.Root maxW="sm" overflow="hidden">
       <Image src="/image/productItem.png" alt={product.productName} />
       <Card.Body gap="2">
@@ -71,15 +67,15 @@ export function ProductList() {
       <CategoryContainer />
       <Heading textAlign="center">카테고리</Heading>
       <Flex justify="space-between" align="center" mb={4}>
-        <Flex gap={4}>
-          <select value={"최신순"} size="sm">
-            <option value="newest">최신순</option>
-            <option value="popular">인기순</option>
-            <option value="low-to-high">저가순</option>
-            <option value="high-to-low">고가순</option>
-          </select>
-        </Flex>
-
+        {/*TODO:콘솔창 value있는데 onChange 없어서 발생한 오류 추후 수정*/}
+        {/*<Flex gap={4}>*/}
+        {/*  <select value={"최신순"} size="sm" >*/}
+        {/*    <option value="newest">최신순</option>*/}
+        {/*    <option value="popular">인기순</option>*/}
+        {/*    <option value="low-to-high">저가순</option>*/}
+        {/*    <option value="high-to-low">고가순</option>*/}
+        {/*  </select>*/}
+        {/*</Flex>*/}
         <Button
           onClick={() => navigate(`/product/add`)}
           colorScheme="teal"
@@ -90,7 +86,8 @@ export function ProductList() {
       </Flex>
       <Grid templateColumns="repeat(4, 1fr)" gap="6">
         {productList?.map((product) => (
-          <ProductItem key={product.id} product={product} />
+          // key prop을 추가하여 각 항목을 고유하게 지정 (각 항목을 추적하기 위해 key 사용)
+          <ProductItem key={product.productId} product={product} />
         ))}
       </Grid>
     </Box>
