@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export function ChatView() {
   // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함
@@ -11,6 +12,7 @@ export function ChatView() {
   const [clientMessage, setClientMessage] = useState("");
   const [serverMessage, setServerMessage] = useState("");
   const [stompClient, setStompClient] = useState(null);
+  const chatid = useParams();
   // 처음에 채팅 메시지를 출력받아서 보여주고 ,
 
   //  stomp 객체 생성 및, 연결
@@ -21,10 +23,9 @@ export function ChatView() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       //  원래는 시작하자마자 메시지를 보낼 필요는 없음  , 인풋에 입력한걸 전송할때 보낼꺼니가
-      // TODO  > 1 대신 > 뭐 채팅 번호 받아와서 변경 (sub,pub)
+
       onConnect: () => {
-        console.log("Connected to socket");
-        client.subscribe("/room/1", function (message) {
+        client.subscribe("/room/" + chatid, function (message) {
           const a = JSON.parse(message.body);
           console.log(a);
           setMessage((prev) => [
@@ -45,7 +46,7 @@ export function ChatView() {
   }, []);
 
   useEffect(() => {
-    axios.get("/api/chat/view");
+    axios.get("/api/chat/view/" + chatid);
   }, []);
 
   //  TODO: dto 수정시 변경
@@ -54,10 +55,9 @@ export function ChatView() {
       sender: sender,
       content: content,
     };
-
     if (stompClient && stompClient.connected)
       stompClient.publish({
-        destination: "/send/1",
+        destination: "/send/" + chatid,
         body: JSON.stringify(a),
       });
 
