@@ -11,11 +11,11 @@ export function ChatView() {
   const [clientMessage, setClientMessage] = useState("");
   //  서버 메세지는 필요 없음
   const [serverMessage, setServerMessage] = useState("");
+  const [chatRoom, setChatRoom] = useState({});
   const [stompClient, setStompClient] = useState(null);
   const { id } = useParams();
 
   //  상품명, 방 번호 , 작성자를 보여줄
-  let chatRoom = null;
 
   //  stomp 객체 생성 및, 연결
   useEffect(() => {
@@ -51,7 +51,7 @@ export function ChatView() {
       .get(`/api/chat/view/${id}`)
       .then((res) => {
         console.log(res.data);
-        chatRoom = { ...res.data };
+        setChatRoom(res.data);
         // chatRoom = {
         //   roomId: res.data.roomId,
         //   productName: res.data.productName,
