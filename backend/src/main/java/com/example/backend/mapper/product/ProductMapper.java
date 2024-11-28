@@ -14,4 +14,10 @@ public interface ProductMapper {
             """)
     @Options(keyProperty = "id", useGeneratedKeys = true)
     int insert(Product product);
+
+    @Insert("""
+            INSERT INTO product_file
+            VALUES (#{id}, #{fileName})
+            """)
+    int insertFile(Integer id, String fileName);
 }

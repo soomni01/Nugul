@@ -17,6 +17,7 @@ export function ProductAdd(props) {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [files, setFiles] = useState([]);
+  const [filesUrl, setFilesUrl] = useState([]);
   const [location, setLocation] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [progress, setProgress] = useState(false);
@@ -47,8 +48,9 @@ export function ProductAdd(props) {
   // 이미지 업로드 버튼 클릭시 이미지 표시
   const imageUploadButton = (e) => {
     const files = Array.from(e.target.files);
-    const newFiles = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
-    setFiles((prev) => [...prev, ...newFiles]); // 기존 URL에 추가
+    setFiles((prev) => [...prev, ...files]); // 기존 URL에 추가
+    const newFiles = files.map((file) => URL.createObjectURL(file)); // 파일을 보기위한 URL
+    setFilesUrl((prev) => [...prev, ...newFiles]);
   };
 
   // 선택된 장소 처리
@@ -80,7 +82,7 @@ export function ProductAdd(props) {
         latitude: location?.latitude,
         longitude: location?.longitude,
         locationName: location?.name,
-        // files,
+        files,
       })
       .then((res) => res.data)
       .then()
@@ -134,7 +136,7 @@ export function ProductAdd(props) {
             whiteSpace="nowrap" // 이미지들이 한 줄로 나열되도록
             minWidth="100px"
           >
-            {files.map((file, index) => (
+            {filesUrl.map((file, index) => (
               <Box
                 key={index}
                 width="100px"
