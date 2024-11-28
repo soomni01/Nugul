@@ -17,6 +17,25 @@ public class ProductController {
 
     final ProductService service;
 
+    @PutMapping("update")
+    public ResponseEntity<Map<String, Object>> update(Product product) {
+        if (service.validate(product)) {
+            if (service.update(product)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", STR."\{product.getProductId()}번 상품 수정되었습니다.")));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", STR."\{product.getProductId()}번 상품 수정되지 않았습니다.")));
+            }
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", Map.of("type", "warning",
+                            "text", "상품명, 가격, 거래 장소가 비어있습니다.")));
+        }
+    }
+
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int id) {
         if (service.deleteProduct(id)) {

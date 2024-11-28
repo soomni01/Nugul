@@ -72,4 +72,9 @@ public class ProductService {
 
         return cnt == 1;
     }
+
+    public boolean update(Product product) {
+        int cnt = mapper.update(product);
+        return cnt == 1;
+    }
 }

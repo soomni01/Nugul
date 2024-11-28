@@ -26,6 +26,7 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { categories } from "../../components/category/CategoryContainer.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 function ImageFileView() {
   return null;
@@ -64,7 +65,38 @@ export function ProductEdit() {
 
   const handleSaveClick = () => {
     setProgress(true);
-    axios.putForm("/api");
+    axios
+      .putForm("/api/product/update", {
+        productId: product.productId,
+        productName: product.productName,
+        description: product.description,
+        category: product.category,
+        price: product.price,
+        pay: product.pay,
+        latitude: product.latitude,
+        longitude: product.longitude,
+        locationName: product.locationName,
+        // file과 mainImage도 추후 변경
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+        navigate(`/product/view/${product.productId}`);
+      })
+      .catch((e) => {
+        const message = e.response.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .finally(() => {
+        setProgress(false);
+        setDialogOpen(false);
+      });
   };
 
   if (product === null) {
@@ -176,7 +208,7 @@ export function ProductEdit() {
                 <DialogTitle>저장 확인</DialogTitle>
               </DialogHeader>
               <DialogBody>
-                <p>{product.productID}번 상품 수정하시겠습니까?</p>
+                <p>{product.productId}번 상품 수정하시겠습니까?</p>
               </DialogBody>
               <DialogFooter>
                 <DialogActionTrigger>

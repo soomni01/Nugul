@@ -48,4 +48,18 @@ public interface ProductMapper {
             WHERE product_id = #{id}
             """)
     int deleteFileByProductId(int id);
+
+    @Update("""
+            UPDATE product
+            SET product_name = #{productName},
+                description = #{description},
+                category = #{category},
+                price = #{price},
+                pay = #{pay},
+                latitude = #{latitude},
+                longitude = #{longitude},
+                location_name = #{locationName}
+                WHERE product_id = #{productId}
+            """)
+    int update(Product product);
 }
