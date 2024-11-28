@@ -21,46 +21,40 @@ export function AdminMemberList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 회원 목록을 가져오는 예시 데이터 로드 로직 (실제 API 호출로 교체 필요)
-    setMemberList([
-      {
-        id: "test@naver.com",
-        name: "John Doe",
-        nickname: "johndoe",
-        inserted: "2023-11-27",
-      },
-      {
-        id: "fly1043@naver.com",
-        name: "Jane Smith",
-        nickname: "janes",
-        inserted: "2023-11-26",
-      },
-      {
-        id: "mk@naver.com",
-        name: "Coogie",
-        nickname: "coogie",
-        inserted: "2023-11-26",
-      },
-    ]);
+    axios
+      .get("/api/member/list")
+      .then((res) => {
+        console.log("회원 목록 데이터:", res.data);
+        setMemberList(res.data);
+      })
+      .catch((error) => {
+        console.error("회원 목록 요청 중 오류 발생:", error);
+      });
   }, []);
 
+  // 테이블 행 클릭시 회원정보보기로 이동
   function handleRowClick(id) {
     navigate(`/member/${id}`);
   }
 
-  // 검색어에 따라 필터링된 멤버 리스트 반환
   const filteredMembers = memberList.filter((member) => {
+    const memberId = member.member_id || member.id; // 'member_id'가 없으면 'id'를 사용
+
+    if (!memberId) {
+      console.error("회원 데이터에 'member_id'가 누락되었습니다:", member);
+      return false;
+    }
+
     if (search.type === "all") {
       return (
-        member.id.toString().includes(search.keyword) ||
+        memberId.toString().includes(search.keyword) ||
         member.name.toLowerCase().includes(search.keyword.toLowerCase()) ||
         member.nickname.toLowerCase().includes(search.keyword.toLowerCase())
       );
     } else {
-      return member[search.type]
-        .toString()
-        .toLowerCase()
-        .includes(search.keyword.toLowerCase());
+      return (
+        member[search.type] ? member[search.type].toString().toLowerCase() : ""
+      ).includes(search.keyword.toLowerCase());
     }
   });
 
@@ -73,16 +67,13 @@ export function AdminMemberList() {
   }
 
   function handleDeleteMember(id) {
-    // 사용자가 탈퇴를 확인할 수 있도록 경고 창을 표시합니다.
     if (window.confirm("정말로 이 회원을 탈퇴시키겠습니까?")) {
-      // 회원 탈퇴를 위한 API 호출을 여기에서 처리할 수 있습니다.
       axios
-        .delete(`/api/member/${memberId}`)
+        .delete(`/api/member/${id}`)
         .then((response) => {
           alert("회원이 성공적으로 탈퇴되었습니다.");
-          // 회원 리스트에서 탈퇴된 회원을 제거하기 위해 상태 업데이트
           setMemberList((prevList) =>
-            prevList.filter((member) => member.id !== memberId),
+            prevList.filter((member) => member.id !== id),
           );
         })
         .catch((error) => {
@@ -149,7 +140,10 @@ export function AdminMemberList() {
                       cursor: "pointer",
                       fontSize: "15px",
                     }}
-                    onClick={() => handleDeleteMember(member.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // 클릭 이벤트가 행 클릭으로 전파되지 않도록 방지
+                      handleDeleteMember(member.id);
+                    }}
                   >
                     탈퇴
                   </button>
