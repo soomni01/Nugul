@@ -23,8 +23,10 @@ public class ProductController {
     @PostMapping("add")
     public void add(
             Product product,
-            @RequestParam(value = "files[]", required = false) MultipartFile[] files) {
+            @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+            @RequestParam(value = "mainImage", required = false) MultipartFile mainImage) {
         System.out.println(product);
-        service.add(product, files);
+        System.out.println(mainImage.getOriginalFilename());
+        service.add(product, files, mainImage);
     }
 }

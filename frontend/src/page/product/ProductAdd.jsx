@@ -22,6 +22,7 @@ export function ProductAdd(props) {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
+  const [mainImage, setMainImage] = useState(null);
   const navigate = useNavigate();
 
   // 버튼 클릭 시 해당 버튼을 표시
@@ -48,9 +49,14 @@ export function ProductAdd(props) {
   // 이미지 업로드 버튼 클릭시 이미지 표시
   const imageUploadButton = (e) => {
     const files = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...files]); // 기존 URL에 추가
+    setFiles((prev) => [...prev, ...files]);
     const newFiles = files.map((file) => URL.createObjectURL(file)); // 파일을 보기위한 URL
     setFilesUrl((prev) => [...prev, ...newFiles]);
+
+    // 가장 왼쪽에 배치된 이미지를 대표 이미지로 설정 (첫 번째 파일)
+    if (mainImage === null && files.length > 0) {
+      setMainImage(files[0]); // 첫 번째 파일을 대표 이미지로 설정
+    }
   };
 
   // 선택된 장소 처리
@@ -83,6 +89,7 @@ export function ProductAdd(props) {
         longitude: location?.longitude,
         locationName: location?.name,
         files,
+        mainImage,
       })
       .then((res) => res.data)
       .then()
@@ -146,16 +153,33 @@ export function ProductAdd(props) {
                 overflow="hidden"
                 display="inline-block" // 각 이미지를 한 줄로 배치
                 flexShrink={0} // 이미지가 축소되지 않도록 설정s
+                onClick={() => {
+                  // 클릭한 이미지를 목록에서 제거
+                  setFilesUrl((prev) => prev.filter((_, i) => i !== index));
+                  setFiles((prev) => prev.filter((_, i) => i !== index));
+
+                  // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
+                  if (index === 0 && files.length > 1) {
+                    setMainImage(filesUrl[1]); // 다음 이미지를 대표 이미지로 설정
+                  } else if (files.length === 1) {
+                    setMainImage(null); // 이미지가 없으면 대표 이미지 초기화
+                  }
+                }}
               >
                 <img
                   src={file}
                   alt={`파일 미리보기: ${index}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
               </Box>
             ))}
           </Box>
         </Flex>
+        <Box>가장 처음 이미지가 대표이미지입니다.</Box>
         <Flex gap={3}>
           <Box minWidth="100px">
             <Field label={"카테고리"}>

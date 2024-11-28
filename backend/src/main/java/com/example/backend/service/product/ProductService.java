@@ -18,7 +18,7 @@ public class ProductService {
 
     final ProductMapper mapper;
 
-    public boolean add(Product product, MultipartFile[] files) {
+    public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage) {
         product.setWriter("1");
         int cnt = mapper.insert(product);
 
@@ -31,6 +31,11 @@ public class ProductService {
             }
             // 파일 업로드
             for (MultipartFile file : files) {
+                boolean isMain = false;
+                if (mainImage != null && file.getOriginalFilename().equals(mainImage.getOriginalFilename())) {
+                    isMain = true; // 해당 파일을 메인 이미지로 설정
+                }
+
                 String filePath = STR."C:/Temp/prj1126/\{product.getProductId()}/\{file.getOriginalFilename()}";
                 try {
                     file.transferTo(new File(filePath));
@@ -38,7 +43,7 @@ public class ProductService {
                     throw new RuntimeException(e);
                 }
                 // product_file 테이블에 파일명 입력
-                mapper.insertFile(product.getProductId(), file.getOriginalFilename());
+                mapper.insertFile(product.getProductId(), file.getOriginalFilename(), isMain);
             }
         }
 

@@ -15,14 +15,14 @@ public interface ProductMapper {
             (product_name, price, description, writer, pay, category,  latitude, longitude, location_name)
             VALUES (#{productName}, #{price}, #{description}, #{writer}, #{pay}, #{category}, #{latitude}, #{longitude}, #{locationName})
             """)
-    @Options(keyProperty = "id", useGeneratedKeys = true)
+    @Options(keyProperty = "productId", useGeneratedKeys = true)
     int insert(Product product);
 
     @Insert("""
             INSERT INTO product_file
-            VALUES (#{id}, #{fileName})
+            VALUES (#{id}, #{fileName}, #{isMain})
             """)
-    int insertFile(Integer id, String fileName);
+    int insertFile(Integer id, String fileName, boolean isMain);
 
     @Select("""
             SELECT *
