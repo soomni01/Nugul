@@ -11,6 +11,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
@@ -42,6 +44,13 @@ public class ChatController {
     public ChatRoom chatRoomView(@PathVariable String roomId) {
 
         return chatService.chatRoomView(roomId);
+    }
+
+    // 원래는, 로그인 기준으로 판매중? 인것들만
+    @GetMapping("list")
+    public List<ChatRoom> chatRoomList() {
+
+        return chatService.chatRoomList();
     }
 
 }

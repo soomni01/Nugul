@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -22,5 +24,11 @@ public class ChatService {
 
     public ChatRoom chatRoomView(String roomId) {
         return mapper.charRoomViewById(roomId);
+    }
+
+
+    public List<ChatRoom> chatRoomList() {
+        //db 수정해야함
+        return mapper.allChatRoomList();
     }
 }
