@@ -26,12 +26,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // 클라이언트에서 보낸 메시지를 받을 prefix
+        // 클라이언트에서 보낸 메시지를 받을 prefix (pub)
         //메시지를 받아서 처리할 경로 , > localhost:8080/app << 에서 이를 처리하는 로직 실행
         registry.setApplicationDestinationPrefixes("/send");
 
         // 해당 주소를 구독하고 있은 클라이언트 들에게 메시지 전달
-        // 채팅방 번호로 바꾸면 되고
+        // 채팅방 번호로 바꾸면 되고(sub)
         registry.enableSimpleBroker("/room");
 
 
