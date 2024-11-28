@@ -19,4 +19,8 @@ public class ChatService {
 
         return cnt == 1;
     }
+
+    public ChatRoom chatRoomView(String roomId) {
+        return mapper.charRoomViewById(roomId);
+    }
 }
