@@ -63,7 +63,13 @@ public class ProductService {
     }
 
     public Product getProductView(int id) {
-
         return mapper.selectById(id);
+    }
+
+    public boolean deleteProduct(int id) {
+        mapper.deleteFileByProductId(id);
+        int cnt = mapper.deleteById(id);
+
+        return cnt == 1;
     }
 }

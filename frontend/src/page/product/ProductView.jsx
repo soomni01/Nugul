@@ -13,8 +13,19 @@ import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { MapModal } from "../../components/map/MapModal.jsx";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 function ImageFileView() {
   return null;
@@ -24,6 +35,7 @@ export function ProductView() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
@@ -32,6 +44,26 @@ export function ProductView() {
   if (product === null) {
     return <Spinner />;
   }
+
+  const handleDeleteClick = () => {
+    axios
+      .delete(`/api/product/delete/${product.productId}`)
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+        navigate("/product/list");
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      });
+  };
 
   return (
     <Box>
@@ -72,7 +104,27 @@ export function ProductView() {
         </Field>
         <MapModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         <Button>수정</Button>
-        <Button>삭제</Button>
+        <DialogRoot>
+          <DialogTrigger asChild>
+            <Button colorPalette={"red"}>삭제</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>삭제 확인</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+            </DialogBody>
+            <DialogFooter>
+              <DialogActionTrigger>
+                <Button variant={"outline"}>취소</Button>
+              </DialogActionTrigger>
+              <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                삭제
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </DialogRoot>
       </Stack>
     </Box>
   );
