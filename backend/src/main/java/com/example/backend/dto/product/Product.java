@@ -13,8 +13,11 @@ public class Product {
     private Integer price;
     private String category;
     private String writer;
-    private Boolean free;
+    private String pay;
     private String status;
+    private Double latitude;
+    private Double longitude;
+    private String locationName;
     private LocalDateTime inserted;
 
     private List<ProductFile> fileList;

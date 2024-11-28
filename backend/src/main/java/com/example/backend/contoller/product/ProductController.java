@@ -4,7 +4,6 @@ import com.example.backend.dto.product.Product;
 import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,10 +15,7 @@ public class ProductController {
     final ProductService service;
 
     @PostMapping("add")
-    public void add(
-            @RequestBody Product product
-    ) {
-        System.out.println("test");
+    public void add(Product product) {
         System.out.println(product);
         service.add(product);
     }

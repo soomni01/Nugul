@@ -12,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     final ProductMapper mapper;
-    
+
     public boolean add(Product product) {
+        product.setWriter("1");
         int cnt = mapper.insert(product);
         return cnt == 1;
     }

@@ -11,8 +11,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export function ProductAdd(props) {
-  const [paid, setPaid] = useState("sell"); // 상태를 하나로 설정
-  const [title, setTitle] = useState("");
+  const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
+  const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
@@ -25,7 +25,7 @@ export function ProductAdd(props) {
 
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
-    setPaid(buttonType);
+    setPay(buttonType);
   };
 
   // 가격 입력칸에 숫자만 입력되도록 필터링
@@ -47,8 +47,8 @@ export function ProductAdd(props) {
   // 이미지 업로드 버튼 클릭시 이미지 표시
   const imageUploadButton = (e) => {
     const files = Array.from(e.target.files);
-    const newfiles = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
-    setFiles((prev) => [...prev, ...newfiles]); // 기존 URL에 추가
+    const newFiles = files.map((file) => URL.createObjectURL(file)); // 파일 URL 생성
+    setFiles((prev) => [...prev, ...newFiles]); // 기존 URL에 추가
   };
 
   // 선택된 장소 처리
@@ -67,15 +67,19 @@ export function ProductAdd(props) {
 
   const handleSaveClick = () => {
     setProgress(true);
-    console.log(title, category, paid, price, description, location);
+    console.log(productName, category, pay, price, description, location);
 
     axios
       .postForm("/api/product/add", {
-        title,
+        productName,
         description,
-        price: parseInt(price, 10),
+        price,
         category,
-        // location,
+        location,
+        pay,
+        latitude: location?.latitude,
+        longitude: location?.longitude,
+        locationName: location?.name,
         // files,
       })
       .then((res) => res.data)
@@ -88,7 +92,7 @@ export function ProductAdd(props) {
   };
 
   const disabled = !(
-    title.trim().length > 0 &&
+    productName.trim().length > 0 &&
     description.trim().length > 0 &&
     price.trim().length > 0 &&
     location?.name
@@ -172,8 +176,11 @@ export function ProductAdd(props) {
             </Field>
           </Box>
           <Box flex={8}>
-            <Field label={"제목"}>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Field label={"상품명"}>
+              <Input
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+              />
             </Field>
           </Box>
         </Flex>
@@ -181,14 +188,14 @@ export function ProductAdd(props) {
           <Flex gap={4}>
             <Button
               borderRadius="10px"
-              variant={paid === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
+              variant={pay === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
               onClick={() => buttonClick("sell")} // 판매하기 버튼 클릭 시
             >
               판매하기
             </Button>
             <Button
               borderRadius="10px"
-              variant={paid === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
+              variant={pay === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
               onClick={() => buttonClick("share")} // 나눔하기 버튼 클릭 시
             >
               나눔하기
