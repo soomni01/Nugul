@@ -26,7 +26,11 @@ export function ChatView() {
         console.log("Connected to socket");
         client.subscribe("/room/1", function (message) {
           const a = JSON.parse(message.body);
-          setMessage((prev) => [...prev, a]);
+          console.log(a);
+          setMessage((prev) => [
+            ...prev,
+            { sender: a.sender, content: a.content },
+          ]);
           // setResponseMessage(clientMessage);
         });
         //  연결 될때 메시지를 보낼 필요는 없음
@@ -46,17 +50,22 @@ export function ChatView() {
     client.activate();
   }, []);
 
+  //  TODO: dto 수정시 변경
+
   const sendMessage = () => {
+    const a = {
+      sender: "test1",
+      content: "내용",
+    };
+
     if (stompClient && stompClient.connected)
       stompClient.publish({
         destination: "/send/1",
-        body: JSON.stringify(clientMessage),
+        body: JSON.stringify(a),
       });
+
     setClientMessage("");
   };
-
-  const sender = "sender";
-  const receiver = "receiver";
 
   return (
     <Box>
@@ -70,7 +79,7 @@ export function ChatView() {
                 <Input
                   w={"70%"}
                   type={"text"}
-                  value={item}
+                  value={item.content}
                   onChange={(e) => {
                     setClientMessage(e.target.value);
                   }}
@@ -94,8 +103,11 @@ export function ChatView() {
         </Box>
         <Box bg={"blue.300"}>
           <h3> 서버에서 보내준 내용 </h3>
-          {message.map((item) => (
-            <h3>{item}</h3>
+          {message.map((item, index) => (
+            <div key={index}>
+              <p>Sender: {item.sender}</p>
+              <p>Content: {item.content}</p>
+            </div>
           ))}
           <Field>
             <Input
