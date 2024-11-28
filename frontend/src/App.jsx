@@ -1,11 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
-import { RootLayout } from "./page/root/RootLayout.jsx"; // 경로 수정
+import { RootLayout } from "./page/root/RootLayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
-import AdminLayout from "./page/admin/AdminLayout.jsx"; // AdminLayout import
+import AdminLayout from "./page/admin/AdminLayout.jsx";
 import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
-import { AdminReportList } from "./page/admin/AdminReportList.jsx"; // DashBoard import
+import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
