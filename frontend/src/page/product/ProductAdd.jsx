@@ -26,18 +26,15 @@ export function ProductAdd(props) {
   const [mainImage, setMainImage] = useState(null);
   const navigate = useNavigate();
 
+  // 가격 입력 필터링
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) setPrice(value);
+  };
+
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
     setPay(buttonType);
-  };
-
-  // 가격 입력칸에 숫자만 입력되도록 필터링
-  const handlePriceChange = (e) => {
-    const value = e.target.value;
-
-    if (/^\d*$/.test(value)) {
-      setPrice(value);
-    }
   };
 
   // 파일 이미지 클릭 시 input 클릭 트리거
@@ -47,7 +44,7 @@ export function ProductAdd(props) {
     }
   };
 
-  // 이미지 업로드 버튼 클릭시 이미지 표시
+  // 이미지 파일 업로드
   const imageUploadButton = (e) => {
     const files = Array.from(e.target.files);
     setFiles((prev) => [...prev, ...files]);
@@ -62,18 +59,13 @@ export function ProductAdd(props) {
 
   // 선택된 장소 처리
   const handleSelectLocation = ({ lat, lng, locationName }) => {
-    setLocation({
-      latitude: lat,
-      longitude: lng,
-      name: locationName,
-    });
+    setLocation({ latitude: lat, longitude: lng, name: locationName });
   };
 
-  const handleCategoryChange = (event) => {
-    const value = event.target.value;
-    setCategory(value);
-  };
+  // 카테고리 선택
+  const handleCategoryChange = (e) => setCategory(e.target.value);
 
+  // 상품 등록 요청
   const handleSaveClick = () => {
     setProgress(true);
     console.log(productName, category, pay, price, description, location);
@@ -110,12 +102,10 @@ export function ProductAdd(props) {
           type: message.type,
         });
       })
-      .finally(() => {
-        // 성공 / 실패 상관 없이 실행
-        setProgress(false);
-      });
+      .finally(() => setProgress(false));
   };
 
+  // 버튼 활성화 여부 판단
   const disabled = !(
     productName.trim().length > 0 &&
     description.trim().length > 0 &&
@@ -136,7 +126,7 @@ export function ProductAdd(props) {
                 borderColor="lightgray"
                 borderRadius="10px"
                 onClick={handleBoxClick} // Box 클릭 이벤트
-                cursor="pointer" // 마우스 커서를 포인터로 설정
+                cursor="pointer"
                 textAlign="center"
               >
                 <input
@@ -151,12 +141,13 @@ export function ProductAdd(props) {
               </Box>
             </Field>
           </Box>
+
           <Box
             display="flex"
             gap="10px"
             mt={6}
             overflowX="auto"
-            whiteSpace="nowrap" // 이미지들이 한 줄로 나열되도록
+            whiteSpace="nowrap"
             minWidth="100px"
           >
             {filesUrl.map((file, index) => (
@@ -167,7 +158,8 @@ export function ProductAdd(props) {
                 border="1px solid lightgray"
                 borderRadius="10px"
                 overflow="hidden"
-                display="inline-block" // 각 이미지를 한 줄로 배치
+                cursor="pointer"
+                display="inline-block"
                 flexShrink={0} // 이미지가 축소되지 않도록 설정s
                 onClick={() => {
                   // 클릭한 이미지를 목록에서 제거
@@ -196,6 +188,7 @@ export function ProductAdd(props) {
           </Box>
         </Flex>
         <Box>가장 처음 이미지가 대표이미지입니다.</Box>
+
         <Flex gap={3}>
           <Box minWidth="100px">
             <Field label={"카테고리"}>
@@ -226,6 +219,7 @@ export function ProductAdd(props) {
             </Field>
           </Box>
         </Flex>
+
         <Field label={"거래방식"}>
           <Flex gap={4}>
             <Button
