@@ -18,4 +18,18 @@ public class MemberService {
     public List<Member> list() {
         return mapper.selectAll();
     }
+
+    public boolean delete(String id) {
+        Member member = mapper.selectById(id);
+        if (member != null) {
+            // 비밀번호 확인 로직을 추가할 수 있습니다.
+            // 예: 관리자 비밀번호 확인 코드
+
+            // 회원 삭제
+            int deletedCount = mapper.deleteById(id);
+            return deletedCount == 1;
+        } else {
+            return false;
+        }
+    }
 }

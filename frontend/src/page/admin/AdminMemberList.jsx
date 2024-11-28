@@ -160,7 +160,6 @@ export function AdminMemberList() {
                       fontSize: "15px",
                     }}
                     onClick={(e) => {
-                      e.stopPropagation();
                       handleDeleteMember(member.memberId);
                     }}
                   >
