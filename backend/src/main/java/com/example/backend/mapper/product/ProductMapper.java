@@ -25,10 +25,10 @@ public interface ProductMapper {
     int insertFile(Integer id, String fileName, boolean isMain);
 
     @Select("""
-            SELECT *
+            SELECT p.product_id, p.product_name, p.price, p.category, p.pay, f.name as mainImage
             FROM product p
-            LEFT OUTER JOIN product_file f ON p.product_id = f.product_id
-            WHERE f
+            LEFT OUTER JOIN product_file f 
+            ON p.product_id = f.product_id AND f.is_main = TRUE
             ORDER BY p.product_id DESC
             """)
     List<Product> getProductList();

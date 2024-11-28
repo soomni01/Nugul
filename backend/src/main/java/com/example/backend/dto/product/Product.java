@@ -21,4 +21,5 @@ public class Product {
     private LocalDateTime inserted;
 
     private List<ProductFile> fileList;
+    private String mainImage;
 }
