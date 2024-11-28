@@ -1,30 +1,64 @@
-import { Box, Card, Flex, Grid, Heading, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  Flex,
+  Grid,
+  Heading,
+  Image,
+  Spinner,
+} from "@chakra-ui/react";
 import { CategoryContainer } from "../../components/category/CategoryContainer.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { GoHeart } from "react-icons/go";
 
-function ProductItem(props) {
+function ProductItem({ product }) {
   return (
     // <Box h="20vw" bg="gray.100" borderRadius="md" boxShadow="sm" p={4}>
     //   {/* 상품 내용 */}
     //   상품
     // </Box>
     <Card.Root maxW="sm" overflow="hidden">
-      <Image src="/image/productItem.png" alt="테스트용 이미지" />
+      <Image src="/image/productItem.png" alt={product.productName} />
       <Card.Body gap="2">
-        <Card.Title>상품 이름</Card.Title>
-        <Card.Description>가격</Card.Description>
+        <Card.Title>{product.productName}</Card.Title>
+        <Card.Description>{product.price}</Card.Description>
       </Card.Body>
       <Card.Footer gap="2">
-        <Button variant="solid">Buy now</Button>
-        <Button variant="ghost">Add to cart</Button>
+        <Button variant="solid">거래하기</Button>
+        <Box>
+          <GoHeart />
+        </Box>
       </Card.Footer>
     </Card.Root>
   );
 }
 
 export function ProductList() {
+  const [productList, setProductList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // 컴포넌트 마운트 시 상품 목록 가져오기
+  useEffect(() => {
+    axios
+      .get("/api/product/list")
+      .then((res) => res.data)
+      .then((data) => {
+        setProductList(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("상품 정보를 가져오는 데 실패했습니다.", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <Box>
@@ -49,11 +83,9 @@ export function ProductList() {
         </Button>
       </Flex>
       <Grid templateColumns="repeat(4, 1fr)" gap="6">
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
+        {productList?.map((product) => (
+          <ProductItem key={product.id} product={product} />
+        ))}
       </Grid>
     </Box>
   );

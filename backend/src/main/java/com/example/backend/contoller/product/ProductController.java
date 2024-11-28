@@ -3,11 +3,10 @@ package com.example.backend.contoller.product;
 import com.example.backend.dto.product.Product;
 import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,6 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductController {
 
     final ProductService service;
+
+    @GetMapping("list")
+    public List<Product> list() {
+        return service.productList();
+    }
 
     @PostMapping("add")
     public void add(

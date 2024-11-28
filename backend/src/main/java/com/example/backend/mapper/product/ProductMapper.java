@@ -4,6 +4,9 @@ import com.example.backend.dto.product.Product;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface ProductMapper {
@@ -20,4 +23,13 @@ public interface ProductMapper {
             VALUES (#{id}, #{fileName})
             """)
     int insertFile(Integer id, String fileName);
+
+    @Select("""
+            SELECT *
+            FROM product p
+            LEFT OUTER JOIN product_file f ON p.product_id = f.product_id
+            WHERE f
+            ORDER BY p.product_id DESC
+            """)
+    List<Product> getProductList();
 }

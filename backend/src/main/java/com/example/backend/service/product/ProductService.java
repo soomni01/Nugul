@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Transactional
@@ -23,24 +24,28 @@ public class ProductService {
 
         if (files != null && files.length > 0) {
             // 폴더 만들기
-            String directory = STR."C:/Temp/prj1126/\{product.getId()}";
+            String directory = STR."C:/Temp/prj1126/\{product.getProductId()}";
             File dir = new File(directory);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
             // 파일 업로드
             for (MultipartFile file : files) {
-                String filePath = STR."C:/Temp/prj1126/\{product.getId()}/\{file.getOriginalFilename()}";
+                String filePath = STR."C:/Temp/prj1126/\{product.getProductId()}/\{file.getOriginalFilename()}";
                 try {
                     file.transferTo(new File(filePath));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 // product_file 테이블에 파일명 입력
-                mapper.insertFile(product.getId(), file.getOriginalFilename());
+                mapper.insertFile(product.getProductId(), file.getOriginalFilename());
             }
         }
 
         return cnt == 1;
+    }
+
+    public List<Product> productList() {
+        return mapper.getProductList();
     }
 }
