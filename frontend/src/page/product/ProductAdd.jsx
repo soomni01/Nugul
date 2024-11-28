@@ -9,6 +9,7 @@ import { MapModal } from "../../components/map/MapModal.jsx";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -92,8 +93,23 @@ export function ProductAdd(props) {
         mainImage,
       })
       .then((res) => res.data)
-      .then()
-      .catch()
+      .then((data) => {
+        const message = data.message;
+
+        toaster.create({
+          description: message.text,
+          type: message.type,
+        });
+
+        navigate(`/product/view/${data.data.productId}`);
+      })
+      .catch((e) => {
+        const message = e.response.data.message;
+        toaster.create({
+          description: message.text,
+          type: message.type,
+        });
+      })
       .finally(() => {
         // 성공 / 실패 상관 없이 실행
         setProgress(false);

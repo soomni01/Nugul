@@ -3,10 +3,12 @@ package com.example.backend.contoller.product;
 import com.example.backend.dto.product.Product;
 import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,12 +23,25 @@ public class ProductController {
     }
 
     @PostMapping("add")
-    public void add(
+    public ResponseEntity<Map<String, Object>> add(
             Product product,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
             @RequestParam(value = "mainImage", required = false) MultipartFile mainImage) {
-        System.out.println(product);
-        System.out.println(mainImage.getOriginalFilename());
-        service.add(product, files, mainImage);
+        if (service.validate(product)) {
+            if (service.add(product, files, mainImage)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                        "text", STR."\{product.getProductId()}번 상품이 등록되었습니다."),
+                                "data", product));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "warning",
+                                "text", "게시물 상품이 실패하였습니다.")));
+            }
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", Map.of("type", "warning",
+                            "text", "상품명, 가격, 거래 장소가 입력되지 않았습니다.")));
+        }
     }
 }
