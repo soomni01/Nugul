@@ -12,6 +12,7 @@ export function MemberSignup() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [nickName, setNickName] = useState("");
+  const [nickNameCheckMessage, setNickNameCheckMessage] = useState("");
   const [idCheck, setIdCheck] = useState(false);
   const [rePassword, setRePassword] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState(false);
@@ -21,7 +22,9 @@ export function MemberSignup() {
     /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
 
   const passwordRegEx =
-    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,50}$/;
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,49}$/;
+
+  const nicknameRegex = /^[a-zA-Z가-힣][a-zA-Z가-힣0-9]{1,48}$/;
 
   function handleSaveClick() {
     if (!passwordRegEx.test(password)) {
@@ -54,8 +57,7 @@ export function MemberSignup() {
           type: message.type,
           description: message.text,
         });
-      })
-      .finally(() => {});
+      });
   }
 
   const handleIdCheckClick = () => {
@@ -100,11 +102,20 @@ export function MemberSignup() {
   };
 
   const handleNickNameCheckClick = () => {
+    if (!nicknameRegex.test(nickName)) {
+      toaster.create({
+        type: "error",
+        description:
+          "별명은 숫자로 시작할 수 없으며, 특수문자는 사용할 수 없습니다.",
+      });
+      setNickNameCheckMessage(
+        "별명은 숫자로 시작할 수 없으며, 특수문자는 사용할 수 없습니다.",
+      );
+      return;
+    }
     axios
       .get("/api/member/check", {
-        params: {
-          nickName,
-        },
+        params: { nickName },
       })
       .then((res) => res.data)
       .then((data) => {
@@ -113,17 +124,26 @@ export function MemberSignup() {
           type: message.type,
           description: message.text,
         });
-        setNickNameCheck(data.available);
+        if (data.available) {
+          setNickNameCheckMessage("사용 가능합니다.");
+          setNickNameCheck(true);
+        } else {
+          setNickNameCheckMessage("이미 사용 중인 별명입니다.");
+          setNickNameCheck(false);
+        }
+      })
+      .catch((e) => {
+        setNickNameCheckMessage("서버 오류가 발생했습니다.");
+        toaster.create({
+          type: "error",
+          description: "서버 오류가 발생했습니다.",
+        });
       });
   };
 
   let disabled = true;
-  if (idCheck) {
-    if (nickNameCheck) {
-      if (password === rePassword) {
-        disabled = false;
-      }
-    }
+  if (idCheck && nickNameCheck && password === rePassword) {
+    disabled = false;
   }
 
   let nickNameCheckButtonDisabled = nickName.length === 0;
@@ -135,23 +155,21 @@ export function MemberSignup() {
         <Field
           label={"아이디"}
           helperText={
-            idCheckMessage ? (
+            idCheckMessage && (
               <Text color={idCheck ? "green.500" : "red.500"}>
                 {idCheckMessage}
               </Text>
-            ) : (
-              ""
             )
           }
         >
           <Group attached w={"100%"}>
             <Input
               value={memberId}
-              placeholder="이메일를 입력하세요"
+              placeholder="이메일을 입력하세요"
               onChange={(e) => {
                 setIdCheck(false);
                 setMemberId(e.target.value);
-                setIdCheckMessage("");
+                setIdCheckMessage(""); // 입력 시 메시지 초기화
               }}
             />
             <Button onClick={handleIdCheckClick} variant={"outline"}>
@@ -161,7 +179,6 @@ export function MemberSignup() {
         </Field>
         <Field
           label={"암호"}
-          placehold
           helperText={
             "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
           }
@@ -190,7 +207,16 @@ export function MemberSignup() {
             }}
           />
         </Field>
-        <Field label={"별명"} helperText={"별명을 쓰세요"}>
+        <Field
+          label={"별명"}
+          helperText={
+            nickNameCheckMessage && (
+              <Text color={nickNameCheck ? "green.500" : "red.500"}>
+                {nickNameCheckMessage}
+              </Text>
+            )
+          }
+        >
           <Group attached w={"100%"}>
             <Input
               value={nickName}
