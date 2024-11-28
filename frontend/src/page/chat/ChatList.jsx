@@ -16,13 +16,19 @@ export function ChatList() {
   let navigate = useNavigate();
 
   const createChatRoom = () => {
-    console.log("실행 확인");
+    var testId;
     var productName = "아디다스 신발";
     var writer = "작성자";
-    axios.post("/api/chat/create", {
-      productName: productName,
-      writer: writer,
-    });
+    axios
+      .post("/api/chat/create", {
+        productName: productName,
+        writer: writer,
+      })
+      .then((res) => {
+        console.log(res.data);
+        testId = res.data;
+        navigate("/chat/room/" + testId);
+      });
     // 추가
   };
 

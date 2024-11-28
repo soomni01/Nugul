@@ -11,3 +11,5 @@ from chatroom;
 
 delete
 from chatroom;
+
+drop table chatroom;

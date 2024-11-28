@@ -1,10 +1,11 @@
 package com.example.backend.controller;
 
 
-import com.example.backend.dto.ChatInfo;
 import com.example.backend.dto.ChatMessage;
+import com.example.backend.dto.ChatRoom;
 import com.example.backend.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -31,14 +32,13 @@ public class ChatController {
     }
 
     @PostMapping("create")
-    public void createChatRoom(@RequestBody ChatInfo chatInfo) {
+    public ResponseEntity<Integer> createChatRoom(@RequestBody ChatRoom chatRoom) {
         // chatroom 에서 ,제품명,작성자 는 프론트에서 받아오고 ,생성
-        System.out.println("chatInfo = " + chatInfo);
-        String productName = chatInfo.getProductName();
-        String writer = chatInfo.getWriter();
-        System.out.println("productName = " + productName);
-        System.out.println("writer = " + writer);
-        chatService.creatChatRoom(productName, writer);
+        // 상품에서 채팅방을 만들고 >프론트상에서 글로 이동할거면 ,roomId 반환해야함
+        System.out.println("chatRoom = " + chatRoom);
+        chatService.creatChatRoom(chatRoom);
+
+        return ResponseEntity.ok().body(chatRoom.getRoomId());
 
 
     }
