@@ -99,7 +99,7 @@ export function AdminMemberList() {
 
   return (
     <Box mt="60px">
-      <Text fontSize="2xl" fontWeight="bold" mb={5}>
+      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
         회원 관리
       </Text>
 
@@ -121,7 +121,9 @@ export function AdminMemberList() {
           </select>
         </Flex>
       </Box>
-
+      <Text mb={4} m={2}>
+        총 {memberList.length}명
+      </Text>
       {/* 회원 리스트 테이블 */}
       <Box>
         <Table.Root interactive>
