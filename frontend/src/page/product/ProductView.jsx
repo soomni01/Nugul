@@ -103,7 +103,12 @@ export function ProductView() {
           />
         </Field>
         <MapModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        <Button>수정</Button>
+        <Button
+          colorPalette={"cyan"}
+          onClick={() => navigate(`/product/edit/${product.productId}`)}
+        >
+          수정
+        </Button>
         <DialogRoot>
           <DialogTrigger asChild>
             <Button colorPalette={"red"}>삭제</Button>

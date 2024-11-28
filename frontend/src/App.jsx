@@ -5,6 +5,7 @@ import { MainPage } from "./page/main/MainPage.jsx";
 import { ProductList } from "./page/product/ProductList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
+import { ProductEdit } from "./page/product/ProductEdit.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "product/view/:id",
         element: <ProductView />,
+      },
+      {
+        path: "product/edit/:id",
+        element: <ProductEdit />,
       },
     ],
   },
