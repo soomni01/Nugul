@@ -16,6 +16,7 @@ export function MemberSignup() {
   const [idCheck, setIdCheck] = useState(false);
   const [rePassword, setRePassword] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState(false);
+  const [nameMessage, setNameMessage] = useState("");
   const navigate = useNavigate();
 
   const emailRegEx =
@@ -26,15 +27,26 @@ export function MemberSignup() {
 
   const nicknameRegex = /^[a-zA-Z가-힣][a-zA-Z가-힣0-9]{1,48}$/;
 
+  const nameRegex = /^[a-zA-Z가-힣0-9]{2,}( [a-zA-Z가-힣0-9]+)*$/;
+
+  const capitalizeName = (name) =>
+    name
+      .split(" ")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(" ");
+
+  const processNickname = (nickName) => {
+    if (/^[a-zA-Z]/.test(nickName)) {
+      return nickName.charAt(0).toUpperCase() + nickName.slice(1).toLowerCase();
+    }
+    return nickName;
+  };
+
   function handleSaveClick() {
-    if (!passwordRegEx.test(password)) {
-      toaster.create({
-        type: "error",
-        description:
-          "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.",
-      });
+    if (!passwordRegEx.test(password) || password !== rePassword) {
       return;
     }
+
     axios
       .post("/api/member/signup", {
         memberId,
@@ -102,6 +114,9 @@ export function MemberSignup() {
   };
 
   const handleNickNameCheckClick = () => {
+    const processedNickName = processNickname(nickName);
+    setNickName(processedNickName);
+
     if (!nicknameRegex.test(nickName)) {
       toaster.create({
         type: "error",
@@ -109,7 +124,7 @@ export function MemberSignup() {
           "별명은 숫자로 시작할 수 없으며, 특수문자는 사용할 수 없습니다.",
       });
       setNickNameCheckMessage(
-        "별명은 숫자로 시작할 수 없으며, 특수문자는 사용할 수 없습니다.",
+        "별명은 2글자 이상이어야 하며, 숫자로 시작할 수 없고, 특수문자는 사용할 수 없습니다.",
       );
       return;
     }
@@ -141,12 +156,35 @@ export function MemberSignup() {
       });
   };
 
+  const handleNameChange = (e) => {
+    const inputName = e.target.value;
+    const capitalized = capitalizeName(inputName);
+    setName(capitalized);
+
+    if (nameRegex.test(capitalized)) {
+      setNameMessage("");
+    } else {
+      setNameMessage("이름은 2글자 이상이어야 하며, 공백 없이 작성해주세요.");
+    }
+  };
+
   let disabled = true;
-  if (idCheck && nickNameCheck && password === rePassword) {
-    disabled = false;
+  if (idCheck && nickNameCheck && nameRegex.test(name)) {
+    if (passwordRegEx.test(password) && password === rePassword) {
+      disabled = false;
+    }
   }
 
   let nickNameCheckButtonDisabled = nickName.length === 0;
+
+  const passwordMatchText =
+    password && rePassword ? (
+      password === rePassword ? (
+        <Text color="green.500">비밀번호가 일치합니다.</Text>
+      ) : (
+        <Text color="red.500">비밀번호가 일치하지 않습니다.</Text>
+      )
+    ) : null;
 
   return (
     <Box>
@@ -169,7 +207,7 @@ export function MemberSignup() {
               onChange={(e) => {
                 setIdCheck(false);
                 setMemberId(e.target.value);
-                setIdCheckMessage(""); // 입력 시 메시지 초기화
+                setIdCheckMessage("");
               }}
             />
             <Button onClick={handleIdCheckClick} variant={"outline"}>
@@ -177,10 +215,20 @@ export function MemberSignup() {
             </Button>
           </Group>
         </Field>
+
         <Field
           label={"암호"}
           helperText={
-            "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
+            !password ? (
+              "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
+            ) : passwordRegEx.test(password) ? (
+              <Text color="green.500">비밀번호가 올바른 형식입니다.</Text>
+            ) : (
+              <Text color="red.500">
+                비밀번호 형식이 올바르지 않습니다. (영문, 숫자, 특수문자 포함,
+                8자 이상)
+              </Text>
+            )
           }
         >
           <Input
@@ -191,22 +239,23 @@ export function MemberSignup() {
             }}
           />
         </Field>
-        <Field label={"암호확인"} helperText={"암호 재입력하세요"}>
+
+        <Field label={"암호확인"} helperText={passwordMatchText}>
           <Input
             placeholder="암호를 재입력하세요"
             value={rePassword}
             onChange={(e) => setRePassword(e.target.value)}
           />
         </Field>
-        <Field label={"이름"} helperText={"본명을 쓰세요"}>
+
+        <Field label={"이름"} helperText={nameMessage || "이름작성"}>
           <Input
             value={name}
             placeholder="이름을 입력하세요"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
+            onChange={handleNameChange}
           />
         </Field>
+
         <Field
           label={"별명"}
           helperText={
@@ -223,20 +272,21 @@ export function MemberSignup() {
               placeholder="별명을 입력하세요"
               onChange={(e) => {
                 setNickName(e.target.value);
-                setNickNameCheck(false);
+                setNickNameCheckMessage("");
               }}
             />
             <Button
-              disabled={nickNameCheckButtonDisabled}
               onClick={handleNickNameCheckClick}
               variant={"outline"}
+              disabled={nickNameCheckButtonDisabled}
             >
               중복확인
             </Button>
           </Group>
         </Field>
-        <Button disabled={disabled} onClick={handleSaveClick}>
-          가입
+
+        <Button w={"100%"} onClick={handleSaveClick} disabled={disabled}>
+          회원가입
         </Button>
       </Stack>
     </Box>
