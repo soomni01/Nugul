@@ -10,5 +10,11 @@ CREATE TABLE member
 INSERT INTO member (member_id, password, name, nickname, inserted)
 VALUES ('coogie@naver.com', '1234', 'Coogie', 'Coogie', CURRENT_DATE);
 
+INSERT INTO member (member_id, password, name, nickname, inserted)
+VALUES ('mk@naver.com', '1234', 'mk', 'mk', CURRENT_DATE);
+
 SELECT *
+FROM member;
+
+DELETE
 FROM member;
