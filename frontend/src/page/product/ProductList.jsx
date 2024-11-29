@@ -1,13 +1,11 @@
 import {
   Box,
-  Card,
   Center,
   Flex,
   Grid,
   Heading,
   HStack,
   IconButton,
-  Image,
   Input,
   Spinner,
 } from "@chakra-ui/react";
@@ -17,7 +15,6 @@ import { Button } from "../../components/ui/button.jsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { GoHeart } from "react-icons/go";
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -25,30 +22,7 @@ import {
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
 import { LuSearch } from "react-icons/lu";
-
-function ProductItem({ product }) {
-  const navigate = useNavigate();
-  return (
-    <Card.Root maxW="sm" overflow="hidden">
-      <Image src="/image/productItem.png" alt={product.productName} />
-      <Card.Body gap="2">
-        <Card.Title>{product.productName}</Card.Title>
-        <Card.Description>{product.price}</Card.Description>
-      </Card.Body>
-      <Card.Footer gap="2">
-        <Button
-          onClick={() => navigate(`/product/view/${product.productId}`)}
-          variant="solid"
-        >
-          거래하기
-        </Button>
-        <Box>
-          <GoHeart />
-        </Box>
-      </Card.Footer>
-    </Card.Root>
-  );
-}
+import { ProductItem } from "../../components/product/ProductItem.jsx";
 
 export function ProductList() {
   const [productList, setProductList] = useState([]);
