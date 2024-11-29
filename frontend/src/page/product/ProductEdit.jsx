@@ -7,7 +7,7 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
@@ -38,6 +38,8 @@ export function ProductEdit() {
   const [progress, setProgress] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
   }, []);
@@ -84,7 +86,6 @@ export function ProductEdit() {
           type: data.message.type,
           description: data.message.text,
         });
-        navigate(`/product/view/${product.productId}`);
       })
       .catch((e) => {
         const message = e.response.data.message;
@@ -96,6 +97,7 @@ export function ProductEdit() {
       .finally(() => {
         setProgress(false);
         setDialogOpen(false);
+        navigate(`/product/view/${product.productId}`);
       });
   };
 
