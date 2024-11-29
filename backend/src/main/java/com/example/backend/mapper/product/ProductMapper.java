@@ -64,7 +64,7 @@ public interface ProductMapper {
     int update(Product product);
 
     @Select("""
-            SELECT product_id, product_name, writer, created_at
+            SELECT product_id, product_name, writer, price, created_at
             FROM product
             ORDER BY product_id DESC
             LIMIT #{offset}, 16
