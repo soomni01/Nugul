@@ -12,23 +12,46 @@ export function MemberLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleLoginClick = () => {
     let isValid = true;
 
     setErrorMessage("");
 
     if (!memberId && !password) {
-      isValid = false;
-      setErrorMessage("아이디와 비밀번호를 입력해 주세요.");
-    } else if (!memberId) {
-      isValid = false;
-      setErrorMessage("아이디를 입력해 주세요.");
-    } else if (!password) {
-      isValid = false;
-      setErrorMessage("비밀번호를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "이메일과 비밀번호를 입력해주세요.",
+      });
+      setIdCheckMessage("이메일과 비밀번호를 입력해주세요.");
+      return;
     }
 
-    if (!isValid) {
+    if (!memberId) {
+      toaster.create({
+        type: "error",
+        description: "이메일을 입력해주세요.",
+      });
+      setIdCheckMessage("이메일을 입력해주세요.");
+      return;
+    }
+
+    if (!password) {
+      toaster.create({
+        type: "error",
+        description: "비밀번호를 입력해주세요.",
+      });
+      setIdCheckMessage("비밀번호를 입력해주세요.");
+      return;
+    }
+
+    if (!emailRegEx.test(memberId)) {
+      toaster.create({
+        type: "error",
+        description: "이메일 형식이 잘못되었습니다.",
+      });
+      setIdCheckMessage("이메일 형식이 잘못되었습니다.");
       return;
     }
 
@@ -48,16 +71,6 @@ export function MemberLogin() {
           type: "error",
           text: "알 수 없는 오류가 발생했습니다.",
         };
-
-        if (
-          message.text.includes("아이디") ||
-          message.text.includes("비밀번호")
-        ) {
-          setErrorMessage("아이디 또는 비밀번호가 틀렸습니다.");
-        } else {
-          setErrorMessage("알 수 없는 오류가 발생했습니다.");
-        }
-
         toaster.create({
           type: message.type,
           description: message.text,
@@ -71,14 +84,14 @@ export function MemberLogin() {
       <Stack gap={5}>
         <Field>
           <Input
-            placeholder="이메일을 입력하세요"
+            placeholder="이메일을 입력하세요."
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
           />
         </Field>
         <Field>
           <Input
-            placeholder="비밀번호를 입력하세요"
+            placeholder="비밀번호를 입력하세요."
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
