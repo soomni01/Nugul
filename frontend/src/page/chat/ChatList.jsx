@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
-import { Badge, Box, Card, HStack, Image } from "@chakra-ui/react";
+import { Badge, Box, Card, Heading, HStack, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 
 function ChatListItem({ chat }) {
   const navigate = useNavigate();
+  const removeChatRoom = () => {
+    const roomId = chat.roomId;
+    axios
+      .delete("api/chat/delete/" + roomId)
+      .then()
+      .catch();
+  };
   return (
     <Box key={chat.roomId} variant={"outline"} my={3}>
       <Card.Root flex Direction="row" maxW="xl">
@@ -23,7 +30,7 @@ function ChatListItem({ chat }) {
                 제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.
               </Card.Description>
               <HStack mt="4">
-                <Badge>{chat.writer}</Badge>
+                <Badge> 제품등록자명 : {chat.writer}</Badge>
               </HStack>
             </Card.Body>
             <Card.Footer>
@@ -35,6 +42,13 @@ function ChatListItem({ chat }) {
               >
                 {" "}
                 채팅창 이동
+              </Button>
+              <Button
+                variant={"outline"}
+                colorPalette={"red"}
+                onClick={removeChatRoom}
+              >
+                삭제 버튼
               </Button>
             </Card.Footer>
           </Box>
@@ -61,8 +75,8 @@ export function ChatList() {
 
   const createChatRoom = () => {
     var testId;
-    var productName = "아디다스 신발";
-    var writer = "작성자";
+    var productName = "다른 상품";
+    var writer = "작성자 아님";
     axios
       .post("/api/chat/create", {
         productName: productName,
@@ -78,15 +92,11 @@ export function ChatList() {
 
   return (
     <Box>
-      채팅 리스트
-      {/*dd  음 , list.  item에 이렇게 출력하는게 안되나?*/}
+      <Heading> 채팅 목록</Heading>
       {chatList.map((chat) => (
-        // <Box key={chat.roomId}>
-        //   {" "}
-        //   {chat.roomId} ,{chat.productName} ,{chat.writer}{" "}
-        // </Box>
         <ChatListItem chat={chat} />
       ))}
+
       <Button variant={"outline"} onClick={createChatRoom}>
         채팅창 생성 버튼
       </Button>

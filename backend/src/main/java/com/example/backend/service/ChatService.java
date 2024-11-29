@@ -23,12 +23,17 @@ public class ChatService {
     }
 
     public ChatRoom chatRoomView(String roomId) {
-        return mapper.charRoomViewById(roomId);
+        return mapper.chatRoomViewById(roomId);
     }
 
 
     public List<ChatRoom> chatRoomList() {
         //db 수정해야함
         return mapper.allChatRoomList();
+    }
+
+    public void deleteChatRoom(String roomId) {
+
+        mapper.deleteChatRoomByRoomId(roomId);
     }
 }

@@ -1,10 +1,7 @@
 package com.example.backend.mapper;
 
 import com.example.backend.dto.ChatRoom;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -23,13 +20,21 @@ public interface ChatMapper {
                         select * 
                         from chatroom
                         where roomId =#{roomId}
+            
             """)
-    ChatRoom charRoomViewById(String roomId);
+    ChatRoom chatRoomViewById(String roomId);
 
 
     @Select("""
                 select *
                 from chatroom
+                order by roomId desc
             """)
     List<ChatRoom> allChatRoomList();
+
+    @Delete("""
+                        delete from chatroom
+            where roomId =#{roomId}
+            """)
+    int deleteChatRoomByRoomId(String roomId);
 }
