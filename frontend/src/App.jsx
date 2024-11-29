@@ -16,7 +16,6 @@ import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
 
-
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
 
@@ -37,7 +36,6 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
-
         path: "member/signup",
         element: <MemberSignup />,
       },
@@ -56,15 +54,16 @@ const router = createBrowserRouter([
       {
         path: "member/login",
         element: <MemberLogin />,
-
-
+      },
+      {
         path: "/chat",
         element: <ChatList />,
       },
       {
         path: "/chat/room/:id",
         element: <ChatView />,
-
+      },
+      {
         path: "product/list",
         element: <ProductList />,
       },
@@ -79,8 +78,6 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:id",
         element: <ProductEdit />,
-
-
       },
     ],
   },

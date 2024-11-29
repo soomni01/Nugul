@@ -6,3 +6,7 @@ CREATE TABLE member
     nickname  VARCHAR(50) UNIQUE NOT NULL,
     inserted  DATE DEFAULT CURRENT_DATE
 );
+
+
+select *
+from member;
