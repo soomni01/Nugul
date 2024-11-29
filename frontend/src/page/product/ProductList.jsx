@@ -55,8 +55,10 @@ export function ProductList() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [sortOption, setSortOption] = useState("newest");
-  const [search, setSearch] = useState({ type: "all", keyword: "" });
   const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState({
+    keyword: searchParams.get("sk") ?? "",
+  });
   const navigate = useNavigate();
 
   // 페이지 번호
