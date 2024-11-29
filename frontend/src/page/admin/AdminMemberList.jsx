@@ -25,6 +25,49 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Field } from "../../components/ui/field.jsx";
 
+function DeleteButton({ onClick, id: memberId }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+        <DialogTrigger asChild>
+          <Button colorPalette={"red"}>탈퇴</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>탈퇴 확인</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Stack gap={5}>
+              <Field label={"암호"}>
+                <Input placeholder={"암호를 입력해주세요."} />
+              </Field>
+            </Stack>
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger>
+              <Button variant={"outline"} onClick={() => setOpen(false)}>
+                취소
+              </Button>
+            </DialogActionTrigger>
+            <Button
+              colorPalette={"red"}
+              onClick={() => {
+                // 탈퇴 로직을 수행 후 다이얼로그 닫기
+                onClick(memberId);
+                setOpen(false);
+              }}
+            >
+              탈퇴
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
+    </>
+  );
+}
+
 export function AdminMemberList() {
   const [memberList, setMemberList] = useState([]);
   const [search, setSearch] = useState({
@@ -33,7 +76,6 @@ export function AdminMemberList() {
   });
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 페이지당 회원 수
-  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -129,8 +171,6 @@ export function AdminMemberList() {
     handleDeleteClick(memberId);
   }
 
-  console.log(open);
-
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
@@ -174,8 +214,8 @@ export function AdminMemberList() {
           <Table.Body>
             {paginatedMembers.map((member) => (
               <Table.Row
-              // onClick={() => handleRowClick(member.memberId)}
-              // key={member.memberId}
+                // onClick={() => handleRowClick(member.memberId)}
+                key={member.memberId}
               >
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.name}</Table.Cell>
@@ -198,42 +238,10 @@ export function AdminMemberList() {
                   {/*>*/}
                   {/*  탈퇴*/}
                   {/*</Button>*/}
-                  <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
-                    <DialogTrigger asChild>
-                      <Button colorPalette={"red"}>탈퇴</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>탈퇴 확인</DialogTitle>
-                      </DialogHeader>
-                      <DialogBody>
-                        <Stack gap={5}>
-                          <Field label={"암호"}>
-                            <Input placeholder={"암호를 입력해주세요."} />
-                          </Field>
-                        </Stack>
-                      </DialogBody>
-                      <DialogFooter>
-                        <DialogActionTrigger>
-                          <Button
-                            variant={"outline"}
-                            onClick={() => setOpen(false)}
-                          >
-                            취소
-                          </Button>
-                        </DialogActionTrigger>
-                        <Button
-                          colorPalette={"red"}
-                          onClick={() => {
-                            // 탈퇴 로직을 수행 후 다이얼로그 닫기
-                            handleDeleteClick(member.memberId);
-                          }}
-                        >
-                          탈퇴
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </DialogRoot>
+                  <DeleteButton
+                    onClick={handleDeleteClick}
+                    memberId={member.memberId}
+                  />
                 </Table.Cell>
               </Table.Row>
             ))}
