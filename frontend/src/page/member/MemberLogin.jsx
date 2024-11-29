@@ -1,4 +1,4 @@
-import { Box, Input, Stack } from "@chakra-ui/react";
+import { Box, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
@@ -12,68 +12,53 @@ export function MemberLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   const handleLoginClick = () => {
     let isValid = true;
 
     setErrorMessage("");
 
     if (!memberId && !password) {
-      toaster.create({
-        type: "error",
-        description: "이메일과 비밀번호를 입력해주세요.",
-      });
-      setErrorMessage("이메일과 비밀번호를 입력해주세요.");
-      return;
+      isValid = false;
+      setErrorMessage("아이디와 비밀번호를 입력해 주세요.");
+    } else if (!memberId) {
+      isValid = false;
+      setErrorMessage("아이디를 입력해 주세요.");
+    } else if (!password) {
+      isValid = false;
+      setErrorMessage("비밀번호를 입력해 주세요.");
     }
 
-    if (!memberId) {
-      toaster.create({
-        type: "error",
-        description: "이메일을 입력해주세요.",
-      });
-      setErrorMessage("이메일을 입력해주세요.");
-      return;
-    }
-
-    if (!password) {
-      toaster.create({
-        type: "error",
-        description: "비밀번호를 입력해주세요.",
-      });
-      setErrorMessage("비밀번호를 입력해주세요.");
-      return;
-    }
-
-    if (!emailRegEx.test(memberId)) {
-      toaster.create({
-        type: "error",
-        description: "이메일 형식이 잘못되었습니다.",
-      });
-      setErrorMessage("이메일 형식이 잘못되었습니다.");
+    if (!isValid) {
       return;
     }
 
     axios
       .post("/api/member/login", { memberId, password })
-      .then((res) => {
-        const data = res.data;
-
-        console.log("응답 데이터:", data);
-        console.log("데이터의 auth 값:", data.user?.auth); // Optional chaining 사용
-
-        if (data.auth === "admin") {
-          navigate("/admin/dashboard");
-        } else {
-          navigate("/main");
-        }
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data); // 응답 확인
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+        navigate("/");
+        localStorage.setItem("token", data.token);
       })
       .catch((e) => {
         const message = e.response?.data?.message || {
           type: "error",
           text: "알 수 없는 오류가 발생했습니다.",
         };
+
+        if (
+          message.text.includes("아이디") ||
+          message.text.includes("비밀번호")
+        ) {
+          setErrorMessage("아이디 또는 비밀번호가 틀렸습니다.");
+        } else {
+          setErrorMessage("알 수 없는 오류가 발생했습니다.");
+        }
+
         toaster.create({
           type: message.type,
           description: message.text,
@@ -83,18 +68,20 @@ export function MemberLogin() {
 
   return (
     <Box>
-      <h3>로그인</h3>
+      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
+        로그인
+      </Text>
       <Stack gap={5}>
         <Field>
           <Input
-            placeholder="이메일을 입력하세요."
+            placeholder="이메일"
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
           />
         </Field>
         <Field>
           <Input
-            placeholder="비밀번호를 입력하세요."
+            placeholder="비밀번호"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -109,6 +96,7 @@ export function MemberLogin() {
           </Box>
         )}
         <Box textAlign="center" mt={4}>
+          아직 계정이 없으신가요?{" "}
           <Link
             to="/member/signup"
             style={{ color: "blue", textDecoration: "underline" }}
