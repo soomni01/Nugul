@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -53,10 +54,17 @@ public class ChatController {
         return chatService.chatRoomList();
     }
 
-    @DeleteMapping("delete/{roomId}")
-    public void deleteChatRoom(@PathVariable String roomId) {
 
-        chatService.deleteChatRoom(roomId);
+    @DeleteMapping("delete/{roomId}")
+    public ResponseEntity<Map<String, Object>> deleteChatRoom(@PathVariable String roomId) {
+
+        boolean run = chatService.deleteChatRoom(roomId);
+        if (run) {
+            return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "채팅방 삭제 완료되었습니다.")));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "success", "content", "존재하지 않는 채팅방 입니다.")));
+        }
+
 
     }
 }

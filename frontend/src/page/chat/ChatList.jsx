@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
@@ -30,6 +31,13 @@ export function ChatList() {
       .then(
         setChatList((prev) => prev.filter((chat) => chat.roomId !== roomId)),
       )
+      .then((res) => {
+        const message = res.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.content,
+        });
+      })
       .catch();
   };
 

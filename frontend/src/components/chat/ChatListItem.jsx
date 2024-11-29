@@ -32,8 +32,7 @@ export function ChatListItem({ chat, onDelete }) {
                   navigate(`/chat/room/${chat.roomId}`);
                 }}
               >
-                {" "}
-                채팅창 이동
+                ㅊ 대화하러 가기
               </Button>
               <Button
                 variant={"outline"}

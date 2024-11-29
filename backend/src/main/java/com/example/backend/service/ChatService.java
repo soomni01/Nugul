@@ -32,8 +32,9 @@ public class ChatService {
         return mapper.allChatRoomList();
     }
 
-    public void deleteChatRoom(String roomId) {
+    public boolean deleteChatRoom(String roomId) {
 
-        mapper.deleteChatRoomByRoomId(roomId);
+        int cnt = mapper.deleteChatRoomByRoomId(roomId);
+        return cnt == 1;
     }
 }
