@@ -1,8 +1,8 @@
-package com.example.backend.member.controller;
+package com.example.backend.controller.member;
 
-import com.example.backend.member.dto.Member;
-import com.example.backend.member.dto.MemberEdit;
-import com.example.backend.member.service.MemberService;
+import com.example.backend.dto.member.Member;
+import com.example.backend.dto.member.MemberEdit;
+import com.example.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +66,7 @@ public class MemberController {
     }
 
     @GetMapping("list")
+//    @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {
         return service.list();
     }

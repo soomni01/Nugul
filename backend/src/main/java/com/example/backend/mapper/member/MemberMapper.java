@@ -1,7 +1,7 @@
-package com.example.backend.member.mapper;
+package com.example.backend.mapper.member;
 
-import com.example.backend.member.dto.Member;
-import com.example.backend.member.dto.MemberEdit;
+import com.example.backend.dto.member.Member;
+import com.example.backend.dto.member.MemberEdit;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public interface MemberMapper {
 
     @Select("""
             SELECT * FROM member
-            WHERE member_id=#{id}
+            WHERE member_id=#{memberId}
             """)
-    Member selectById(String id);
+    Member selectById(String memberId);
 
     @Select("""
             SELECT * FROM member

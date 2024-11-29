@@ -5,5 +5,13 @@ CREATE TABLE inquiry
     content    VARCHAR(1000) NOT NULL,
     member_id  VARCHAR(50)   NOT NULL REFERENCES member (member_id),
     answer     VARCHAR(1000),
-    created_at DATE DEFAULT CURRENT_DATE
+    inserted   DATE DEFAULT CURRENT_DATE
 );
+
+DROP TABLE inquiry;
+
+INSERT INTO inquiry (title, content, member_id, answer, inserted)
+VALUES ('사용법 문의', '이 웹사이트를 어떻게 사용하는지 궁금합니다.', 'coogie@naver.com', NULL, CURRENT_DATE);
+
+SELECT *
+FROM inquiry;

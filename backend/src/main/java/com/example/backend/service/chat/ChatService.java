@@ -1,7 +1,7 @@
-package com.example.backend.service;
+package com.example.backend.service.chat;
 
-import com.example.backend.dto.ChatRoom;
-import com.example.backend.mapper.ChatMapper;
+import com.example.backend.dto.chat.ChatRoom;
+import com.example.backend.mapper.chat.ChatMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

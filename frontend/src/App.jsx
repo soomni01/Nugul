@@ -1,9 +1,15 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx";
-import { MainPage } from "./page/main/MainPage.jsx";
+
+import AdminLayout from "./page/admin/AdminLayout.jsx";
+import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
+import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
+import { AdminReportList } from "./page/admin/AdminReportList.jsx";
+import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
+import { InquiryDetail } from "./page/admin/InquiryDetail.jsx";
+
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
-import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberInfo } from "./page/member/MemberInfo.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
@@ -15,17 +21,18 @@ import { ProductList } from "./page/product/ProductList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
+import { MainPage } from "./page/main/MainPage.jsx";
 
+// Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 
+// 관리자 여부에 따라 기본 경로 변경 로직
 const router = createBrowserRouter([
   {
     path: "/",
@@ -33,15 +40,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <MemberLogin />,
+      },
+      {
+        path: "main",
         element: <MainPage />,
       },
       {
         path: "member/signup",
         element: <MemberSignup />,
-      },
-      {
-        path: "member/list",
-        element: <MemberList />,
       },
       {
         path: "member/:memberId",
@@ -52,15 +59,12 @@ const router = createBrowserRouter([
         element: <MemberEdit />,
       },
       {
-        path: "member/login",
-        element: <MemberLogin />,
-      },
-      {
-        path: "/chat",
+        path: "chat",
         element: <ChatList />,
       },
+
       {
-        path: "/chat/room/:id",
+        path: "chat/room/:id",
         element: <ChatView />,
       },
       {
@@ -78,6 +82,33 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:id",
         element: <ProductEdit />,
+      },
+    ],
+  },
+  {
+    path: "admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "dashboard",
+        element: <AdminDashBoard />,
+      },
+      {
+        path: "members",
+        element: <AdminMemberList />,
+      },
+      {
+        path: "reports",
+        element: <AdminReportList />,
+      },
+      {
+        path: "inquiries",
+        element: <AdminInquiryList />,
+      },
+
+      {
+        path: "inquiries/:inquiryId",
+        element: <InquiryDetail />,
       },
     ],
   },

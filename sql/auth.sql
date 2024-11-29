@@ -4,3 +4,6 @@ CREATE TABLE auth
     auth      VARCHAR(50) NOT NULL,
     PRIMARY KEY (member_id, auth)
 );
+
+INSERT INTO auth (member_id, auth)
+VALUES ('mk@naver.com', 'admin');

@@ -1,8 +1,8 @@
-package com.example.backend.member.service;
+package com.example.backend.service.member;
 
-import com.example.backend.member.dto.Member;
-import com.example.backend.member.dto.MemberEdit;
-import com.example.backend.member.mapper.MemberMapper;
+import com.example.backend.dto.member.Member;
+import com.example.backend.dto.member.MemberEdit;
+import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -19,6 +19,21 @@ import java.util.List;
 public class MemberService {
     final MemberMapper mapper;
     final JwtEncoder jwtEncoder;
+
+
+    public boolean delete(String id) {
+        Member member = mapper.selectById(id);
+        if (member != null) {
+            // 비밀번호 확인 로직을 추가할 수 있습니다.
+            // 예: 관리자 비밀번호 확인 코드
+
+            // 회원 삭제
+            int deletedCount = mapper.deleteById(id);
+            return deletedCount == 1;
+        } else {
+            return false;
+        }
+    }
 
     public boolean add(Member member) {
         int cnt = mapper.insert(member);

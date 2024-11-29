@@ -1,9 +1,9 @@
-package com.example.backend.controller;
+package com.example.backend.controller.chat;
 
 
-import com.example.backend.dto.ChatMessage;
-import com.example.backend.dto.ChatRoom;
-import com.example.backend.service.ChatService;
+import com.example.backend.dto.chat.ChatMessage;
+import com.example.backend.dto.chat.ChatRoom;
+import com.example.backend.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
