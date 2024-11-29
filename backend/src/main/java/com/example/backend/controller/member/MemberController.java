@@ -22,6 +22,7 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
         String token = service.token(member);
         if (token != null) {
+//            String auth = service.getAuthByMemberId(member.getMemberId()); // 예시 메서드
             return ResponseEntity.ok(Map.of("token", token,
                     "message", Map.of("type", "success",
                             "text", "로그인 되었습니다.")));

@@ -24,7 +24,7 @@ export function MemberLogin() {
         type: "error",
         description: "이메일과 비밀번호를 입력해주세요.",
       });
-      setIdCheckMessage("이메일과 비밀번호를 입력해주세요.");
+      setErrorMessage("이메일과 비밀번호를 입력해주세요.");
       return;
     }
 
@@ -33,7 +33,7 @@ export function MemberLogin() {
         type: "error",
         description: "이메일을 입력해주세요.",
       });
-      setIdCheckMessage("이메일을 입력해주세요.");
+      setErrorMessage("이메일을 입력해주세요.");
       return;
     }
 
@@ -42,7 +42,7 @@ export function MemberLogin() {
         type: "error",
         description: "비밀번호를 입력해주세요.",
       });
-      setIdCheckMessage("비밀번호를 입력해주세요.");
+      setErrorMessage("비밀번호를 입력해주세요.");
       return;
     }
 
@@ -51,20 +51,23 @@ export function MemberLogin() {
         type: "error",
         description: "이메일 형식이 잘못되었습니다.",
       });
-      setIdCheckMessage("이메일 형식이 잘못되었습니다.");
+      setErrorMessage("이메일 형식이 잘못되었습니다.");
       return;
     }
 
     axios
       .post("/api/member/login", { memberId, password })
-      .then((res) => res.data)
-      .then((data) => {
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
-        navigate("/");
-        localStorage.setItem("token", data.token);
+      .then((res) => {
+        const data = res.data;
+
+        console.log("응답 데이터:", data);
+        console.log("데이터의 auth 값:", data.user?.auth); // Optional chaining 사용
+
+        if (data.auth === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/main");
+        }
       })
       .catch((e) => {
         const message = e.response?.data?.message || {
