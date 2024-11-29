@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
@@ -41,23 +40,6 @@ export function ChatList() {
       .catch();
   };
 
-  const createChatRoom = () => {
-    var testId;
-    var productName = "다른 상품";
-    var writer = "작성자 아님";
-    axios
-      .post("/api/chat/create", {
-        productName: productName,
-        writer: writer,
-      })
-      .then((res) => {
-        console.log(res.data);
-        testId = res.data;
-        navigate("/chat/room/" + testId);
-      });
-    // 추가
-  };
-
   return (
     <Box>
       <Heading> 채팅 목록</Heading>
@@ -68,10 +50,6 @@ export function ChatList() {
           onDelete={() => removeChatRoom(chat.roomId)}
         />
       ))}
-
-      <Button variant={"outline"} onClick={createChatRoom}>
-        채팅창 생성 버튼
-      </Button>
     </Box>
   );
 }
