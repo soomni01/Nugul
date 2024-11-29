@@ -82,6 +82,7 @@ public class MemberService {
 
     public String token(Member member) {
         Member db = mapper.selectById(member.getMemberId());
+        System.out.println();
         if (db != null) {
             if (db.getPassword().equals(member.getPassword())) {
                 JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -89,7 +90,7 @@ public class MemberService {
                         .subject(member.getMemberId())
                         .issuedAt(Instant.now())
                         .expiresAt(Instant.now().plusSeconds(3600))
-                        //.claim()
+                        .claim("nickname", db.getNickname())
                         .build();
 
                 return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

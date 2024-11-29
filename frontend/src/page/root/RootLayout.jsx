@@ -5,7 +5,6 @@ import { Navbar } from "../../components/root/Navbar.jsx";
 export function RootLayout() {
   const location = useLocation();
 
-  console.log(location.pathname);
   return (
     <Stack mx={{ md: 20, lg: 40 }}>
       <Box>{location.pathname === "/" || <Navbar />}</Box>
