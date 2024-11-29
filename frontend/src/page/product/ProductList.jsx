@@ -54,19 +54,21 @@ export function ProductList() {
 
   // 컴포넌트 마운트 시 상품 목록 가져오기
   useEffect(() => {
+    const controller = new AbortController();
     axios
       .get("/api/product/list", {
         params: searchParams,
+        signal: controller.signal,
       })
       .then((res) => res.data)
       .then((data) => {
         setProductList(data);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.log("상품 정보를 가져오는 데 실패했습니다.", err);
-        setLoading(false);
       });
+
+    return () => {
+      controller.abort();
+    };
   }, [searchParams]);
 
   // 페이지 번호
