@@ -22,7 +22,6 @@ public class ChatController {
 
 //
 
-
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage message) {
@@ -33,8 +32,12 @@ public class ChatController {
 
     @PostMapping("create")
     public ResponseEntity<Integer> createChatRoom(@RequestBody ChatRoom chatRoom) {
-        // chatroom 에서 ,제품명,작성자 는 프론트에서 받아오고 ,생성
+        // chatroom 에서 ,제품명,작성자(id 는 프론트에서 받아오고 ,생성
         // 상품에서 채팅방을 만들고 >프론트상에서 글로 이동할거면 ,roomId 반환해야함
+        // id 로 받아와서 ,, 닉네임 집어 넣고 싶기때문에 ,  member에서 요청 보내야  할듯
+
+        System.out.println("chatRoom = " + chatRoom);
+
         chatService.creatChatRoom(chatRoom);
 
         return ResponseEntity.ok().body(chatRoom.getRoomId());

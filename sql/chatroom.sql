@@ -9,6 +9,10 @@ create table chatroom
 select *
 from chatroom;
 
+select *
+from chatroom join  member
+
+
 delete
 from chatroom;
 

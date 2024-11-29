@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class ChatRoom {
     private int roomId;
-    private String productName;
     private String writer;
+    private String productName;
+    private String nickname;
 }
