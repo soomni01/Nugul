@@ -195,7 +195,9 @@ export function MemberEdit() {
                     <Input
                       placeholder={"기존 암호를 입력해주세요."}
                       value={oldPassword}
-                      onChange={handleNickNameChange}
+                      onChange={(e) => {
+                        setOldPassword(e.target.value);
+                      }}
                     />
                   </Field>
                 </Stack>
