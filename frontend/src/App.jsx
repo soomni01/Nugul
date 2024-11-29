@@ -2,10 +2,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+
+import { ChatList } from "./page/chat/ChatList.jsx";
+import { ChatView } from "./page/chat/ChatView.jsx";
+
 import { ProductList } from "./page/product/ProductList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
+
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -27,6 +32,14 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
+
+        path: "/chat",
+        element: <ChatList />,
+      },
+      {
+        path: "/chat/room/:id",
+        element: <ChatView />,
+
         path: "product/list",
         element: <ProductList />,
       },
@@ -41,6 +54,7 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:id",
         element: <ProductEdit />,
+
       },
     ],
   },
