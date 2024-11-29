@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Box, Stack } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
@@ -24,6 +25,7 @@ export function RootLayout() {
           <Outlet />
         </Box>
       )}
+
     </Stack>
   );
 }

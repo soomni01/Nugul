@@ -9,6 +9,11 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:8080",
       },
+      // "/ws-chat": {
+      //   target: "ws://localhost:8080",
+      //   ws: true, // WebSocket 프록시
+      //   changeOrigin: true,
+      // },
     },
   },
 });
