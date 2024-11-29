@@ -113,11 +113,24 @@ export function MemberSignup() {
       });
   };
 
-  const handleNickNameCheckClick = () => {
-    const processedNickName = processNickname(nickName);
-    setNickName(processedNickName);
+  const handleNickNameChange = (e) => {
+    let inputNickName = e.target.value;
 
-    if (!nicknameRegex.test(nickName)) {
+    if (inputNickName.length > 0) {
+      inputNickName =
+        inputNickName.charAt(0).toUpperCase() +
+        inputNickName.slice(1).toLowerCase();
+    }
+
+    setNickName(inputNickName);
+
+    setNickNameCheckMessage("");
+  };
+
+  const handleNickNameCheckClick = () => {
+    const processedNickName = nickName;
+
+    if (!nicknameRegex.test(processedNickName)) {
       toaster.create({
         type: "error",
         description:
@@ -128,9 +141,10 @@ export function MemberSignup() {
       );
       return;
     }
+
     axios
       .get("/api/member/check", {
-        params: { nickName },
+        params: { nickName: processedNickName },
       })
       .then((res) => res.data)
       .then((data) => {
@@ -164,7 +178,9 @@ export function MemberSignup() {
     if (nameRegex.test(capitalized)) {
       setNameMessage("");
     } else {
-      setNameMessage("이름은 2글자 이상이어야 하며, 공백 없이 작성해주세요.");
+      setNameMessage(
+        "이름이 올바르지 않습니다. (2글자 이상, 공백없음, 특수문자 없음, 숫자없음)",
+      );
     }
   };
 
@@ -252,7 +268,21 @@ export function MemberSignup() {
           />
         </Field>
 
-        <Field label={"이름"} helperText={nameMessage || "이름작성"}>
+        <Field
+          label={"이름"}
+          helperText={
+            nameMessage ? (
+              <Text color="red.500">{nameMessage}</Text>
+            ) : name ? (
+              <Text color="green.500">이름이 올바르게 작성되었습니다.</Text>
+            ) : (
+              <Text color="gray.500">
+                이름은 2글자 이상이어야 하며, 특수문자, 숫자도 없고 공백 없이
+                작성해주세요.
+              </Text>
+            )
+          }
+        >
           <Input
             value={name}
             placeholder="이름을 입력하세요"
@@ -263,9 +293,13 @@ export function MemberSignup() {
         <Field
           label={"별명"}
           helperText={
-            nickNameCheckMessage && (
+            nickNameCheckMessage ? (
               <Text color={nickNameCheck ? "green.500" : "red.500"}>
                 {nickNameCheckMessage}
+              </Text>
+            ) : (
+              <Text color="gray.500">
+                닉네임은 영문/한글로 시작하며, 2자 이상 50자 이하이어야 합니다.
               </Text>
             )
           }
@@ -274,10 +308,7 @@ export function MemberSignup() {
             <Input
               value={nickName}
               placeholder="별명을 입력하세요"
-              onChange={(e) => {
-                setNickName(e.target.value);
-                setNickNameCheckMessage("");
-              }}
+              onChange={handleNickNameChange}
             />
             <Button
               onClick={handleNickNameCheckClick}
