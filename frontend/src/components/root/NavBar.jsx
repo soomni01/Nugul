@@ -24,6 +24,7 @@ export function Navbar() {
   return (
     <Flex gap={3}>
 
+
       <NavbarItem onClick={() => navigate("/")}>HOME</NavbarItem>
       <NavbarItem onClick={() => navigate("/product/list")}>중고거래</NavbarItem>
       <NavbarItem onClick={() => navigate("/member/signup")}>가입</NavbarItem>
@@ -47,6 +48,7 @@ export function Navbar() {
       <NavbarItem onClick={() => navigate(`/member/${id}`)}>
         마이페이지
       </NavbarItem>
+
     </Flex>
   );
 }

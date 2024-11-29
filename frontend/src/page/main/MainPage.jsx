@@ -1,3 +1,4 @@
+
 import { Box, Heading, Image, Separator } from "@chakra-ui/react";
 import { CategoryContainer } from "../../components/category/CategoryContainer.jsx";
 
@@ -16,4 +17,5 @@ export function MainPage() {
       <Box w="100%" h="300px" background="beige" my="3"></Box>
     </Box>
   );
+
 }
