@@ -7,8 +7,8 @@ function AdminDashBoard() {
     base: "100%",
     sm: "80%",
     md: "60%",
-    lg: "35%", // 1, 2번째 박스의 가로 길이 조정
-    xl: "20%", // 1, 2번째 박스의 가로 길이 조정
+    lg: "35%",
+    xl: "20%",
   });
 
   const boxWidthThird = useBreakpointValue({

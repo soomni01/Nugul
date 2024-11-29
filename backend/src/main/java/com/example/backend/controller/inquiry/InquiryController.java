@@ -22,4 +22,10 @@ public class InquiryController {
     public List<Inquiry> list() {
         return service.list();
     }
+
+//    // 특정 글을 가져오는 메서드 추가
+//    @GetMapping("/{inquiryId}")
+//    public Inquiry getInquiryById(@PathVariable Long inquiryId) {
+//        return service.getInquiryById(inquiryId);
+//    }
 }

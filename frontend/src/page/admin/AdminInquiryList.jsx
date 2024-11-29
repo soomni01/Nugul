@@ -38,9 +38,9 @@ export function AdminInquiryList() {
       });
   }, []);
 
-  // 테이블 행 클릭시 문의 상세 페이지로 이동
+  // 테이블 행 클릭 시 상세 페이지로 이동
   function handleRowClick(inquiryId) {
-    navigate(`/inquiry/${inquiryId}`);
+    navigate(`/admin/inquiries/${inquiryId}`);
   }
 
   // 검색 처리: type에 맞춰 필터링

@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   Input,
+  Stack,
   Table,
   TableColumnHeader,
   TableHeader,
@@ -11,6 +12,18 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button } from "../../components/ui/button.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { Field } from "../../components/ui/field.jsx";
 
 export function AdminMemberList() {
   const [memberList, setMemberList] = useState([]);
@@ -20,6 +33,7 @@ export function AdminMemberList() {
   });
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 페이지당 회원 수
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -36,10 +50,10 @@ export function AdminMemberList() {
       });
   }, []);
 
-  // 테이블 행 클릭시 회원정보보기로 이동
-  function handleRowClick(memberId) {
-    navigate(`/member/${memberId}`);
-  }
+  // 테이블 행 클릭시 회원정보 보기로 이동
+  // function handleRowClick(memberId) {
+  //   navigate(`/member/${memberId}`);
+  // }
 
   // 검색 처리: type에 맞춰 필터링
   const filteredMembers = memberList.filter((member) => {
@@ -92,23 +106,30 @@ export function AdminMemberList() {
     setCurrentPage(1); // 검색 시 첫 페이지로 이동
   }
 
-  // 회원 탈퇴 처리
-  function handleDeleteMember(memberId) {
-    if (window.confirm("정말로 이 회원을 탈퇴시키겠습니까?")) {
-      axios
-        .delete(`/api/member/${memberId}`)
-        .then(() => {
-          alert("회원이 성공적으로 탈퇴되었습니다.");
-          setMemberList((prevList) =>
-            prevList.filter((member) => member.memberId !== memberId),
-          );
-        })
-        .catch((error) => {
-          console.error("탈퇴 처리 중 오류가 발생했습니다:", error);
-          alert("탈퇴 처리에 실패했습니다. 다시 시도해 주세요.");
-        });
-    }
+  function handleDeleteClick(memberId) {
+    axios
+      .delete(`/api/member/delete/${memberId}`)
+      .then((res) => {
+        alert(res.data); // 백엔드에서 반환된 메시지를 표시
+        console.log("응답 데이터:", res.data);
+        // 탈퇴 후 멤버 리스트 페이지로 이동
+        navigate("/member/list");
+      })
+      .catch((error) => {
+        console.error("회원 탈퇴 요청 중 오류 발생:", error);
+        alert("회원 탈퇴에 실패했습니다. 다시 시도해주세요.");
+      })
+      .finally(() => {
+        // setOpen(false);
+      });
   }
+
+  // 버튼 클릭 시 호출되는 함수
+  function handleDeleteMember(memberId) {
+    handleDeleteClick(memberId);
+  }
+
+  console.log(open);
 
   return (
     <Box mt="60px">
@@ -144,17 +165,17 @@ export function AdminMemberList() {
           <TableHeader>
             <TableRow>
               <TableColumnHeader>ID</TableColumnHeader>
-              <TableColumnHeader>Name</TableColumnHeader>
-              <TableColumnHeader>Nickname</TableColumnHeader>
-              <TableColumnHeader>Inserted</TableColumnHeader>
-              <TableColumnHeader>Delete</TableColumnHeader>
+              <TableColumnHeader>이름</TableColumnHeader>
+              <TableColumnHeader>닉네임</TableColumnHeader>
+              <TableColumnHeader>가입 일자</TableColumnHeader>
+              <TableColumnHeader>탈퇴</TableColumnHeader>
             </TableRow>
           </TableHeader>
           <Table.Body>
             {paginatedMembers.map((member) => (
               <Table.Row
-                onClick={() => handleRowClick(member.memberId)}
-                key={member.memberId}
+              // onClick={() => handleRowClick(member.memberId)}
+              // key={member.memberId}
               >
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.name}</Table.Cell>
@@ -163,23 +184,56 @@ export function AdminMemberList() {
                   {new Date(member.inserted).toLocaleDateString()}
                 </Table.Cell>
                 <Table.Cell>
-                  <button
-                    style={{
-                      backgroundColor: "#F15F5F",
-                      color: "white",
-                      border: "none",
-                      padding: "10px 20px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      fontSize: "15px",
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteMember(member.memberId);
-                    }}
-                  >
-                    탈퇴
-                  </button>
+                  {/*<Button*/}
+                  {/*  style={{*/}
+                  {/*    backgroundColor: "#F15F5F",*/}
+                  {/*    color: "white",*/}
+                  {/*    border: "none",*/}
+                  {/*    padding: "10px 20px",*/}
+                  {/*    borderRadius: "5px",*/}
+                  {/*    cursor: "pointer",*/}
+                  {/*    fontSize: "15px",*/}
+                  {/*  }}*/}
+                  {/*  onClick={() => handleDeleteClick(member.memberId)} // 클릭 시 memberId를 넘겨서 호출*/}
+                  {/*>*/}
+                  {/*  탈퇴*/}
+                  {/*</Button>*/}
+                  <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+                    <DialogTrigger asChild>
+                      <Button colorPalette={"red"}>탈퇴</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>탈퇴 확인</DialogTitle>
+                      </DialogHeader>
+                      <DialogBody>
+                        <Stack gap={5}>
+                          <Field label={"암호"}>
+                            <Input placeholder={"암호를 입력해주세요."} />
+                          </Field>
+                        </Stack>
+                      </DialogBody>
+                      <DialogFooter>
+                        <DialogActionTrigger>
+                          <Button
+                            variant={"outline"}
+                            onClick={() => setOpen(false)}
+                          >
+                            취소
+                          </Button>
+                        </DialogActionTrigger>
+                        <Button
+                          colorPalette={"red"}
+                          onClick={() => {
+                            // 탈퇴 로직을 수행 후 다이얼로그 닫기
+                            handleDeleteClick(member.memberId);
+                          }}
+                        >
+                          탈퇴
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </DialogRoot>
                 </Table.Cell>
               </Table.Row>
             ))}

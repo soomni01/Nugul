@@ -18,4 +18,7 @@ public class InquiryService {
     public List<Inquiry> list() {
         return mapper.InquiryAll();
     }
+
+//    public Inquiry getInquiryById(Long inquiryId) {
+//    }
 }
