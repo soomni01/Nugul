@@ -1,12 +1,21 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
-import { RootLayout } from "./page/root/RootRayout.jsx";
+import { RootLayout } from "./page/root/RootLayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberInfo } from "./page/member/MemberInfo.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
+
+import { ChatList } from "./page/chat/ChatList.jsx";
+import { ChatView } from "./page/chat/ChatView.jsx";
+
+import { ProductList } from "./page/product/ProductList.jsx";
+import { ProductAdd } from "./page/product/ProductAdd.jsx";
+import { ProductView } from "./page/product/ProductView.jsx";
+import { ProductEdit } from "./page/product/ProductEdit.jsx";
+
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -28,6 +37,7 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
+
         path: "member/signup",
         element: <MemberSignup />,
       },
@@ -46,6 +56,31 @@ const router = createBrowserRouter([
       {
         path: "member/login",
         element: <MemberLogin />,
+
+
+        path: "/chat",
+        element: <ChatList />,
+      },
+      {
+        path: "/chat/room/:id",
+        element: <ChatView />,
+
+        path: "product/list",
+        element: <ProductList />,
+      },
+      {
+        path: "product/add",
+        element: <ProductAdd />,
+      },
+      {
+        path: "product/view/:id",
+        element: <ProductView />,
+      },
+      {
+        path: "product/edit/:id",
+        element: <ProductEdit />,
+
+
       },
     ],
   },
