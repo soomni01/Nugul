@@ -10,7 +10,10 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 
-import { CategoryContainer } from "../../components/category/CategoryContainer.jsx";
+import {
+  categories,
+  CategoryContainer,
+} from "../../components/category/CategoryContainer.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -30,6 +33,7 @@ export function ProductList() {
   const [count, setCount] = useState(0);
   const [sortOption, setSortOption] = useState("newest");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [search, setSearch] = useState({
     keyword: "",
   });
@@ -39,12 +43,21 @@ export function ProductList() {
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
 
+  // 카테고리 변경 처리
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category); // 선택된 카테고리 업데이트
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("category", category); // 카테고리 필터를 URL에 추가
+    nextSearchParams.set("page", 1); // 카테고리 변경 시 페이지 1로 리셋
+    setSearchParams(nextSearchParams);
+  };
+
   // 컴포넌트 마운트 시 상품 목록 가져오기
   useEffect(() => {
     const controller = new AbortController();
     axios
       .get("/api/product/list", {
-        params: searchParams,
+        params: { ...Object.fromEntries(searchParams), page },
         signal: controller.signal,
       })
       .then((res) => res.data)
@@ -62,7 +75,12 @@ export function ProductList() {
     return () => {
       controller.abort();
     };
-  }, [searchParams]);
+  }, [searchParams, selectedCategory]);
+
+  // 카테고리 label 찾기
+  const selectedCategoryLabel = categories.find(
+    (category) => category.value === selectedCategory,
+  )?.label;
 
   // 검색 키워드 유지 또는 초기화
   useEffect(() => {
@@ -135,8 +153,8 @@ export function ProductList() {
 
   return (
     <Box>
-      <CategoryContainer />
-      <Heading textAlign="center">카테고리</Heading>
+      <CategoryContainer onCategorySelect={handleCategorySelect} />
+      <Heading textAlign="center">{selectedCategoryLabel}</Heading>
       <Box my={5} display="flex" justifyContent="center">
         <HStack w="80%">
           <Input

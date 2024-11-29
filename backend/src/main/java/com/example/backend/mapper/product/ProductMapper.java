@@ -65,29 +65,35 @@ public interface ProductMapper {
 
     @Select("""
             <script>
-               SELECT product_id, product_name, writer, price, created_at
-               FROM product
-                 <where>
-                   <if test="keyword != null and keyword != ''">
+                SELECT product_id, product_name, writer, price, created_at
+                FROM product
+                <where>
+                    <if test="category != null and category != 'all'">
+                        AND category = #{category}
+                    </if>
+                    <if test="keyword != null and keyword != ''">
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
-                   </if>
-                 </where>
-               ORDER BY product_id DESC
-               LIMIT #{offset}, 16
+                    </if>
+                </where>
+                ORDER BY product_id DESC
+                LIMIT #{offset}, 16
             </script>
             """)
-    List<Product> selectPage(Integer offset, String keyword);
+    List<Product> selectPage(Integer offset, String category, String keyword);
 
     @Select("""
             <script>
-               SELECT COUNT(*)
-               FROM product
-               <where>
-                   <if test="keyword != null and keyword != ''">
-                       AND product_name LIKE CONCAT('%', #{keyword}, '%')
-                   </if>
-               </where>
+                SELECT COUNT(*)
+                FROM product
+                <where>
+                    <if test="category != null and category != 'all'">
+                        AND category = #{category}
+                    </if>
+                    <if test="keyword != null and keyword != ''">
+                        AND product_name LIKE CONCAT('%', #{keyword}, '%')
+                    </if>
+                </where>
             </script>
             """)
-    Integer countAll(String keyword);
+    Integer countAll(String category, String keyword);
 }

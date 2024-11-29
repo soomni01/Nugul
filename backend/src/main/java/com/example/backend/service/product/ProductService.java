@@ -51,13 +51,13 @@ public class ProductService {
         return cnt == 1;
     }
 
-    public Map<String, Object> getProductList(Integer page, String keyword) {
+    public Map<String, Object> getProductList(Integer page, String category, String keyword) {
         // SQL 의 LIMIT 키워드에서 사용되는 offset
         Integer offset = (page - 1) * 16;
         // 조회되는 게시물들
-        List<Product> list = mapper.selectPage(offset, keyword);
+        List<Product> list = mapper.selectPage(offset, category, keyword);
         // 전체 게시물 수
-        Integer count = mapper.countAll(keyword);
+        Integer count = mapper.countAll(category, keyword);
         return Map.of("list", list,
                 "count", count);
     }
