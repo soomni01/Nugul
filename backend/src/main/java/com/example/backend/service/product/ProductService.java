@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -50,8 +51,15 @@ public class ProductService {
         return cnt == 1;
     }
 
-    public Map<String, Object> getProductList(Integer page) {
-        return Map.of("list", mapper.selectPage((page - 1) * 16), "count", mapper.countAll());
+    public Map<String, Object> getProductList(Integer page, String keyword) {
+        // SQL 의 LIMIT 키워드에서 사용되는 offset
+        Integer offset = (page - 1) * 16;
+        // 조회되는 게시물들
+        List<Product> list = mapper.selectPage(offset, keyword);
+        // 전체 게시물 수
+        Integer count = mapper.countAll(keyword);
+        return Map.of("list", list,
+                "count", count);
     }
 
     public boolean validate(Product product) {

@@ -6,7 +6,9 @@ import {
   Grid,
   Heading,
   HStack,
+  IconButton,
   Image,
+  Input,
   Spinner,
 } from "@chakra-ui/react";
 
@@ -22,6 +24,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
+import { LuSearch } from "react-icons/lu";
 
 function ProductItem({ product }) {
   const navigate = useNavigate();
@@ -52,6 +55,7 @@ export function ProductList() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [sortOption, setSortOption] = useState("newest");
+  const [search, setSearch] = useState({ type: "all", keyword: "" });
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -72,6 +76,11 @@ export function ProductList() {
         setProductList(data.list);
         setCount(data.count);
         setLoading(false);
+      })
+      .catch((error) => {
+        if (error.name !== "CanceledError") {
+          console.log("상품 정보를 가져오는 데 실패했습니다.", error);
+        }
       });
 
     return () => {
@@ -109,6 +118,21 @@ export function ProductList() {
     return 0;
   });
 
+  const handleSearchClick = () => {
+    if (search.keyword.trim().length > 0) {
+      // 검색
+      const nextSearchParam = new URLSearchParams(searchParams);
+      nextSearchParam.set("sk", search.keyword);
+      setSearchParams(nextSearchParam);
+      console.log(search);
+    } else {
+      // 검색 안함
+      const nextSearchParam = new URLSearchParams(searchParams);
+      nextSearchParam.delete("sk");
+      setSearchParams(nextSearchParam);
+    }
+  };
+
   if (loading) {
     return <Spinner />;
   }
@@ -117,7 +141,19 @@ export function ProductList() {
     <Box>
       <CategoryContainer />
       <Heading textAlign="center">카테고리</Heading>
-
+      <Box my={5} display="flex" justifyContent="center">
+        <HStack w="80%">
+          <Input
+            value={search.keyword}
+            onChange={(e) =>
+              setSearch({ ...search, keyword: e.target.value.trim() })
+            }
+          />
+          <IconButton aria-label="Search database">
+            <LuSearch onClick={handleSearchClick} />
+          </IconButton>
+        </HStack>
+      </Box>
       <Flex justify="space-between" align="center" mb={4}>
         <Flex gap={4}>
           <select value={sortOption} onChange={handleSortChange} size="sm">

@@ -64,15 +64,30 @@ public interface ProductMapper {
     int update(Product product);
 
     @Select("""
-            SELECT product_id, product_name, writer, price, created_at
-            FROM product
-            ORDER BY product_id DESC
-            LIMIT #{offset}, 16
+            <script>
+               SELECT product_id, product_name, writer, price, created_at
+               FROM product
+                 <where>
+                   <if test="keyword != null and keyword != ''">
+                        AND product_name LIKE CONCAT('%', #{keyword}, '%')
+                   </if>
+                 </where>
+               ORDER BY product_id DESC
+               LIMIT #{offset}, 16
+            </script>
             """)
-    List<Product> selectPage(Integer offset);
+    List<Product> selectPage(Integer offset, String keyword);
 
     @Select("""
-            SELECT COUNT(*) FROM product
+            <script>
+               SELECT COUNT(*)
+               FROM product
+               <where>
+                   <if test="keyword != null and keyword != ''">
+                       AND product_name LIKE CONCAT('%', #{keyword}, '%')
+                   </if>
+               </where>
+            </script>
             """)
-    Integer countAll();
+    Integer countAll(String keyword);
 }

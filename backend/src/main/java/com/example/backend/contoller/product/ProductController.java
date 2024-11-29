@@ -54,8 +54,10 @@ public class ProductController {
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer page) {
-        return service.getProductList(page);
+    public Map<String, Object> list(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "sk", defaultValue = "") String keyword) {
+        return service.getProductList(page, keyword);
     }
 
     @PostMapping("add")
