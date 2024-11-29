@@ -6,6 +6,7 @@ import AdminLayout from "./page/admin/AdminLayout.jsx";
 import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminReportList } from "./page/admin/AdminReportList.jsx";
+import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
       {
         path: "reports",
         element: <AdminReportList />,
+      },
+      {
+        path: "reports",
+        element: <AdminReportList />,
+      },
+      {
+        path: "inquiries",
+        element: <AdminInquiryList />,
       },
     ],
   },

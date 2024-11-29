@@ -117,6 +117,36 @@ export default function AdminLayout() {
               <Text>신고 관리</Text>
             </Flex>
           </Button>
+          <Button
+            onClick={() => navigate("/admin/inquiries")}
+            variant={
+              location.pathname === "/admin/inquiries" ? "solid" : "ghost"
+            }
+            color={location.pathname === "/admin/inquiries" ? "white" : "black"}
+            bg={
+              location.pathname === "/admin/inquiries"
+                ? "#A6A6A6"
+                : "transparent"
+            }
+            _hover={{
+              bg:
+                location.pathname === "/admin/inquiries"
+                  ? "#A6A6A6"
+                  : "#A6A6A6",
+            }}
+            justifyContent="flex-start"
+            w="100%"
+            fontSize="17px"
+          >
+            <Flex align="center" gap={2}>
+              <Image
+                src="/image/Inquiry.png"
+                alt="Report Icon"
+                boxSize="20px"
+              />
+              <Text>1:1 문의</Text>
+            </Flex>
+          </Button>
         </VStack>
       </Box>
 
