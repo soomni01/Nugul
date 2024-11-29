@@ -16,3 +16,23 @@ ALTER TABLE product
     ADD COLUMN latitude      DOUBLE,
     ADD COLUMN longitude     DOUBLE,
     ADD COLUMN location_name VARCHAR(100) NOT NULL;
+
+
+# 페이지 연습용
+INSERT INTO product
+(product_name, price, description, writer, category, status, created_at, pay, latitude, longitude, location_name)
+SELECT product_name,
+       price,
+       description,
+       writer,
+       category,
+       status,
+       created_at,
+       pay,
+       latitude,
+       longitude,
+       location_name
+FROM product;
+
+SELECT COUNT(*)
+FROM product;

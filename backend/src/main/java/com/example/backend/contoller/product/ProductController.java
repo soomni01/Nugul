@@ -73,7 +73,7 @@ public class ProductController {
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
-                                "text", "게시물 상품이 실패하였습니다.")));
+                                "text", "상품 등록이 실패하였습니다.")));
             }
         } else {
             return ResponseEntity.badRequest()
