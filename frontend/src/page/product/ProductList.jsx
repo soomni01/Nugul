@@ -49,6 +49,7 @@ function ProductItem({ product }) {
 export function ProductList() {
   const [productList, setProductList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -62,7 +63,8 @@ export function ProductList() {
       })
       .then((res) => res.data)
       .then((data) => {
-        setProductList(data);
+        setProductList(data.list);
+        setCount(data.count);
         setLoading(false);
       });
 
@@ -123,8 +125,8 @@ export function ProductList() {
       </Grid>
       <PaginationRoot
         onPageChange={handlePageChange}
-        count={1500}
-        pageSize={10}
+        count={count}
+        pageSize={16}
         page={page}
       >
         <HStack>

@@ -62,4 +62,17 @@ public interface ProductMapper {
                 WHERE product_id = #{productId}
             """)
     int update(Product product);
+
+    @Select("""
+            SELECT product_id, product_name, writer, created_at
+            FROM product
+            ORDER BY product_id DESC
+            LIMIT #{offset}, 16
+            """)
+    List<Product> selectPage(Integer offset);
+
+    @Select("""
+            SELECT COUNT(*) FROM product
+            """)
+    Integer countAll();
 }

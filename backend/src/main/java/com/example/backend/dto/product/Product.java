@@ -18,7 +18,7 @@ public class Product {
     private Double latitude;
     private Double longitude;
     private String locationName;
-    private LocalDateTime inserted;
+    private LocalDateTime createdAt;
 
     private List<ProductFile> fileList;
     private String mainImage;

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -50,8 +50,8 @@ public class ProductService {
         return cnt == 1;
     }
 
-    public List<Product> getProductList() {
-        return mapper.getProductList();
+    public Map<String, Object> getProductList(Integer page) {
+        return Map.of("list", mapper.selectPage((page - 1) * 16), "count", mapper.countAll());
     }
 
     public boolean validate(Product product) {

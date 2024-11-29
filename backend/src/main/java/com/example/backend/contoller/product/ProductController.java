@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -55,8 +54,8 @@ public class ProductController {
     }
 
     @GetMapping("list")
-    public List<Product> list() {
-        return service.getProductList();
+    public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return service.getProductList(page);
     }
 
     @PostMapping("add")
