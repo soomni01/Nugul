@@ -20,7 +20,7 @@ export function MemberSignup() {
   const navigate = useNavigate();
 
   const emailRegEx =
-    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
+    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,8}$/;
 
   const passwordRegEx =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,49}$/;
@@ -178,13 +178,17 @@ export function MemberSignup() {
   let nickNameCheckButtonDisabled = nickName.length === 0;
 
   const passwordMatchText =
-    password && rePassword ? (
-      password === rePassword ? (
-        <Text color="green.500">비밀번호가 일치합니다.</Text>
-      ) : (
-        <Text color="red.500">비밀번호가 일치하지 않습니다.</Text>
-      )
-    ) : null;
+    rePassword.length === 0 ? (
+      "비밀번호를 다시 입력하세요."
+    ) : !passwordRegEx.test(rePassword) ? (
+      <Text color="red.500">
+        확인 비밀번호가 올바르지 않습니다. (영문, 숫자, 특수문자 포함, 8자 이상)
+      </Text>
+    ) : password === rePassword ? (
+      <Text color="green.500">비밀번호가 일치합니다.</Text>
+    ) : (
+      <Text color="red.500">비밀번호가 일치하지 않습니다.</Text>
+    );
 
   return (
     <Box>
