@@ -18,6 +18,9 @@ export function AdminMemberList() {
     type: "all",
     keyword: "",
   });
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const itemsPerPage = 10; // 페이지당 회원 수
+
   const navigate = useNavigate();
 
   // 회원 목록 요청 및 데이터 처리
@@ -40,16 +43,13 @@ export function AdminMemberList() {
 
   // 검색 처리: type에 맞춰 필터링
   const filteredMembers = memberList.filter((member) => {
-    // memberId를 명시적으로 사용하여 일관성 있게 처리
     const memberId = member.memberId;
 
-    // 회원 데이터에 'memberId'가 누락된 경우 처리
     if (!memberId) {
       console.error("회원 데이터에 'memberId'가 누락되었습니다:", member);
       return false;
     }
 
-    // 검색어에 따라 필터링
     const searchTerm = search.keyword.toLowerCase();
     switch (search.type) {
       case "all":
@@ -69,14 +69,27 @@ export function AdminMemberList() {
     }
   });
 
+  // 페이지네이션 처리
+  const totalPages = Math.ceil(filteredMembers.length / itemsPerPage); // 전체 페이지 수
+  const paginatedMembers = filteredMembers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  function handlePageChange(newPage) {
+    setCurrentPage(newPage);
+  }
+
   // 검색 조건 변경
   function handleSearchTypeChange(e) {
     setSearch({ ...search, type: e.target.value });
+    setCurrentPage(1); // 검색 시 첫 페이지로 이동
   }
 
   // 검색어 변경
   function handleSearchKeywordChange(e) {
     setSearch({ ...search, keyword: e.target.value });
+    setCurrentPage(1); // 검색 시 첫 페이지로 이동
   }
 
   // 회원 탈퇴 처리
@@ -84,7 +97,7 @@ export function AdminMemberList() {
     if (window.confirm("정말로 이 회원을 탈퇴시키겠습니까?")) {
       axios
         .delete(`/api/member/${memberId}`)
-        .then((response) => {
+        .then(() => {
           alert("회원이 성공적으로 탈퇴되었습니다.");
           setMemberList((prevList) =>
             prevList.filter((member) => member.memberId !== memberId),
@@ -122,8 +135,9 @@ export function AdminMemberList() {
         </Flex>
       </Box>
       <Text mb={4} m={2}>
-        총 {memberList.length}명
+        총 {filteredMembers.length}명
       </Text>
+
       {/* 회원 리스트 테이블 */}
       <Box>
         <Table.Root interactive>
@@ -137,7 +151,7 @@ export function AdminMemberList() {
             </TableRow>
           </TableHeader>
           <Table.Body>
-            {filteredMembers.map((member) => (
+            {paginatedMembers.map((member) => (
               <Table.Row
                 onClick={() => handleRowClick(member.memberId)}
                 key={member.memberId}
@@ -160,6 +174,7 @@ export function AdminMemberList() {
                       fontSize: "15px",
                     }}
                     onClick={(e) => {
+                      e.stopPropagation();
                       handleDeleteMember(member.memberId);
                     }}
                   >
@@ -171,6 +186,27 @@ export function AdminMemberList() {
           </Table.Body>
         </Table.Root>
       </Box>
+
+      {/* 페이지 버튼 */}
+      <Flex justify="center" mt={4} gap={2}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            style={{
+              padding: "5px 10px",
+              backgroundColor:
+                currentPage === index + 1 ? "#D2D2D2" : "#E4E4E4",
+              color: currentPage === index + 1 ? "white" : "black",
+              border: "none",
+              borderRadius: "3px",
+              cursor: "pointer",
+            }}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </Flex>
     </Box>
   );
 }
