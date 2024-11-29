@@ -2,6 +2,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+import { MemberSignup } from "./page/member/MemberSignup.jsx";
+import { MemberList } from "./page/member/MemberList.jsx";
+import { MemberInfo } from "./page/member/MemberInfo.jsx";
+import { MemberEdit } from "./page/member/MemberEdit.jsx";
+import { MemberLogin } from "./page/member/MemberLogin.jsx";
 
 import { ChatList } from "./page/chat/ChatList.jsx";
 import { ChatView } from "./page/chat/ChatView.jsx";
@@ -33,6 +38,26 @@ const router = createBrowserRouter([
       },
       {
 
+        path: "member/signup",
+        element: <MemberSignup />,
+      },
+      {
+        path: "member/list",
+        element: <MemberList />,
+      },
+      {
+        path: "member/:memberId",
+        element: <MemberInfo />,
+      },
+      {
+        path: "member/edit/:memberId",
+        element: <MemberEdit />,
+      },
+      {
+        path: "member/login",
+        element: <MemberLogin />,
+
+
         path: "/chat",
         element: <ChatList />,
       },
@@ -54,6 +79,7 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:id",
         element: <ProductEdit />,
+
 
       },
     ],

@@ -23,10 +23,22 @@ export function Navbar() {
   const navigate = useNavigate();
   return (
     <Flex gap={3}>
-      <NavbarItem onClick={() => navigate("/")}>홈</NavbarItem>
-      <NavbarItem onClick={() => navigate("/product/list")}>
-        중고거래
+
+      <NavbarItem onClick={() => navigate("/")}>HOME</NavbarItem>
+      <NavbarItem onClick={() => navigate("/product/list")}>중고거래</NavbarItem>
+      <NavbarItem onClick={() => navigate("/member/signup")}>가입</NavbarItem>
+      <NavbarItem onClick={() => navigate("/member/login")}>로그인</NavbarItem>
+      <NavbarItem
+        onClick={() => {
+          localStorage.removeItem("token");
+          navigate("/member/login");
+        }}
+      >
+        로그아웃
       </NavbarItem>
+
+      
+    
       <NavbarItem onClick={() => navigate("/product/share/list")}>
         나눔
       </NavbarItem>
