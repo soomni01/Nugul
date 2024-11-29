@@ -3,7 +3,7 @@ import { Field } from "../../components/ui/field.jsx";
 import { useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MemberLogin() {
@@ -69,32 +69,37 @@ export function MemberLogin() {
     <Box>
       <h3>로그인</h3>
       <Stack gap={5}>
-        <Field label={"아이디"}>
+        <Field>
           <Input
-            placeholder="아이디 또는 이메일 입력하세요"
+            placeholder="이메일을 입력하세요"
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
           />
         </Field>
-
-        <Field label={"암호"}>
+        <Field>
           <Input
-            placeholder="암호 입력"
+            placeholder="비밀번호를 입력하세요"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Field>
-
         <Box>
           <Button onClick={handleLoginClick}>로그인</Button>
         </Box>
-
         {errorMessage && (
           <Box color="red.500" mt={2}>
             <p>{errorMessage}</p>
           </Box>
         )}
+        <Box textAlign="center" mt={4}>
+          <Link
+            to="/member/signup"
+            style={{ color: "blue", textDecoration: "underline" }}
+          >
+            회원가입
+          </Link>
+        </Box>
       </Stack>
     </Box>
   );

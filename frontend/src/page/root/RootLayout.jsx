@@ -8,8 +8,11 @@ export function RootLayout() {
   console.log(location.pathname);
   return (
     <Stack mx={{ md: 20, lg: 40 }}>
-      <Box>{location.pathname === "/" || <Navbar />}</Box>
-
+      {/* 로그인("/")과 회원가입("/member/signup")에서 네브바 숨기기 */}
+      <Box>
+        {location.pathname === "/" ||
+          location.pathname === "/member/signup" || <Navbar />}
+      </Box>
       <Box mx={{ md: 20, lg: 40 }}>
         <Outlet />
       </Box>
