@@ -231,13 +231,13 @@ export function MemberSignup() {
               }}
             />
             <Button onClick={handleIdCheckClick} variant={"outline"}>
-              중복확인
+              중복 확인
             </Button>
           </Group>
         </Field>
 
         <Field
-          label={"암호"}
+          label={"비밀번호"}
           helperText={
             !password ? (
               "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
@@ -253,14 +253,14 @@ export function MemberSignup() {
         >
           <Input
             value={password}
-            placeholder="암호를 입력하세요"
+            placeholder="비밀번호를 입력하세요"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
         </Field>
 
-        <Field label={"암호확인"} helperText={passwordMatchText}>
+        <Field label={"비밀번호 확인"} helperText={passwordMatchText}>
           <Input
             placeholder="암호를 재입력하세요"
             value={rePassword}
@@ -291,7 +291,7 @@ export function MemberSignup() {
         </Field>
 
         <Field
-          label={"별명"}
+          label={"닉네임"}
           helperText={
             nickNameCheckMessage ? (
               <Text color={nickNameCheck ? "green.500" : "red.500"}>
@@ -307,7 +307,7 @@ export function MemberSignup() {
           <Group attached w={"100%"}>
             <Input
               value={nickName}
-              placeholder="별명을 입력하세요"
+              placeholder="닉네임 중복 확인 필수"
               onChange={handleNickNameChange}
             />
             <Button
@@ -315,13 +315,13 @@ export function MemberSignup() {
               variant={"outline"}
               disabled={nickNameCheckButtonDisabled}
             >
-              중복확인
+              중복 확인
             </Button>
           </Group>
         </Field>
 
         <Button w={"100%"} onClick={handleSaveClick} disabled={disabled}>
-          회원가입
+          회원 가입
         </Button>
       </Stack>
     </Box>
