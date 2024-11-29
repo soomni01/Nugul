@@ -22,6 +22,7 @@ import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+import { BoardList } from "./page/board/BoardList.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:id",
         element: <ProductEdit />,
+      },
+      {
+        path: "board/list",
+        element: <BoardList />,
       },
     ],
   },
