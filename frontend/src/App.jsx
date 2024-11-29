@@ -18,6 +18,7 @@ import { ChatList } from "./page/chat/ChatList.jsx";
 import { ChatView } from "./page/chat/ChatView.jsx";
 
 import { ProductList } from "./page/product/ProductList.jsx";
+import { ProductShareList } from "./page/product/ProductShareList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "product/list",
         element: <ProductList />,
+      },
+      {
+        path: "product/share/list",
+        element: <ProductShareList />,
       },
       {
         path: "product/add",

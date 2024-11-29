@@ -17,6 +17,10 @@ ALTER TABLE product
     ADD COLUMN longitude     DOUBLE,
     ADD COLUMN location_name VARCHAR(100) NOT NULL;
 
+ALTER TABLE product
+    MODIFY category VARCHAR(100) NOT NULL DEFAULT 'all';
+
+DESC product;
 
 # 페이지 연습용
 INSERT INTO product
@@ -36,3 +40,17 @@ FROM product;
 
 SELECT COUNT(*)
 FROM product;
+
+SELECT COUNT(*)
+FROM product
+WHERE pay = "sell";
+
+SELECT COUNT(*)
+FROM product
+WHERE pay = "share";
+
+SELECT product_id, product_name, writer, price, created_at, m.nickname writerNickname
+FROM product p
+         JOIN member m ON p.writer = m.member_id
+
+ORDER BY product_id DESC

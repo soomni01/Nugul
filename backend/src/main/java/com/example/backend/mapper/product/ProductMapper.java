@@ -31,8 +31,9 @@ public interface ProductMapper {
     List<Product> getProductList();
 
     @Select("""
-            SELECT  *
-            FROM product
+            SELECT  p.product_id, p.product_name, p.price, p.category, p.description, p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname
+            FROM product p
+            JOIN member m ON p.writer = m.member_id
             WHERE product_id = #{id}
             """)
     Product selectById(int id);
@@ -65,8 +66,8 @@ public interface ProductMapper {
 
     @Select("""
             <script>
-                SELECT product_id, product_name, writer, price, created_at
-                FROM product
+                SELECT *
+                 FROM product
                 <where>
                     <if test="category != null and category != 'all'">
                         AND category = #{category}
@@ -74,12 +75,13 @@ public interface ProductMapper {
                     <if test="keyword != null and keyword != ''">
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
+                        AND pay = #{pay}
                 </where>
                 ORDER BY product_id DESC
                 LIMIT #{offset}, 16
             </script>
             """)
-    List<Product> selectPage(Integer offset, String category, String keyword);
+    List<Product> selectPage(Integer offset, String category, String keyword, String pay);
 
     @Select("""
             <script>
@@ -92,8 +94,9 @@ public interface ProductMapper {
                     <if test="keyword != null and keyword != ''">
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
+                        AND pay = #{pay}
                 </where>
             </script>
             """)
-    Integer countAll(String category, String keyword);
+    Integer countAll(String category, String keyword, String pay);
 }

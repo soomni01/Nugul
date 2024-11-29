@@ -4,6 +4,8 @@ import com.example.backend.dto.product.Product;
 import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,17 +59,20 @@ public class ProductController {
     public Map<String, Object> list(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "category", defaultValue = "all") String category,
-            @RequestParam(value = "sk", defaultValue = "") String keyword) {
-        return service.getProductList(page, category, keyword);
+            @RequestParam(value = "sk", defaultValue = "") String keyword,
+            @RequestParam(value = "pay", defaultValue = "") String pay) {
+        return service.getProductList(page, category, keyword, pay);
     }
 
     @PostMapping("add")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> add(
             Product product,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-            @RequestParam(value = "mainImage", required = false) MultipartFile mainImage) {
+            @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+            Authentication authentication) {
         if (service.validate(product)) {
-            if (service.add(product, files, mainImage)) {
+            if (service.add(product, files, mainImage, authentication)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                         "text", STR."\{product.getProductId()}번 상품이 등록되었습니다."),

@@ -25,7 +25,6 @@ export function Navbar() {
   const navigate = useNavigate();
 
   const { id, nickname } = useContext(AuthenticationContext);
-  console.log(id);
 
   return (
     <Flex gap={3}>

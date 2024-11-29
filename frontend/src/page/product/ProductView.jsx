@@ -77,7 +77,9 @@ export function ProductView() {
 
   return (
     <Box>
-      <Heading>{id}번 상품</Heading>
+      <Heading>
+        {id}번 상품 이름: {product.nickname}
+      </Heading>
       <Stack gap={5}>
         <ImageFileView />
         <Flex gap={3}>

@@ -57,7 +57,7 @@ export function ProductList() {
     const controller = new AbortController();
     axios
       .get("/api/product/list", {
-        params: { ...Object.fromEntries(searchParams), page },
+        params: { ...Object.fromEntries(searchParams), page, pay: "sell" },
         signal: controller.signal,
       })
       .then((res) => res.data)

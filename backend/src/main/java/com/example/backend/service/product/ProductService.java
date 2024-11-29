@@ -3,6 +3,7 @@ package com.example.backend.service.product;
 import com.example.backend.dto.product.Product;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +20,9 @@ public class ProductService {
 
     final ProductMapper mapper;
 
-    public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage) {
-        product.setWriter("1");
+    public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage, Authentication authentication) {
+        product.setWriter(authentication.getName());
+
         int cnt = mapper.insert(product);
 
         if (files != null && files.length > 0) {
@@ -51,13 +53,13 @@ public class ProductService {
         return cnt == 1;
     }
 
-    public Map<String, Object> getProductList(Integer page, String category, String keyword) {
+    public Map<String, Object> getProductList(Integer page, String category, String keyword, String pay) {
         // SQL 의 LIMIT 키워드에서 사용되는 offset
         Integer offset = (page - 1) * 16;
         // 조회되는 게시물들
-        List<Product> list = mapper.selectPage(offset, category, keyword);
+        List<Product> list = mapper.selectPage(offset, category, keyword, pay);
         // 전체 게시물 수
-        Integer count = mapper.countAll(category, keyword);
+        Integer count = mapper.countAll(category, keyword, pay);
         return Map.of("list", list,
                 "count", count);
     }
