@@ -26,7 +26,7 @@ public class ChatController {
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage message) {
-
+//            요청 보내면  send to 경로 리턴
 //        TODO:  chatroom 테이블 생성해야할듯 , roomId, message, sender , productId,
         return message;
     }

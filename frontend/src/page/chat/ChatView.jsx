@@ -1,5 +1,13 @@
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Input,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
@@ -24,7 +32,6 @@ export function ChatView() {
       connectHeaders: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      //  원래는 시작하자마자 메시지를 보낼 필요는 없음  , 인풋에 입력한걸 전송할때 보낼꺼니가
 
       onConnect: () => {
         client.subscribe("/room/" + id, function (message) {
@@ -50,7 +57,6 @@ export function ChatView() {
     axios
       .get(`/api/chat/view/${id}`)
       .then((res) => {
-        console.log(res.data);
         setChatRoom(res.data);
         // chatRoom = {
         //   roomId: res.data.roomId,
@@ -76,43 +82,46 @@ export function ChatView() {
     setClientMessage("");
   }
 
-  console.log(chatRoom);
   return (
     <Box>
       {id} 번 채팅 화면입니다.
       <Box> {chatRoom.productName} 상품 </Box>
       <Flex>
-        <Box bg={"red.300"} h={500}>
-          <h3> 클라이언트</h3>
-          <Box>
+        <Flex direction="column" bg={"red.300"} h={500} w={800}>
+          <Box mx={"auto"} my={3} variant={"outline"}>
+            {chatRoom.writer}
+          </Box>
+          <Box h={"70%"}>
             {message.map((item, index) => (
-              <div key={index}>
+              <Box key={index}>
                 <p>Sender: {item.sender}</p>
-                <p>Content: {item.content}</p>
-              </div>
+                <Badge size="lg">Content: {item.content}</Badge>
+              </Box>
             ))}
           </Box>
 
-          <Field>
-            <Input
-              type={"text"}
-              value={clientMessage}
-              onChange={(e) => {
-                setClientMessage(e.target.value);
+          <HStack>
+            <Field>
+              <Input
+                type={"text"}
+                value={clientMessage}
+                onChange={(e) => {
+                  setClientMessage(e.target.value);
+                }}
+              />
+            </Field>
+            <Button
+              variant={"outline"}
+              onClick={() => {
+                var client = "client";
+                var message = clientMessage;
+                sendMessage(client, message);
               }}
-            />
-          </Field>
-          <Button
-            variant={"outline"}
-            onClick={() => {
-              var client = "client";
-              var message = clientMessage;
-              sendMessage(client, message);
-            }}
-          >
-            전송
-          </Button>
-        </Box>
+            >
+              전송
+            </Button>
+          </HStack>
+        </Flex>
 
         <Box bg={"blue.300"}>
           <h3> 서버에서 보내준 내용 </h3>
@@ -125,9 +134,9 @@ export function ChatView() {
           <Field>
             <Input
               type={"text"}
-              value={clientMessage}
+              value={serverMessage}
               onChange={(e) => {
-                setClientMessage(e.target.value);
+                setServerMessage(e.target.value);
               }}
             />
           </Field>
@@ -145,6 +154,14 @@ export function ChatView() {
           </Button>
         </Box>
       </Flex>
+      <Box>
+        <Heading> ui 변경 테스트 </Heading>
+        <Box>
+          <Box></Box>
+          <Box></Box>
+          <Input />
+        </Box>
+      </Box>
     </Box>
   );
 }
