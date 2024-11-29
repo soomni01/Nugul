@@ -57,7 +57,7 @@ export function ProductList() {
   const [sortOption, setSortOption] = useState("newest");
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState({
-    keyword: searchParams.get("sk") ?? "",
+    keyword: "",
   });
   const navigate = useNavigate();
 
@@ -89,6 +89,19 @@ export function ProductList() {
       controller.abort();
     };
   }, [searchParams]);
+
+  // 검색 키워드 유지 또는 초기화
+  useEffect(() => {
+    const nextSearch = { ...search };
+
+    if (searchParams.get("sk")) {
+      nextSearch.keyword = searchParams.get("sk");
+    } else {
+      nextSearch.keyword = "";
+    }
+
+    setSearch(nextSearch);
+  }, [searchParams]); // searchParams가 변경될 때마다 실행
 
   // 페이지 이동
   const handlePageChange = (e) => {
@@ -125,13 +138,20 @@ export function ProductList() {
       // 검색
       const nextSearchParam = new URLSearchParams(searchParams);
       nextSearchParam.set("sk", search.keyword);
+      nextSearchParam.set("page", 1);
       setSearchParams(nextSearchParam);
-      console.log(search);
     } else {
       // 검색 안함
       const nextSearchParam = new URLSearchParams(searchParams);
       nextSearchParam.delete("sk");
       setSearchParams(nextSearchParam);
+    }
+  };
+
+  // 엔터키를 눌렀을 때 검색 실행
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchClick();
     }
   };
 
@@ -150,6 +170,7 @@ export function ProductList() {
             onChange={(e) =>
               setSearch({ ...search, keyword: e.target.value.trim() })
             }
+            onKeyDown={handleKeyDown}
           />
           <IconButton aria-label="Search database">
             <LuSearch onClick={handleSearchClick} />
@@ -173,12 +194,16 @@ export function ProductList() {
           판매하기
         </Button>
       </Flex>
-      <Grid templateColumns="repeat(4, 1fr)" gap="6">
-        {sortedList?.map((product) => (
-          // key prop을 추가하여 각 항목을 고유하게 지정 (각 항목을 추적하기 위해 key 사용)
-          <ProductItem key={product.productId} product={product} />
-        ))}
-      </Grid>
+      {productList.length > 0 ? (
+        <Grid templateColumns="repeat(4, 1fr)" gap="6">
+          {sortedList?.map((product) => (
+            // key prop을 추가하여 각 항목을 고유하게 지정 (각 항목을 추적하기 위해 key 사용)
+            <ProductItem key={product.productId} product={product} />
+          ))}
+        </Grid>
+      ) : (
+        <p>조회된 결과가 없습니다.</p>
+      )}
       <Center>
         <PaginationRoot
           onPageChange={handlePageChange}
