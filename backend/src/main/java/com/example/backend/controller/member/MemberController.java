@@ -27,11 +27,11 @@ public class MemberController {
         if (token != null) {
             return ResponseEntity.ok(Map.of("token", token,
                     "message", Map.of("type", "success",
-                            "text", "로그인 되었습니다.")));
+                            "text", "로그인에 성공하였습니다.")));
         } else {
             return ResponseEntity.status(404)
-                    .body(Map.of("message", Map.of("type", "warning",
-                            "text", "아이디 또는 암호를 확인해주세요")));
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "이메일 또는 비밀번호를 확인해 주세요.")));
         }
     }
 

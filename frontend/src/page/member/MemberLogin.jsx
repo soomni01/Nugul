@@ -20,13 +20,22 @@ export function MemberLogin() {
 
     if (!memberId && !password) {
       isValid = false;
-      setErrorMessage("아이디와 비밀번호를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "이메일과 비밀번호를 입력해 주세요.",
+      });
     } else if (!memberId) {
       isValid = false;
-      setErrorMessage("아이디를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "이메일을 입력해 주세요.",
+      });
     } else if (!password) {
       isValid = false;
-      setErrorMessage("비밀번호를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "비밀번호를 입력해 주세요.",
+      });
     }
 
     if (!isValid) {
@@ -37,24 +46,21 @@ export function MemberLogin() {
       .post("/api/member/login", { memberId, password })
       .then((res) => res.data)
       .then((data) => {
-        console.log(data); // 응답 확인
+        console.log(data);
         toaster.create({
           type: data.message.type,
           description: data.message.text,
         });
 
-        // JWT 디코딩
         const decodedToken = jwtDecode(data.token);
-        const userScope = decodedToken.scope || ""; // 빈 문자열 처리
+        const userScope = decodedToken.scope || "";
 
-        // 권한에 따라 경로 이동
         if (userScope === "admin") {
           navigate("/admin/dashboard");
         } else {
           navigate("main");
         }
 
-        // 토큰 저장
         localStorage.setItem("token", data.token);
       })
       .catch((e) => {
@@ -64,10 +70,9 @@ export function MemberLogin() {
         };
 
         if (
-          message.text.includes("아이디") ||
+          message.text.includes("이메일") ||
           message.text.includes("비밀번호")
         ) {
-          setErrorMessage("아이디 또는 비밀번호가 틀렸습니다.");
         } else {
           setErrorMessage("알 수 없는 오류가 발생했습니다.");
         }
