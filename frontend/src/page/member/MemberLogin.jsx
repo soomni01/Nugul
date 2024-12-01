@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { jwtDecode } from "jwt-decode";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -41,7 +42,19 @@ export function MemberLogin() {
           type: data.message.type,
           description: data.message.text,
         });
-        navigate("/");
+
+        // JWT 디코딩
+        const decodedToken = jwtDecode(data.token);
+        const userScope = decodedToken.scope || ""; // 빈 문자열 처리
+
+        // 권한에 따라 경로 이동
+        if (userScope === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("main");
+        }
+
+        // 토큰 저장
         localStorage.setItem("token", data.token);
       })
       .catch((e) => {

@@ -10,8 +10,8 @@ import java.util.List;
 public interface MemberMapper {
     @Insert("""
             INSERT INTO member
-            (member_id,password,name,nickname)
-            VALUES (#{memberId}, #{password}, #{name},#{nickName})
+            (member_id, password, name, nickname)
+            VALUES (#{memberId}, #{password}, #{name}, #{nickName})
             """)
     int insert(Member member);
 
@@ -34,7 +34,6 @@ public interface MemberMapper {
             """)
     List<Member> selectAll();
 
-
     @Delete("""
             DELETE FROM member
             WHERE member_id=#{memberId}
@@ -43,9 +42,16 @@ public interface MemberMapper {
 
     @Update("""
             UPDATE member
-            SET password = #{password} ,
-            nickname=#{nickName}
+            SET password = #{password}, 
+                nickname = #{nickName}
             WHERE member_id=#{memberId}
             """)
     int update(MemberEdit member);
+
+    @Select("""
+            SELECT auth
+            FROM auth
+            WHERE member_id = #{memberId}
+            """)
+    List<String> selectAuthByMemberId(String id);
 }

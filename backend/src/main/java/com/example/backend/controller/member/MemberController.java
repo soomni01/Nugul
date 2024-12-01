@@ -5,7 +5,10 @@ import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +25,6 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
         String token = service.token(member);
         if (token != null) {
-//            String auth = service.getAuthByMemberId(member.getMemberId()); // 예시 메서드
             return ResponseEntity.ok(Map.of("token", token,
                     "message", Map.of("type", "success",
                             "text", "로그인 되었습니다.")));
@@ -62,12 +64,17 @@ public class MemberController {
     }
 
     @GetMapping("{memberId}")
-    public Member getMember(@PathVariable String memberId) {
-        return service.get(memberId);
+    @PreAuthorize("isAuthenticated() or hasAuthority('SCOPE_admin')")
+    public ResponseEntity<Member> getMember(@PathVariable String memberId, Authentication auth) {
+        if (service.hasAccess(memberId, auth) || service.isAdmin(auth)) {
+            return ResponseEntity.ok(service.get(memberId));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @GetMapping("list")
-//    @PreAuthorize("hasAuthority('SCOPE_admin')")
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {
         return service.list();
     }

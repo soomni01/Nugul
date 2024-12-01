@@ -4,6 +4,7 @@ import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -81,6 +83,9 @@ public class MemberService {
 
     public String token(Member member) {
         Member db = mapper.selectById(member.getMemberId());
+        List<String> auths = mapper.selectAuthByMemberId(member.getMemberId());
+        String authsString = auths.stream()
+                .collect(Collectors.joining(" "));
         if (db != null) {
             if (db.getPassword().equals(member.getPassword())) {
                 JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -89,6 +94,7 @@ public class MemberService {
                         .issuedAt(Instant.now())
                         .expiresAt(Instant.now().plusSeconds(3600))
                         .claim("nickname", db.getNickname())
+                        .claim("scope", authsString)
                         .build();
 
                 return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
@@ -96,6 +102,15 @@ public class MemberService {
         }
         return null;
     }
-//    public String getAuthByMemberId(String memberId) {
-//    }
+
+    public boolean hasAccess(String memberId, Authentication auth) {
+        return memberId.equals(auth.getName());
+    }
+
+    public boolean isAdmin(Authentication auth) {
+        return auth.getAuthorities()
+                .stream()
+                .map(a -> a.toString())
+                .anyMatch(s -> s.equals("SCOPE_admin"));
+    }
 }
