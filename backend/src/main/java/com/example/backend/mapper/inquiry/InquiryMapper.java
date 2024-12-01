@@ -15,4 +15,11 @@ public interface InquiryMapper {
             ORDER BY inquiry_id
             """)
     List<Inquiry> InquiryAll();
+
+    @Select("""
+            SELECT *
+            FROM inquiry
+            WHERE inquiry_id = #{inquiry_id}
+            """)
+    Inquiry findById(int inquiryId);
 }
