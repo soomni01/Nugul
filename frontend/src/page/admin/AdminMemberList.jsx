@@ -35,13 +35,13 @@ function DeleteButton({ onClick, id: memberId }) {
           <Button colorPalette={"red"}>탈퇴</Button>
         </DialogTrigger>
         <DialogContent>
-          <DialogHeader>
+          <DialogHeader ml={0.5}>
             <DialogTitle>탈퇴 확인</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Stack gap={5}>
-              <Field label={"암호"}>
-                <Input placeholder={"암호를 입력해주세요."} />
+              <Field>
+                <Input placeholder={"관리자 비밀번호를 입력해 주세요."} />
               </Field>
             </Stack>
           </DialogBody>
@@ -54,7 +54,6 @@ function DeleteButton({ onClick, id: memberId }) {
             <Button
               colorPalette={"red"}
               onClick={() => {
-                // 탈퇴 로직을 수행 후 다이얼로그 닫기
                 onClick(memberId);
                 setOpen(false);
               }}
@@ -79,7 +78,6 @@ export function AdminMemberList() {
 
   const navigate = useNavigate();
 
-  // 회원 목록 요청 및 데이터 처리
   useEffect(() => {
     axios
       .get("/api/member/list")
@@ -92,12 +90,6 @@ export function AdminMemberList() {
       });
   }, []);
 
-  // 테이블 행 클릭시 회원정보 보기로 이동
-  // function handleRowClick(memberId) {
-  //   navigate(`/member/${memberId}`);
-  // }
-
-  // 검색 처리: type에 맞춰 필터링
   const filteredMembers = memberList.filter((member) => {
     const memberId = member.memberId;
 
@@ -125,7 +117,6 @@ export function AdminMemberList() {
     }
   });
 
-  // 페이지네이션 처리
   const totalPages = Math.ceil(filteredMembers.length / itemsPerPage); // 전체 페이지 수
   const paginatedMembers = filteredMembers.slice(
     (currentPage - 1) * itemsPerPage,
@@ -136,37 +127,31 @@ export function AdminMemberList() {
     setCurrentPage(newPage);
   }
 
-  // 검색 조건 변경
   function handleSearchTypeChange(e) {
     setSearch({ ...search, type: e.target.value });
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+    setCurrentPage(1);
   }
 
-  // 검색어 변경
   function handleSearchKeywordChange(e) {
     setSearch({ ...search, keyword: e.target.value });
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+    setCurrentPage(1);
   }
 
   function handleDeleteClick(memberId) {
     axios
       .delete(`/api/member/delete/${memberId}`)
       .then((res) => {
-        alert(res.data); // 백엔드에서 반환된 메시지를 표시
+        alert(res.data);
         console.log("응답 데이터:", res.data);
-        // 탈퇴 후 멤버 리스트 페이지로 이동
         navigate("/member/list");
       })
       .catch((error) => {
         console.error("회원 탈퇴 요청 중 오류 발생:", error);
         alert("회원 탈퇴에 실패했습니다. 다시 시도해주세요.");
       })
-      .finally(() => {
-        // setOpen(false);
-      });
+      .finally(() => {});
   }
 
-  // 버튼 클릭 시 호출되는 함수
   function handleDeleteMember(memberId) {
     handleDeleteClick(memberId);
   }
@@ -176,8 +161,6 @@ export function AdminMemberList() {
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
         회원 관리
       </Text>
-
-      {/* 검색 박스 */}
       <Box mb={3}>
         <Flex justify="center" align="center" gap={4}>
           <Input
@@ -198,8 +181,6 @@ export function AdminMemberList() {
       <Text mb={4} m={2}>
         총 {filteredMembers.length}명
       </Text>
-
-      {/* 회원 리스트 테이블 */}
       <Box>
         <Table.Root interactive>
           <TableHeader>
@@ -208,15 +189,12 @@ export function AdminMemberList() {
               <TableColumnHeader>이름</TableColumnHeader>
               <TableColumnHeader>닉네임</TableColumnHeader>
               <TableColumnHeader>가입 일자</TableColumnHeader>
-              <TableColumnHeader>탈퇴</TableColumnHeader>
+              <TableColumnHeader>회원 탈퇴</TableColumnHeader>
             </TableRow>
           </TableHeader>
           <Table.Body>
             {paginatedMembers.map((member) => (
-              <Table.Row
-                // onClick={() => handleRowClick(member.memberId)}
-                key={member.memberId}
-              >
+              <Table.Row key={member.memberId}>
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.name}</Table.Cell>
                 <Table.Cell>{member.nickname}</Table.Cell>
@@ -224,20 +202,6 @@ export function AdminMemberList() {
                   {new Date(member.inserted).toLocaleDateString()}
                 </Table.Cell>
                 <Table.Cell>
-                  {/*<Button*/}
-                  {/*  style={{*/}
-                  {/*    backgroundColor: "#F15F5F",*/}
-                  {/*    color: "white",*/}
-                  {/*    border: "none",*/}
-                  {/*    padding: "10px 20px",*/}
-                  {/*    borderRadius: "5px",*/}
-                  {/*    cursor: "pointer",*/}
-                  {/*    fontSize: "15px",*/}
-                  {/*  }}*/}
-                  {/*  onClick={() => handleDeleteClick(member.memberId)} // 클릭 시 memberId를 넘겨서 호출*/}
-                  {/*>*/}
-                  {/*  탈퇴*/}
-                  {/*</Button>*/}
                   <DeleteButton
                     onClick={handleDeleteClick}
                     memberId={member.memberId}
