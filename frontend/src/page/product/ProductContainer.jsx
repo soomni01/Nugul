@@ -198,8 +198,12 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
           <select value={sortOption} onChange={handleSortChange} size="sm">
             <option value="newest">최신순</option>
             <option value="popular">인기순</option>
-            <option value="low-to-high">저가순</option>
-            <option value="high-to-low">고가순</option>
+            {pay !== "share" && (
+              <>
+                <option value="low-to-high">저가순</option>
+                <option value="high-to-low">고가순</option>
+              </>
+            )}
           </select>
         </Flex>
         <Button
