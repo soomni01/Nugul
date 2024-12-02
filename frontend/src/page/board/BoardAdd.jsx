@@ -32,6 +32,13 @@ export function BoardAdd() {
         });
 
         navigate(`/board/boardView/${data.data.boardId}`);
+      })
+      .catch((e) => {
+        const message = e.response.data.message;
+        toaster.create({
+          description: message.text,
+          type: message.type,
+        });
       });
   };
   return (
