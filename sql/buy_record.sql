@@ -5,3 +5,7 @@ CREATE TABLE expense_record
     product_id INT REFERENCES product (product_id),
     date       DATE DEFAULT CURRENT_DATE
 );
+
+RENAME TABLE expense_record TO buy_record;
+
+DESC buy_record;
