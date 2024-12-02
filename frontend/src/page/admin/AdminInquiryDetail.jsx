@@ -100,7 +100,9 @@ export function AdminInquiryDetail({
 
   // 댓글 수정 처리 함수
   const handleEditClick = (commentId) => {
+    console.log(commentId);
     const commentToEdit = comments.find((c) => c.id === commentId);
+    console.log(commentToEdit);
     if (commentToEdit) {
       setComment(commentToEdit.comment); // 댓글 내용을 Textarea에 설정
       setEditingCommentId(commentId); // 수정 중인 댓글 ID 저장
