@@ -22,15 +22,20 @@ public class BoardController {
 
     @PostMapping("boardAdd")
     public ResponseEntity<Map<String, Object>> boardAdd(@RequestBody Board board) {
-        if (service.boardAdd(board)) {
-            return ResponseEntity.ok()
-                    .body(Map.of("message", Map.of("type", "success",
-                                    "text", STR."\{board.getBoardId()}번 게시물이 등록되었습니다"),
-                            "data", board));
+        if (service.validate(board)) {
+            if (service.boardAdd(board)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                        "text", STR."\{board.getBoardId()}번 게시물이 등록되었습니다"),
+                                "data", board));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "warning",
+                                "text", "게시물 등록이 실패하였습니다.")));
+            }
         } else {
-            return ResponseEntity.internalServerError()
-                    .body(Map.of("message", Map.of("type", "warning",
-                            "text", "게시물 등록이 실패하였습니다.")));
+            return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
+                    "text", "제목이나 본문이 비어있을 수 없습니다.")));
         }
     }
 
