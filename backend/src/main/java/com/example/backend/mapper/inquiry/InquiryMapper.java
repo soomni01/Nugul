@@ -1,6 +1,8 @@
 package com.example.backend.mapper.inquiry;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.inquiry.InquiryComment;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -19,7 +21,20 @@ public interface InquiryMapper {
     @Select("""
             SELECT *
             FROM inquiry
-            WHERE inquiry_id = #{inquiry_id}
+            WHERE inquiry_id = #{inquiryId}
             """)
     Inquiry findById(int inquiryId);
+
+    @Insert("""
+            INSERT INTO inquiry_comment
+            (inquiry_id, admin_id,comment)
+            VALUES (#{inquiryId}, #{memberId}, #{comment})
+            """)
+    int insertcomment(InquiryComment inquirycomment);
+
+    @Select("""
+            SELECT *
+            FROM inquiry_comment
+            WHERE inquiry_id = #{inquiryId}""")
+    List<InquiryComment> findCommentsByInquiryId(int inquiryId);
 }
