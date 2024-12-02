@@ -4,14 +4,11 @@ import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
+  PaginationItems,
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
-
-function PaginationItems() {
-  return null;
-}
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -24,6 +21,7 @@ export function BoardList() {
     axios
       .get("/api/board/list", {
         params: searchParams,
+        signal: controller.signal,
       })
       .then((res) => res.data)
       .then((data) => {
