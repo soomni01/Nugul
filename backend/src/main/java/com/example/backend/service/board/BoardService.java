@@ -21,4 +21,8 @@ public class BoardService {
     public void boardAdd(Board board) {
         mapper.insert(board);
     }
+
+    public Board get(int boardId) {
+        return mapper.selectById(boardId);
+    }
 }

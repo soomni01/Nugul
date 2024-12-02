@@ -22,4 +22,11 @@ public interface BoardMapper {
             VALUES (#{title}, #{content}, #{writer}, #{category})
             """)
     int insert(Board board);
+
+    @Select("""
+            SELECT *
+            FROM board
+            WHERE board_id = #{boardId}
+            """)
+    Board selectById(int boardId);
 }
