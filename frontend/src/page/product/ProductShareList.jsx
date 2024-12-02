@@ -1,5 +1,11 @@
-import { Box } from "@chakra-ui/react";
+import { ProductListContainer } from "./ProductContainer.jsx";
 
 export function ProductShareList() {
-  return <Box></Box>;
+  return (
+    <ProductListContainer
+      apiEndpoint="/api/product/list"
+      pay="share"
+      addProductRoute="/product/add"
+    />
+  );
 }

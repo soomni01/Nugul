@@ -17,7 +17,7 @@ export function ProductItem({ product }) {
           onClick={() => navigate(`/product/view/${product.productId}`)}
           variant="solid"
         >
-          거래하기
+          상품보기
         </Button>
         <Box>
           <GoHeart />
