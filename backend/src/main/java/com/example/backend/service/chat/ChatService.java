@@ -28,9 +28,9 @@ public class ChatService {
     }
 
 
-    public List<ChatRoom> chatRoomList() {
+    public List<ChatRoom> chatRoomList(String memberId) {
         //db 수정해야함
-        return mapper.allChatRoomList();
+        return mapper.chatRoomListByMemberId(memberId);
     }
 
     public boolean deleteChatRoom(String roomId) {

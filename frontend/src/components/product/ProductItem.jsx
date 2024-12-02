@@ -8,8 +8,6 @@ export function ProductItem({ product }) {
   const navigate = useNavigate();
   console.log(product);
 
-  // 채팅방 만들고 , 글로 이동
-  //  이미 만든적 있는 채팅방이면 글로 이동 ?
   const createChatRoom = () => {
     var testId;
     var productName = product.productName;

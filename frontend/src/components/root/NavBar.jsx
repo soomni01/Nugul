@@ -39,7 +39,7 @@ export function Navbar() {
       <NavbarItem
         onClick={() => {
           localStorage.removeItem("token");
-          navigate("/member/login");
+          navigate("/");
         }}
       >
         로그아웃

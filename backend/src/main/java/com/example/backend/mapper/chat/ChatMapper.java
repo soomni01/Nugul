@@ -34,9 +34,10 @@ public interface ChatMapper {
     @Select("""
                 select *
                 from chatroom
+                where writer=#{memberId}
                 order by roomId desc
             """)
-    List<ChatRoom> allChatRoomList();
+    List<ChatRoom> chatRoomListByMemberId(String memberId);
 
     @Delete("""
                         delete from chatroom

@@ -5,6 +5,7 @@ import com.example.backend.dto.chat.ChatMessage;
 import com.example.backend.dto.chat.ChatRoom;
 import com.example.backend.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
@@ -64,10 +66,12 @@ public class ChatController {
     }
 
     // 원래는, 로그인 기준으로 판매중? 인것들만
-    @GetMapping("list")
-    public List<ChatRoom> chatRoomList() {
 
-        return chatService.chatRoomList();
+    @GetMapping("list")
+    public List<ChatRoom> chatRoomList(@RequestParam String memberId) {
+
+        System.out.println("memberId = " + memberId);
+        return chatService.chatRoomList(memberId);
     }
 
 

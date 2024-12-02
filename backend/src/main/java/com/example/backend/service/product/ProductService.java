@@ -19,8 +19,9 @@ public class ProductService {
 
     final ProductMapper mapper;
 
+
     public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage) {
-        product.setWriter("1");
+        // setToken1 지움
         int cnt = mapper.insert(product);
 
         if (files != null && files.length > 0) {

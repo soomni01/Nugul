@@ -1,27 +1,36 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
+  const { id } = useContext(AuthenticationContext);
   let navigate = useNavigate();
 
   useEffect(() => {
     getChatList();
   }, []);
 
+  //아이디를 넘겨줘서 , 내 것만 보도록 바꿔야함
   function getChatList() {
     axios
-      .get("/api/chat/list")
+      .get("/api/chat/list", {
+        params: {
+          memberId: id,
+        },
+      })
       .then((res) => {
         // TODO: 얕은복사?? 깊은 복사 ? 기억은 잘 안남
 
         setChatList(res.data);
       })
-      .catch();
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   const removeChatRoom = (roomId) => {
