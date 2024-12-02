@@ -14,13 +14,15 @@ export function BoardAdd() {
   const navigate = useNavigate();
 
   const handleSaveClick = () => {
-    axios.post("/api/board/boardAdd", {
-      title,
-      content,
-      writer,
-      category,
-    });
-    navigate("/board/list");
+    axios
+      .post("/api/board/boardAdd", {
+        title,
+        content,
+        writer,
+        category,
+      })
+      .then((res) => res.data)
+      .then((data) => navigate(`/board/boardView/${data.boardId}`));
   };
   return (
     <Box>

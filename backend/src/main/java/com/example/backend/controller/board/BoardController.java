@@ -19,8 +19,9 @@ public class BoardController {
     }
 
     @PostMapping("boardAdd")
-    public void boardAdd(@RequestBody Board board) {
+    public Board boardAdd(@RequestBody Board board) {
         service.boardAdd(board);
+        return board;
     }
 
     @GetMapping("list")
