@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/board")
@@ -19,9 +20,8 @@ public class BoardController {
     }
 
     @PostMapping("boardAdd")
-    public Board boardAdd(@RequestBody Board board) {
-        service.boardAdd(board);
-        return board;
+    public Map<String, Object> boardAdd(@RequestBody Board board) {
+        return service.boardAdd(board);
     }
 
     @GetMapping("list")

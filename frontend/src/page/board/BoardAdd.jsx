@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function BoardAdd() {
   const [title, setTitle] = useState("");
@@ -22,7 +23,16 @@ export function BoardAdd() {
         category,
       })
       .then((res) => res.data)
-      .then((data) => navigate(`/board/boardView/${data.boardId}`));
+      .then((data) => {
+        const message = data.message;
+
+        toaster.create({
+          description: message.text,
+          type: message.type,
+        });
+
+        navigate(`/board/boardView/${data.data.boardId}`);
+      });
   };
   return (
     <Box>
