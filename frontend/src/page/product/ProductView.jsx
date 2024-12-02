@@ -26,6 +26,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { categories } from "../../components/category/CategoryContainer.jsx";
 
 function ImageFileView() {
   return null;
@@ -36,6 +37,7 @@ export function ProductView() {
   const [product, setProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [markerPosition, setMarkerPosition] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,6 +77,10 @@ export function ProductView() {
     return <Spinner />;
   }
 
+  const categoryLabel =
+    categories.find((category) => category.value === product.category)?.label ||
+    "전체"; // 기본값 설정
+
   return (
     <Box>
       <Heading>
@@ -85,7 +91,7 @@ export function ProductView() {
         <Flex gap={3}>
           <Box minWidth="100px">
             <Field label={"카테고리"} readOnly>
-              <Input value={product.category} />
+              <Input value={categoryLabel} />
             </Field>
           </Box>
           <Box flex={8}>
@@ -96,7 +102,9 @@ export function ProductView() {
         </Flex>
         <Field label={"거래방식"} readOnly>
           <Flex gap={4}>
-            <Button borderRadius="10px">{product.pay}</Button>
+            <Button borderRadius="10px">
+              {product.pay == "sell" ? "판매하기" : "나눔하기"}
+            </Button>
           </Flex>
         </Field>
         <Field label={"가격"} readOnly>
