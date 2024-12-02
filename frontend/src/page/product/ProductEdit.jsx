@@ -23,10 +23,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 function ImageFileView() {
   return null;
@@ -39,6 +40,7 @@ export function ProductEdit() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
@@ -194,39 +196,40 @@ export function ProductEdit() {
           onClose={() => setIsModalOpen(false)}
           onSelectLocation={handleLocationSelect}
         />
-
-        <Box>
-          <DialogRoot
-            open={dialogOpen}
-            onOpenChange={(e) => setDialogOpen(e.open)}
-          >
-            <DialogTrigger asChild>
-              <Button disabled={disabled} colorPalette={"blue"}>
-                저장
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>저장 확인</DialogTitle>
-              </DialogHeader>
-              <DialogBody>
-                <p>{product.productId}번 상품 수정하시겠습니까?</p>
-              </DialogBody>
-              <DialogFooter>
-                <DialogActionTrigger>
-                  <Button variant={"outline"}>취소</Button>
-                </DialogActionTrigger>
-                <Button
-                  loading={progress}
-                  colorPalette={"blue"}
-                  onClick={handleSaveClick}
-                >
+        {hasAccess(product.writer) && (
+          <Box>
+            <DialogRoot
+              open={dialogOpen}
+              onOpenChange={(e) => setDialogOpen(e.open)}
+            >
+              <DialogTrigger asChild>
+                <Button disabled={disabled} colorPalette={"blue"}>
                   저장
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </DialogRoot>
-        </Box>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>저장 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>{product.productId}번 상품 수정하시겠습니까?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant={"outline"}>취소</Button>
+                  </DialogActionTrigger>
+                  <Button
+                    loading={progress}
+                    colorPalette={"blue"}
+                    onClick={handleSaveClick}
+                  >
+                    저장
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </Box>
+        )}
       </Stack>
     </Box>
   );

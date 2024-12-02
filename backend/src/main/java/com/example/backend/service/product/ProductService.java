@@ -87,4 +87,10 @@ public class ProductService {
         int cnt = mapper.update(product);
         return cnt == 1;
     }
+
+    public boolean hasAccess(int id, Authentication authentication) {
+        Product product = mapper.selectById(id);
+
+        return product.getWriter().equals(authentication.getName());
+    }
 }

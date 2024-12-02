@@ -11,7 +11,7 @@ import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
@@ -27,6 +27,7 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 function ImageFileView() {
   return null;
@@ -35,10 +36,9 @@ function ImageFileView() {
 export function ProductView() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
   const [markerPosition, setMarkerPosition] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
+  const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
@@ -83,10 +83,9 @@ export function ProductView() {
 
   return (
     <Box>
-      <Heading>
-        {id}번 상품 이름: {product.nickname}
-      </Heading>
+      <Heading>{id}번 상품 이름</Heading>
       <Stack gap={5}>
+        <Box>판매자: {product.nickname}</Box>
         <ImageFileView />
         <Flex gap={3}>
           <Box minWidth="100px">
@@ -116,11 +115,7 @@ export function ProductView() {
           <Textarea h={200} value={product.description} />
         </Field>
         <Field label={"거래 희망 장소"} readOnly>
-          <Input
-            value={product.locationName}
-            onClick={() => setIsModalOpen(true)} // 거래 장소 input 클릭 시 모달 열기
-            readOnly
-          />
+          <Input value={product.locationName} readOnly />
         </Field>
         <Box>
           <Map
@@ -132,33 +127,38 @@ export function ProductView() {
             {markerPosition && <MapMarker position={markerPosition} />}
           </Map>
         </Box>
-        <Button
-          colorPalette={"cyan"}
-          onClick={() => navigate(`/product/edit/${product.productId}`)}
-        >
-          수정
-        </Button>
-        <DialogRoot>
-          <DialogTrigger asChild>
-            <Button colorPalette={"red"}>삭제</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>삭제 확인</DialogTitle>
-            </DialogHeader>
-            <DialogBody>
-              <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
-            </DialogBody>
-            <DialogFooter>
-              <DialogActionTrigger>
-                <Button variant={"outline"}>취소</Button>
-              </DialogActionTrigger>
-              <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                삭제
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </DialogRoot>
+        <Button>거래하기</Button>
+        {hasAccess(product.writer) && (
+          <Box>
+            <Button
+              colorPalette={"cyan"}
+              onClick={() => navigate(`/product/edit/${product.productId}`)}
+            >
+              수정
+            </Button>
+            <DialogRoot>
+              <DialogTrigger asChild>
+                <Button colorPalette={"red"}>삭제</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>삭제 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant={"outline"}>취소</Button>
+                  </DialogActionTrigger>
+                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                    삭제
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </Box>
+        )}
       </Stack>
     </Box>
   );
