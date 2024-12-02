@@ -84,12 +84,15 @@ export function ChatView() {
 
   return (
     <Box>
-      {id} 번 채팅 화면입니다.
-      <Box> 상품명: {chatRoom.productName} </Box>
-      <Flex>
-        <Flex direction="column" bg={"red.300"} h={500} w={800}>
+      <Heading mx={"auto"}>
+        {" "}
+        {id} 번 채팅 화면입니다. <hr />
+      </Heading>
+      <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
+      <Flex h={"80%"} bg={"blue.300/50"}>
+        <Flex direction="column" h={500} w={800}>
           <Box mx={"auto"} my={3} variant={"outline"}>
-            닉네임: {chatRoom.nickname}
+            판매자 닉네임: {chatRoom.nickname}
           </Box>
           <Box h={"70%"}>
             {message.map((item, index) => (
@@ -99,69 +102,46 @@ export function ChatView() {
               </Box>
             ))}
           </Box>
-
-          <HStack>
-            <Field>
-              <Input
-                type={"text"}
-                value={clientMessage}
-                onChange={(e) => {
-                  setClientMessage(e.target.value);
-                }}
-              />
-            </Field>
-            <Button
-              variant={"outline"}
-              onClick={() => {
-                var client = "client";
-                var message = clientMessage;
-                sendMessage(client, message);
-              }}
-            >
-              전송
-            </Button>
-          </HStack>
         </Flex>
 
-        <Box bg={"blue.300"}>
-          <h3> 서버에서 보내준 내용 </h3>
-          {message.map((item, index) => (
-            <div key={index}>
-              <p>Sender: {item.sender}</p>
-              <p>Content: {item.content}</p>
-            </div>
-          ))}
-          <Field>
-            <Input
-              type={"text"}
-              value={serverMessage}
-              onChange={(e) => {
-                setServerMessage(e.target.value);
-              }}
-            />
-          </Field>
+        <Flex direction="column" h={500} w={800}>
+          <Box mx={"auto"} my={3} variant={"outline"}>
+            닉네임: 상대방
+          </Box>
 
-          <Button
-            variant={"outline"}
-            onClick={() => {
-              var server = "server";
-              var message = serverMessage;
-              sendMessage(server, message);
-            }}
-          >
-            {" "}
-            전송
-          </Button>
-        </Box>
+          <Box h={"70%"}>
+            {message.map((item, index) => (
+              <div key={index}>
+                <p>Sender: {item.sender}</p>
+                <p>Content: {item.content}</p>
+              </div>
+            ))}
+          </Box>
+        </Flex>
       </Flex>
-      <Box>
-        <Heading> ui 변경 테스트 </Heading>
-        <Box>
-          <Box></Box>
-          <Box></Box>
-          <Input />
-        </Box>
-      </Box>
+      <HStack>
+        <Field>
+          <Input
+            bg={"gray.300"}
+            type={"text"}
+            value={clientMessage}
+            onChange={(e) => {
+              setClientMessage(e.target.value);
+            }}
+          />
+        </Field>
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            // 세션의 닉네임
+            var client = "client";
+            var message = clientMessage;
+            sendMessage(client, message);
+          }}
+        >
+          전송
+        </Button>
+      </HStack>
     </Box>
   );
 }

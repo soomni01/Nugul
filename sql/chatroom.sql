@@ -6,7 +6,8 @@ create table chatroom
     writer      varchar(50) not null
 );
 
-
+ALTER TABLE chatroom
+    CHANGE COLUMN sender nickname VARCHAR(50) NOT NULL DEFAULT 'Unknown';
 
 select *
 from chatroom;

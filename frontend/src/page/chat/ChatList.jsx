@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
@@ -43,6 +43,11 @@ export function ChatList() {
   return (
     <Box>
       <Heading> 채팅 목록</Heading>
+      <HStack>
+        <Button>전체</Button>
+        <Button>구매</Button>
+        <Button>판매</Button>
+      </HStack>
       {chatList.map((chat) => (
         <ChatListItem
           key={chat.roomId}

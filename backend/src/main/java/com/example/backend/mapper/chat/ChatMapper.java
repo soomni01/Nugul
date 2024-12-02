@@ -1,5 +1,6 @@
 package com.example.backend.mapper.chat;
 
+import com.example.backend.dto.chat.ChatMessage;
 import com.example.backend.dto.chat.ChatRoom;
 import org.apache.ibatis.annotations.*;
 
@@ -10,11 +11,16 @@ public interface ChatMapper {
 
 
     @Insert("""
-                   INSERT INTO chatroom (productName,writer)
-            VALUES (#{productName}, #{writer})
+            INSERT INTO chatroom (productName, writer, nickname)
+            VALUES (
+                #{productName},
+                #{writer},
+                (SELECT  distinct (nickname) FROM member WHERE member_id = #{writer})
+            )
             """)
     @Options(useGeneratedKeys = true, keyProperty = "roomId")
     int createChatRoom(ChatRoom chatInfo);
+
 
     @Select("""
                         select * 
@@ -45,4 +51,11 @@ public interface ChatMapper {
                                   where m.member_id=#{writer};
             """)
     String findNickNameByWriter(String writer);
+
+    @Insert("""
+                        Insert into chat_message
+                        (sender,roomId,content)
+            values (#{sender},#{roomId},#{content})
+            """)
+    int insertMessage(ChatMessage chatMessage);
 }
