@@ -139,7 +139,7 @@ export function AdminInquiryDetail({ handleDeleteClick }) {
                 <Text fontWeight="bold">{c.memberId}</Text>
                 <Text>{c.comment}</Text>
                 <Text fontSize="sm" color="gray.500">
-                  {new Date(c.inserted).toLocaleString()}
+                  {new Date(c.inserted).toLocaleDateString()}
                 </Text>
               </Box>
             ))}
