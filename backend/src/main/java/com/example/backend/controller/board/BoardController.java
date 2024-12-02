@@ -15,6 +15,19 @@ import java.util.Map;
 public class BoardController {
     final BoardService service;
 
+    @DeleteMapping("boardDelete/{boardId}")
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable int boardId) {
+        if (service.remove(boardId)) {
+            return ResponseEntity.ok()
+                    .body(Map.of("message", Map.of("type", "success"
+                            , "text", STR."\{boardId}번 게시글이 삭제되었습니다.")));
+        } else {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("message", Map.of("type", "error"
+                            , "text", "게시글 삭제 중 문제가 발생하였습니다.")));
+        }
+    }
+
     @GetMapping("boardView/{boardId}")
     public Board boardView(@PathVariable int boardId) {
         return service.get(boardId);

@@ -1,12 +1,25 @@
 import { Box, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { Button } from "../../components/ui/button.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -17,6 +30,26 @@ export function BoardView() {
   if (!board) {
     return <Spinner />;
   }
+
+  const handleDeleteClick = () => {
+    axios
+      .delete(`/api/board/boardDelete/${board.boardId}`)
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+        navigate("/board/list");
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      });
+  };
 
   return (
     <Box>
@@ -37,6 +70,31 @@ export function BoardView() {
         <Field label={"작성날짜"} readOnly>
           <Input type={"date"} value={board.createdAt} />
         </Field>
+        <Box>
+          <DialogRoot>
+            <DialogTrigger asChild>
+              <Button colorPalette={"red"} variant={"outline"}>
+                삭제
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>삭제 확인</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
+                <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
+              </DialogBody>
+              <DialogFooter>
+                <DialogActionTrigger>
+                  <Button variant={"outline"}>취소</Button>
+                </DialogActionTrigger>
+                <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                  삭제
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </DialogRoot>
+        </Box>
       </Stack>
     </Box>
   );

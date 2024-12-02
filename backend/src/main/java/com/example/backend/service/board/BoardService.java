@@ -34,4 +34,9 @@ public class BoardService {
 
         return title && content;
     }
+
+    public boolean remove(int boardId) {
+        int cnt = mapper.deleteById(boardId);
+        return cnt == 1;
+    }
 }
