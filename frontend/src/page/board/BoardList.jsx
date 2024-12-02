@@ -15,6 +15,7 @@ function PaginationItems() {
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
+  const [count, setCount] = useState(0);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -25,7 +26,10 @@ export function BoardList() {
         params: searchParams,
       })
       .then((res) => res.data)
-      .then((data) => setBoardList(data));
+      .then((data) => {
+        setBoardList(data.list);
+        setCount(data.count);
+      });
 
     return () => {
       controller.abort();
@@ -90,7 +94,7 @@ export function BoardList() {
       </Table.Root>
       <PaginationRoot
         onPageChange={handlePageChange}
-        count={1500}
+        count={count}
         pageSize={10}
         page={page}
       >
