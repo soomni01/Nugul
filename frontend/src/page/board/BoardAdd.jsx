@@ -46,6 +46,9 @@ export function BoardAdd() {
         setProgress(false);
       });
   };
+
+  const disabled = !(title.trim().length > 0 && content.trim().length > 0);
+
   return (
     <Box>
       <h3>게시글 쓰기</h3>
@@ -83,7 +86,11 @@ export function BoardAdd() {
           />
         </Field>
         <Box>
-          <Button loading={progress} onClick={handleSaveClick}>
+          <Button
+            disabled={disabled}
+            loading={progress}
+            onClick={handleSaveClick}
+          >
             저장
           </Button>
         </Box>
