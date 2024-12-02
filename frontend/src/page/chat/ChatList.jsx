@@ -8,14 +8,16 @@ import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx"
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
-  const { id } = useContext(AuthenticationContext);
   let navigate = useNavigate();
+  const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
     getChatList();
   }, []);
 
-  //아이디를 넘겨줘서 , 내 것만 보도록 바꿔야함
+  console.log(id);
+
+  //아이디를 넘겨줘서 , 내 것만 보도록 바꿔야함 , 새로고침 하면 안뜨는데 ,,
   function getChatList() {
     axios
       .get("/api/chat/list", {
