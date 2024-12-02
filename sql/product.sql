@@ -53,4 +53,9 @@ SELECT product_id, product_name, writer, price, created_at, m.nickname writerNic
 FROM product p
          JOIN member m ON p.writer = m.member_id
 
-ORDER BY product_id DESC
+ORDER BY product_id DESC;
+
+ALTER TABLE product
+    MODIFY COLUMN price INT DEFAULT 0 NULL;
+
+DESC product;

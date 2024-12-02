@@ -50,7 +50,10 @@ export function ProductEdit() {
     setProduct({ ...product, category: e.target.value });
 
   const buttonClick = (buttonType) => {
-    setProduct({ ...product, pay: buttonType });
+    setProduct({
+      ...product,
+      pay: buttonType,
+    });
   };
 
   const handlePriceChange = (e) => {
@@ -75,7 +78,7 @@ export function ProductEdit() {
         productName: product.productName,
         description: product.description,
         category: product.category,
-        price: product.price,
+        price: product.pay === "share" ? 0 : product.price,
         pay: product.pay,
         latitude: product.latitude,
         longitude: product.longitude,
@@ -111,7 +114,6 @@ export function ProductEdit() {
   const disabled = !(
     product.productName.trim().length > 0 &&
     product.description.trim().length > 0 &&
-    product.price > 0 &&
     product.locationName.trim().length > 0
   );
 
@@ -170,11 +172,13 @@ export function ProductEdit() {
             </Button>
           </Flex>
         </Field>
-        <Field label={"가격"}>
-          <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-            <Input value={product.price} onChange={handlePriceChange} />
-          </InputGroup>
-        </Field>
+        {product.pay === "sell" && (
+          <Field label={"가격"}>
+            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
+              <Input value={product.price} onChange={handlePriceChange} />
+            </InputGroup>
+          </Field>
+        )}
         <Field label={"상품 설명"}>
           <Textarea
             h={200}

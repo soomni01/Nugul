@@ -66,10 +66,9 @@ public class ProductService {
 
     public boolean validate(Product product) {
         boolean productName = product.getProductName().trim().length() > 0;
-        boolean price = product.getPrice() > 0;
         boolean locationName = product.getLocationName().trim().length() > 0;
 
-        return productName && price && locationName;
+        return productName && locationName;
     }
 
     public Product getProductView(int id) {

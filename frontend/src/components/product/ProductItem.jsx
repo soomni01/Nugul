@@ -32,8 +32,8 @@ export function ProductItem({ product, likeCount, isLiked }) {
         </Card.Title>
         <Card.Description>
           <HStack gap="1">
-            <PiCurrencyKrwBold />
-            {product.price}
+            {product.pay !== "share" && <PiCurrencyKrwBold />}
+            {product.pay === "share" ? "나눔" : product.price}
           </HStack>
         </Card.Description>
       </Card.Body>

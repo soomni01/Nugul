@@ -143,11 +143,13 @@ export function ProductView() {
             </Button>
           </Flex>
         </Field>
-        <Field label={"가격"} readOnly>
-          <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-            <Input value={product.price} />
-          </InputGroup>
-        </Field>
+        {product.pay === "sell" && (
+          <Field label={"가격"} readOnly>
+            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
+              <Input value={product.price} />
+            </InputGroup>
+          </Field>
+        )}
         <Field label={"상품 설명"} readOnly>
           <Textarea h={200} value={product.description} />
         </Field>
