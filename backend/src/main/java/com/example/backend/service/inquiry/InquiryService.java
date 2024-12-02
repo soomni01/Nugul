@@ -47,4 +47,9 @@ public class InquiryService {
         int cnt = mapper.update(inquirycomment);
         return cnt == 1;
     }
+
+    public boolean deleteComment(int commentId) {
+        int cnt = mapper.deleteComment(commentId);
+        return cnt == 1;
+    }
 }

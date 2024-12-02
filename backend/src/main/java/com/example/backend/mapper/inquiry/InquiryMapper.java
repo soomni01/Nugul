@@ -2,10 +2,7 @@ package com.example.backend.mapper.inquiry;
 
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.inquiry.InquiryComment;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -46,4 +43,10 @@ public interface InquiryMapper {
             WHERE id = #{id}
             """)
     int update(InquiryComment inquirycomment);
+
+    @Delete("""
+            DELETE FROM inquiry_comment
+            WHERE id = #{commentId}
+            """)
+    int deleteComment(int commentId);
 }

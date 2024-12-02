@@ -64,7 +64,12 @@ export function AdminInquiryDetail({
     if (editingCommentId) {
       // 수정 모드에서 댓글 업데이트
       axios
-        .put(`/api/inquiry/comment/${editingCommentId}`, { comment })
+        .put(`/api/inquiry/comment/${editingCommentId}`, {
+          id: editingCommentId,
+          inquiryId: parseInt(inquiryId, 10),
+          memberId: id,
+          comment: comment,
+        })
         .then((res) => {
           alert("댓글이 수정되었습니다.");
           setComment("");
@@ -79,6 +84,7 @@ export function AdminInquiryDetail({
           console.error("댓글 수정 중 오류 발생:", error);
         });
     } else {
+      // 댓글 등록
       const newComment = {
         inquiryId: parseInt(inquiryId, 10),
         memberId: id,
@@ -101,9 +107,7 @@ export function AdminInquiryDetail({
 
   // 댓글 수정 처리 함수
   const handleEditClick = (commentId) => {
-    console.log(commentId);
     const commentToEdit = comments.find((c) => c.id === commentId);
-    console.log(commentToEdit);
     if (commentToEdit) {
       setComment(commentToEdit.comment);
       setEditingCommentId(commentId);
