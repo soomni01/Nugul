@@ -140,7 +140,9 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     if (sortOption === "newest") {
       return new Date(b.createdAt) - new Date(a.createdAt);
     } else if (sortOption === "popular") {
-      return b.popularity - a.popularity;
+      const aLikes = likeData[a.productId] || 0;
+      const bLikes = likeData[b.productId] || 0;
+      return bLikes - aLikes; // 좋아요 수가 많은 순으로 정렬
     } else if (sortOption === "low-to-high") {
       return a.price - b.price;
     } else if (sortOption === "high-to-low") {
