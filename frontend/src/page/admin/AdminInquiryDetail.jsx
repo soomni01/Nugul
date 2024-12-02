@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -12,6 +12,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function AdminInquiryDetail({
   handleDeleteClick: handleDeleteClickProp,
@@ -22,6 +23,7 @@ export function AdminInquiryDetail({
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const navigate = useNavigate();
+  const { id } = useContext(AuthenticationContext);
 
   // 게시글 정보 가져오기
   useEffect(() => {
@@ -77,10 +79,9 @@ export function AdminInquiryDetail({
           console.error("댓글 수정 중 오류 발생:", error);
         });
     } else {
-      // 새로운 댓글 작성
       const newComment = {
         inquiryId: parseInt(inquiryId, 10),
-        memberId: "admin", // 로그인된 관리자의 ID로 설정
+        memberId: id,
         comment: comment,
         inserted: new Date().toISOString(),
       };
