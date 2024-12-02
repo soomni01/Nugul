@@ -96,11 +96,17 @@ export function BoardList() {
         pageSize={10}
         page={page}
       >
-        <HStack>
-          <PaginationPrevTrigger />
-          <PaginationItems />
-          <PaginationNextTrigger />
-        </HStack>
+        <Box
+          mt={4}
+          textAlign="center"
+          style={{ transform: "translateX(450px)" }}
+        >
+          <HStack>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </Box>
       </PaginationRoot>
     </Box>
   );
