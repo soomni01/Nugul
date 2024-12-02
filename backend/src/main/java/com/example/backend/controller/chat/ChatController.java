@@ -24,10 +24,17 @@ public class ChatController {
 
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
-    public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage message) {
-//            요청 보내면  send to 경로 리턴
-//        TODO:  chatroom 테이블 생성해야할듯 , roomId, message, sender , productId,
-        return message;
+    public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
+
+
+        // 보낸 메시지 저장시킬 방 번호 입력
+        chatMessage.setRoomId(roomId);
+
+        chatService.insertMessage(chatMessage);
+        System.out.println("chatMessage = " + chatMessage);
+
+
+        return chatMessage;
     }
 
     @PostMapping("create")
@@ -49,10 +56,8 @@ public class ChatController {
 
         ChatRoom chatRoom = chatService.chatRoomView(roomId);
 
-        // db 테이블에는 nickname 이 저장되어있지 않아 , dto에 추가해 , 닉네임만 가져와서 반환
-        String nickname = chatService.findNickname(chatRoom.getWriter());
-        chatRoom.setNickname(nickname);
-        System.out.println(chatRoom);
+        System.out.println("chatRoom = " + chatRoom);
+
         return chatRoom;
 
 

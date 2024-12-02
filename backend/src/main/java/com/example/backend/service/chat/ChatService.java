@@ -1,5 +1,6 @@
 package com.example.backend.service.chat;
 
+import com.example.backend.dto.chat.ChatMessage;
 import com.example.backend.dto.chat.ChatRoom;
 import com.example.backend.mapper.chat.ChatMapper;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,10 @@ public class ChatService {
     public String findNickname(String writer) {
 
         return mapper.findNickNameByWriter(writer);
+    }
+
+    public void insertMessage(ChatMessage chatMessage) {
+
+        mapper.insertMessage(chatMessage);
     }
 }
