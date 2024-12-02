@@ -14,8 +14,8 @@ import java.util.List;
 public class BoardService {
     final BoardMapper mapper;
 
-    public List<Board> list() {
-        return mapper.selectAll();
+    public List<Board> list(Integer page) {
+        return mapper.selectPage((page - 1) * 10);
     }
 
     public boolean boardAdd(Board board) {

@@ -1,19 +1,34 @@
-import { Box, Flex, Table } from "@chakra-ui/react";
+import { Box, Flex, HStack, Table } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "../../components/ui/pagination.jsx";
+
+function PaginationItems() {
+  return null;
+}
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     axios
-      .get("/api/board/list")
+      .get("/api/board/list", {
+        params: searchParams,
+      })
       .then((res) => res.data)
       .then((data) => setBoardList(data));
   }, []);
+
+  const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
+  const page = Number(pageParam);
 
   function handleRowClick(boardId) {
     navigate(`/board/boardView/${boardId}`);
@@ -62,6 +77,13 @@ export function BoardList() {
           )}
         </Table.Body>
       </Table.Root>
+      <PaginationRoot count={1500} pageSize={10} page={page}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
     </Box>
   );
 }
