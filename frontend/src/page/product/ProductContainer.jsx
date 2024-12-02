@@ -36,9 +36,11 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [search, setSearch] = useState({ keyword: "" });
   const navigate = useNavigate();
 
+  // 페이지 번호
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
 
+  // 카테고리 변경 처리
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     const nextSearchParams = new URLSearchParams(searchParams);
@@ -47,10 +49,12 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     setSearchParams(nextSearchParams);
   };
 
+  // 카테고리 label 찾기
   const selectedCategoryLabel = categories.find(
     (category) => category.value === selectedCategory,
   )?.label;
 
+  // 컴포넌트 마운트 시 상품 목록 가져오기
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
@@ -77,6 +81,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     };
   }, [searchParams, selectedCategory]);
 
+  // 검색 키워드 유지 또는 초기화
   useEffect(() => {
     const nextSearch = { ...search };
 
@@ -89,12 +94,14 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     setSearch(nextSearch);
   }, [searchParams]);
 
+  // 페이지 이동
   const handlePageChange = (e) => {
     const nextSearchParams = new URLSearchParams(searchParams);
     nextSearchParams.set("page", e.page);
     setSearchParams(nextSearchParams);
   };
 
+  // 정렬 옵션 변경
   const handleSortChange = (e) => {
     const sortValue = e.target.value;
     setSortOption(sortValue);
@@ -103,6 +110,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     setSearchParams(nextSearchParams);
   };
 
+  // 클라이언트 정렬
   const sortedList = [...productList].sort((a, b) => {
     if (sortOption === "newest") {
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -116,6 +124,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     return 0;
   });
 
+  // 검색 기능
   const handleSearchClick = () => {
     const nextSearchParam = new URLSearchParams(searchParams);
     if (search.keyword.trim().length > 0) {
@@ -127,6 +136,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     setSearchParams(nextSearchParam);
   };
 
+  // enter 키로도 검색 가능
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSearchClick();
