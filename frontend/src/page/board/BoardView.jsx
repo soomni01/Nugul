@@ -94,6 +94,12 @@ export function BoardView() {
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
+          <Button
+            colorPalette={"cyan"}
+            onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
+          >
+            수정
+          </Button>
         </Box>
       </Stack>
     </Box>

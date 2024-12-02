@@ -25,6 +25,7 @@ import { MainPage } from "./page/main/MainPage.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: "board/boardView/:boardId",
         element: <BoardView />,
+      },
+      {
+        path: "board/boardEdit/:boardId",
+        element: <BoardEdit />,
       },
     ],
   },
