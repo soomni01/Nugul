@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Box, Flex, Heading, Input, Stack, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
@@ -10,6 +10,7 @@ import { categories } from "../../components/category/CategoryContainer.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -24,6 +25,7 @@ export function ProductAdd(props) {
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
   const [mainImage, setMainImage] = useState(null);
+  const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   // 가격 입력 필터링
@@ -77,6 +79,8 @@ export function ProductAdd(props) {
         price,
         category,
         location,
+        //  토큰에서 받아서 값 넣음
+        writer: id,
         pay,
         latitude: location?.latitude,
         longitude: location?.longitude,

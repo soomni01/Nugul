@@ -1,5 +1,4 @@
-import { createContext } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 export const AuthenticationContext = createContext(null);
