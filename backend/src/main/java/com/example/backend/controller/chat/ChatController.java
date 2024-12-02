@@ -47,7 +47,15 @@ public class ChatController {
     @GetMapping("view/{roomId}")
     public ChatRoom chatRoomView(@PathVariable String roomId) {
 
-        return chatService.chatRoomView(roomId);
+        ChatRoom chatRoom = chatService.chatRoomView(roomId);
+
+        // db 테이블에는 nickname 이 저장되어있지 않아 , dto에 추가해 , 닉네임만 가져와서 반환
+        String nickname = chatService.findNickname(chatRoom.getWriter());
+        chatRoom.setNickname(nickname);
+        System.out.println(chatRoom);
+        return chatRoom;
+
+
     }
 
     // 원래는, 로그인 기준으로 판매중? 인것들만

@@ -40,7 +40,7 @@ export function MemberLogin() {
           type: data.message.type,
           description: data.message.text,
         });
-        navigate("/");
+        navigate("main");
         localStorage.setItem("token", data.token);
       })
       .catch((e) => {

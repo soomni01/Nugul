@@ -85,11 +85,11 @@ export function ChatView() {
   return (
     <Box>
       {id} 번 채팅 화면입니다.
-      <Box> {chatRoom.productName} 상품 </Box>
+      <Box> 상품명: {chatRoom.productName} </Box>
       <Flex>
         <Flex direction="column" bg={"red.300"} h={500} w={800}>
           <Box mx={"auto"} my={3} variant={"outline"}>
-            {chatRoom.writer}
+            닉네임: {chatRoom.nickname}
           </Box>
           <Box h={"70%"}>
             {message.map((item, index) => (

@@ -37,4 +37,9 @@ public class ChatService {
         int cnt = mapper.deleteChatRoomByRoomId(roomId);
         return cnt == 1;
     }
+
+    public String findNickname(String writer) {
+
+        return mapper.findNickNameByWriter(writer);
+    }
 }

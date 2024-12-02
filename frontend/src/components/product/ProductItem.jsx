@@ -23,8 +23,8 @@ export function ProductItem({ product }) {
       })
       .then((res) => {
         console.log(res.data);
-        testId = res.data;
-        navigate("/chat/room/" + testId);
+        const roomId = res.data;
+        navigate("/chat/room/" + roomId);
       });
     // 추가
   };

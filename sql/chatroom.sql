@@ -6,14 +6,19 @@ create table chatroom
     writer      varchar(50) not null
 );
 
+
+
 select *
 from chatroom;
 
 select *
-from chatroom join  member
+from chatroom
+         join member;
 
 
 delete
 from chatroom;
 
 drop table chatroom;
+
+

@@ -37,4 +37,12 @@ public interface ChatMapper {
             where roomId =#{roomId}
             """)
     int deleteChatRoomByRoomId(String roomId);
+
+    // 닉네임만 가져옴
+    @Select("""
+                  select   distinct (m.nickname)
+                                  from chatroom c join member m
+                                  where m.member_id=#{writer};
+            """)
+    String findNickNameByWriter(String writer);
 }
