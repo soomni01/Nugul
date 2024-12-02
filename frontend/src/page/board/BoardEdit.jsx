@@ -43,6 +43,13 @@ export function BoardEdit() {
         });
         navigate(`/board/boardView/${boardId}`);
       })
+      .catch((e) => {
+        const message = e.response.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
       .finally(() => {
         setProgress(false);
       });
@@ -51,6 +58,11 @@ export function BoardEdit() {
   if (board === null) {
     return <Spinner />;
   }
+
+  const disabled = !(
+    board.title.trim().length > 0 && board.content.trim().length > 0
+  );
+
   return (
     <Box>
       <h3>{boardId}번 게시물 수정</h3>
@@ -70,7 +82,11 @@ export function BoardEdit() {
         <Box>
           <DialogRoot>
             <DialogTrigger asChild>
-              <Button colorPalette={"cyan"} variant={"outline"}>
+              <Button
+                disabled={disabled}
+                colorPalette={"cyan"}
+                variant={"outline"}
+              >
                 저장
               </Button>
             </DialogTrigger>
