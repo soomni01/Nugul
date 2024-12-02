@@ -4,6 +4,7 @@ import com.example.backend.dto.product.Product;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ProductMapper {
@@ -107,11 +108,25 @@ public interface ProductMapper {
             WHERE product_id = #{productId}
             AND member_id = #{name}
             """)
-    int deleteLikeByProductAndMemberId(Integer productId, String name);
+    int deleteLike(Integer productId, String name);
 
     @Insert("""
             INSERT INTO product_like
             VALUES (#{productId}, #{name})
             """)
     int insertLike(Integer productId, String name);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM product_like
+            WHERE product_id = #{productId}
+            """)
+    int countLike(Integer productId);
+
+    @Select("""
+            SELECT product_id, COUNT(*) as like_count
+            FROM product_like
+            GROUP BY product_id;
+            """)
+    List<Map<String, Object>> countLikeByProductId();
 }

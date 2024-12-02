@@ -34,6 +34,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [search, setSearch] = useState({ keyword: "" });
+  const [likeData, setLikeData] = useState({});
   const navigate = useNavigate();
 
   // 페이지 번호
@@ -93,6 +94,23 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
 
     setSearch(nextSearch);
   }, [searchParams]);
+
+  useEffect(() => {
+    // 여러 상품에 대한 좋아요 수를 한 번에 요청
+    axios
+      .get("/api/product/likes")
+      .then((res) => {
+        const likes = res.data.reduce((acc, item) => {
+          acc[item.product_id] = item.like_count; // productId를 key로, like_count를 value로 설정
+          return acc;
+        }, {});
+        setLikeData(likes);
+        console.log(likes);
+      })
+      .catch((err) => {
+        console.error("Error fetching like data:", err);
+      });
+  }, []);
 
   // 페이지 이동
   const handlePageChange = (e) => {
@@ -185,7 +203,11 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
       {productList.length > 0 ? (
         <Grid templateColumns="repeat(4, 1fr)" gap="6">
           {sortedList?.map((product) => (
-            <ProductItem key={product.productId} product={product} />
+            <ProductItem
+              key={product.productId}
+              product={product}
+              likeCount={likeData[product.productId] || 0}
+            />
           ))}
         </Grid>
       ) : (

@@ -94,12 +94,23 @@ public class ProductService {
         return product.getWriter().equals(authentication.getName());
     }
 
-    public void like(Product product, Authentication authentication) {
-        int cnt = mapper.deleteLikeByProductAndMemberId(product.getProductId(), authentication.getName());
+    public Map<String, Object> like(Product product, Authentication authentication) {
+        int cnt = mapper.deleteLike(product.getProductId(), authentication.getName());
 
         if (cnt == 0) {
             mapper.insertLike(product.getProductId(),
                     authentication.getName());
         }
+
+        int countLike = mapper.countLike(product.getProductId());
+        Map<String, Object> result = Map.of("like", (cnt == 0), "count", countLike);
+        return result;
+    }
+
+    public List<Map<String, Object>> productLike() {
+        List<Map<String, Object>> likeData = mapper.countLikeByProductId();
+
+        return likeData;
     }
 }
+

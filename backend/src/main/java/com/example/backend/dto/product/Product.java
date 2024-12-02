@@ -23,4 +23,5 @@ public class Product {
 
     private List<ProductFile> fileList;
     private String mainImage;
+    private Integer likeCount;
 }

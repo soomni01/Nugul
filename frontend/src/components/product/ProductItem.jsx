@@ -10,14 +10,15 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
-import { GoHeart } from "react-icons/go";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 import { categories } from "../category/CategoryContainer.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
-import { getDaysAgo } from "../product/ProductDate.jsx";
-import React from "react";
+import { getDaysAgo } from "./ProductDate.jsx";
+import React, { useState } from "react";
 import axios from "axios";
 
-export function ProductItem({ product }) {
+export function ProductItem({ product, likeCount }) {
+  const [like, setLike] = useState({ like: false, count: likeCount });
   const navigate = useNavigate();
 
   const categoryLabel =
@@ -32,10 +33,12 @@ export function ProductItem({ product }) {
       .post("/api/product/like", {
         productId: product.productId,
       })
-      .then()
+      .then((res) => res.data)
+      .then((data) => setLike(data))
       .catch()
       .finally();
   };
+
   return (
     <Card.Root maxW="sm" overflow="hidden">
       <Image src="/image/productItem.png" alt={product.productName} />
@@ -68,10 +71,10 @@ export function ProductItem({ product }) {
           <VStack gap={1} mt={3}>
             <Box onClick={handleLikeClick} cursor="pointer">
               <Heading fontSize="3xl">
-                <GoHeart />
+                {like.like ? <GoHeartFill /> : <GoHeart />}
               </Heading>
             </Box>
-            <Box>3</Box>
+            <Box>{like.count}</Box>
           </VStack>
         </Flex>
       </Card.Footer>

@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,11 +19,16 @@ public class ProductController {
 
     final ProductService service;
 
+    @GetMapping("likes")
+    public List<Map<String, Object>> getLike() {
+        return service.productLike();
+    }
+
     @PostMapping("like")
     @PreAuthorize("isAuthenticated()")
-    public void like(@RequestBody Product product,
-                     Authentication authentication) {
-        service.like(product, authentication);
+    public Map<String, Object> like(@RequestBody Product product,
+                                    Authentication authentication) {
+        return service.like(product, authentication);
     }
 
     @PutMapping("update")
