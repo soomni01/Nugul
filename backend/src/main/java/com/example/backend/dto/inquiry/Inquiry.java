@@ -12,4 +12,5 @@ public class Inquiry {
     private String memberId;
     private String answer;
     private LocalDateTime inserted;
+    private boolean hasComments; // 새 필드 추가
 }

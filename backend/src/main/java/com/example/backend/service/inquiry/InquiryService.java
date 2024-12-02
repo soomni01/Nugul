@@ -18,6 +18,8 @@ public class InquiryService {
 
     @Autowired
     final InquiryMapper mapper;
+    @Autowired
+    private InquiryMapper inquiryMapper;
 
     public List<Inquiry> list() {
         return mapper.InquiryAll();
@@ -39,5 +41,10 @@ public class InquiryService {
 
     public List<InquiryComment> getCommentByInquiryId(int inquiryId) {
         return mapper.findCommentsByInquiryId(inquiryId);
+    }
+
+    public boolean update(InquiryComment inquirycomment) {
+        int cnt = mapper.update(inquirycomment);
+        return cnt == 1;
     }
 }

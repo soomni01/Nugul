@@ -13,6 +13,7 @@ import { FaCommentDots } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button } from "../../components/ui/button.jsx";
 
 export function AdminInquiryList() {
   const [inquiryList, setInquiryList] = useState([]);
@@ -65,7 +66,7 @@ export function AdminInquiryList() {
     }
   });
 
-  const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage); // 전체 페이지 수
+  const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage);
   const paginatedInquiries = filteredInquiries.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -150,7 +151,7 @@ export function AdminInquiryList() {
       </Box>
       <Flex justify="center" mt={4} gap={2}>
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
+          <Button
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
             style={{
@@ -164,7 +165,7 @@ export function AdminInquiryList() {
             }}
           >
             {index + 1}
-          </button>
+          </Button>
         ))}
       </Flex>
     </Box>

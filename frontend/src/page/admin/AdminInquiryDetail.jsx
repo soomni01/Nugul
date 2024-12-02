@@ -13,11 +13,14 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 
-export function AdminInquiryDetail({ handleDeleteClick }) {
+export function AdminInquiryDetail({
+  handleDeleteClick: handleDeleteClickProp,
+}) {
   const { inquiryId } = useParams();
   const [inquiry, setInquiry] = useState(null);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [editingCommentId, setEditingCommentId] = useState(null);
   const navigate = useNavigate();
 
   // 게시글 정보 가져오기
@@ -56,23 +59,66 @@ export function AdminInquiryDetail({ handleDeleteClick }) {
       return;
     }
 
-    const newComment = {
-      inquiryId: parseInt(inquiryId, 10),
-      memberId: "admin", // 로그인된 관리자의 ID로 설정
-      comment: comment,
-      inserted: new Date().toISOString(),
-    };
+    if (editingCommentId) {
+      // 수정 모드에서 댓글 업데이트
+      axios
+        .put(`/api/inquiry/comment/${editingCommentId}`, { comment })
+        .then((res) => {
+          alert("댓글이 수정되었습니다.");
+          setComment("");
+          setEditingCommentId(null);
+          setComments((prevComments) =>
+            prevComments.map((c) =>
+              c.id === editingCommentId ? { ...c, comment } : c,
+            ),
+          );
+        })
+        .catch((error) => {
+          console.error("댓글 수정 중 오류 발생:", error);
+        });
+    } else {
+      // 새로운 댓글 작성
+      const newComment = {
+        inquiryId: parseInt(inquiryId, 10),
+        memberId: "admin", // 로그인된 관리자의 ID로 설정
+        comment: comment,
+        inserted: new Date().toISOString(),
+      };
 
+      axios
+        .post(`/api/inquiry/comment/${newComment.memberId}`, newComment)
+        .then((res) => {
+          alert("댓글이 등록되었습니다.");
+          setComment("");
+          setComments((prevComments) => [...prevComments, newComment]);
+        })
+        .catch((error) => {
+          console.error("댓글 작성 중 오류 발생:", error);
+        });
+    }
+  };
+
+  // 댓글 수정 처리 함수
+  const handleEditClick = (commentId) => {
+    const commentToEdit = comments.find((c) => c.id === commentId);
+    if (commentToEdit) {
+      setComment(commentToEdit.comment); // 댓글 내용을 Textarea에 설정
+      setEditingCommentId(commentId); // 수정 중인 댓글 ID 저장
+    }
+  };
+
+  // 댓글 삭제 처리 함수
+  const handleDeleteComment = (commentId) => {
     axios
-      .post(`/api/inquiry/comment/${newComment.memberId}`, newComment)
+      .delete(`/api/inquiry/comment/${commentId}`)
       .then((res) => {
-        alert("댓글이 등록되었습니다.");
-        // 댓글 작성 후 입력 필드 초기화 및 최신 댓글 목록 가져오기
-        setComment("");
-        setComments((prevComments) => [...prevComments, newComment]);
+        alert("댓글이 삭제되었습니다.");
+        setComments((prevComments) =>
+          prevComments.filter((c) => c.id !== commentId),
+        );
       })
       .catch((error) => {
-        console.error("댓글 작성 중 오류 발생:", error);
+        console.error("댓글 삭제 중 오류 발생:", error);
       });
   };
 
@@ -115,7 +161,7 @@ export function AdminInquiryDetail({ handleDeleteClick }) {
           <Field>
             <Flex>
               <Textarea
-                placeholder="댓글을 입력하세요."
+                placeholder="댓글을 입력해 주세요."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 flex="1"
@@ -126,7 +172,7 @@ export function AdminInquiryDetail({ handleDeleteClick }) {
                 ml={2}
                 onClick={handleCommentSubmit}
               >
-                등록
+                {editingCommentId ? "수정 완료" : "등록"}
               </Button>
             </Flex>
           </Field>
@@ -134,13 +180,30 @@ export function AdminInquiryDetail({ handleDeleteClick }) {
             <Heading size="md" mb={2}>
               COMMENTS
             </Heading>
-            {comments.map((c, index) => (
-              <Box key={index} borderWidth="1px" borderRadius="md" p={3} mb={2}>
+            {comments.map((c) => (
+              <Box key={c.id} borderWidth="1px" borderRadius="md" p={3} mb={2}>
                 <Text fontWeight="bold">{c.memberId}</Text>
                 <Text>{c.comment}</Text>
                 <Text fontSize="sm" color="gray.500">
                   {new Date(c.inserted).toLocaleDateString()}
                 </Text>
+                <Flex justify="flex-end" mt={2}>
+                  <Button
+                    colorScheme="blue"
+                    size="sm"
+                    onClick={() => handleEditClick(c.id)}
+                    mr={2}
+                  >
+                    수정
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    size="sm"
+                    onClick={() => handleDeleteComment(c.id)}
+                  >
+                    삭제
+                  </Button>
+                </Flex>
               </Box>
             ))}
           </Box>

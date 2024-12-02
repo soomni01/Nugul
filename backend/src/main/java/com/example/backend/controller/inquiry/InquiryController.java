@@ -42,4 +42,18 @@ public class InquiryController {
     public List<InquiryComment> getComments(@PathVariable int inquiryId) {
         return service.getCommentByInquiryId(inquiryId);
     }
+
+    @PutMapping("edit")
+    public ResponseEntity<Map<String, Object>> edit(
+            @RequestBody InquiryComment inquirycomment) {
+        if (service.update(inquirycomment)) {
+            return ResponseEntity.ok().body(Map.of("message",
+                    Map.of("type", "success",
+                            "text", "댓글이 수정되었습니다.")));
+        } else {
+            return ResponseEntity.internalServerError().body(Map.of("message",
+                    Map.of("type", "error",
+                            "text", "댓글이 수정되지 않았습니다.")));
+        }
+    }
 }

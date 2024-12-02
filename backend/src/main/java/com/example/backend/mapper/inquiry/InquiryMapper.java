@@ -5,6 +5,7 @@ import com.example.backend.dto.inquiry.InquiryComment;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -35,6 +36,14 @@ public interface InquiryMapper {
     @Select("""
             SELECT *
             FROM inquiry_comment
-            WHERE inquiry_id = #{inquiryId}""")
+            WHERE inquiry_id = #{inquiryId}
+            """)
     List<InquiryComment> findCommentsByInquiryId(int inquiryId);
+
+    @Update("""
+            UPDATE inquiry_comment
+            SET comment = #{comment}
+            WHERE id = #{id}
+            """)
+    int update(InquiryComment inquirycomment);
 }
