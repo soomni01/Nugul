@@ -1,14 +1,6 @@
 import { Box, HStack } from "@chakra-ui/react";
-import { useState } from "react";
 
-export function CategoryContainer({ onCategorySelect }) {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-    onCategorySelect(category);
-  };
-
+export function CategoryContainer({ selectedCategory, onCategorySelect }) {
   return (
     <HStack my={5} spacing={0} w="100%" justify="space-between">
       {categories.map((category) => (
@@ -16,9 +8,9 @@ export function CategoryContainer({ onCategorySelect }) {
           key={category.value}
           flex="1"
           textAlign="center"
-          onClick={() => handleCategoryClick(category.value)} // 카테고리 클릭 시 선택 처리
-          bg={selectedCategory === category.value ? "gray.200" : "transparent"} // 선택된 카테고리 배경 색상 설정
-          _hover={{ cursor: "pointer", bg: "gray.100" }} // 마우스 올릴 때 배경 색상 변화
+          onClick={() => onCategorySelect(category.value)}
+          bg={selectedCategory === category.value ? "gray.200" : "transparent"}
+          _hover={{ cursor: "pointer", bg: "gray.100" }}
           p={2} // 클릭 영역을 넓히기 위한 패딩
         >
           {category.label}

@@ -174,7 +174,10 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
 
   return (
     <Box>
-      <CategoryContainer onCategorySelect={handleCategorySelect} />
+      <CategoryContainer
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
+      />
       <Heading textAlign="center">{selectedCategoryLabel}</Heading>
       <Box my={5} display="flex" justifyContent="center">
         <HStack w="80%">
