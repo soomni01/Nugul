@@ -34,7 +34,7 @@ public interface InquiryMapper {
     int insertcomment(InquiryComment inquirycomment);
 
     @Select("""
-            SELECT *
+            SELECT id, inquiry_id, admin_id member_id, comment, inserted
             FROM inquiry_comment
             WHERE inquiry_id = #{inquiryId}
             """)
