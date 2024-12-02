@@ -59,4 +59,12 @@ public interface ChatMapper {
             values (#{sender},#{roomId},#{content})
             """)
     int insertMessage(ChatMessage chatMessage);
+
+    @Select("""
+                    select *
+                    from chat_message
+                    where roomId=#{roomId}
+                    order by id desc
+            """)
+    List<ChatMessage> chatMessageByRoomId(String roomId);
 }

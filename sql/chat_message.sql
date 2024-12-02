@@ -1,12 +1,3 @@
-CREATE TABLE ChatMessage
-(
-    content    VARCHAR(100),
-    sender     VARCHAR(50),
-    created_at DATE DEFAULT now()
-);
-
-drop table ChatMessage;
-
 CREATE TABLE chat_message
 (
     id      INT AUTO_INCREMENT PRIMARY KEY,

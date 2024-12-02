@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Input,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, HStack, Input } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
@@ -17,8 +9,6 @@ export function ChatView() {
   // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함 (stomp 에 보낼 내용)
   const [message, setMessage] = useState([]);
   const [clientMessage, setClientMessage] = useState("");
-  //  서버 메세지는 필요 없음
-  const [serverMessage, setServerMessage] = useState("");
   const [chatRoom, setChatRoom] = useState({});
   const [stompClient, setStompClient] = useState(null);
   const { id } = useParams();
@@ -58,11 +48,8 @@ export function ChatView() {
       .get(`/api/chat/view/${id}`)
       .then((res) => {
         setChatRoom(res.data);
-        // chatRoom = {
-        //   roomId: res.data.roomId,
-        //   productName: res.data.productName,
-        //   writer: res.data.writer,
-        // };
+        setMessage(res.data.messages);
+        console.log(res.data);
       })
       .catch((e) => {});
   }, []);
@@ -94,14 +81,7 @@ export function ChatView() {
           <Box mx={"auto"} my={3} variant={"outline"}>
             판매자 닉네임: {chatRoom.nickname}
           </Box>
-          <Box h={"70%"}>
-            {message.map((item, index) => (
-              <Box key={index}>
-                <p>Sender: {item.sender}</p>
-                <Badge size="lg">Content: {item.content}</Badge>
-              </Box>
-            ))}
-          </Box>
+          <Box h={"70%"}></Box>
         </Flex>
 
         <Flex direction="column" h={500} w={800}>
@@ -109,14 +89,7 @@ export function ChatView() {
             닉네임: 상대방
           </Box>
 
-          <Box h={"70%"}>
-            {message.map((item, index) => (
-              <div key={index}>
-                <p>Sender: {item.sender}</p>
-                <p>Content: {item.content}</p>
-              </div>
-            ))}
-          </Box>
+          <Box h={"70%"}></Box>
         </Flex>
       </Flex>
       <HStack>

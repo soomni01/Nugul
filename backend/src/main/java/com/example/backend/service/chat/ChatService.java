@@ -48,4 +48,9 @@ public class ChatService {
 
         mapper.insertMessage(chatMessage);
     }
+
+    public List<ChatMessage> chatMessageView(String roomId) {
+
+        return mapper.chatMessageByRoomId(roomId);
+    }
 }
