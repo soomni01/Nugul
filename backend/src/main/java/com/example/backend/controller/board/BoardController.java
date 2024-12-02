@@ -3,9 +3,7 @@ package com.example.backend.controller.board;
 import com.example.backend.dto.board.Board;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,6 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     final BoardService service;
+
+    @PostMapping("boardAdd")
+    public void boardAdd(@RequestBody Board board) {
+        service.boardAdd(board);
+    }
 
     @GetMapping("list")
     public List<Board> list() {

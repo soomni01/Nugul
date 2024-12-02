@@ -1,0 +1,67 @@
+import { Box, Input, Stack, Textarea } from "@chakra-ui/react";
+import { Field } from "../../components/ui/field.jsx";
+import { useState } from "react";
+import { Button } from "../../components/ui/button.jsx";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+export function BoardAdd() {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [writer, setWriter] = useState("");
+  const [category, setCategory] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSaveClick = () => {
+    axios.post("/api/board/boardAdd", {
+      title,
+      content,
+      writer,
+      category,
+    });
+    navigate("/board/list");
+  };
+  return (
+    <Box>
+      <h3>게시글 쓰기</h3>
+      <Stack gap={5}>
+        <Field label={"제목"}>
+          <Input
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+        </Field>
+        <Field label={"본문"}>
+          <Textarea
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value);
+            }}
+          />
+        </Field>
+        <Field label={"작성자"}>
+          <Input
+            value={writer}
+            onChange={(e) => {
+              setWriter(e.target.value);
+            }}
+          />
+        </Field>
+        <Field label={"카테고리"}>
+          <Input
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+            }}
+          />
+        </Field>
+        <Box>
+          <Button onClick={handleSaveClick}>저장</Button>
+        </Box>
+      </Stack>
+    </Box>
+  );
+}

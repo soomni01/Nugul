@@ -1,6 +1,7 @@
 package com.example.backend.mapper.board;
 
 import com.example.backend.dto.board.Board;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,4 +15,11 @@ public interface BoardMapper {
                         ORDER BY board_id DESC
             """)
     List<Board> selectAll();
+
+    @Insert("""
+            INSERT INTO board 
+            (title, content, writer, category)
+            VALUES (#{title}, #{content}, #{writer}, #{category})
+            """)
+    int insert(Board board);
 }

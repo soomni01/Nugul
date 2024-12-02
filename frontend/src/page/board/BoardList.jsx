@@ -2,36 +2,25 @@ import { Box, Flex, Table } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
-  const [boardId, setBoardID] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const [category, setCategory] = useState("");
-  const [creatAt, setCreatAt] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
       .get("/api/board/list")
       .then((res) => res.data)
-      .then((data) => setBoardList(data))
-      .catch((error) => {
-        console.error("게시물 목록을 가져오는 중 에러가 발생했습니다.", error);
-        alert("게시물 목록을 불러오지 못했습니다.");
-      });
+      .then((data) => setBoardList(data));
   }, []);
 
   const handleWriteClick = () => {
-    axios.post("/api/boardAdd", {
-      boardId,
-      title,
-      content,
-      writer,
-      category,
-      creatAt,
-    });
+    navigate("/board/boardAdd");
   };
 
   return (
