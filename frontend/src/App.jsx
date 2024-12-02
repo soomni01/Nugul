@@ -7,7 +7,7 @@ import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
-import { InquiryDetail } from "./page/admin/InquiryDetail.jsx";
+import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
 
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberInfo } from "./page/member/MemberInfo.jsx";
@@ -107,7 +107,7 @@ const router = createBrowserRouter([
       },
       {
         path: "inquiries/:inquiryId",
-        element: <InquiryDetail />,
+        element: <AdminInquiryDetail />,
       },
     ],
   },
