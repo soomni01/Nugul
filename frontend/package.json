@@ -28,6 +28,7 @@
     "react-table": "^7.8.0",
     "recharts": "^2.13.3",
     "sockjs": "^0.3.24",
+    "swiper": "^11.1.15",
     "use-immer": "^0.10.0"
   },
   "devDependencies": {
