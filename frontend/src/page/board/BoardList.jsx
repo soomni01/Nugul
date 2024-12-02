@@ -25,7 +25,7 @@ export function BoardList() {
       })
       .then((res) => res.data)
       .then((data) => setBoardList(data));
-  }, []);
+  }, [searchParams]);
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
@@ -37,6 +37,12 @@ export function BoardList() {
   const handleWriteClick = () => {
     navigate("/board/boardAdd");
   };
+
+  function handlePageChange(e) {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("page", e.page);
+    setSearchParams(nextSearchParams);
+  }
 
   return (
     <Box>
@@ -77,7 +83,12 @@ export function BoardList() {
           )}
         </Table.Body>
       </Table.Root>
-      <PaginationRoot count={1500} pageSize={10} page={page}>
+      <PaginationRoot
+        onPageChange={handlePageChange}
+        count={1500}
+        pageSize={10}
+        page={page}
+      >
         <HStack>
           <PaginationPrevTrigger />
           <PaginationItems />
