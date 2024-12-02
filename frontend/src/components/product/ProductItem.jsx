@@ -1,24 +1,13 @@
-import {
-  Badge,
-  Box,
-  Card,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  VStack,
-} from "@chakra-ui/react";
+import { Badge, Box, Card, Flex, HStack, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
-import { GoHeart, GoHeartFill } from "react-icons/go";
 import { categories } from "../category/CategoryContainer.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
-import React, { useState } from "react";
-import axios from "axios";
+import { ProductLike } from "./ProductLike.jsx";
+import React from "react";
 
 export function ProductItem({ product, likeCount, isLiked }) {
-  const [like, setLike] = useState({ like: isLiked, count: likeCount });
   const navigate = useNavigate();
 
   const categoryLabel =
@@ -27,17 +16,6 @@ export function ProductItem({ product, likeCount, isLiked }) {
 
   // 날짜 차이를 계산하는 함수
   const daysAgo = getDaysAgo(product.createdAt);
-
-  const handleLikeClick = () => {
-    axios
-      .post("/api/product/like", {
-        productId: product.productId,
-      })
-      .then((res) => res.data)
-      .then((data) => setLike(data))
-      .catch()
-      .finally();
-  };
 
   return (
     <Card.Root maxW="sm" overflow="hidden">
@@ -59,7 +37,7 @@ export function ProductItem({ product, likeCount, isLiked }) {
           </HStack>
         </Card.Description>
       </Card.Body>
-      <Card.Footer justify="space-between" px={3} pb={1}>
+      <Card.Footer px="3" pb="2">
         <Flex justify="space-between" align="center" w="100%">
           <Button
             w="70%"
@@ -68,14 +46,12 @@ export function ProductItem({ product, likeCount, isLiked }) {
           >
             상품보기
           </Button>
-          <VStack gap={1} mt={3}>
-            <Box onClick={handleLikeClick} cursor="pointer">
-              <Heading fontSize="3xl">
-                {like.like ? <GoHeartFill /> : <GoHeart />}
-              </Heading>
-            </Box>
-            <Box>{like.count}</Box>
-          </VStack>
+          <ProductLike
+            productId={product.productId}
+            initialLike={isLiked}
+            initialCount={likeCount}
+            isHorizontal={false}
+          />
         </Flex>
       </Card.Footer>
     </Card.Root>

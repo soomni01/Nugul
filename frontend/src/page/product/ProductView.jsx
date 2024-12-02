@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   Heading,
+  HStack,
   Input,
   Spinner,
   Stack,
@@ -28,6 +29,7 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { ProductLike } from "../../components/product/ProductLike.jsx";
 
 function ImageFileView() {
   return null;
@@ -37,6 +39,8 @@ export function ProductView() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
+  const [likeData, setLikeData] = useState({});
+  const [userLikes, setUserLikes] = useState();
   const navigate = useNavigate();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
@@ -52,6 +56,29 @@ export function ProductView() {
       });
     }
   }, [product]);
+
+  useEffect(() => {
+    const fetchLikeData = async () => {
+      try {
+        const [likeRes, userLikeRes] = await Promise.all([
+          axios.get("/api/product/likes"),
+          axios.get("/api/product/like/member"),
+        ]);
+
+        const likes = likeRes.data.reduce((acc, item) => {
+          acc[item.product_id] = item.like_count;
+          return acc;
+        }, {});
+
+        setLikeData(likes);
+        setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
+      } catch (error) {
+        console.error("Error fetching like data:", error);
+      }
+    };
+
+    fetchLikeData();
+  }, []);
 
   const handleDeleteClick = () => {
     axios
@@ -83,7 +110,17 @@ export function ProductView() {
 
   return (
     <Box>
-      <Heading>{id}번 상품 이름</Heading>
+      <HStack>
+        <Heading>{id}번 상품 이름</Heading>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <ProductLike
+            productId={product.productId}
+            initialLike={userLikes.has(product.productId)}
+            initialCount={likeData[product.productId] || 0}
+            isHorizontal={true} // 수평으로 하트와 숫자 배치
+          />
+        </Box>
+      </HStack>
       <Stack gap={5}>
         <Box>판매자: {product.nickname}</Box>
         <ImageFileView />
