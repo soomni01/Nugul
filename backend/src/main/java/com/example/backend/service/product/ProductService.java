@@ -93,4 +93,13 @@ public class ProductService {
 
         return product.getWriter().equals(authentication.getName());
     }
+
+    public void like(Product product, Authentication authentication) {
+        int cnt = mapper.deleteLikeByProductAndMemberId(product.getProductId(), authentication.getName());
+
+        if (cnt == 0) {
+            mapper.insertLike(product.getProductId(),
+                    authentication.getName());
+        }
+    }
 }

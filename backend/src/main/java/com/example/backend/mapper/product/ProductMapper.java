@@ -101,4 +101,17 @@ public interface ProductMapper {
             </script>
             """)
     Integer countAll(String category, String keyword, String pay);
+
+    @Delete("""
+            DELETE FROM product_like
+            WHERE product_id = #{productId}
+            AND member_id = #{name}
+            """)
+    int deleteLikeByProductAndMemberId(Integer productId, String name);
+
+    @Insert("""
+            INSERT INTO product_like
+            VALUES (#{productId}, #{name})
+            """)
+    int insertLike(Integer productId, String name);
 }

@@ -18,6 +18,13 @@ public class ProductController {
 
     final ProductService service;
 
+    @PostMapping("like")
+    @PreAuthorize("isAuthenticated()")
+    public void like(@RequestBody Product product,
+                     Authentication authentication) {
+        service.like(product, authentication);
+    }
+
     @PutMapping("update")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> update(

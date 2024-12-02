@@ -29,8 +29,8 @@ export function ProductItem({ product }) {
 
   const handleLikeClick = () => {
     axios
-      .post("/api/board/like", {
-        id: product.productId,
+      .post("/api/product/like", {
+        productId: product.productId,
       })
       .then()
       .catch()
