@@ -95,7 +95,7 @@ const router = createBrowserRouter([
         element: <BoardAdd />,
       },
       {
-        path: "board/boardView/:id",
+        path: "board/boardView/:boardId",
         element: <BoardView />,
       },
     ],

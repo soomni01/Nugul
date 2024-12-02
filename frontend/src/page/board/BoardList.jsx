@@ -6,10 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
-  const [category, setCategory] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +14,10 @@ export function BoardList() {
       .then((res) => res.data)
       .then((data) => setBoardList(data));
   }, []);
+
+  function handleRowClick(boardId) {
+    navigate(`/board/boardView/${boardId}`);
+  }
 
   const handleWriteClick = () => {
     navigate("/board/boardAdd");
@@ -48,7 +48,10 @@ export function BoardList() {
             </Table.Row>
           ) : (
             boardList.map((board) => (
-              <Table.Row key={board.boardId}>
+              <Table.Row
+                onClick={() => handleRowClick(board.boardId)}
+                key={board.boardId}
+              >
                 <Table.Cell>{board.boardId}</Table.Cell>
                 <Table.Cell>{board.title}</Table.Cell>
                 <Table.Cell>{board.writer}</Table.Cell>

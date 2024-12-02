@@ -13,7 +13,7 @@ import java.util.List;
 public class BoardController {
     final BoardService service;
 
-    @GetMapping("boardView")
+    @GetMapping("boardView/{boardId}")
     public Board boardView(@PathVariable int boardId) {
         return service.get(boardId);
     }

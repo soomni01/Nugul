@@ -1,4 +1,4 @@
-import { Box, Input, Spinner, Stack } from "@chakra-ui/react";
+import { Box, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -9,22 +9,24 @@ export function BoardView() {
   const [board, setBoard] = useState(null);
 
   useEffect(() => {
-    axios.get(`api/board/view/${boardId}`).then((res) => setBoard(res.data));
+    axios
+      .get(`/api/board/boardView/${boardId}`)
+      .then((res) => setBoard(res.data));
   }, []);
 
-  if (board === null) {
+  if (!board) {
     return <Spinner />;
   }
 
   return (
     <Box>
-      <h3>{boardId}게시글</h3>
+      <h3>{boardId} 번 게시글</h3>
       <Stack gap={5}>
-        <Field label={"제목"} readOnly>
+        <Field label="제목" readOnly>
           <Input value={board.title} />
         </Field>
-        <Field label={"본문"} readOnly>
-          <Input value={board.content} />
+        <Field label="본문" readOnly>
+          <Textarea value={board.content} />
         </Field>
         <Field label="작성자" readOnly>
           <Input value={board.writer} />
