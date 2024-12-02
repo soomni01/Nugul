@@ -1,8 +1,9 @@
-CREATE TABLE likes
+CREATE TABLE product_like
 (
-    like_id    INT PRIMARY KEY AUTO_INCREMENT,
+    product_id INT REFERENCES product (product_id),
     member_id  VARCHAR(50) NOT NULL REFERENCES member (member_id),
-    product_id INT REFERENCES product (product_id)
+    PRIMARY KEY (product_id, member_id)
 );
 
-RENAME TABLE likes TO product_like;
+SELECT *
+FROM product_like;
