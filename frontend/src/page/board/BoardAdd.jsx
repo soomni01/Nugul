@@ -11,10 +11,12 @@ export function BoardAdd() {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const [category, setCategory] = useState("");
+  const [progress, setProgress] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSaveClick = () => {
+    setProgress(true);
     axios
       .post("/api/board/boardAdd", {
         title,
@@ -39,6 +41,9 @@ export function BoardAdd() {
           description: message.text,
           type: message.type,
         });
+      })
+      .finally(() => {
+        setProgress(false);
       });
   };
   return (
@@ -78,7 +83,9 @@ export function BoardAdd() {
           />
         </Field>
         <Box>
-          <Button onClick={handleSaveClick}>저장</Button>
+          <Button loading={progress} onClick={handleSaveClick}>
+            저장
+          </Button>
         </Box>
       </Stack>
     </Box>
