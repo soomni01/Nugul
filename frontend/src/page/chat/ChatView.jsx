@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Heading, HStack, Input } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Input,
+  Stack,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
@@ -49,12 +58,11 @@ export function ChatView() {
       .then((res) => {
         setChatRoom(res.data);
         setMessage(res.data.messages);
-        console.log(res.data);
       })
       .catch((e) => {});
   }, []);
 
-  //  TODO: dto 수정시 변경
+  //  뭐냐  타임 스탬프 mdn에서 하나 얻어와야함
   function sendMessage(sender, content) {
     const a = {
       sender: sender,
@@ -79,17 +87,32 @@ export function ChatView() {
       <Flex h={"80%"} bg={"blue.300/50"}>
         <Flex direction="column" h={500} w={800}>
           <Box mx={"auto"} my={3} variant={"outline"}>
+            {/*판매자 닉네임이 항상 */}
             판매자 닉네임: {chatRoom.nickname}
           </Box>
-          <Box h={"70%"}></Box>
-        </Flex>
+          <Box h={"70%"}>
+            {message.map((message, index) => (
+              <Box
+                display={"flex"}
+                mx={2}
+                my={1}
+                justify={
+                  message.sender === "client" ? "flex-start" : "flex-end"
+                }
+              >
+                <Stack>
+                  <Badge p={1} size={"lg"} key={index} color="primary">
+                    {message.content}
+                  </Badge>
 
-        <Flex direction="column" h={500} w={800}>
-          <Box mx={"auto"} my={3} variant={"outline"}>
-            닉네임: 상대방
+                  <p style={{ fontSize: "12px" }}>
+                    {" "}
+                    {new Date(message.sentAt).toLocaleTimeString()}
+                  </p>
+                </Stack>
+              </Box>
+            ))}
           </Box>
-
-          <Box h={"70%"}></Box>
         </Flex>
       </Flex>
       <HStack>
@@ -107,7 +130,7 @@ export function ChatView() {
           variant={"outline"}
           onClick={() => {
             // 세션의 닉네임
-            var client = "client";
+            var client = "server";
             var message = clientMessage;
             sendMessage(client, message);
           }}

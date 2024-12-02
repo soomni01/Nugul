@@ -67,7 +67,6 @@ public class ChatController {
 
     }
 
-    // 원래는, 로그인 기준으로 판매중? 인것들만
 
     @GetMapping("list")
     public List<ChatRoom> chatRoomList(@RequestParam(value = "memberId") String memberId) {

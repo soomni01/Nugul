@@ -64,7 +64,7 @@ public interface ChatMapper {
                     select *
                     from chat_message
                     where roomId=#{roomId}
-                    order by id desc
+            
             """)
     List<ChatMessage> chatMessageByRoomId(String roomId);
 }
