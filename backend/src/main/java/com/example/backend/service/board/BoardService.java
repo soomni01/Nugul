@@ -39,4 +39,8 @@ public class BoardService {
         int cnt = mapper.deleteById(boardId);
         return cnt == 1;
     }
+
+    public void update(Board board) {
+        mapper.update(board);
+    }
 }

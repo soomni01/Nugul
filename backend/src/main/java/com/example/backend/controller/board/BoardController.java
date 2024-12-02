@@ -15,6 +15,11 @@ import java.util.Map;
 public class BoardController {
     final BoardService service;
 
+    @PutMapping("boardUpdate")
+    public void boardUpdate(@RequestBody Board board) {
+        service.update(board);
+    }
+
     @DeleteMapping("boardDelete/{boardId}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable int boardId) {
         if (service.remove(boardId)) {
