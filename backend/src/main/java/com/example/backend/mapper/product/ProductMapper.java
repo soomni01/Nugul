@@ -76,6 +76,7 @@ public interface ProductMapper {
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
                         AND pay = #{pay}
+                        AND status = 'For Sale'
                 </where>
                 ORDER BY product_id DESC
                 LIMIT #{offset}, 16
@@ -95,6 +96,7 @@ public interface ProductMapper {
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
                         AND pay = #{pay}
+                        AND status = 'For Sale'
                 </where>
             </script>
             """)
