@@ -156,7 +156,7 @@ export function AdminInquiryDetail({
           <Field label={"작성자"} readOnly>
             <Input value={inquiry.memberId} readOnly />
           </Field>
-          <Field label={"작성자 & 작성일자"} readOnly>
+          <Field label={"작성일자"} readOnly>
             <Input
               value={new Date(inquiry.inserted).toLocaleDateString()}
               readOnly
