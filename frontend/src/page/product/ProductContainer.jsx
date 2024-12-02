@@ -31,11 +31,11 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [sortOption, setSortOption] = useState("newest");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [search, setSearch] = useState({ keyword: "" });
   const [likeData, setLikeData] = useState({});
-  const [userLikes, setUserLikes] = useState();
+  const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
 
   // 페이지 번호

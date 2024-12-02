@@ -40,7 +40,7 @@ export function ProductView() {
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [likeData, setLikeData] = useState({});
-  const [userLikes, setUserLikes] = useState();
+  const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
