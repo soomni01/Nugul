@@ -19,6 +19,12 @@ public class ProductController {
 
     final ProductService service;
 
+    @GetMapping("like/member")
+    @PreAuthorize("isAuthenticated()")
+    public List<Integer> getLikeMember(Authentication authentication) {
+        return service.likedProductByMember(authentication);
+    }
+
     @GetMapping("likes")
     public List<Map<String, Object>> getLike() {
         return service.productLike();

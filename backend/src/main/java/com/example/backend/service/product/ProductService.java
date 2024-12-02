@@ -112,5 +112,10 @@ public class ProductService {
 
         return likeData;
     }
+
+    public List<Integer> likedProductByMember(Authentication authentication) {
+        List<Integer> list = mapper.likedProductByMemberId(authentication.getName());
+        return list;
+    }
 }
 

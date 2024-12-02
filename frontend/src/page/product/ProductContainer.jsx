@@ -35,6 +35,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [search, setSearch] = useState({ keyword: "" });
   const [likeData, setLikeData] = useState({});
+  const [userLikes, setUserLikes] = useState();
   const navigate = useNavigate();
 
   // 페이지 번호
@@ -96,20 +97,26 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   }, [searchParams]);
 
   useEffect(() => {
-    // 여러 상품에 대한 좋아요 수를 한 번에 요청
-    axios
-      .get("/api/product/likes")
-      .then((res) => {
-        const likes = res.data.reduce((acc, item) => {
-          acc[item.product_id] = item.like_count; // productId를 key로, like_count를 value로 설정
+    const fetchLikeData = async () => {
+      try {
+        const [likeRes, userLikeRes] = await Promise.all([
+          axios.get("/api/product/likes"),
+          axios.get("/api/product/like/member"),
+        ]);
+
+        const likes = likeRes.data.reduce((acc, item) => {
+          acc[item.product_id] = item.like_count;
           return acc;
         }, {});
+
         setLikeData(likes);
-        console.log(likes);
-      })
-      .catch((err) => {
-        console.error("Error fetching like data:", err);
-      });
+        setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
+      } catch (error) {
+        console.error("Error fetching like data:", error);
+      }
+    };
+
+    fetchLikeData();
   }, []);
 
   // 페이지 이동
@@ -207,6 +214,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
               key={product.productId}
               product={product}
               likeCount={likeData[product.productId] || 0}
+              isLiked={userLikes.has(product.productId)}
             />
           ))}
         </Grid>

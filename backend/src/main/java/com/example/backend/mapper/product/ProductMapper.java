@@ -129,4 +129,11 @@ public interface ProductMapper {
             GROUP BY product_id;
             """)
     List<Map<String, Object>> countLikeByProductId();
+
+    @Select("""
+                SELECT product_id
+                FROM product_like
+                WHERE member_id = #{currentMemberId}
+            """)
+    List<Integer> likedProductByMemberId(String currentMemberId);
 }

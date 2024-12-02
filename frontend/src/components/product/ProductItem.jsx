@@ -17,8 +17,8 @@ import { getDaysAgo } from "./ProductDate.jsx";
 import React, { useState } from "react";
 import axios from "axios";
 
-export function ProductItem({ product, likeCount }) {
-  const [like, setLike] = useState({ like: false, count: likeCount });
+export function ProductItem({ product, likeCount, isLiked }) {
+  const [like, setLike] = useState({ like: isLiked, count: likeCount });
   const navigate = useNavigate();
 
   const categoryLabel =
