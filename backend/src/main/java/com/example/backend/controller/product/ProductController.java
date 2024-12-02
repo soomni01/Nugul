@@ -19,17 +19,20 @@ public class ProductController {
 
     final ProductService service;
 
+    // 사용자가 좋아요한 상품
     @GetMapping("like/member")
     @PreAuthorize("isAuthenticated()")
     public List<Integer> getLikeMember(Authentication authentication) {
         return service.likedProductByMember(authentication);
     }
 
+    // 각 상품별 좋아요 수 가져오기
     @GetMapping("likes")
     public List<Map<String, Object>> getLike() {
         return service.productLike();
     }
 
+    // 좋아요 등록 & 취소
     @PostMapping("like")
     @PreAuthorize("isAuthenticated()")
     public Map<String, Object> like(@RequestBody Product product,
