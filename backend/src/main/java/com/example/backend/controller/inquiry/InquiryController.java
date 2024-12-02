@@ -43,9 +43,11 @@ public class InquiryController {
         return service.getCommentByInquiryId(inquiryId);
     }
 
-    @PutMapping("edit")
+    @PutMapping("/comment/{commentId}")
     public ResponseEntity<Map<String, Object>> edit(
+            @PathVariable int commentId,
             @RequestBody InquiryComment inquirycomment) {
+        inquirycomment.setId(commentId);
         if (service.update(inquirycomment)) {
             return ResponseEntity.ok().body(Map.of("message",
                     Map.of("type", "success",

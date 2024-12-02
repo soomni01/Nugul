@@ -87,14 +87,14 @@ export function AdminInquiryDetail({
       };
 
       axios
-        .post(`/api/inquiry/comment/${newComment.memberId}`, newComment)
+        .post(`/api/inquiry/comment/${id}`, newComment)
         .then((res) => {
           alert("댓글이 등록되었습니다.");
           setComment("");
-          setComments((prevComments) => [...prevComments, newComment]);
+          setComments((prevComments) => [...prevComments, res.data]);
         })
         .catch((error) => {
-          console.error("댓글 작성 중 오류 발생:", error);
+          console.error("댓글 등록 중 오류 발생:", error);
         });
     }
   };
@@ -105,8 +105,8 @@ export function AdminInquiryDetail({
     const commentToEdit = comments.find((c) => c.id === commentId);
     console.log(commentToEdit);
     if (commentToEdit) {
-      setComment(commentToEdit.comment); // 댓글 내용을 Textarea에 설정
-      setEditingCommentId(commentId); // 수정 중인 댓글 ID 저장
+      setComment(commentToEdit.comment);
+      setEditingCommentId(commentId);
     }
   };
 
@@ -152,7 +152,7 @@ export function AdminInquiryDetail({
           <Field label={"작성자"} readOnly>
             <Input value={inquiry.memberId} readOnly />
           </Field>
-          <Field label={"작성 일자"} readOnly>
+          <Field label={"작성자 & 작성일자"} readOnly>
             <Input
               value={new Date(inquiry.inserted).toLocaleDateString()}
               readOnly
