@@ -9,10 +9,6 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from "../../components/ui/native-select.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -128,18 +124,17 @@ export function BoardList() {
       )}
 
       <HStack mt={4}>
-        <NativeSelectRoot
-          onChange={(e) => setSearch({ ...search, type: e.target.value })}
-        >
-          <NativeSelectField
-            items={[
-              { label: "전체", value: "all" },
-              { label: "제목", value: "title" },
-              { label: "본문", value: "content" },
-              { label: "카테고리", value: "category" },
-            ]}
-          />
-        </NativeSelectRoot>
+        <Box>
+          <select
+            value={search.type}
+            onChange={(e) => setSearch({ ...search, type: e.target.value })}
+          >
+            <option value={"all"}>전체</option>
+            <option value={"title"}>제목</option>
+            <option value={"content"}>본문</option>
+            <option value={"category"}>카테고리</option>
+          </select>
+        </Box>
         <Input
           value={search.keyword}
           placeholder="검색 하세요"
