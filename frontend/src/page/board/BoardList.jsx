@@ -65,6 +65,7 @@ export function BoardList() {
       const nextSearchParam = new URLSearchParams(searchParams);
       nextSearchParam.set("searchType", search.type);
       nextSearchParam.set("searchKeyword", search.keyword);
+      nextSearchParam.set("page", 1);
       setSearchParams(nextSearchParam);
     } else {
       // 검색 안함
