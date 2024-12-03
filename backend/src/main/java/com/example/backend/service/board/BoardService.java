@@ -21,7 +21,7 @@ public class BoardService {
 
         List<Board> list = mapper.selectPage(offset, searchType, searchKeyword);
 
-        Integer count = mapper.countAll();
+        Integer count = mapper.countAll(searchType, searchKeyword);
         return Map.of("list", list,
                 "count", count);
 

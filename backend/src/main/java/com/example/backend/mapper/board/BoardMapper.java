@@ -67,7 +67,22 @@ public interface BoardMapper {
     List<Board> selectPage(int offset, String searchType, String searchKeyword);
 
     @Select("""
-            SELECT COUNT(*) FROM board
+            <script>
+            SELECT COUNT(*)
+            FROM board
+            WHERE 
+                <trim prefixOverrides="OR">
+                   <if test="searchType == 'all' or searchType == 'title'">
+                        title LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </if>
+                    <if test="searchType == 'all' or searchType == 'content'">
+                        OR content LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </if>
+                    <if test="searchType == 'all' or searchType == 'category'">
+                        OR category LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </if>
+                </trim>
+            </script>
             """)
-    Integer countAll();
+    Integer countAll(String searchType, String searchKeyword);
 }
