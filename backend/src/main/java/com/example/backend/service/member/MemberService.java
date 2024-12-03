@@ -145,4 +145,18 @@ public class MemberService {
                 .map(a -> a.toString())
                 .anyMatch(s -> s.equals("SCOPE_admin"));
     }
+
+    // 입력된 비밀번호가 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드
+    public boolean isPasswordCorrect(String memberId, String password) {
+        Member dbMember = mapper.selectById(memberId);
+        if (dbMember != null) {
+            System.out.println("Stored password: " + dbMember.getPassword());
+            System.out.println("Input password: " + password);
+
+            if (dbMember.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -58,15 +58,18 @@ public class MemberController {
         System.out.println("Authenticated user: " + auth.getName());
         System.out.println("Auth authorities: " + auth.getAuthorities());
 
+        // 현재 인증된 사용자의 비밀번호 확인
+        if (!service.isPasswordCorrect(auth.getName(), member.getPassword())) {
+            return ResponseEntity.status(403).body(Map.of("message",
+                    Map.of("type", "error", "text", "비밀번호가 일치하지 않습니다.")));
+        }
+
         if (service.remove(member, auth)) {
             return ResponseEntity.ok(Map.of("message",
-                    Map.of("type", "success",
-                            "text", "회원정보를 삭제하였습니다.")));
+                    Map.of("type", "success", "text", "회원정보를 삭제하였습니다.")));
         } else {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message",
-                            Map.of("type", "warning",
-                                    "text", "정확한 정보를 입력해주세요.")));
+            return ResponseEntity.badRequest().body(Map.of("message",
+                    Map.of("type", "warning", "text", "정확한 정보를 입력해주세요.")));
         }
     }
 
