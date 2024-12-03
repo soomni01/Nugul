@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Heading, HStack } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
@@ -9,11 +9,12 @@ import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx"
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
   let navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
     getChatList();
-  }, []);
+  }, [searchParams]);
 
   console.log(id);
 
@@ -23,6 +24,7 @@ export function ChatList() {
       .get("/api/chat/list", {
         params: {
           memberId: id,
+          type: searchParams.get("type"),
         },
       })
       .then((res) => {
@@ -55,9 +57,9 @@ export function ChatList() {
     <Box>
       <Heading> 채팅 목록</Heading>
       <HStack>
-        <Button>전체</Button>
-        <Button>구매</Button>
-        <Button>판매</Button>
+        <Button onClick={() => setSearchParams({ type: "all" })}>전체</Button>
+        <Button onClick={() => setSearchParams({ type: "buy" })}>구매</Button>
+        <Button onClick={() => setSearchParams({ type: "sell" })}>판매</Button>
       </HStack>
       {chatList.map((chat) => (
         <ChatListItem

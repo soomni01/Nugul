@@ -33,12 +33,24 @@ public interface ChatMapper {
 
 
     @Select("""
-                select *
-                from chatroom
-                where writer=#{memberId}
-                order by roomId desc
+                <script>
+                    select *
+                    from chatroom
+                    <choose>                   
+                        <when test="type == 'buy'">
+                            where buyer = #{memberId}
+                        </when>
+                        <when test="type == 'sell'">
+                            where writer = #{memberId}
+                        </when>
+                        <otherwise>
+                              where writer = #{memberId} or buyer = #{memberId}
+                        </otherwise>
+                    </choose>
+                    order by roomId desc
+                </script>
             """)
-    List<ChatRoom> chatRoomListByMemberId(String memberId);
+    List<ChatRoom> chatRoomListByMemberId(String memberId, String type);
 
     @Delete("""
                         delete from chatroom
@@ -50,7 +62,7 @@ public interface ChatMapper {
     @Select("""
                   select   distinct (m.nickname)
                                   from chatroom c join member m
-                                  where m.member_id=#{writer};
+                                  where m.member_id=#{writer}
             """)
     String findNickNameByWriter(String writer);
 

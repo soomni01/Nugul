@@ -68,9 +68,11 @@ public class ChatController {
 
 
     @GetMapping("list")
-    public List<ChatRoom> chatRoomList(@RequestParam(value = "memberId") String memberId) {
-        System.out.println("memberId = " + memberId);
-        return chatService.chatRoomList(memberId);
+    public List<ChatRoom> chatRoomList(@RequestParam(value = "memberId") String memberId,
+                                       @RequestParam(value = "type", defaultValue = "all") String type) {
+
+        return chatService.chatRoomList(memberId, type);
+
     }
 
 
@@ -83,7 +85,5 @@ public class ChatController {
         } else {
             return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "success", "content", "존재하지 않는 채팅방 입니다.")));
         }
-
-
     }
 }
