@@ -158,7 +158,7 @@ export function AdminMemberList() {
       .then((res) => {
         toaster.create({
           type: "success",
-          description: "회원 탈퇴되었습니다.",
+          description: "회원 탈퇴가 완료되었습니다.",
         });
         console.log("응답 데이터:", res.data);
         navigate("/admin/members");
@@ -166,7 +166,7 @@ export function AdminMemberList() {
       .catch((error) => {
         toaster.create({
           type: "error",
-          description: "회원 탈퇴 요청 중 오류가 발생하였습니다.",
+          description: "입력하신 관리자 비밀번호가 일치하지 않습니다.",
         });
         console.error("회원 탈퇴 요청 오류:", error);
       });
