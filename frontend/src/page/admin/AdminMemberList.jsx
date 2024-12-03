@@ -161,7 +161,7 @@ export function AdminMemberList() {
           description: "회원 탈퇴되었습니다.",
         });
         console.log("응답 데이터:", res.data);
-        navigate("/member/list");
+        navigate("/admin/members");
       })
       .catch((error) => {
         toaster.create({
