@@ -141,6 +141,7 @@ public interface ProductMapper {
             SELECT *
             FROM product
             WHERE pay = 'sell'
+            AND status = 'For Sale'
             ORDER BY product_id DESC
             LIMIT #{limit}
             """)
@@ -150,6 +151,7 @@ public interface ProductMapper {
             SELECT *
             FROM product
             WHERE pay = 'share'
+            AND status = 'For Sale'
             ORDER BY product_id DESC
             LIMIT #{limit}
             """)
