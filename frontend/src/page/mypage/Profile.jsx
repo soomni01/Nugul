@@ -17,11 +17,11 @@ import {
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
-export function Profile() {
+export function Profile({ onEditClick }) {
   const [member, setMember] = useState(null);
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
-  const { id, nickname } = useContext(AuthenticationContext);
+  const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export function Profile() {
           <Input type={"date"} readOnly value={member.inserted.split("T")[0]} />
         </Field>
         <Box>
-          <Button onClick={() => navigate(`/member/edit/${id}`)}>수정</Button>
+          <Button onClick={onEditClick}>수정</Button>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
               <Button colorPalette={"red"}>탈퇴</Button>

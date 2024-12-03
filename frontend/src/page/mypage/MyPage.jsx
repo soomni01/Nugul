@@ -1,13 +1,16 @@
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import { Wishlist } from "../mypage/Wishlist.jsx";
 import { SoldItems } from "../mypage/SoldItems.jsx";
 import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
 import { Profile } from "../mypage/Profile.jsx";
+import { ProfileEdit } from "./ProfileEdit.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function MyPage() {
   const [activeTab, setActiveTab] = useState("profile"); // 기본적으로 '찜 목록'을 활성화
+  const { id } = useContext(AuthenticationContext);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -28,7 +31,11 @@ export function MyPage() {
             마이페이지
           </Heading>
           <Button
-            variant={activeTab === "profile" ? "solid" : "ghost"}
+            variant={
+              activeTab === "profile" || activeTab === "editProfile"
+                ? "solid"
+                : "ghost"
+            }
             colorScheme="teal"
             onClick={() => handleTabClick("profile")}
           >
@@ -67,7 +74,12 @@ export function MyPage() {
 
       {/* 오른쪽 콘텐츠 */}
       <Box flex="1" p={5}>
-        {activeTab === "profile" && <Profile />}
+        {activeTab === "profile" && (
+          <Profile onEditClick={() => setActiveTab("editProfile")} />
+        )}
+        {activeTab === "editProfile" && (
+          <ProfileEdit id={id} onCancel={() => setActiveTab("profile")} />
+        )}
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
