@@ -12,6 +12,10 @@ export function MemberLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  const handleSignupClick = () => {
+    navigate("/member/signup");
+  };
+
   const handleLoginClick = () => {
     let isValid = true;
 
@@ -86,15 +90,16 @@ export function MemberLogin() {
           />
         </Field>
 
-        <Box>
-          <Button onClick={handleLoginClick}>로그인</Button>
-        </Box>
-
         {errorMessage && (
           <Box color="red.500" mt={2}>
             <p>{errorMessage}</p>
           </Box>
         )}
+
+        <Box display="flex" gap={2}>
+          <Button onClick={handleLoginClick}>로그인</Button>
+          <Button onClick={handleSignupClick}>회원가입</Button>
+        </Box>
       </Stack>
     </Box>
   );
