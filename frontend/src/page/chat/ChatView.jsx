@@ -16,8 +16,8 @@ import { useParams } from "react-router-dom";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function ChatView() {
-  // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함 (stomp 에 보낼 내용)
   const scrollRef = useRef(null);
+  const chatBoxRef = useRef(null);
   const [message, setMessage] = useState([]);
   const [clientMessage, setClientMessage] = useState("");
   const [chatRoom, setChatRoom] = useState({});
@@ -57,18 +57,24 @@ export function ChatView() {
 
   // 의존성에  message 넣어야함
   useEffect(() => {
+    handleSetData();
+  }, []);
+
+  function handleSetData() {
     axios
-      .get(`/api/chat/view/${roomId}`)
+      .get(`/api/chat/view/${roomId}`, {
+        params: {
+          page: 1,
+        },
+      })
       .then((res) => {
         setChatRoom(res.data);
         setMessage(res.data.messages);
-
-        scrollRef.current.scrollIntoView({ behavior: "smooth" });
       })
       .catch((e) => {});
-  }, []);
+  }
 
-  //  뭐냐  타임 스탬프 mdn에서 하나 얻어와야함
+  // Todo 타임 스탬프 mdn에서 하나 얻어와야함
   function sendMessage(sender, content) {
     const a = {
       sender: sender,
@@ -84,6 +90,12 @@ export function ChatView() {
     setClientMessage("");
   }
 
+  const handleScroll = async () => {
+    if (chatBoxRef.current.scrollTop === 0) {
+      axios.get(`/api/`);
+    }
+  };
+
   return (
     <Box>
       <Heading mx={"auto"}>
@@ -91,21 +103,22 @@ export function ChatView() {
         {roomId} 번 채팅 화면입니다. <hr />
       </Heading>
       <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
-      <Flex h={"80%"} bg={"blue.300/50"}>
-        <Flex direction="column" h={500} w={800}>
-          <Box mx={"auto"} my={3} variant={"outline"}>
-            {/*판매자 닉네임이 항상 */}
-            판매자 닉네임: {chatRoom.nickname}
-          </Box>
-          <Box h={"70%"}>
+
+      <Flex direction="column" w={600} h={700} bg={"blue.300/50"}>
+        <Box mx={"auto"} my={3} variant={"outline"} h={"5%"}>
+          {/*판매자 닉네임이 항상 */}
+          판매자 닉네임: {chatRoom.nickname}
+        </Box>
+        <Box h={"85%"} overflowY={"auto"}>
+          <Box ref={chatBoxRef} onScroll={handleScroll}>
             {message.map((message, index) => (
-              <Box mx={2} my={1}>
+              <Box mx={2} my={1} key={index}>
                 <Flex
                   justifyContent={
                     message.sender === id ? "flex-end" : "flex-start"
                   }
                 >
-                  <Stack>
+                  <Stack h={"10%"}>
                     <Badge p={1} size={"lg"} key={index} color="primary">
                       {message.content}
                     </Badge>
@@ -118,31 +131,31 @@ export function ChatView() {
               </Box>
             ))}
           </Box>
-        </Flex>
-      </Flex>
-      <HStack>
-        <Field>
-          <Input
-            bg={"gray.300"}
-            type={"text"}
-            value={clientMessage}
-            onChange={(e) => {
-              setClientMessage(e.target.value);
+        </Box>
+        <HStack>
+          <Field>
+            <Input
+              bg={"gray.300"}
+              type={"text"}
+              value={clientMessage}
+              onChange={(e) => {
+                setClientMessage(e.target.value);
+              }}
+            />
+          </Field>
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              // 세션의 닉네임
+              var client = id;
+              var message = clientMessage;
+              sendMessage(client, message);
             }}
-          />
-        </Field>
-        <Button
-          variant={"outline"}
-          onClick={() => {
-            // 세션의 닉네임
-            var client = id;
-            var message = clientMessage;
-            sendMessage(client, message);
-          }}
-        >
-          전송
-        </Button>
-      </HStack>
+          >
+            전송
+          </Button>
+        </HStack>
+      </Flex>
     </Box>
   );
 }

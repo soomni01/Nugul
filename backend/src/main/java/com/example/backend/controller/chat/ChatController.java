@@ -57,10 +57,13 @@ public class ChatController {
     }
 
     @GetMapping("view/{roomId}")
-    public ChatRoom chatRoomView(@PathVariable String roomId) {
+    public ChatRoom chatRoomView(@PathVariable String roomId,
+                                 @RequestParam(value = "page", defaultValue = "1") String page
+    ) {
 
+        //  chatroom 정보 조회
         ChatRoom chatRoom = chatService.chatRoomView(roomId);
-
+        // 해당 채팅방의 메시지 정보 조회  , page
         List<ChatMessage> message = chatService.chatMessageView(roomId);
 
         chatRoom.setMessages(message);
