@@ -11,12 +11,13 @@ public interface ChatMapper {
 
 
     @Insert("""
-            INSERT INTO chatroom (productName, writer, nickname)
-            VALUES (
-                #{productName},
-                #{writer},
-                (SELECT  distinct (nickname) FROM member WHERE member_id = #{writer})
-            )
+              INSERT INTO chatroom (productName, writer, nickname,buyer)
+              VALUES (
+                  #{productName},
+                  #{writer},
+                  (SELECT  distinct (nickname) FROM member WHERE member_id = #{writer}),
+                    #{buyer}
+              )
             """)
     @Options(useGeneratedKeys = true, keyProperty = "roomId")
     int createChatRoom(ChatRoom chatInfo);

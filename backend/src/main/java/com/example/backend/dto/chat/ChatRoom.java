@@ -10,6 +10,7 @@ public class ChatRoom {
     private String writer;
     private String productName;
     private String nickname;
+    private String buyer;
     // dto용
     private List<ChatMessage> messages;
 }

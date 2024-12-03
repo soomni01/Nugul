@@ -3,21 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
 import { GoHeart } from "react-icons/go";
 import axios from "axios";
+import { useContext } from "react";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function ProductItem({ product }) {
   const navigate = useNavigate();
-  console.log(product);
+  const { id } = useContext(AuthenticationContext);
 
   const createChatRoom = () => {
     var testId;
     var productName = product.productName;
     var writer = product.writer;
     var nickname = "";
+    var buyer = id;
     axios
       .post("/api/chat/create", {
         productName: productName,
         writer: writer,
         nickname: nickname,
+        buyer: buyer,
       })
       .then((res) => {
         console.log(res.data);

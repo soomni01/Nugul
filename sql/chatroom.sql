@@ -15,7 +15,7 @@ ALTER TABLE chatroom
         FOREIGN KEY (writer) REFERENCES member (member_id);
 
 alter table chatroom
-    add column buyerId varchar(50) not null default 'buyer';
+    change column buyerId buyer varchar(50) not null default 'buyer';
 
 select *
 from chatroom;
