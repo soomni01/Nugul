@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -14,9 +15,16 @@ import java.util.Map;
 public class BoardService {
     final BoardMapper mapper;
 
-    public Map<String, Object> list(Integer page) {
-        return Map.of("list", mapper.selectPage((page - 1) * 10),
-                "count", mapper.countAll());
+    public Map<String, Object> list(Integer page, String searchType, String searchKeyword) {
+
+        Integer offset = (page - 1) * 10;
+
+        List<Board> list = mapper.selectPage(offset, searchType, searchKeyword);
+
+        Integer count = mapper.countAll();
+        return Map.of("list", list,
+                "count", count);
+
     }
 
     public boolean boardAdd(Board board) {

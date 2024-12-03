@@ -74,9 +74,7 @@ public class BoardController {
     public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                     @RequestParam(value = "searchType", defaultValue = "all") String searchType,
                                     @RequestParam(value = "searchKeyword", defaultValue = "") String searchKeyword) {
-        System.out.println(searchType);
-        System.out.println(searchKeyword);
 
-        return service.list(page);
+        return service.list(page, searchType, searchKeyword);
     }
 }

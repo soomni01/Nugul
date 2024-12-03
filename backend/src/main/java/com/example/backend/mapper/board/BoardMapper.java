@@ -45,12 +45,26 @@ public interface BoardMapper {
     int update(Board board);
 
     @Select("""
+            <script>
             SELECT board_id, title, writer, category,created_at
             FROM board
+            WHERE 
+                <trim prefixOverrides="OR">
+                    <if test="searchType == 'all' or searchType == 'title'">
+                        title LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </if>
+                    <if test="searchType == 'all' or searchType == 'content'">
+                        OR content LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </if>
+                    <if test="searchType == 'all' or searchType == 'category'">
+                        OR category LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </if>
+                </trim>
             ORDER BY board_id DESC
             LIMIT #{offset}, 10
+            </script>
             """)
-    List<Board> selectPage(int offset);
+    List<Board> selectPage(int offset, String searchType, String searchKeyword);
 
     @Select("""
             SELECT COUNT(*) FROM board
