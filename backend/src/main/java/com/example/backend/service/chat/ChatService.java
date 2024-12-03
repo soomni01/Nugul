@@ -53,4 +53,9 @@ public class ChatService {
 
         return mapper.chatMessageByRoomId(roomId);
     }
+
+    public Integer findChatRoomId(ChatRoom chatRoom) {
+
+        return mapper.findChatRoomId(chatRoom);
+    }
 }

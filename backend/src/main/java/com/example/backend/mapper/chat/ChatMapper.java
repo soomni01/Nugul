@@ -80,4 +80,11 @@ public interface ChatMapper {
             
             """)
     List<ChatMessage> chatMessageByRoomId(String roomId);
+
+    @Select("""
+                    select roomId
+                    from chatroom
+                    where productName=#{productName} and writer=#{writer} and buyer=#{buyer}
+            """)
+    Integer findChatRoomId(ChatRoom chatRoom);
 }
