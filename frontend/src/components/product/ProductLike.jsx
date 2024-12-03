@@ -16,12 +16,12 @@ export function ProductLike({
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
   const handleLikeClick = () => {
-    if (isAuthenticated) {
+    if (hasAccess) {
       axios
         .post("/api/product/like", { productId })
         .then((res) => res.data)
         .then((data) => setLike(data))
-        .catch((err) => console.error("Error liking product:", err));
+        .catch((err) => console.error("관심 상품에 오류가 발생했습니다.", err));
     } else {
       setLikeTooltipOpen(!likeTooltipOpen);
     }
