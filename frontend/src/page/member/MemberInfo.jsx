@@ -70,14 +70,19 @@ export function MemberInfo() {
         <Field label={"암호"}>
           <Input readOnly value={member.password} />
         </Field>
-        <Field label={"이름"}>
-          <Input readOnly value={member.name} />
-        </Field>
         <Field label={"별명"}>
-          <Input readOnly value={member.nickName} />
+          <Input readOnly value={member.nickname} />
         </Field>
         <Field label={"가입일시"}>
-          <Input type={"date"} readOnly value={member.inserted} />
+          <Input
+            type={"date"}
+            readOnly
+            value={
+              member.inserted
+                ? new Date(member.inserted).toISOString().slice(0, 10)
+                : ""
+            }
+          />
         </Field>
         <Box>
           <Button onClick={() => navigate(`/member/edit/${memberId}`)}>
