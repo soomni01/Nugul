@@ -28,7 +28,6 @@ public class ChatController {
     @SendTo("/room/{roomId}")
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
 
-
         // 보낸 메시지 저장시킬 방 번호 입력
         chatMessage.setRoomId(roomId);
 

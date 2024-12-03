@@ -73,6 +73,7 @@ export function ChatView() {
     const a = {
       sender: sender,
       content: content,
+      sentAt: new Date().toISOString().slice(0, 19),
     };
     if (stompClient && stompClient.connected)
       stompClient.publish({
@@ -101,7 +102,7 @@ export function ChatView() {
               <Box mx={2} my={1}>
                 <Flex
                   justifyContent={
-                    message.sender === { id } ? "flex-end" : "flex-start"
+                    message.sender === id ? "flex-end" : "flex-start"
                   }
                 >
                   <Stack>
@@ -109,7 +110,6 @@ export function ChatView() {
                       {message.content}
                     </Badge>
                     <p style={{ fontSize: "12px" }}>
-                      {" "}
                       {new Date(message.sentAt).toLocaleTimeString()}
                     </p>
                     <div ref={scrollRef}></div>
