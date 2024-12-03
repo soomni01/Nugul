@@ -111,7 +111,10 @@ export function AdminInquiryDetail({
           comment: comment,
         })
         .then((res) => {
-          alert("댓글이 수정되었습니다.");
+          toaster.create({
+            type: "success",
+            description: "댓글이 수정되었습니다.",
+          });
           setComment("");
           setEditingCommentId(null);
           setComments((prevComments) =>
@@ -134,7 +137,10 @@ export function AdminInquiryDetail({
       axios
         .post(`/api/inquiry/comment/${id}`, newComment)
         .then((res) => {
-          alert("댓글이 등록되었습니다.");
+          toaster.create({
+            type: "success",
+            description: "댓글이 등록되었습니다.",
+          });
           setComment("");
           setComments(res.data.list);
         })
@@ -161,12 +167,9 @@ export function AdminInquiryDetail({
         setComments((prevComments) =>
           prevComments.filter((c) => c.id !== commentId),
         );
-        toaster({
-          title: "삭제 완료",
-          description: "댓글이 성공적으로 삭제되었습니다.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
+        toaster.create({
+          type: "success",
+          description: "댓글이 삭제되었습니다.",
         });
       })
       .catch((error) => {
@@ -241,8 +244,7 @@ export function AdminInquiryDetail({
                 </Text>
                 <Flex justify="flex-end" mt={2}>
                   <Button
-                    colorScheme="blue"
-                    size="sm"
+                    colorPalette={"white"}
                     onClick={() => handleEditClick(c.id)}
                     mr={2}
                   >
