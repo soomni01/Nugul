@@ -17,9 +17,12 @@ import {
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [count, setCount] = useState(0);
-  const [search, setSearch] = useState({ type: "all", keyword: "" });
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState({
+    type: searchParams.get("searchType") ?? "all",
+    keyword: searchParams.get("searchKeyword") ?? "",
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
