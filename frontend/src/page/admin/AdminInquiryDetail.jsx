@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -13,6 +13,17 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function AdminInquiryDetail({
   handleDeleteClick: handleDeleteClickProp,
@@ -22,8 +33,37 @@ export function AdminInquiryDetail({
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
-  const navigate = useNavigate();
   const { id } = useContext(AuthenticationContext);
+
+  function DeleteButton({ onClick, id: memberId }) {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+          <DialogTrigger asChild>
+            <Button colorPalette={"red"}>삭제</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>삭제 확인</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              <p>댓글을 삭제하시겠습니까?</p>
+            </DialogBody>
+            <DialogFooter>
+              <DialogActionTrigger>
+                <Button variant={"outline"}>취소</Button>
+              </DialogActionTrigger>
+              <Button colorPalette={"red"} onClick={onClick}>
+                삭제
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </DialogRoot>
+      </>
+    );
+  }
 
   // 게시글 정보 가져오기
   useEffect(() => {
@@ -91,13 +131,11 @@ export function AdminInquiryDetail({
         comment: comment,
         inserted: new Date().toISOString(),
       };
-
       axios
         .post(`/api/inquiry/comment/${id}`, newComment)
         .then((res) => {
           alert("댓글이 등록되었습니다.");
           setComment("");
-          // setComments((prevComments) => [...prevComments, res.data]);
           setComments(res.data.list);
         })
         .catch((error) => {
@@ -116,14 +154,20 @@ export function AdminInquiryDetail({
   };
 
   // 댓글 삭제 처리 함수
-  const handleDeleteComment = (commentId) => {
+  const handleDeleteClick = (commentId) => {
     axios
       .delete(`/api/inquiry/comment/${commentId}`)
       .then((res) => {
-        alert("댓글이 삭제되었습니다.");
         setComments((prevComments) =>
           prevComments.filter((c) => c.id !== commentId),
         );
+        toaster({
+          title: "삭제 완료",
+          description: "댓글이 성공적으로 삭제되었습니다.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       })
       .catch((error) => {
         console.error("댓글 삭제 중 오류 발생:", error);
@@ -204,13 +248,10 @@ export function AdminInquiryDetail({
                   >
                     수정
                   </Button>
-                  <Button
-                    colorScheme="red"
-                    size="sm"
-                    onClick={() => handleDeleteComment(c.id)}
-                  >
-                    삭제
-                  </Button>
+                  <DeleteButton
+                    colorPalette={"red"}
+                    onClick={() => handleDeleteClick(c.id)}
+                  />
                 </Flex>
               </Box>
             ))}
