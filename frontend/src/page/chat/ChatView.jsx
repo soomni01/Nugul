@@ -8,6 +8,7 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
+import "./chat.css";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
