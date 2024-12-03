@@ -37,7 +37,7 @@ export function ProductItem({ product, likeCount, isLiked }) {
           </HStack>
         </Card.Description>
       </Card.Body>
-      <Card.Footer px="3" pb="2">
+      <Card.Footer px="3" py="3">
         <Flex justify="space-between" align="center" w="100%">
           <Button
             w="70%"

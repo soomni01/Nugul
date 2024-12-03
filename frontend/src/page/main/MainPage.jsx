@@ -14,6 +14,8 @@ export function MainPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sellProductList, setSellProductList] = useState([]);
   const [shareProductList, setShareProductList] = useState([]);
+  const [likeData, setLikeData] = useState({});
+  const [userLikes, setUserLikes] = useState(new Set());
   const [loading, setLoading] = useState(true);
 
   // 카테고리 변경 처리
@@ -23,7 +25,6 @@ export function MainPage() {
 
   useEffect(() => {
     setLoading(true);
-
     axios
       .get("api/product/main")
       .then((res) => res.data)
@@ -37,6 +38,29 @@ export function MainPage() {
           console.log("상품 정보를 가져오는 데 실패했습니다.", error);
         }
       });
+  }, []);
+
+  useEffect(() => {
+    const fetchLikeData = async () => {
+      try {
+        const [likeRes, userLikeRes] = await Promise.all([
+          axios.get("/api/product/likes"),
+          axios.get("/api/product/like/member"),
+        ]);
+
+        const likes = likeRes.data.reduce((acc, item) => {
+          acc[item.product_id] = item.like_count;
+          return acc;
+        }, {});
+
+        setLikeData(likes);
+        setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
+      } catch (error) {
+        console.error("Error fetching like data:", error);
+      }
+    };
+
+    fetchLikeData();
   }, []);
 
   return (
@@ -69,7 +93,11 @@ export function MainPage() {
             sellProductList.map((product) => (
               <SwiperSlide key={product.productId}>
                 <Box w="300px" h="auto">
-                  <ProductItem product={product} />
+                  <ProductItem
+                    product={product}
+                    likeCount={likeData[product.productId] || 0}
+                    isLiked={userLikes.has(product.productId)}
+                  />
                 </Box>
               </SwiperSlide>
             ))
@@ -98,7 +126,11 @@ export function MainPage() {
             shareProductList.map((product) => (
               <SwiperSlide key={product.productId}>
                 <Box w="300px" h="auto">
-                  <ProductItem product={product} />
+                  <ProductItem
+                    product={product}
+                    likeCount={likeData[product.productId] || 0}
+                    isLiked={userLikes.has(product.productId)}
+                  />
                 </Box>
               </SwiperSlide>
             ))
