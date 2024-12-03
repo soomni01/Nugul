@@ -24,9 +24,23 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { Field } from "../../components/ui/field.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
-function DeleteButton({ onClick, id: memberId }) {
+function DeleteButton({ memberId, onDelete }) {
+  const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
+
+  function handleDeleteClick() {
+    if (password.trim() === "") {
+      toaster.create({
+        type: "error",
+        description: "비밀번호를 입력해 주세요.",
+      });
+      return;
+    }
+    onDelete(memberId, password);
+    setOpen(false);
+  }
 
   return (
     <>
@@ -41,7 +55,12 @@ function DeleteButton({ onClick, id: memberId }) {
           <DialogBody>
             <Stack gap={5}>
               <Field>
-                <Input placeholder={"관리자 비밀번호를 입력해 주세요."} />
+                <Input
+                  type="password"
+                  placeholder={"관리자 비밀번호를 입력해 주세요."}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </Field>
             </Stack>
           </DialogBody>
@@ -51,13 +70,7 @@ function DeleteButton({ onClick, id: memberId }) {
                 취소
               </Button>
             </DialogActionTrigger>
-            <Button
-              colorPalette={"red"}
-              onClick={() => {
-                onClick(memberId);
-                setOpen(false);
-              }}
-            >
+            <Button colorPalette={"red"} onClick={handleDeleteClick}>
               탈퇴
             </Button>
           </DialogFooter>
@@ -137,23 +150,26 @@ export function AdminMemberList() {
     setCurrentPage(1);
   }
 
-  function handleDeleteClick(memberId) {
+  function handleDeleteClick(memberId, password, nickname, inserted) {
     axios
-      .delete(`/api/member/delete/${memberId}`)
+      .delete("/api/member/remove", {
+        data: { memberId, password, nickname, inserted },
+      })
       .then((res) => {
-        alert(res.data);
+        toaster.create({
+          type: "success",
+          description: "회원 탈퇴되었습니다.",
+        });
         console.log("응답 데이터:", res.data);
         navigate("/member/list");
       })
       .catch((error) => {
-        console.error("회원 탈퇴 요청 중 오류 발생:", error);
-        alert("회원 탈퇴에 실패했습니다. 다시 시도해주세요.");
-      })
-      .finally(() => {});
-  }
-
-  function handleDeleteMember(memberId) {
-    handleDeleteClick(memberId);
+        toaster.create({
+          type: "error",
+          description: "회원 탈퇴 요청 중 오류가 발생하였습니다.",
+        });
+        console.error("회원 탈퇴 요청 오류:", error);
+      });
   }
 
   return (
@@ -173,7 +189,6 @@ export function AdminMemberList() {
           <select value={search.type} onChange={handleSearchTypeChange}>
             <option value="all">전체</option>
             <option value="id">ID</option>
-            <option value="name">이름</option>
             <option value="nickname">닉네임</option>
           </select>
         </Flex>
@@ -186,7 +201,6 @@ export function AdminMemberList() {
           <TableHeader>
             <TableRow>
               <TableColumnHeader>ID</TableColumnHeader>
-              <TableColumnHeader>이름</TableColumnHeader>
               <TableColumnHeader>닉네임</TableColumnHeader>
               <TableColumnHeader>가입 일자</TableColumnHeader>
               <TableColumnHeader>회원 탈퇴</TableColumnHeader>
@@ -196,14 +210,13 @@ export function AdminMemberList() {
             {paginatedMembers.map((member) => (
               <Table.Row key={member.memberId}>
                 <Table.Cell>{member.memberId}</Table.Cell>
-                <Table.Cell>{member.name}</Table.Cell>
                 <Table.Cell>{member.nickname}</Table.Cell>
                 <Table.Cell>
                   {new Date(member.inserted).toLocaleDateString()}
                 </Table.Cell>
                 <Table.Cell>
                   <DeleteButton
-                    onClick={handleDeleteClick}
+                    onDelete={handleDeleteClick}
                     memberId={member.memberId}
                   />
                 </Table.Cell>

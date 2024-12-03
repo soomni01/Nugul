@@ -5,7 +5,6 @@ import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -50,26 +49,27 @@ public class MemberController {
     }
 
     @DeleteMapping("remove")
-    public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member) {
-        if (service.remove(member)) {
-            return ResponseEntity.ok(Map.of("message",
-                    Map.of("type", "success",
-                            "text", "회원정보를 삭제하였습니다.")));
-        } else {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message",
-                            Map.of("type", "warning",
-                                    "text", "정확한 정보를 입력해주세요.")));
-        }
-    }
-
-    @GetMapping("{memberId}")
     @PreAuthorize("isAuthenticated() or hasAuthority('SCOPE_admin')")
-    public ResponseEntity<Member> getMember(@PathVariable String memberId, Authentication auth) {
-        if (service.hasAccess(memberId, auth) || service.isAdmin(auth)) {
-            return ResponseEntity.ok(service.get(memberId));
+    public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member, Authentication auth) {
+        System.out.println("Received request: " + member); // 요청 로그
+        System.out.println("Authenticated user: " + auth.getName()); // 인증된 사용자 로그
+        System.out.println("Auth authorities: " + auth.getAuthorities()); // 권한 로그
+
+        if (service.hasAccess(member.getMemberId(), auth)) {
+            System.out.println("Access granted."); // 접근 허용 로그
+            if (service.remove(member)) {
+                return ResponseEntity.ok(Map.of("message",
+                        Map.of("type", "success",
+                                "text", "회원정보를 삭제하였습니다.")));
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message",
+                                Map.of("type", "warning",
+                                        "text", "정확한 정보를 입력해주세요.")));
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            System.out.println("Access denied."); // 접근 거부 로그
+            return ResponseEntity.status(403).build();
         }
     }
 

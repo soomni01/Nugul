@@ -3,6 +3,7 @@ package com.example.backend.service.member;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
+import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -19,22 +20,10 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
+
     final MemberMapper mapper;
     final JwtEncoder jwtEncoder;
-
-//    public boolean delete(String id) {
-//        Member member = mapper.selectById(id);
-//        if (member != null) {
-//            // 비밀번호 확인 로직을 추가할 수 있습니다.
-//            // 예: 관리자 비밀번호 확인 코드
-//
-//            // 회원 삭제
-//            int deletedCount = mapper.deleteById(id);
-//            return deletedCount == 1;
-//        } else {
-//            return false;
-//        }
-//    }
+    private final ProductMapper productMapper;
 
     public boolean add(Member member) {
         int cnt = mapper.insert(member);
@@ -60,6 +49,8 @@ public class MemberService {
 
     public boolean remove(Member member) {
         int cnt = 0;
+
+        // 기존 암호와 비교
         Member db = mapper.selectById(member.getMemberId());
 
         if (db != null) {
@@ -69,6 +60,27 @@ public class MemberService {
         }
         return cnt == 1;
     }
+
+//    public boolean adminRemove(Member member) {
+//        int cnt = 0;
+//        // 기존 암호와 비교
+//        Member db = mapper.selectById(member.getMemberId());
+//
+//        if (db != null) {
+//            if (db.getPassword().equals(member.getPassword())) {
+//                cnt = mapper.deleteByAdminId(member.getMemberId());
+//                // 댓글 지우기
+////                commentMapper.deleteByMemberId(member.getId());
+//                // 쓴 게시물 목록 얻기
+////                List<Integer> boards = boardMapper.selectByWriter(member.getId());
+//                // 각 게시물 지우기
+////                for (Integer boardId : boards) {
+////                    boardService.remove(boardId);
+////                List<Integer> products = productMapper.se
+//            }
+//        }
+//        return cnt == 1;
+//    }
 
     public boolean update(MemberEdit member) {
         int cnt = 0;
@@ -104,6 +116,15 @@ public class MemberService {
     }
 
     public boolean hasAccess(String memberId, Authentication auth) {
+        System.out.println("Member ID: " + memberId);
+        System.out.println("Authenticated name: " + auth.getName());
+
+        // 인증된 사용자가 관리자 권한을 가지고 있는지 확인
+        if ("admin".equals(auth.getName()) || isAdmin(auth)) {
+            return true;
+        }
+
+        // 인증된 사용자 이름이 요청된 memberId와 일치하는지 확인
         return memberId.equals(auth.getName());
     }
 
