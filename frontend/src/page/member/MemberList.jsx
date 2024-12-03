@@ -27,7 +27,6 @@ export function MemberList() {
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader>아이디</Table.ColumnHeader>
-            <Table.ColumnHeader>이름</Table.ColumnHeader>
             <Table.ColumnHeader>별명</Table.ColumnHeader>
             <Table.ColumnHeader>가입일시</Table.ColumnHeader>
           </Table.Row>
@@ -41,8 +40,7 @@ export function MemberList() {
               key={member.memberId}
             >
               <Table.Cell>{member.memberId}</Table.Cell>
-              <Table.Cell>{member.name}</Table.Cell>
-              <Table.Cell>{member.nickName}</Table.Cell>
+              <Table.Cell>{member.nickname}</Table.Cell>
               <Table.Cell>{member.inserted}</Table.Cell>
             </Table.Row>
           ))}
