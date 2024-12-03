@@ -134,7 +134,7 @@ export function AdminInquiryList() {
                   {new Date(inquiry.inserted).toLocaleDateString()}{" "}
                 </Table.Cell>
                 <Table.Cell>
-                  {inquiry.answer ? (
+                  {inquiry.hasAnswer ? (
                     <Badge variant={"subtle"} colorPalette={"green"}>
                       <FaCommentDots /> 답변 완료
                     </Badge>

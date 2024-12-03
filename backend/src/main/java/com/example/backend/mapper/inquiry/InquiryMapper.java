@@ -10,9 +10,17 @@ import java.util.List;
 public interface InquiryMapper {
 
     @Select("""
-            SELECT inquiry_id, title, member_id, inserted
-            FROM inquiry
-            ORDER BY inquiry_id
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.member_id,
+                   i.inserted,
+                   EXISTS (
+                       SELECT 1
+                       FROM inquiry_comment ic
+                       WHERE ic.inquiry_id = i.inquiry_id
+                   ) AS has_answer
+            FROM inquiry i
+            ORDER BY i.inquiry_id
             """)
     List<Inquiry> InquiryAll();
 

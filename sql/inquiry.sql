@@ -16,5 +16,8 @@ VALUES ('사용법 문의', '이 웹사이트를 어떻게 사용하는지 궁�
 INSERT INTO inquiry (title, content, member_id, answer, inserted)
 VALUES ('기타 문의', '닉네임 수정 가능한가요?.', 'sm@naver.com', NULL, CURRENT_DATE);
 
+INSERT INTO inquiry (title, content, member_id, answer, inserted)
+VALUES ('탈퇴 문의', '탈퇴하고싶은데 어떻게 하나요?', 'sm@naver.com', NULL, CURRENT_DATE);
+
 SELECT *
 FROM inquiry;

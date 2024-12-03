@@ -12,5 +12,14 @@ public class Inquiry {
     private String memberId;
     private String answer;
     private LocalDateTime inserted;
-    private boolean hasComments; // 새 필드 추가
+    private boolean hasAnswer;
+
+    // Getter 및 Setter
+    public boolean isHasAnswer() {
+        return hasAnswer;
+    }
+
+    public void setHasAnswer(boolean hasAnswer) {
+        this.hasAnswer = hasAnswer;
+    }
 }

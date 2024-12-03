@@ -33,11 +33,10 @@ public class InquiryService {
         return inquiry;
     }
 
-    public List<InquiryComment> addComment(InquiryComment inquirycomment, Authentication auth) {
+    public void addComment(InquiryComment inquirycomment, Authentication auth) {
         inquirycomment.setMemberId(auth.getName());
         System.out.println(inquirycomment);
         mapper.insertcomment(inquirycomment);
-        return mapper.findCommentsByInquiryId(inquirycomment.getInquiryId());
     }
 
     public List<InquiryComment> getCommentByInquiryId(int inquiryId) {
