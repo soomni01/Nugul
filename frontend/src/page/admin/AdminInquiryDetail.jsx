@@ -214,7 +214,11 @@ export function AdminInquiryDetail({
           <Field label={"내용"} readOnly>
             <Textarea h="25vh" value={inquiry.content} readOnly />
           </Field>
-          <Field>
+          <Field></Field>
+          <Box mt={4}>
+            <Heading size="md" mb={2}>
+              COMMENTS
+            </Heading>
             <Flex>
               <Textarea
                 placeholder="댓글을 입력해 주세요."
@@ -231,13 +235,15 @@ export function AdminInquiryDetail({
                 {editingCommentId ? "수정 완료" : "등록"}
               </Button>
             </Flex>
-          </Field>
-          <Box mt={4}>
-            <Heading size="md" mb={2}>
-              COMMENTS
-            </Heading>
             {comments.map((c) => (
-              <Box key={c.id} borderWidth="1px" borderRadius="md" p={3} mb={2}>
+              <Box
+                key={c.id}
+                borderWidth="1px"
+                borderRadius="md"
+                p={3}
+                mt={4}
+                mb={1}
+              >
                 <Text fontWeight="bold">{c.memberId}</Text>
                 <Text>{c.comment}</Text>
                 <Text fontSize="sm" color="gray.500">
