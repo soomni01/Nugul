@@ -87,4 +87,13 @@ public interface ChatMapper {
                     where productName=#{productName} and writer=#{writer} and buyer=#{buyer}
             """)
     Integer findChatRoomId(ChatRoom chatRoom);
+
+    @Select("""
+                        select *
+                        from chat_message
+                        where roomId=#{roomId}
+                        order by id desc
+                        limit #{offset},8
+            """)
+    List<ChatMessage> chatMessagePageByRoomId(String roomId, Integer offset);
 }

@@ -9,3 +9,9 @@ CREATE TABLE chat_message
 
 DROP TABLE chat_message;
 DESC chat_message;
+
+select *
+from chat_message
+where roomId = 42
+order by id desc
+limit 0,5;

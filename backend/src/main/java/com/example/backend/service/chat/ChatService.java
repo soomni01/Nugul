@@ -49,13 +49,24 @@ public class ChatService {
         mapper.insertMessage(chatMessage);
     }
 
+
+    public Integer findChatRoomId(ChatRoom chatRoom) {
+
+        return mapper.findChatRoomId(chatRoom);
+    }
+
     public List<ChatMessage> chatMessageView(String roomId) {
 
         return mapper.chatMessageByRoomId(roomId);
     }
 
-    public Integer findChatRoomId(ChatRoom chatRoom) {
 
-        return mapper.findChatRoomId(chatRoom);
+    // 메시지 로딩
+    public List<ChatMessage> getMessageById(String roomId, Integer page) {
+        Integer offset = (page - 1) * 8;
+        
+        return mapper.chatMessagePageByRoomId(roomId, offset);
+
+
     }
 }

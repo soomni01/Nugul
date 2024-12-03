@@ -32,7 +32,6 @@ public class ChatController {
         chatMessage.setRoomId(roomId);
 
         chatService.insertMessage(chatMessage);
-        System.out.println("chatMessage = " + chatMessage);
 
 
         return chatMessage;
@@ -64,12 +63,18 @@ public class ChatController {
         //  chatroom 정보 조회
         ChatRoom chatRoom = chatService.chatRoomView(roomId);
         // 해당 채팅방의 메시지 정보 조회  , page
-        List<ChatMessage> message = chatService.chatMessageView(roomId);
-
-        chatRoom.setMessages(message);
-
+//        List<ChatMessage> message = chatService.chatMessageView(roomId);
+//        chatRoom.setMessages(message);
         return chatRoom;
 
+    }
+
+    @GetMapping("view/{roomId}/messages")
+    public List<ChatMessage> getMessage(@PathVariable String roomId,
+                                        @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        // 메시지 페이지네이션
+        return chatService.getMessageById(roomId, page);
+        // a, 8개 까지 보여줄 거임
 
     }
 
