@@ -14,18 +14,13 @@ ALTER TABLE chatroom
     ADD CONSTRAINT writer
         FOREIGN KEY (writer) REFERENCES member (member_id);
 
+alter table chatroom
+    add column buyerId varchar(50) not null default 'buyer';
+
 select *
 from chatroom;
 
-select *
-from chatroom
-         join member;
 
 desc chatroom;
 
-
-select *
-from chatroom
-where writer = "3"
-order by roomId desc
 

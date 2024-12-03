@@ -8,19 +8,22 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function ChatView() {
   // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함 (stomp 에 보낼 내용)
+  const scrollRef = useRef(null);
   const [message, setMessage] = useState([]);
   const [clientMessage, setClientMessage] = useState("");
   const [chatRoom, setChatRoom] = useState({});
   const [stompClient, setStompClient] = useState(null);
-  const { id } = useParams();
+  const { roomId } = useParams();
+  const { id } = useContext(AuthenticationContext);
 
   //  상품명, 방 번호 , 작성자를 보여줄
 
@@ -33,7 +36,7 @@ export function ChatView() {
       },
 
       onConnect: () => {
-        client.subscribe("/room/" + id, function (message) {
+        client.subscribe("/room/" + roomId, function (message) {
           const a = JSON.parse(message.body);
           setMessage((prev) => [
             ...prev,
@@ -52,12 +55,15 @@ export function ChatView() {
     client.activate();
   }, []);
 
+  // 의존성에  message 넣어야함
   useEffect(() => {
     axios
-      .get(`/api/chat/view/${id}`)
+      .get(`/api/chat/view/${roomId}`)
       .then((res) => {
         setChatRoom(res.data);
         setMessage(res.data.messages);
+
+        scrollRef.current.scrollIntoView({ behavior: "smooth" });
       })
       .catch((e) => {});
   }, []);
@@ -70,7 +76,7 @@ export function ChatView() {
     };
     if (stompClient && stompClient.connected)
       stompClient.publish({
-        destination: "/send/" + id,
+        destination: "/send/" + roomId,
         body: JSON.stringify(a),
       });
 
@@ -81,7 +87,7 @@ export function ChatView() {
     <Box>
       <Heading mx={"auto"}>
         {" "}
-        {id} 번 채팅 화면입니다. <hr />
+        {roomId} 번 채팅 화면입니다. <hr />
       </Heading>
       <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
       <Flex h={"80%"} bg={"blue.300/50"}>
@@ -92,24 +98,23 @@ export function ChatView() {
           </Box>
           <Box h={"70%"}>
             {message.map((message, index) => (
-              <Box
-                display={"flex"}
-                mx={2}
-                my={1}
-                justify={
-                  message.sender === "client" ? "flex-start" : "flex-end"
-                }
-              >
-                <Stack>
-                  <Badge p={1} size={"lg"} key={index} color="primary">
-                    {message.content}
-                  </Badge>
-
-                  <p style={{ fontSize: "12px" }}>
-                    {" "}
-                    {new Date(message.sentAt).toLocaleTimeString()}
-                  </p>
-                </Stack>
+              <Box mx={2} my={1}>
+                <Flex
+                  justifyContent={
+                    message.sender === { id } ? "flex-end" : "flex-start"
+                  }
+                >
+                  <Stack>
+                    <Badge p={1} size={"lg"} key={index} color="primary">
+                      {message.content}
+                    </Badge>
+                    <p style={{ fontSize: "12px" }}>
+                      {" "}
+                      {new Date(message.sentAt).toLocaleTimeString()}
+                    </p>
+                    <div ref={scrollRef}></div>
+                  </Stack>
+                </Flex>
               </Box>
             ))}
           </Box>
@@ -130,7 +135,7 @@ export function ChatView() {
           variant={"outline"}
           onClick={() => {
             // 세션의 닉네임
-            var client = "server";
+            var client = id;
             var message = clientMessage;
             sendMessage(client, message);
           }}
