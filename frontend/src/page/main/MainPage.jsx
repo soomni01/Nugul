@@ -71,7 +71,7 @@ export function MainPage() {
         setLikeData(likes);
         setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
       } catch (error) {
-        console.error("Error fetching like data:", error);
+        console.error("관심 상품을 가져오는데 오류가 발생했습니다.:", error);
       }
     };
 
