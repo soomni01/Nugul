@@ -38,6 +38,14 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
 
+  // 카테고리 값 가져오기
+  const categoryParam = searchParams.get("category");
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategory(categoryParam); // URL에서 가져온 카테고리로 상태 설정
+    }
+  }, [categoryParam]);
+
   // 페이지 번호
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
@@ -110,9 +118,9 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         }, {});
 
         setLikeData(likes);
-        setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
+        setUserLikes(new Set(userLikeRes.data));
       } catch (error) {
-        console.error("Error fetching like data:", error);
+        console.error("데이터를 가져오는데 실패했습니다.", error);
       }
     };
 

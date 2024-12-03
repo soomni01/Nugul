@@ -9,6 +9,8 @@ import { Navigation, Pagination } from "swiper/modules";
 import "./MainPage.css";
 import axios from "axios";
 import { ProductItem } from "../../components/product/ProductItem.jsx";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { SegmentedControl } from "../../components/ui/segmented-control.jsx";
 
 export function MainPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -17,10 +19,22 @@ export function MainPage() {
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [pay, setPay] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams("");
+  const navigate = useNavigate();
 
   // 카테고리 변경 처리
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("category", category);
+    nextSearchParams.set("page", 1);
+
+    const route = pay === "share" ? "/product/share/list" : "/product/list";
+    navigate({
+      pathname: route,
+      search: nextSearchParams.toString(),
+    });
   };
 
   useEffect(() => {
@@ -40,6 +54,7 @@ export function MainPage() {
       });
   }, []);
 
+  // 좋아요 상태 가져오기
   useEffect(() => {
     const fetchLikeData = async () => {
       try {
@@ -68,6 +83,14 @@ export function MainPage() {
       <Image src="/image/testImage.png" w="100%" h="300px" mt="3" />
       <Separator my={10} />
       <Heading m={5}> 카테고리별 상품 찾기</Heading>
+      <SegmentedControl
+        defaultValue="product"
+        onValueChange={(e) => setPay(e.value)}
+        items={[
+          { label: "중고거래", value: "product" },
+          { label: "나눔", value: "share" },
+        ]}
+      />
       <CategoryContainer
         selectedCategory={selectedCategory}
         onCategorySelect={handleCategorySelect}
