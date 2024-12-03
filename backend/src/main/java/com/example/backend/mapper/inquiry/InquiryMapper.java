@@ -28,6 +28,7 @@ public interface InquiryMapper {
             (inquiry_id, admin_id,comment)
             VALUES (#{inquiryId}, #{memberId}, #{comment})
             """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertcomment(InquiryComment inquirycomment);
 
     @Select("""

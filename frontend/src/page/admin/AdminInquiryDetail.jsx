@@ -97,7 +97,8 @@ export function AdminInquiryDetail({
         .then((res) => {
           alert("댓글이 등록되었습니다.");
           setComment("");
-          setComments((prevComments) => [...prevComments, res.data]);
+          // setComments((prevComments) => [...prevComments, res.data]);
+          setComments(res.data.list);
         })
         .catch((error) => {
           console.error("댓글 등록 중 오류 발생:", error);
