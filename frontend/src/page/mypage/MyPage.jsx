@@ -1,5 +1,5 @@
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import { Wishlist } from "../mypage/Wishlist.jsx";
 import { SoldItems } from "../mypage/SoldItems.jsx";
@@ -9,8 +9,17 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function MyPage() {
-  const [activeTab, setActiveTab] = useState("profile"); // 기본적으로 '찜 목록'을 활성화
   const { id } = useContext(AuthenticationContext);
+
+  // 새로고침 후에도 탭을 기억할 수 있도록 localStorage에서 상태를 불러옴
+  const [activeTab, setActiveTab] = useState(
+    localStorage.getItem("activeTab") || "profile",
+  );
+
+  // 탭이 변경될 때마다 상태를 localStorage에 저장
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -46,7 +55,7 @@ export function MyPage() {
             colorScheme="teal"
             onClick={() => handleTabClick("wishlist")}
           >
-            찜 목록
+            관심 목록
           </Button>
           <Button
             variant={activeTab === "sold" ? "solid" : "ghost"}
