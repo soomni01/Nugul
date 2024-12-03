@@ -8,42 +8,43 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { PiCurrencyKrwBold } from "react-icons/pi";
-import { ProductLike } from "./ProductLike.jsx";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { categories } from "../category/CategoryContainer.jsx";
-import { useEffect, useState } from "react";
-import axios from "axios"; // 예시로 아이콘 추가
+import React, { useContext, useState } from "react";
+import { GoHeartFill } from "react-icons/go";
+import axios from "axios";
+import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
+import { ToggleTip } from "../ui/toggle-tip.jsx";
 
-export function ProductHorizontalItem({ product }) {
-  const [likeData, setLikeData] = useState({});
-  const [userLikes, setUserLikes] = useState(new Set());
+export function ProductHorizontalItem({ product, onRemove }) {
+  const [isLiked, setIsLiked] = useState(product.isLiked || false);
+  const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
+  const { hasAccess } = useContext(AuthenticationContext);
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체";
   const daysAgo = getDaysAgo(product.createdAt);
 
-  useEffect(() => {
-    const fetchLikeData = async () => {
-      try {
-        const [likeRes, userLikeRes] = await Promise.all([
-          axios.get("/api/product/likes"),
-          axios.get("/api/product/like/member"),
-        ]);
+  const handleLikeClick = () => {
+    if (hasAccess) {
+      setIsLiked((prev) => !prev);
 
-        const likes = likeRes.data.reduce((acc, item) => {
-          acc[item.product_id] = item.like_count;
-          return acc;
-        }, {});
+      axios
+        .post("/api/product/like", { productId: product.productId })
+        .then(() => {
+          onRemove(product.productId); // 부모 컴포넌트로 제거 요청
+        })
+        .catch((err) => {
+          console.error("관심 상품에 오류가 발생했습니다.", err);
 
-        setLikeData(likes);
-        setUserLikes(new Set(userLikeRes.data));
-      } catch (error) {
-        console.error("관심 상품을 가져오는데 오류가 발생했습니다.:", error);
-      }
-    };
-    fetchLikeData();
-  }, []);
+          // 요청 실패 시 상태 복구
+          setIsLiked((prev) => !prev);
+        });
+    } else {
+      setLikeTooltipOpen((prev) => !prev);
+    }
+  };
 
   return (
     <Card.Root
@@ -98,12 +99,14 @@ export function ProductHorizontalItem({ product }) {
         top={2}
         right={2}
       >
-        <ProductLike
-          productId={product.productId}
-          initialLike={userLikes.has(product.productId)}
-          initialCount={likeData[product.productId] || 0}
-          isHorizontal={false}
-        />
+        <Box onClick={handleLikeClick} cursor="pointer">
+          <ToggleTip
+            open={likeTooltipOpen}
+            content={"로그인 후 좋아요를 클릭해주세요."}
+          >
+            <GoHeartFill />
+          </ToggleTip>
+        </Box>
       </Button>
 
       {/* 우측 하단 가격 */}

@@ -26,6 +26,12 @@ export function Wishlist() {
       });
   }, [productList]); // 컴포넌트가 마운트 될 때 한 번만 호출
 
+  const handleRemove = (productId) => {
+    setProductList((prevList) =>
+      prevList.filter((item) => item.productId !== productId),
+    );
+  };
+
   if (loading) {
     return <Spinner />;
   }
@@ -51,7 +57,10 @@ export function Wishlist() {
                 key={product.productId}
                 style={{ height: "auto", weight: "100%" }}
               >
-                <ProductHorizontalItem product={product} />
+                <ProductHorizontalItem
+                  product={product}
+                  onRemove={handleRemove}
+                />
               </SwiperSlide>
             ))
           ) : (
