@@ -85,9 +85,9 @@ public class MemberController {
         }
     }
 
-    @GetMapping(value = "check", params = "nickName")
-    public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickName) {
-        if (service.checkNickName(nickName)) {
+    @GetMapping(value = "check", params = "nickname")
+    public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickname) {
+        if (service.checkNickName(nickname)) {
             return ResponseEntity.ok().body(Map.of(
                     "message", Map.of("type", "warning", "text", "이미 사용중인 별명 입니다."),
                     "available", false)

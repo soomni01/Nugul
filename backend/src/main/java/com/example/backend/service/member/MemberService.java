@@ -44,8 +44,8 @@ public class MemberService {
         return mapper.selectById(id) != null;
     }
 
-    public boolean checkNickName(String nickName) {
-        Member member = mapper.selectByNickName(nickName);
+    public boolean checkNickName(String nickname) {
+        Member member = mapper.selectByNickName(nickname);
         return member != null;
     }
 
