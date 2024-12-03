@@ -20,6 +20,7 @@ import java.util.Map;
 public class MemberController {
     final MemberService service;
 
+    // 로그인 요청 처리
     @PostMapping("login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
         String token = service.token(member);
@@ -34,6 +35,7 @@ public class MemberController {
         }
     }
 
+    // 회원 정보 수정 요청 처리
     @PutMapping("update")
     public ResponseEntity<Map<String, Object>> update(@RequestBody MemberEdit member) {
         if (service.update(member)) {
@@ -48,37 +50,34 @@ public class MemberController {
         }
     }
 
+    // 회원 탈퇴 요청 처리
     @DeleteMapping("remove")
     @PreAuthorize("isAuthenticated() or hasAuthority('SCOPE_admin')")
     public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member, Authentication auth) {
-        System.out.println("Received request: " + member); // 요청 로그
-        System.out.println("Authenticated user: " + auth.getName()); // 인증된 사용자 로그
-        System.out.println("Auth authorities: " + auth.getAuthorities()); // 권한 로그
+        System.out.println("Received request: " + member);
+        System.out.println("Authenticated user: " + auth.getName());
+        System.out.println("Auth authorities: " + auth.getAuthorities());
 
-        if (service.hasAccess(member.getMemberId(), auth)) {
-            System.out.println("Access granted."); // 접근 허용 로그
-            if (service.remove(member)) {
-                return ResponseEntity.ok(Map.of("message",
-                        Map.of("type", "success",
-                                "text", "회원정보를 삭제하였습니다.")));
-            } else {
-                return ResponseEntity.badRequest()
-                        .body(Map.of("message",
-                                Map.of("type", "warning",
-                                        "text", "정확한 정보를 입력해주세요.")));
-            }
+        if (service.remove(member, auth)) {
+            return ResponseEntity.ok(Map.of("message",
+                    Map.of("type", "success",
+                            "text", "회원정보를 삭제하였습니다.")));
         } else {
-            System.out.println("Access denied."); // 접근 거부 로그
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message",
+                            Map.of("type", "warning",
+                                    "text", "정확한 정보를 입력해주세요.")));
         }
     }
 
+    // 관리자 전용 회원 목록 요청 처리
     @GetMapping("list")
     @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {
         return service.list();
     }
 
+    // 아이디 중복 체크 요청 처리
     @GetMapping(value = "check", params = "id")
     public ResponseEntity<Map<String, Object>> check(@RequestParam String id) {
         if (service.checkId(id)) {
@@ -93,6 +92,7 @@ public class MemberController {
         }
     }
 
+    // 별명 중복 체크 요청 처리
     @GetMapping(value = "check", params = "nickName")
     public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickName) {
         if (service.checkNickName(nickName)) {
@@ -107,6 +107,7 @@ public class MemberController {
         }
     }
 
+    // 회원 가입 요청 처리
     @PostMapping("/signup")
     public ResponseEntity<Map<String, Object>> signup(@RequestBody Member member) {
         try {
