@@ -18,3 +18,5 @@ FROM member;
 
 DELETE
 FROM member;
+
+DESC member;

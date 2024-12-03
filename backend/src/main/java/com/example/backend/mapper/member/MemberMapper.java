@@ -28,7 +28,7 @@ public interface MemberMapper {
     Member selectByNickName(String nickName);
 
     @Select("""
-            SELECT member_id, name, nickname, inserted 
+            SELECT member_id, nickname, inserted 
             FROM member
             ORDER BY member_id
             """)
