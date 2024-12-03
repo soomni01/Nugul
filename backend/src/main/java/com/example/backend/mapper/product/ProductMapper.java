@@ -131,9 +131,28 @@ public interface ProductMapper {
     List<Map<String, Object>> countLikeByProductId();
 
     @Select("""
-                SELECT product_id
-                FROM product_like
-                WHERE member_id = #{currentMemberId}
+            SELECT product_id
+            FROM product_like
+            WHERE member_id = #{currentMemberId}
             """)
     List<Integer> likedProductByMemberId(String currentMemberId);
+
+    @Select("""
+            SELECT *
+            FROM product
+            WHERE pay = 'sell'
+            ORDER BY product_id DESC
+            LIMIT #{limit}
+            """)
+    List<Product> selectSellProducts(Integer limit);
+
+    @Select("""
+            SELECT *
+            FROM product
+            WHERE pay = 'share'
+            ORDER BY product_id DESC
+            LIMIT #{limit}
+            """)
+    List<Product> selectShareProducts(Integer limit);
+
 }

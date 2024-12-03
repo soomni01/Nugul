@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,6 +116,20 @@ public class ProductService {
     public List<Integer> likedProductByMember(Authentication authentication) {
         List<Integer> list = mapper.likedProductByMemberId(authentication.getName());
         return list;
+    }
+
+    public Map<String, List<Product>> getProductMainList() {
+        Integer limit = 5;
+
+        List<Product> sellProducts = mapper.selectSellProducts(limit);
+
+        List<Product> shareProducts = mapper.selectShareProducts(limit);
+
+        Map<String, List<Product>> result = new HashMap<>();
+        result.put("sellProducts", sellProducts);
+        result.put("shareProducts", shareProducts);
+
+        return result;
     }
 }
 

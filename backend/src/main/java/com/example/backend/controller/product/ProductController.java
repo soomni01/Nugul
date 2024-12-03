@@ -19,6 +19,12 @@ public class ProductController {
 
     final ProductService service;
 
+    // 메인 페이지 상품
+    @GetMapping("main")
+    public Map<String, List<Product>> mainProduct() {
+        return service.getProductMainList();
+    }
+
     // 사용자가 좋아요한 상품
     @GetMapping("like/member")
     @PreAuthorize("isAuthenticated()")
