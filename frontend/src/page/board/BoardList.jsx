@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Table } from "@chakra-ui/react";
+import { Box, Flex, HStack, Input, Table } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
@@ -9,10 +9,15 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
+import {
+  NativeSelectField,
+  NativeSelectRoot,
+} from "../../components/ui/native-select.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [count, setCount] = useState(0);
+  const [search, setSearch] = useState({ type: "all", keyword: "" });
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -90,23 +95,39 @@ export function BoardList() {
           )}
         </Table.Body>
       </Table.Root>
+
+      <HStack mt={4}>
+        <NativeSelectRoot
+          onChange={(e) => setSearch({ ...search, type: e.target.value })}
+        >
+          <NativeSelectField
+            items={[
+              { label: "전체", value: "all" },
+              { label: "제목", value: "title" },
+              { label: "본문", value: "content" },
+              { label: "카테고리", value: "category" },
+            ]}
+          />
+        </NativeSelectRoot>
+        <Input
+          onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
+        />
+        <Button>검색</Button>
+      </HStack>
+
       <PaginationRoot
         onPageChange={handlePageChange}
         count={count}
         pageSize={10}
         page={page}
       >
-        <Box
-          mt={4}
-          textAlign="center"
-          style={{ transform: "translateX(450px)" }}
-        >
+        <Flex justifyContent="center" mt={4}>
           <HStack>
             <PaginationPrevTrigger />
             <PaginationItems />
             <PaginationNextTrigger />
           </HStack>
-        </Box>
+        </Flex>
       </PaginationRoot>
     </Box>
   );
