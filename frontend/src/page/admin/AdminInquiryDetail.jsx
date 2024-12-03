@@ -164,6 +164,7 @@ export function AdminInquiryDetail({
     axios
       .delete(`/api/inquiry/comment/${commentId}`)
       .then((res) => {
+        console.log("Comments data:", res.data);
         setComments((prevComments) =>
           prevComments.filter((c) => c.id !== commentId),
         );

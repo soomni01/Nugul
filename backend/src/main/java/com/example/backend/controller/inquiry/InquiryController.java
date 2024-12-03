@@ -33,8 +33,8 @@ public class InquiryController {
     @PostMapping("/comment/{memberId}")
     public ResponseEntity<Map<String, Object>> add(@RequestBody InquiryComment inquirycomment
             , Authentication auth) {
-        service.addComment(inquirycomment, auth);
-        return ResponseEntity.ok().body(Map.of("message",
+        List<InquiryComment> list = service.addComment(inquirycomment, auth);
+        return ResponseEntity.ok().body(Map.of("list", list, "message",
                 Map.of("type", "success", "text", "댓글이 등록되었습니다.")));
     }
 
