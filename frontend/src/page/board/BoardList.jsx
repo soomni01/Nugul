@@ -82,25 +82,19 @@ export function BoardList() {
         <h3>게시물 목록</h3>
         <Button onClick={handleWriteClick}>게시물 쓰기</Button>
       </Flex>
-      <Table.Root interactive>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>번호</Table.ColumnHeader>
-            <Table.ColumnHeader>제목</Table.ColumnHeader>
-            <Table.ColumnHeader>작성자</Table.ColumnHeader>
-            <Table.ColumnHeader>카테고리</Table.ColumnHeader>
-            <Table.ColumnHeader>작성날짜</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {boardList.length === 0 ? (
+      {boardList.length > 0 ? (
+        <Table.Root interactive>
+          <Table.Header>
             <Table.Row>
-              <Table.Cell colSpan={5} style={{ textAlign: "center" }}>
-                게시물이 없습니다.
-              </Table.Cell>
+              <Table.ColumnHeader>번호</Table.ColumnHeader>
+              <Table.ColumnHeader>제목</Table.ColumnHeader>
+              <Table.ColumnHeader>작성자</Table.ColumnHeader>
+              <Table.ColumnHeader>카테고리</Table.ColumnHeader>
+              <Table.ColumnHeader>작성날짜</Table.ColumnHeader>
             </Table.Row>
-          ) : (
-            boardList.map((board) => (
+          </Table.Header>
+          <Table.Body>
+            {boardList.map((board) => (
               <Table.Row
                 onClick={() => handleRowClick(board.boardId)}
                 key={board.boardId}
@@ -111,10 +105,12 @@ export function BoardList() {
                 <Table.Cell>{board.category}</Table.Cell>
                 <Table.Cell>{board.createdAt}</Table.Cell>
               </Table.Row>
-            ))
-          )}
-        </Table.Body>
-      </Table.Root>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      ) : (
+        <p>조회된 결과가 없습니다.</p>
+      )}
 
       <HStack mt={4}>
         <NativeSelectRoot
