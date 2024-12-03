@@ -18,3 +18,8 @@ FROM member;
 
 DELETE
 FROM member;
+
+# ALTER TABLE member
+#     DROP COLUMN name;
+
+DESCRIBE member;

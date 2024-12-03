@@ -106,8 +106,8 @@ public class MemberController {
                 return ResponseEntity.ok().body(Map.of("message",
                         Map.of("type", "success", "text", "회원 가입되었습니다.")));
             } else {
-                return ResponseEntity.internalServerError().body(Map.of("message",
-                        Map.of("type", "error", "text", "회원 가입 중 문제가 발생하였습니다.")));
+                return ResponseEntity.badRequest().body(Map.of("message",
+                        Map.of("type", "error", "text", "이미 사용 중인 이메일입니다.")));
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("message",

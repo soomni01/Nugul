@@ -210,13 +210,9 @@ export function MemberSignup() {
         <Field
           label={"별명"}
           helperText={
-            nickNameCheckMessage ? (
+            nickNameCheckMessage && (
               <Text color={nickNameCheck ? "green.500" : "red.500"}>
                 {nickNameCheckMessage}
-              </Text>
-            ) : (
-              <Text color="gray.500">
-                닉네임은 영문/한글로 시작하며, 2자 이상 50자 이하이어야 합니다.
               </Text>
             )
           }
