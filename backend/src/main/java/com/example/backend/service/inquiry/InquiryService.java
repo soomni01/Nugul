@@ -21,10 +21,12 @@ public class InquiryService {
     @Autowired
     private InquiryMapper inquiryMapper;
 
+    // 모든 문의 목록을 반환하는 메소드
     public List<Inquiry> list() {
         return mapper.InquiryAll();
     }
 
+    // 특정 ID의 문의를 반환하는 메소드
     public Inquiry getInquiry(int inquiryId) {
         Inquiry inquiry = mapper.findById(inquiryId);
         if (inquiry == null) {
@@ -33,6 +35,7 @@ public class InquiryService {
         return inquiry;
     }
 
+    // 댓글을 추가하는 메소드
     public List<InquiryComment> addComment(InquiryComment inquirycomment, Authentication auth) {
         inquirycomment.setMemberId(auth.getName());
         System.out.println(inquirycomment);
@@ -40,15 +43,18 @@ public class InquiryService {
         return mapper.findCommentsByInquiryId(inquirycomment.getInquiryId());
     }
 
+    // 특정 문의 ID에 대한 댓글 목록을 반환하는 메소드
     public List<InquiryComment> getCommentByInquiryId(int inquiryId) {
         return mapper.findCommentsByInquiryId(inquiryId);
     }
 
+    // 댓글을 수정하는 메소드
     public boolean update(InquiryComment inquirycomment) {
         int cnt = mapper.update(inquirycomment);
         return cnt == 1;
     }
 
+    // 특정 댓글을 삭제하는 메소드
     public boolean deleteComment(int commentId) {
         int cnt = mapper.deleteComment(commentId);
         return cnt == 1;
