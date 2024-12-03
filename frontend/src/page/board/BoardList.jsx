@@ -56,6 +56,22 @@ export function BoardList() {
     setSearchParams(nextSearchParams);
   }
 
+  function handleSearchClick() {
+    if (search.keyword.trim().length > 0) {
+      // 검색
+      const nextSearchParam = new URLSearchParams(searchParams);
+      nextSearchParam.set("searchType", search.type);
+      nextSearchParam.set("searchKeyword", search.keyword);
+      setSearchParams(nextSearchParam);
+    } else {
+      // 검색 안함
+      const nextSearchParam = new URLSearchParams(searchParams);
+      nextSearchParam.delete("searchType");
+      nextSearchParam.delete("searchKeyword");
+      setSearchParams(nextSearchParam);
+    }
+  }
+
   return (
     <Box>
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -110,9 +126,11 @@ export function BoardList() {
           />
         </NativeSelectRoot>
         <Input
+          value={search.keyword}
+          placeholder="검색 하세요"
           onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
         />
-        <Button>검색</Button>
+        <Button onClick={handleSearchClick}>검색</Button>
       </HStack>
 
       <PaginationRoot
