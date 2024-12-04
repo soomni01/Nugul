@@ -46,6 +46,7 @@ public class ProductController {
         return service.like(product, authentication);
     }
 
+    // 상품 정보 수정하기
     @PutMapping("update")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> update(
@@ -74,6 +75,7 @@ public class ProductController {
         }
     }
 
+    // 상품 삭제하기
     @DeleteMapping("delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteProduct(
@@ -96,11 +98,13 @@ public class ProductController {
         }
     }
 
+    // 상품 1개의 정보 가져오기
     @GetMapping("/view/{id}")
     public Product view(@PathVariable int id) {
         return service.getProductView(id);
     }
 
+    // 페이지, 카테고리, 검색, 지불방법 별 상품 목록 가져오기
     @GetMapping("list")
     public Map<String, Object> list(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -110,6 +114,7 @@ public class ProductController {
         return service.getProductList(page, category, keyword, pay);
     }
 
+    // 상품 추가하기
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> add(

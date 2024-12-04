@@ -16,13 +16,15 @@ public class MyPageService {
 
     final MyPageMapper mapper;
 
+    // 내 관심 상품 목록 가져오기
     public List<Product> getLikes(Authentication authentication) {
         List<Product> likesList = mapper.getLikes(authentication.getName());
         return likesList;
     }
 
+    // 내 판매 상품 목록 가져오기
     public List<Product> getSoldProducts(Authentication authentication) {
-        List<Product> soldProductsList = mapper.getsoldProducts(authentication.getName());
+        List<Product> soldProductsList = mapper.getSoldProducts(authentication.getName());
         return soldProductsList;
     }
 }
