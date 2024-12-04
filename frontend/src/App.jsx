@@ -8,13 +8,13 @@ import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
 import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
-
+import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
+
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
-
 import { ChatList } from "./page/chat/ChatList.jsx";
-import { ChatView } from "./page/chat/ChatView.jsx";
 
+import { ChatView } from "./page/chat/ChatView.jsx";
 import { ProductList } from "./page/product/ProductList.jsx";
 import { ProductShareList } from "./page/product/ProductShareList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
@@ -24,12 +24,11 @@ import { MainPage } from "./page/main/MainPage.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
-import { BoardEdit } from "./page/board/BoardEdit.jsx";
 
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
-
-
+import { Inquiry } from "./page/inquiry/Inquiry.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -57,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "member/signup",
         element: <MemberSignup />,
+      },
+      {
+        path: "inquiry",
+        element: <Inquiry />,
       },
       {
         path: "myPage",
@@ -123,6 +126,10 @@ const router = createBrowserRouter([
       {
         path: "members",
         element: <AdminMemberList />,
+      },
+      {
+        path: "members/:memberId/detail",
+        element: <AdminMemberDetail />,
       },
       {
         path: "reports",
