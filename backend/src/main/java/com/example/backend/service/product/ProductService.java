@@ -21,8 +21,14 @@ public class ProductService {
 
     final ProductMapper mapper;
 
+
+
+    public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage) {
+     
+
     public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage, Authentication authentication) {
         product.setWriter(authentication.getName());
+
 
         int cnt = mapper.insert(product);
 

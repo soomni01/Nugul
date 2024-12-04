@@ -1,6 +1,9 @@
 import { Badge, Box, Card, Flex, HStack, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
+import { GoHeart } from "react-icons/go";
+import axios from "axios";
+import { useContext } from "react";
 import { categories } from "../category/CategoryContainer.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
@@ -10,12 +13,37 @@ import React from "react";
 export function ProductItem({ product, likeCount, isLiked }) {
   const navigate = useNavigate();
 
+  const { id } = useContext(AuthenticationContext);
+
+  const createChatRoom = () => {
+    var testId;
+    var productName = product.productName;
+    var writer = product.writer;
+    var nickname = "";
+    var buyer = id;
+    axios
+      .post("/api/chat/create", {
+        productName: productName,
+        writer: writer,
+        nickname: nickname,
+        buyer: buyer,
+      })
+      .then((res) => {
+        console.log(res.data);
+        const roomId = res.data;
+        navigate("/chat/room/" + roomId);
+      });
+    // 추가
+  };
+
+
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
 
   // 날짜 차이를 계산하는 함수
   const daysAgo = getDaysAgo(product.createdAt);
+
 
   return (
     <Card.Root maxW="sm" overflow="hidden">
@@ -37,6 +65,7 @@ export function ProductItem({ product, likeCount, isLiked }) {
           </HStack>
         </Card.Description>
       </Card.Body>
+
       <Card.Footer px="3" py="3">
         <Flex justify="space-between" align="center" w="100%">
           <Button

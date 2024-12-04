@@ -41,7 +41,7 @@ export function MemberLogin() {
           type: data.message.type,
           description: data.message.text,
         });
-        navigate("/main");
+        navigate("main");
         localStorage.setItem("token", data.token);
       })
       .catch((e) => {
