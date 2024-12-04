@@ -13,8 +13,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 import { useParams } from "react-router-dom";
-import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import axios from "axios";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function ChatView() {
   const scrollRef = useRef(null);

@@ -10,7 +10,7 @@ import { categories } from "../../components/category/CategoryContainer.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정

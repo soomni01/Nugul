@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);

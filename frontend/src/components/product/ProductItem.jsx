@@ -1,14 +1,13 @@
 import { Badge, Box, Card, Flex, HStack, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
-import { GoHeart } from "react-icons/go";
 import axios from "axios";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { categories } from "../category/CategoryContainer.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { ProductLike } from "./ProductLike.jsx";
-import React from "react";
+import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 
 export function ProductItem({ product, likeCount, isLiked }) {
   const navigate = useNavigate();
@@ -36,14 +35,12 @@ export function ProductItem({ product, likeCount, isLiked }) {
     // 추가
   };
 
-
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
 
   // 날짜 차이를 계산하는 함수
   const daysAgo = getDaysAgo(product.createdAt);
-
 
   return (
     <Card.Root maxW="sm" overflow="hidden">

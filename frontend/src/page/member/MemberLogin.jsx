@@ -8,7 +8,6 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { jwtDecode } from "jwt-decode";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
 
-
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
   const [password, setPassword] = useState("");
@@ -61,7 +60,7 @@ export function MemberLogin() {
         } else {
           navigate("main");
         }
-        navigate("main");
+
         localStorage.setItem("token", data.token);
       })
       .catch((e) => {
@@ -99,7 +98,7 @@ export function MemberLogin() {
           />
         </Field>
 
-        <Field >
+        <Field>
           <PasswordInput
             placeholder="비밀번호 입력"
             type="password"
