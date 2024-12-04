@@ -40,7 +40,7 @@ export function ChatList() {
 
   const removeChatRoom = (roomId) => {
     axios
-      .delete("api/chat/delete/" + roomId)
+      .delete("/api/chat/delete/" + roomId)
       .then(
         setChatList((prev) => prev.filter((chat) => chat.roomId !== roomId)),
       )

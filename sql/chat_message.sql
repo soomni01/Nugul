@@ -15,3 +15,11 @@ from chat_message
 where roomId = 42
 order by id desc
 limit 0,5;
+
+
+select *
+from chat_message;
+
+delete
+from chat_message
+where roomId = 46;
