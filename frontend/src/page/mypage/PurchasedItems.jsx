@@ -42,13 +42,21 @@ export function PurchasedItems() {
           scrollbar={{ draggable: true }}
           mousewheel={true}
           modules={[FreeMode, Scrollbar, Mousewheel]}
-          style={{ height: "100%", width: "100%" }}
+          style={{
+            height: "auto",
+            width: "100%",
+            justifyContent: "left",
+          }}
         >
           {purchasedList.length > 0 ? (
             purchasedList.map((product) => (
               <SwiperSlide
                 key={product.productId}
-                style={{ height: "auto", weight: "100%" }}
+                style={{
+                  height: "auto",
+                  width: "100%",
+                  justifyContent: "left",
+                }}
               >
                 <ProductHorizontalItem
                   product={product}

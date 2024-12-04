@@ -90,8 +90,9 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
     <Card.Root
       flexDirection="row"
       maxH="150px"
-      width="100%"
+      width="80%"
       mb={4}
+      cursor="pointer"
       boxShadow="sm" // 카드에 그림자 추가
       borderRadius="md" // 카드 모서리 둥글게
       border="1px solid"

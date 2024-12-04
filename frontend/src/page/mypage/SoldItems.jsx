@@ -54,7 +54,11 @@ export function SoldItems() {
             soldList.map((product) => (
               <SwiperSlide
                 key={product.productId}
-                style={{ height: "auto", weight: "100%" }}
+                style={{
+                  height: "auto",
+                  width: "100%",
+                  justifyContent: "left",
+                }}
               >
                 <ProductHorizontalItem
                   product={product}
