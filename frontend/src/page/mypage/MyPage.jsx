@@ -95,7 +95,11 @@ export function MyPage() {
           <Profile onEditClick={() => setActiveTab("editProfile")} />
         )}
         {activeTab === "editProfile" && (
-          <ProfileEdit id={id} onCancel={() => setActiveTab("profile")} />
+          <ProfileEdit
+            id={id}
+            onCancel={() => setActiveTab("profile")}
+            onSave={() => setActiveTab("profile")}
+          />
         )}
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}

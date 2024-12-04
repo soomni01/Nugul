@@ -70,9 +70,6 @@ export function Profile({ onEditClick }) {
         <Field label={"암호"}>
           <Input readOnly value={member.password} />
         </Field>
-        <Field label={"이름"}>
-          <Input readOnly value={member.nickname} />
-        </Field>
         <Field label={"별명"}>
           <Input readOnly value={member.nickname} />
         </Field>
