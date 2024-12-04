@@ -17,11 +17,13 @@ import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { toaster } from "../ui/toaster.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function ProductHorizontalItem({ product, onRemove, pageType }) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
@@ -95,6 +97,7 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
       border="1px solid"
       borderColor="gray.200"
       position="relative" // 부모 카드에 relative 위치를 지정
+      onClick={() => navigate(`/product/view/${product.productId}`)}
     >
       {/* 왼쪽: 이미지 */}
       <Image
@@ -136,13 +139,14 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         position="absolute"
         top={2}
         right={2}
-        onClick={
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중단
           pageType === "wish"
-            ? handleLikeClick
+            ? handleLikeClick()
             : pageType === "purchased"
-              ? handleReviewClick
-              : handleDeleteClick
-        }
+              ? handleReviewClick()
+              : handleDeleteClick();
+        }}
       >
         {pageType === "wish" ? (
           <Box cursor="pointer">
