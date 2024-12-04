@@ -1,10 +1,10 @@
 import { ProductListContainer } from "./ProductContainer.jsx";
 
-export function ProductList() {
+export function ProductShareList() {
   return (
     <ProductListContainer
       apiEndpoint="/api/product/list"
-      pay="sell"
+      pay="share"
       addProductRoute="/product/add"
     />
   );

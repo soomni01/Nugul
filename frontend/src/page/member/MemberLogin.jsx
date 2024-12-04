@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { PasswordInput } from "../../components/ui/password-input.jsx";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -78,7 +79,7 @@ export function MemberLogin() {
         </Field>
 
         <Field label={"암호"}>
-          <Input
+          <PasswordInput
             placeholder="암호 입력"
             type="password"
             value={password}
