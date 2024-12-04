@@ -46,8 +46,9 @@ public interface BoardMapper {
 
     @Select("""
             <script>
-            SELECT board_id, title, writer, category,created_at
-            FROM board
+            SELECT b.board_id, b.title, m.nickname AS writer, b.category,b.created_at
+            FROM board b
+            JOIN member m ON b.writer = m.member_id
             WHERE 
                 <trim prefixOverrides="OR">
                     <if test="searchType == 'all' or searchType == 'title'">
