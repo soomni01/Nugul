@@ -21,6 +21,10 @@ import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+import { BoardList } from "./page/board/BoardList.jsx";
+import { BoardAdd } from "./page/board/BoardAdd.jsx";
+import { BoardView } from "./page/board/BoardView.jsx";
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
@@ -89,6 +93,22 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:id",
         element: <ProductEdit />,
+      },
+      {
+        path: "board/list",
+        element: <BoardList />,
+      },
+      {
+        path: "board/boardAdd",
+        element: <BoardAdd />,
+      },
+      {
+        path: "board/boardView/:boardId",
+        element: <BoardView />,
+      },
+      {
+        path: "board/boardEdit/:boardId",
+        element: <BoardEdit />,
       },
     ],
   },

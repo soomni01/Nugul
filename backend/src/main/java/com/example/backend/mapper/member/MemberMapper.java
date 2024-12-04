@@ -10,8 +10,8 @@ import java.util.List;
 public interface MemberMapper {
     @Insert("""
             INSERT INTO member
-            (member_id, password, nickname)
-            VALUES (#{memberId}, #{password}, #{nickname})
+            (member_id,password,nickname)
+            VALUES (#{memberId}, #{password},#{nickname})
             """)
     int insert(Member member);
 
@@ -42,8 +42,8 @@ public interface MemberMapper {
 
     @Update("""
             UPDATE member
-            SET password = #{password}, 
-                nickname = #{nickname}
+            SET password = #{password} ,
+            nickname=#{nickname}
             WHERE member_id=#{memberId}
             """)
     int update(MemberEdit member);

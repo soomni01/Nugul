@@ -41,9 +41,10 @@ public class MemberService {
         return mapper.selectById(id) != null;
     }
 
-    // 별명 중복 체크 메소드
-    public boolean checkNickName(String nickName) {
-        Member member = mapper.selectByNickName(nickName);
+
+      // 별명 중복 체크 메소드
+    public boolean checkNickName(String nickname) {
+        Member member = mapper.selectByNickName(nickname);
         return member != null;
     }
 

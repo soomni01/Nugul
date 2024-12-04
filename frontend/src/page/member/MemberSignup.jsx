@@ -10,13 +10,11 @@ export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
   const [idCheckMessage, setIdCheckMessage] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [nickName, setNickName] = useState("");
+  const [nickname, setNickName] = useState("");
   const [nickNameCheckMessage, setNickNameCheckMessage] = useState("");
   const [idCheck, setIdCheck] = useState(false);
   const [rePassword, setRePassword] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState(false);
-  const [nameMessage, setNameMessage] = useState("");
   const navigate = useNavigate();
 
   const emailRegEx =
@@ -24,23 +22,6 @@ export function MemberSignup() {
 
   const passwordRegEx =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,49}$/;
-
-  const nicknameRegex = /^[a-zA-Z가-힣][a-zA-Z가-힣0-9]{1,48}$/;
-
-  const nameRegex = /^[a-zA-Z가-힣0-9]{2,}( [a-zA-Z가-힣0-9]+)*$/;
-
-  const capitalizeName = (name) =>
-    name
-      .split(" ")
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join(" ");
-
-  const processNickname = (nickName) => {
-    if (/^[a-zA-Z]/.test(nickName)) {
-      return nickName.charAt(0).toUpperCase() + nickName.slice(1).toLowerCase();
-    }
-    return nickName;
-  };
 
   function handleSaveClick() {
     if (!passwordRegEx.test(password) || password !== rePassword) {
@@ -52,7 +33,7 @@ export function MemberSignup() {
         memberId,
         password,
         name,
-        nickName,
+        nickname,
       })
       .then((res) => {
         const message = res.data.message;
@@ -113,38 +94,10 @@ export function MemberSignup() {
       });
   };
 
-  const handleNickNameChange = (e) => {
-    let inputNickName = e.target.value;
-
-    if (inputNickName.length > 0) {
-      inputNickName =
-        inputNickName.charAt(0).toUpperCase() +
-        inputNickName.slice(1).toLowerCase();
-    }
-
-    setNickName(inputNickName);
-
-    setNickNameCheckMessage("");
-  };
-
   const handleNickNameCheckClick = () => {
-    const processedNickName = nickName;
-
-    if (!nicknameRegex.test(processedNickName)) {
-      toaster.create({
-        type: "error",
-        description:
-          "별명은 숫자로 시작할 수 없으며, 특수문자는 사용할 수 없습니다.",
-      });
-      setNickNameCheckMessage(
-        "별명은 2글자 이상이어야 하며, 숫자로 시작할 수 없고, 특수문자는 사용할 수 없습니다.",
-      );
-      return;
-    }
-
     axios
       .get("/api/member/check", {
-        params: { nickName: processedNickName },
+        params: { nickname },
       })
       .then((res) => res.data)
       .then((data) => {
@@ -161,7 +114,7 @@ export function MemberSignup() {
           setNickNameCheck(false);
         }
       })
-      .catch((e) => {
+      .catch(() => {
         setNickNameCheckMessage("서버 오류가 발생했습니다.");
         toaster.create({
           type: "error",
@@ -170,28 +123,14 @@ export function MemberSignup() {
       });
   };
 
-  const handleNameChange = (e) => {
-    const inputName = e.target.value;
-    const capitalized = capitalizeName(inputName);
-    setName(capitalized);
-
-    if (nameRegex.test(capitalized)) {
-      setNameMessage("");
-    } else {
-      setNameMessage(
-        "이름이 올바르지 않습니다. (2글자 이상, 공백없음, 특수문자 없음, 숫자없음)",
-      );
-    }
-  };
-
   let disabled = true;
-  if (idCheck && nickNameCheck && nameRegex.test(name)) {
+  if (idCheck && nickNameCheck) {
     if (passwordRegEx.test(password) && password === rePassword) {
       disabled = false;
     }
   }
 
-  let nickNameCheckButtonDisabled = nickName.length === 0;
+  let nickNameCheckButtonDisabled = nickname.length === 0;
 
   const passwordMatchText =
     rePassword.length === 0 ? (
@@ -266,38 +205,26 @@ export function MemberSignup() {
             onChange={(e) => setRePassword(e.target.value)}
           />
         </Field>
+
+      
         <Field
           helperText={
-            nameMessage ? (
-              <Text color="red.500">{nameMessage}</Text>
-            ) : name ? (
-              <Text color="green.500">이름이 올바르게 작성되었습니다.</Text>
-            ) : (
-              <Text color="gray.500">
-                이름은 공백, 숫자, 특수기호 없이 2글자 이상
-              </Text>
-            )
-          }
-        >
-          <Input value={name} placeholder="이름" onChange={handleNameChange} />
-        </Field>
-        <Field
-          helperText={
-            nickNameCheckMessage ? (
+            nickNameCheckMessage && (
               <Text color={nickNameCheck ? "green.500" : "red.500"}>
                 {nickNameCheckMessage}
               </Text>
-            ) : (
-              <Text color="gray.500">닉네임은 영문/한글을 포함한 2자 이상</Text>
-            )
-          }
-        >
+            )}
+              >
+       
           <Group attached w={"100%"}>
             <Input
-              value={nickName}
-              placeholder="닉네임"
-              onChange={handleNickNameChange}
+              value={nickname}
+              placeholder="별명을 입력하세요"
+              onChange={(e) => {
+                setNickName(e.target.value);
+              }}  
             />
+
             <Button
               onClick={handleNickNameCheckClick}
               variant={"outline"}

@@ -7,5 +7,5 @@ public class MemberEdit {
     private String memberId;
     private String password;
     private String oldPassword;
-    private String nickName;
+    private String nickname;
 }

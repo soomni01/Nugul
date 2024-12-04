@@ -101,10 +101,11 @@ public class MemberController {
         }
     }
 
-    // 별명 중복 체크 요청 처리
-    @GetMapping(value = "check", params = "nickName")
-    public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickName) {
-        if (service.checkNickName(nickName)) {
+
+     // 별명 중복 체크 요청 처리
+    @GetMapping(value = "check", params = "nickname")
+    public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickname) {
+        if (service.checkNickName(nickname)) {
             return ResponseEntity.ok().body(Map.of(
                     "message", Map.of("type", "warning", "text", "이미 사용중인 별명 입니다."),
                     "available", false)
@@ -124,8 +125,8 @@ public class MemberController {
                 return ResponseEntity.ok().body(Map.of("message",
                         Map.of("type", "success", "text", "회원 가입되었습니다.")));
             } else {
-                return ResponseEntity.internalServerError().body(Map.of("message",
-                        Map.of("type", "error", "text", "회원 가입 중 문제가 발생하였습니다.")));
+                return ResponseEntity.badRequest().body(Map.of("message",
+                        Map.of("type", "error", "text", "이미 사용 중인 이메일입니다.")));
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("message",
