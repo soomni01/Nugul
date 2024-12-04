@@ -23,9 +23,10 @@ public interface BoardMapper {
     int insert(Board board);
 
     @Select("""
-            SELECT *
-            FROM board
-            WHERE board_id = #{boardId}
+            SELECT b.board_id, b.title, b.content, m.nickname AS writer, b.category, b.created_at
+            FROM board b
+            LEFT JOIN member m ON b.writer = m.member_id
+            WHERE b.board_id = #{boardId}
             """)
     Board selectById(int boardId);
 
@@ -48,7 +49,7 @@ public interface BoardMapper {
             <script>
             SELECT b.board_id, b.title, m.nickname AS writer, b.category,b.created_at
             FROM board b
-            JOIN member m ON b.writer = m.member_id
+            LEFT JOIN member m ON b.writer = m.member_id
             WHERE 
                 <trim prefixOverrides="OR">
                     <if test="searchType == 'all' or searchType == 'title'">
