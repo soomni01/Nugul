@@ -96,7 +96,13 @@ export function AdminMemberList() {
       .get("/api/member/list")
       .then((res) => {
         console.log("회원 목록 데이터:", res.data);
-        setMemberList(res.data);
+        // 'inserted' 날짜를 기준으로 회원 리스트를 오름차순 정렬 (날짜 오래된 순서)
+        const sortedMembers = res.data.sort((a, b) => {
+          const dateA = new Date(a.inserted);
+          const dateB = new Date(b.inserted);
+          return dateA - dateB; // 오름차순 정렬 (가장 오래된 날짜가 먼저)
+        });
+        setMemberList(sortedMembers);
       })
       .catch((error) => {
         console.error("회원 목록 요청 중 오류 발생:", error);
