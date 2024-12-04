@@ -12,10 +12,12 @@ export function AdminMemberDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSoldProducts = axios.get(`/api/admin/members/${memberId}/sold`);
-    const fetchPurchasedProducts = axios.get(
-      `/api/admin/members/${memberId}/purchased`,
-    );
+    const fetchSoldProducts = axios.get("/api/myPage/sold", {
+      params: { id: memberId },
+    });
+    const fetchPurchasedProducts = axios.get("/api/myPage/purchased", {
+      params: { id: memberId },
+    });
 
     Promise.all([fetchSoldProducts, fetchPurchasedProducts])
       .then(([soldRes, purchasedRes]) => {
