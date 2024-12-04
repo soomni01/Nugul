@@ -28,6 +28,7 @@ public class MyPageService {
         return soldProductsList;
     }
 
+    // 내 구매 상품 목록 가져오기
     public List<Product> getPurchasedProducts(Authentication authentication) {
         List<Product> purchasedProductsList = mapper.getPurchasedProducts(authentication.getName());
         return purchasedProductsList;

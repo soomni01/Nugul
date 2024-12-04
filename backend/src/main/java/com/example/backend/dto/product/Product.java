@@ -21,6 +21,7 @@ public class Product {
     private String nickname;
     private LocalDateTime createdAt;
 
+    private LocalDateTime purchasedAt;
     private List<ProductFile> fileList;
     private String mainImage;
     private Integer likeCount;

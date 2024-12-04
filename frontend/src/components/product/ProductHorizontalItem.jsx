@@ -29,6 +29,14 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
     categories.find((category) => category.value === product.category)?.label ||
     "전체";
   const daysAgo = getDaysAgo(product.createdAt);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  };
 
   const handleLikeClick = () => {
     if (hasAccess) {
@@ -135,7 +143,6 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
       {/* 우측 상단 좋아요 버튼 */}
       <Button
         variant="ghost"
-        colorScheme="red"
         size="sm"
         position="absolute"
         top={2}
@@ -150,7 +157,7 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         }}
       >
         {pageType === "wish" ? (
-          <Box cursor="pointer">
+          <Box>
             <ToggleTip
               open={likeTooltipOpen}
               content={"로그인 후 좋아요를 클릭해주세요."}
@@ -159,7 +166,13 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
             </ToggleTip>
           </Box>
         ) : pageType === "purchased" ? (
-          <Button size="xs">후기 작성</Button>
+          <Box display="flex" alignItems="center">
+            {/* 구매 날짜 표시 */}
+            <Text fontSize="xs" color="gray.500" mr={2}>
+              구매 일자: {formatDate(product.purchasedAt)}
+            </Text>
+            <Button size="xs">후기 작성</Button>
+          </Box>
         ) : (
           <RiDeleteBin5Fill color="gray" />
         )}
