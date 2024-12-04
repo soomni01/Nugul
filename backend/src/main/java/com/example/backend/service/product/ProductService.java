@@ -78,10 +78,11 @@ public class ProductService {
         return mapper.selectById(id);
     }
 
-    public boolean deleteProduct(int id) {
+    public boolean deleteProduct(int id, Authentication authentication) {
+        mapper.deleteLike(id, authentication.getName());
         mapper.deleteFileByProductId(id);
-        int cnt = mapper.deleteById(id);
 
+        int cnt = mapper.deleteById(id);
         return cnt == 1;
     }
 

@@ -26,6 +26,12 @@ export function SoldItems() {
       });
   }, []);
 
+  const handleDelete = (productId) => {
+    setSoldList((prevList) =>
+      prevList.filter((item) => item.productId !== productId),
+    );
+  };
+
   if (loading) {
     return <Spinner />;
   }
@@ -50,7 +56,11 @@ export function SoldItems() {
                 key={product.productId}
                 style={{ height: "auto", weight: "100%" }}
               >
-                <ProductHorizontalItem product={product} />
+                <ProductHorizontalItem
+                  product={product}
+                  onRemove={handleDelete}
+                  pageType={"sold"}
+                />
               </SwiperSlide>
             ))
           ) : (

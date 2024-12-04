@@ -60,6 +60,7 @@ export function Wishlist() {
                 <ProductHorizontalItem
                   product={product}
                   onRemove={handleRemove}
+                  pageType={"wish"}
                 />
               </SwiperSlide>
             ))

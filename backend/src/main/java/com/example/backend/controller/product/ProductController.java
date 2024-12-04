@@ -80,7 +80,7 @@ public class ProductController {
             @PathVariable int id,
             Authentication authentication) {
         if (service.hasAccess(id, authentication)) {
-            if (service.deleteProduct(id)) {
+            if (service.deleteProduct(id, authentication)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                 "text", STR."\{id}번 상품이 삭제되었습니다.")));

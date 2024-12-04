@@ -49,22 +49,30 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
   };
 
   const handleDeleteClick = () => {
-    axios
-      .delete(`/api/product/delete/${product.productId}`)
-      .then((res) => res.data)
-      .then((data) => {
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
+    if (hasAccess) {
+      axios
+        .delete(`/api/product/delete/${product.productId}`)
+        .then((res) => res.data)
+        .then((data) => {
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
+          onRemove(product.productId);
+        })
+        .catch((e) => {
+          const data = e.response.data;
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
         });
-      })
-      .catch((e) => {
-        const data = e.response.data;
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
+    } else {
+      toaster.create({
+        type: "success",
+        description: "본인 상품만 삭제 가능합니다.",
       });
+    }
   };
 
   return (
@@ -119,9 +127,9 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         position="absolute"
         top={2}
         right={2}
-        onClick={pageType === "interest" ? handleLikeClick : handleDeleteClick}
+        onClick={pageType === "wish" ? handleLikeClick : handleDeleteClick}
       >
-        {pageType === "interest" ? (
+        {pageType === "wish" ? (
           <Box cursor="pointer">
             <ToggleTip
               open={likeTooltipOpen}
