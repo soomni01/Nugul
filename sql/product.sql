@@ -10,7 +10,6 @@ CREATE TABLE product
     created_at   DATE                      DEFAULT CURRENT_DATE
 );
 
-
 ALTER TABLE product
     ADD COLUMN pay           VARCHAR(10)  NOT NULL,
     ADD COLUMN latitude      DOUBLE,
@@ -59,3 +58,7 @@ ALTER TABLE product
     MODIFY COLUMN price INT DEFAULT 0 NULL;
 
 DESC product;
+
+SELECT *
+FROM product
+WHERE writer = 'coogie@naver.com';

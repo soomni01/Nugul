@@ -8,3 +8,5 @@ CREATE TABLE expense_record
 
 RENAME TABLE buy_record TO purchased_record;
 
+SELECT *
+FROM purchased_record;
