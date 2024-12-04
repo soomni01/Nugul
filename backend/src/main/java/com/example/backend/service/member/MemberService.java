@@ -42,7 +42,7 @@ public class MemberService {
     }
 
 
-      // 별명 중복 체크 메소드
+    // 별명 중복 체크 메소드
     public boolean checkNickName(String nickname) {
         Member member = mapper.selectByNickName(nickname);
         return member != null;
@@ -118,7 +118,6 @@ public class MemberService {
                         .issuedAt(Instant.now())
                         .expiresAt(Instant.now().plusSeconds(3600))
                         .claim("nickname", db.getNickname())
-
                         .claim("scope", authsString)
                         .build();
 

@@ -1,18 +1,20 @@
 import { Box, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { jwtDecode } from "jwt-decode";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const authentication = useContext(AuthenticationContext);
 
   const handleSignupClick = () => {
     navigate("/member/signup");
@@ -64,8 +66,8 @@ export function MemberLogin() {
         } else {
           navigate("main");
         }
-
-        localStorage.setItem("token", data.token);
+        authentication.login(data.token);
+        // localStorage.setItem("token", data.token);
       })
       .catch((e) => {
         const message = e.response?.data?.message || {
@@ -111,15 +113,10 @@ export function MemberLogin() {
           />
         </Field>
 
-
-
-       
-
-      
-
-
         <Box display="flex" gap={2}>
           <Button onClick={handleLoginClick}>로그인</Button>
+        </Box>
+
         <Box textAlign="center" mt={4}>
           아직 계정이 없으신가요?{" "}
           <Link

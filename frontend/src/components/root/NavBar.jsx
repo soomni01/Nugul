@@ -26,9 +26,11 @@ export function Navbar() {
 
   const { id, nickname } = useContext(AuthenticationContext);
 
+  const name = nickname;
+
   return (
     <Flex gap={3}>
-      <NavbarItem onClick={() => navigate("/")}>HOME</NavbarItem>
+      <NavbarItem onClick={() => navigate("/main")}>HOME</NavbarItem>
       <NavbarItem onClick={() => navigate("/product/list")}>
         중고거래
       </NavbarItem>
@@ -38,13 +40,13 @@ export function Navbar() {
       <NavbarItem onClick={() => navigate("/board/list")}>게시판</NavbarItem>
       <NavbarItem onClick={() => navigate("/chat")}>채팅</NavbarItem>
       <NavbarItem onClick={() => navigate("/inquiry")}>문의하기</NavbarItem>
-      <NavbarItem>{nickname}</NavbarItem>
+      <NavbarItem>{name}</NavbarItem>
       <NavbarItem onClick={() => navigate(`/myPage`)}>마이페이지</NavbarItem>
       <NavbarItem
         onClick={() => {
           localStorage.removeItem("token");
           localStorage.removeItem("activeTab");
-          navigate("/member/login");
+          navigate("/");
         }}
       >
         로그아웃
