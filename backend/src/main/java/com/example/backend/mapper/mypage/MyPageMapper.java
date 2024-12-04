@@ -14,5 +14,12 @@ public interface MyPageMapper {
             FROM product_like l LEFT JOIN product p ON l.product_id = p.product_id
             WHERE l.member_id = #{name} 
             """)
-    public List<Product> getLikes(String name);
+    List<Product> getLikes(String name);
+
+    @Select("""
+            SELECT *
+            FROM product
+            WHERE writer = #{name}
+            """)
+    List<Product> getsoltProducts(String name);
 }

@@ -18,6 +18,12 @@ public class MyPageController {
 
     final MyPageService service;
 
+    @GetMapping("sold")
+    @PreAuthorize("isAuthenticated()")
+    public List<Product> getSoldProducts(Authentication authentication) {
+        return service.getSoldPorducts(authentication);
+    }
+
     @GetMapping("like")
     @PreAuthorize("isAuthenticated()")
     public List<Product> getLikes(Authentication authentication) {

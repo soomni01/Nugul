@@ -17,7 +17,12 @@ public class MyPageService {
     final MyPageMapper mapper;
 
     public List<Product> getLikes(Authentication authentication) {
-        List<Product> list = mapper.getLikes(authentication.getName());
-        return list;
+        List<Product> likesList = mapper.getLikes(authentication.getName());
+        return likesList;
+    }
+
+    public List<Product> getSoldPorducts(Authentication authentication) {
+        List<Product> soldProductsList = mapper.getsoltProducts(authentication.getName());
+        return soldProductsList;
     }
 }
