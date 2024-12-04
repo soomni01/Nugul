@@ -1,7 +1,6 @@
 import { Badge, Box, Card, Flex, HStack, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
-import axios from "axios";
 import React, { useContext } from "react";
 import { categories } from "../category/CategoryContainer.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
@@ -13,27 +12,6 @@ export function ProductItem({ product, likeCount, isLiked }) {
   const navigate = useNavigate();
 
   const { id } = useContext(AuthenticationContext);
-
-  const createChatRoom = () => {
-    var testId;
-    var productName = product.productName;
-    var writer = product.writer;
-    var nickname = "";
-    var buyer = id;
-    axios
-      .post("/api/chat/create", {
-        productName: productName,
-        writer: writer,
-        nickname: nickname,
-        buyer: buyer,
-      })
-      .then((res) => {
-        console.log(res.data);
-        const roomId = res.data;
-        navigate("/chat/room/" + roomId);
-      });
-    // 추가
-  };
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||

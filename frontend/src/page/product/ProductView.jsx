@@ -108,6 +108,28 @@ export function ProductView() {
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
 
+  // 챗 방 만들기
+  const createChatRoom = () => {
+    var testId;
+    var productName = product.productName;
+    var writer = product.writer;
+    var nickname = "";
+    var buyer = id;
+    axios
+      .post("/api/chat/create", {
+        productName: productName,
+        writer: writer,
+        nickname: nickname,
+        buyer: buyer,
+      })
+      .then((res) => {
+        console.log(res.data);
+        const roomId = res.data;
+        navigate("/chat/room/" + roomId);
+      });
+    // 추가
+  };
+
   return (
     <Box>
       <HStack>
@@ -171,7 +193,7 @@ export function ProductView() {
             {markerPosition && <MapMarker position={markerPosition} />}
           </Map>
         </Box>
-        <Button>거래하기</Button>
+        <Button onClick={createChatRoom}>거래하기</Button>
         {hasAccess(product.writer) && (
           <Box>
             <Button

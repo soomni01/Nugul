@@ -25,6 +25,7 @@ export function ChatView() {
   const [stompClient, setStompClient] = useState(null);
   const { roomId } = useParams();
   const [isloading, setIsloading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const { id } = useContext(AuthenticationContext);
 
@@ -99,8 +100,6 @@ export function ChatView() {
         params: { page },
       });
 
-      // 2
-      setPage((prev) => prev + 1);
       const initialMessages = response.data || [];
       setMessage(initialMessages.reverse());
 
@@ -112,6 +111,7 @@ export function ChatView() {
       console.error("메시지 로딩 중 오류:", error);
     } finally {
       setIsloading(false);
+      setPage(page + 1);
     }
   };
 
@@ -119,30 +119,34 @@ export function ChatView() {
     if (isloading || !hasMore) return;
 
     setIsloading(true);
+
     try {
       const response = await axios.get(`/api/chat/view/${roomId}/messages`, {
         params: {
           page,
         },
       });
-      const newMessages = response.data.content.reverse();
+      const newMessages = response.data || [];
+      newMessages.reverse();
 
-      if (newMessages.length > 0) {
+      if (newMessages.length === 0) {
         setMessage((prev) => [...newMessages, ...prev]);
-        setPage((prev) => prev + 1);
       } else {
+        setMessage((prev) => [...newMessages, ...prev]);
         // 더이상 불러올 메시기  x
         setHasMore(false);
       }
     } catch (error) {
-      console.log("이전 메시지 로딩 중 오류 ", error);
+      console.log("이전 메시지 로딩 중 오류 ", error, page);
     } finally {
+      setPage((prev) => prev + 1);
       setIsloading(false);
     }
   };
 
   const handleScroll = async () => {
     const chatBox = chatBoxRef.current;
+
     if (chatBox.scrollTop === 0) {
       // 스크롤 끝 점에서 로드
       loadPreviousMessage();
@@ -168,13 +172,13 @@ export function ChatView() {
           {/*판매자 닉네임이 항상 */}
           판매자 닉네임: {chatRoom.nickname}
         </Box>
-        <Box h={"85%"} overflowY={"auto"}>
-          <Box
-            ref={chatBoxRef}
-            onScroll={handleScroll}
-            h={"100%"}
-            overflowY={"scroll"}
-          >
+        <Box
+          h={"85%"}
+          overflowY={"auto"}
+          ref={chatBoxRef}
+          onScroll={handleScroll}
+        >
+          <Box h={"100%"}>
             {message.map((message, index) => (
               <Box mx={2} my={1} key={index}>
                 <Flex

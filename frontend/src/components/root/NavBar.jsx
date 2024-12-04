@@ -26,8 +26,6 @@ export function Navbar() {
 
   const { id, nickname } = useContext(AuthenticationContext);
 
-  const name = nickname;
-
   return (
     <Flex gap={3}>
       <NavbarItem onClick={() => navigate("/main")}>HOME</NavbarItem>
@@ -40,7 +38,7 @@ export function Navbar() {
       <NavbarItem onClick={() => navigate("/board/list")}>게시판</NavbarItem>
       <NavbarItem onClick={() => navigate("/chat")}>채팅</NavbarItem>
       <NavbarItem onClick={() => navigate("/inquiry")}>문의하기</NavbarItem>
-      <NavbarItem>{name}</NavbarItem>
+      <NavbarItem>{nickname}</NavbarItem>
       <NavbarItem onClick={() => navigate(`/myPage`)}>마이페이지</NavbarItem>
       <NavbarItem
         onClick={() => {
