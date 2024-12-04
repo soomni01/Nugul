@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Box, Flex, Heading, Input, Stack, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
@@ -10,6 +10,7 @@ import { categories } from "../../components/category/CategoryContainer.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -24,6 +25,7 @@ export function ProductAdd(props) {
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
   const [mainImage, setMainImage] = useState(null);
+  const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   // 가격 입력 필터링
@@ -35,6 +37,9 @@ export function ProductAdd(props) {
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
     setPay(buttonType);
+    if (buttonType === "share") {
+      setPrice(0);
+    }
   };
 
   // 파일 이미지 클릭 시 input 클릭 트리거
@@ -77,6 +82,8 @@ export function ProductAdd(props) {
         price,
         category,
         location,
+        //  토큰에서 받아서 값 넣음
+        writer: id,
         pay,
         latitude: location?.latitude,
         longitude: location?.longitude,
@@ -109,7 +116,6 @@ export function ProductAdd(props) {
   const disabled = !(
     productName.trim().length > 0 &&
     description.trim().length > 0 &&
-    price.trim().length > 0 &&
     location?.name
   );
 
@@ -238,15 +244,17 @@ export function ProductAdd(props) {
             </Button>
           </Flex>
         </Field>
-        <Field label={"가격"}>
-          <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-            <Input
-              value={price}
-              onChange={handlePriceChange}
-              placeholder="가격을 입력하세요"
-            />
-          </InputGroup>
-        </Field>
+        {pay === "sell" && (
+          <Field label={"가격"}>
+            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
+              <Input
+                value={price}
+                onChange={handlePriceChange}
+                placeholder="가격을 입력하세요"
+              />
+            </InputGroup>
+          </Field>
+        )}
         <Field label={"상품 설명"}>
           <Textarea
             h={200}

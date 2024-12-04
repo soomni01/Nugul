@@ -12,9 +12,13 @@ import { Outlet, useNavigate } from "react-router-dom";
 export default function AdminLayout() {
   const navigate = useNavigate();
 
+  function logout() {
+    localStorage.removeItem("token");
+    navigate("/");
+  }
+
   return (
     <Flex direction="column" minH="100vh">
-      {/* 네브바 */}
       <HStack
         w="full"
         bg="white"
@@ -23,12 +27,18 @@ export default function AdminLayout() {
         position="fixed"
         top="0"
         left="0"
+        height="65px"
         justify="space-between"
         zIndex="1"
         boxShadow="0px 2px 10px rgba(0, 0, 0, 0.15)"
-      ></HStack>
-
-      {/* 사이드바 */}
+      >
+        <Text fontSize="30px" fontWeight="bold">
+          Admin
+        </Text>
+        <Button onClick={logout} colorScheme="red" variant="outline">
+          로그아웃
+        </Button>
+      </HStack>
       <Box
         w="250px"
         bg="gray"
@@ -42,11 +52,9 @@ export default function AdminLayout() {
         zIndex="2"
       >
         <Text fontSize="30px" fontWeight="bold" mb={4}>
-          {" "}
           Admin
         </Text>
         <VStack align="start" spacing={6}>
-          {" "}
           <Button
             onClick={() => navigate("/admin/dashboard")}
             variant={
@@ -149,11 +157,9 @@ export default function AdminLayout() {
           </Button>
         </VStack>
       </Box>
-
-      {/* 메인 콘텐츠 */}
       <Box
-        ml="250px" // 사이드바 너비만큼 마진을 주어 메인 콘텐츠를 이동
-        pt="64px" // 네브바 높이만큼 패딩을 줘서 네브바 아래로 콘텐츠가 위치하도록 설정
+        ml="250px"
+        pt="64px"
         p={5}
         flex="1"
         bg="gray.50"

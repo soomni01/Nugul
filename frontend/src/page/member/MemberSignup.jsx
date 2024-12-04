@@ -147,10 +147,11 @@ export function MemberSignup() {
 
   return (
     <Box>
-      <h3>회원 가입</h3>
+      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
+        회원 가입
+      </Text>
       <Stack gap={5}>
         <Field
-          label={"아이디"}
           helperText={
             idCheckMessage && (
               <Text color={idCheck ? "green.500" : "red.500"}>
@@ -162,7 +163,7 @@ export function MemberSignup() {
           <Group attached w={"100%"}>
             <Input
               value={memberId}
-              placeholder="이메일을 입력하세요"
+              placeholder="이메일"
               onChange={(e) => {
                 setIdCheck(false);
                 setMemberId(e.target.value);
@@ -170,16 +171,15 @@ export function MemberSignup() {
               }}
             />
             <Button onClick={handleIdCheckClick} variant={"outline"}>
-              중복확인
+              중복 확인
             </Button>
           </Group>
         </Field>
 
         <Field
-          label={"암호"}
           helperText={
             !password ? (
-              "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
+              "비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상으로 작성"
             ) : passwordRegEx.test(password) ? (
               <Text color="green.500">비밀번호가 올바른 형식입니다.</Text>
             ) : (
@@ -192,51 +192,51 @@ export function MemberSignup() {
         >
           <Input
             value={password}
-            placeholder="암호를 입력하세요"
+            placeholder="비밀번호"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
         </Field>
-
-        <Field label={"암호확인"} helperText={passwordMatchText}>
+        <Field helperText={passwordMatchText}>
           <Input
-            placeholder="암호를 재입력하세요"
+            placeholder="비밀번호 확인"
             value={rePassword}
             onChange={(e) => setRePassword(e.target.value)}
           />
         </Field>
 
+      
         <Field
-          label={"별명"}
           helperText={
             nickNameCheckMessage && (
               <Text color={nickNameCheck ? "green.500" : "red.500"}>
                 {nickNameCheckMessage}
               </Text>
-            )
-          }
-        >
+            )}
+              >
+       
           <Group attached w={"100%"}>
             <Input
               value={nickname}
               placeholder="별명을 입력하세요"
               onChange={(e) => {
                 setNickName(e.target.value);
-              }}
+              }}  
             />
+
             <Button
               onClick={handleNickNameCheckClick}
               variant={"outline"}
               disabled={nickNameCheckButtonDisabled}
             >
-              중복확인
+              중복 확인
             </Button>
           </Group>
         </Field>
 
         <Button w={"100%"} onClick={handleSaveClick} disabled={disabled}>
-          회원가입
+          회원 가입
         </Button>
       </Stack>
     </Box>

@@ -1,5 +1,6 @@
 package com.example.backend.service.chat;
 
+import com.example.backend.dto.chat.ChatMessage;
 import com.example.backend.dto.chat.ChatRoom;
 import com.example.backend.mapper.chat.ChatMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +28,45 @@ public class ChatService {
     }
 
 
-    public List<ChatRoom> chatRoomList() {
+    public List<ChatRoom> chatRoomList(String memberId, String type) {
         //db 수정해야함
-        return mapper.allChatRoomList();
+        return mapper.chatRoomListByMemberId(memberId, type);
     }
 
     public boolean deleteChatRoom(String roomId) {
 
         int cnt = mapper.deleteChatRoomByRoomId(roomId);
         return cnt == 1;
+    }
+
+    public String findNickname(String writer) {
+
+        return mapper.findNickNameByWriter(writer);
+    }
+
+    public void insertMessage(ChatMessage chatMessage) {
+
+        mapper.insertMessage(chatMessage);
+    }
+
+
+    public Integer findChatRoomId(ChatRoom chatRoom) {
+
+        return mapper.findChatRoomId(chatRoom);
+    }
+
+    public List<ChatMessage> chatMessageView(String roomId) {
+
+        return mapper.chatMessageByRoomId(roomId);
+    }
+
+
+    // 메시지 로딩
+    public List<ChatMessage> getMessageById(String roomId, Integer page) {
+        Integer offset = (page - 1) * 8;
+        
+        return mapper.chatMessagePageByRoomId(roomId, offset);
+
+
     }
 }

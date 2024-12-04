@@ -17,9 +17,9 @@ public interface MemberMapper {
 
     @Select("""
             SELECT * FROM member
-            WHERE member_id=#{memberId}
+            WHERE member_id=#{id}
             """)
-    Member selectById(String memberId);
+    Member selectById(String id);
 
     @Select("""
             SELECT * FROM member
@@ -28,12 +28,11 @@ public interface MemberMapper {
     Member selectByNickName(String nickname);
 
     @Select("""
-            SELECT member_id, name, nickname, inserted 
+            SELECT member_id, nickname, inserted 
             FROM member
             ORDER BY member_id
             """)
     List<Member> selectAll();
-
 
     @Delete("""
             DELETE FROM member
@@ -48,4 +47,11 @@ public interface MemberMapper {
             WHERE member_id=#{memberId}
             """)
     int update(MemberEdit member);
+
+    @Select("""
+            SELECT auth
+            FROM auth
+            WHERE member_id = #{memberId}
+            """)
+    List<String> selectAuthByMemberId(String id);
 }

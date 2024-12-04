@@ -1,28 +1,41 @@
-import { useEffect, useState } from "react";
-import { Box, Heading } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../../components/ui/button.jsx";
+import { useContext, useEffect, useState } from "react";
+import { Box, Button, Heading, HStack } from "@chakra-ui/react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
   let navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
+    if (id) {
+      fetch(id);
+    }
     getChatList();
-  }, []);
+  }, [searchParams, id]);
 
+  //아이디를 넘겨줘서 , 내 것만 보도록 바꿔야함 , 새로고침 하면 안뜨는데 ,,
   function getChatList() {
     axios
-      .get("/api/chat/list")
+      .get("/api/chat/list", {
+        params: {
+          memberId: id,
+          type: searchParams.get("type"),
+        },
+      })
       .then((res) => {
         // TODO: 얕은복사?? 깊은 복사 ? 기억은 잘 안남
 
         setChatList(res.data);
       })
-      .catch();
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   const removeChatRoom = (roomId) => {
@@ -41,26 +54,14 @@ export function ChatList() {
       .catch();
   };
 
-  const createChatRoom = () => {
-    var testId;
-    var productName = "다른 상품";
-    var writer = "작성자 아님";
-    axios
-      .post("/api/chat/create", {
-        productName: productName,
-        writer: writer,
-      })
-      .then((res) => {
-        console.log(res.data);
-        testId = res.data;
-        navigate("/chat/room/" + testId);
-      });
-    // 추가
-  };
-
   return (
     <Box>
       <Heading> 채팅 목록</Heading>
+      <HStack>
+        <Button onClick={() => setSearchParams({ type: "all" })}>전체</Button>
+        <Button onClick={() => setSearchParams({ type: "buy" })}>구매</Button>
+        <Button onClick={() => setSearchParams({ type: "sell" })}>판매</Button>
+      </HStack>
       {chatList.map((chat) => (
         <ChatListItem
           key={chat.roomId}
@@ -68,10 +69,6 @@ export function ChatList() {
           onDelete={() => removeChatRoom(chat.roomId)}
         />
       ))}
-
-      <Button variant={"outline"} onClick={createChatRoom}>
-        채팅창 생성 버튼
-      </Button>
     </Box>
   );
 }

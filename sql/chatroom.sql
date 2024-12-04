@@ -6,10 +6,23 @@ create table chatroom
     writer      varchar(50) not null
 );
 
+ALTER TABLE chatroom
+    CHANGE COLUMN sender nickname VARCHAR(50) NOT NULL DEFAULT 'Unknown';
+
+
+ALTER TABLE chatroom
+    ADD CONSTRAINT writer
+        FOREIGN KEY (writer) REFERENCES member (member_id);
+
+alter table chatroom
+    change column buyerId buyer varchar(50) not null default 'buyer';
+
 select *
 from chatroom;
 
-delete
-from chatroom;
 
-drop table chatroom;
+desc chatroom;
+
+
+
+

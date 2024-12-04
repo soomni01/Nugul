@@ -6,22 +6,27 @@ import {
   Heading,
   HStack,
   Input,
+  Stack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import "./chat.css";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
-import axios from "axios";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function ChatView() {
-  // 메시지에는 보낸사람:아이디 , 메시지 :내용이 들어가야함 (stomp 에 보낼 내용)
+  const scrollRef = useRef(null);
+  const chatBoxRef = useRef(null);
   const [message, setMessage] = useState([]);
   const [clientMessage, setClientMessage] = useState("");
-  //  서버 메세지는 필요 없음
-  const [serverMessage, setServerMessage] = useState("");
   const [chatRoom, setChatRoom] = useState({});
   const [stompClient, setStompClient] = useState(null);
-  const { id } = useParams();
+  const { roomId } = useParams();
+  const [isloading, setIsloading] = useState(false);
+  const [page, setPage] = useState(1);
+  const { id } = useContext(AuthenticationContext);
 
   //  상품명, 방 번호 , 작성자를 보여줄
 
@@ -34,7 +39,7 @@ export function ChatView() {
       },
 
       onConnect: () => {
-        client.subscribe("/room/" + id, function (message) {
+        client.subscribe("/room/" + roomId, function (message) {
           const a = JSON.parse(message.body);
           setMessage((prev) => [
             ...prev,
@@ -53,115 +58,168 @@ export function ChatView() {
     client.activate();
   }, []);
 
+  // 의존성에  message 넣어야함
   useEffect(() => {
-    axios
-      .get(`/api/chat/view/${id}`)
-      .then((res) => {
-        setChatRoom(res.data);
-        // chatRoom = {
-        //   roomId: res.data.roomId,
-        //   productName: res.data.productName,
-        //   writer: res.data.writer,
-        // };
-      })
-      .catch((e) => {});
+    loadInitialMessages();
+    // chatroom 정보
+    handleSetData();
   }, []);
 
-  //  TODO: dto 수정시 변경
+  function handleSetData() {
+    // 전체 데이터 가져오는 코드
+    axios
+      .get(`/api/chat/view/${roomId}`)
+      .then((res) => {
+        setChatRoom(res.data);
+      })
+      .catch((e) => {});
+  }
+
+  // Todo 타임 스탬프 mdn에서 하나 얻어와야함
   function sendMessage(sender, content) {
     const a = {
       sender: sender,
       content: content,
+      sentAt: new Date().toISOString().slice(0, 19),
     };
     if (stompClient && stompClient.connected)
       stompClient.publish({
-        destination: "/send/" + id,
+        destination: "/send/" + roomId,
         body: JSON.stringify(a),
       });
 
     setClientMessage("");
   }
 
+  // 초기 메세지 로딩
+  const loadInitialMessages = async () => {
+    setIsloading(true);
+    try {
+      const response = await axios.get(`/api/chat/view/${roomId}/messages`, {
+        params: { page },
+      });
+
+      // 2
+      setPage((prev) => prev + 1);
+      const initialMessages = response.data || [];
+      setMessage(initialMessages.reverse());
+
+      // 스크롤을 하단으로 이동
+      if (chatBoxRef.current) {
+        chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+      }
+    } catch (error) {
+      console.error("메시지 로딩 중 오류:", error);
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  const loadPreviousMessage = async () => {
+    if (isloading || !hasMore) return;
+
+    setIsloading(true);
+    try {
+      const response = await axios.get(`/api/chat/view/${roomId}/messages`, {
+        params: {
+          page,
+        },
+      });
+      const newMessages = response.data.content.reverse();
+
+      if (newMessages.length > 0) {
+        setMessage((prev) => [...newMessages, ...prev]);
+        setPage((prev) => prev + 1);
+      } else {
+        // 더이상 불러올 메시기  x
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.log("이전 메시지 로딩 중 오류 ", error);
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  const handleScroll = async () => {
+    const chatBox = chatBoxRef.current;
+    if (chatBox.scrollTop === 0) {
+      // 스크롤 끝 점에서 로드
+      loadPreviousMessage();
+    }
+  };
+
   return (
     <Box>
-      {id} 번 채팅 화면입니다.
-      <Box> {chatRoom.productName} 상품 </Box>
-      <Flex>
-        <Flex direction="column" bg={"red.300"} h={500} w={800}>
-          <Box mx={"auto"} my={3} variant={"outline"}>
-            {chatRoom.writer}
-          </Box>
-          <Box h={"70%"}>
-            {message.map((item, index) => (
-              <Box key={index}>
-                <p>Sender: {item.sender}</p>
-                <Badge size="lg">Content: {item.content}</Badge>
+      <Heading mx={"auto"}>
+        {" "}
+        {roomId} 번 채팅 화면입니다. <hr />
+      </Heading>
+      <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
+
+      <Flex
+        direction="column"
+        w={600}
+        h={700}
+        bg={"blue.300/50"}
+        overflow={"hidden"}
+      >
+        <Box mx={"auto"} my={3} variant={"outline"} h={"5%"} pr={2}>
+          {/*판매자 닉네임이 항상 */}
+          판매자 닉네임: {chatRoom.nickname}
+        </Box>
+        <Box h={"85%"} overflowY={"auto"}>
+          <Box
+            ref={chatBoxRef}
+            onScroll={handleScroll}
+            h={"100%"}
+            overflowY={"scroll"}
+          >
+            {message.map((message, index) => (
+              <Box mx={2} my={1} key={index}>
+                <Flex
+                  justifyContent={
+                    message.sender === id ? "flex-end" : "flex-start"
+                  }
+                >
+                  <Stack h={"10%"}>
+                    <Badge p={1} size={"lg"} key={index} color="primary">
+                      {message.content}
+                    </Badge>
+                    <p style={{ fontSize: "12px" }}>
+                      {new Date(message.sentAt).toLocaleTimeString()}
+                    </p>
+                    <div ref={scrollRef}></div>
+                  </Stack>
+                </Flex>
               </Box>
             ))}
           </Box>
-
-          <HStack>
-            <Field>
-              <Input
-                type={"text"}
-                value={clientMessage}
-                onChange={(e) => {
-                  setClientMessage(e.target.value);
-                }}
-              />
-            </Field>
-            <Button
-              variant={"outline"}
-              onClick={() => {
-                var client = "client";
-                var message = clientMessage;
-                sendMessage(client, message);
-              }}
-            >
-              전송
-            </Button>
-          </HStack>
-        </Flex>
-
-        <Box bg={"blue.300"}>
-          <h3> 서버에서 보내준 내용 </h3>
-          {message.map((item, index) => (
-            <div key={index}>
-              <p>Sender: {item.sender}</p>
-              <p>Content: {item.content}</p>
-            </div>
-          ))}
+        </Box>
+        <HStack>
           <Field>
             <Input
+              bg={"gray.300"}
               type={"text"}
-              value={serverMessage}
+              value={clientMessage}
               onChange={(e) => {
-                setServerMessage(e.target.value);
+                setClientMessage(e.target.value);
               }}
             />
           </Field>
-
           <Button
             variant={"outline"}
             onClick={() => {
-              var server = "server";
-              var message = serverMessage;
-              sendMessage(server, message);
+              // 세션의 닉네임
+              var client = id;
+              var message = clientMessage;
+              sendMessage(client, message);
             }}
           >
-            {" "}
             전송
           </Button>
-        </Box>
+        </HStack>
       </Flex>
-      <Box>
-        <Heading> ui 변경 테스트 </Heading>
-        <Box>
-          <Box></Box>
-          <Box></Box>
-          <Input />
-        </Box>
-      </Box>
     </Box>
   );
 }

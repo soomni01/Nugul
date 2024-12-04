@@ -18,8 +18,10 @@ public class Product {
     private Double latitude;
     private Double longitude;
     private String locationName;
+    private String nickname;
     private LocalDateTime createdAt;
 
     private List<ProductFile> fileList;
     private String mainImage;
+    private Integer likeCount;
 }
