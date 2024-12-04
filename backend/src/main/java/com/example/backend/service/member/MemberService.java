@@ -3,6 +3,7 @@ package com.example.backend.service.member;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
+import com.example.backend.mapper.mypage.MyPageMapper;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,9 @@ public class MemberService {
     private JdbcTemplate jdbcTemplate;
 
     final MemberMapper mapper;
-    final JwtEncoder jwtEncoder;
     private final ProductMapper productMapper;
+    private final MyPageMapper mypageMapper;
+    final JwtEncoder jwtEncoder;
 
     // 회원 추가 메소드
     public boolean add(Member member) {
@@ -65,11 +67,11 @@ public class MemberService {
         int cnt = 0;
 
         // 관리자 권한 확인 후 회원 삭제
-        if (isAdmin(auth)) {
-            // 외래 키 체크 비활성화 (데이터 삭제 시 제약조건 무시)
-            jdbcTemplate.update("SET foreign_key_checks = 0");
+//        if (isAdmin(auth)) {
+//            // 외래 키 체크 비활성화 (데이터 삭제 시 제약조건 무시)
+//            jdbcTemplate.update("SET foreign_key_checks = 0");
 
-            // 관련된 상품 및 파일 삭제 로직 (주석처리됨)
+        // 관련된 상품 및 파일 삭제 로직 (주석처리됨)
 //            System.out.println("Deleting products for member ID: " + member.getMemberId());
 //            List<Integer> productIds = productMapper.selectProductIdsByMemberId(member.getMemberId());
 //            for (int productId : productIds) {
@@ -77,15 +79,35 @@ public class MemberService {
 //                productMapper.deleteById(productId);
 //            }
 
-            // 회원 정보 삭제
-            Member db = mapper.selectById(member.getMemberId());
-            if (db != null) {
-                cnt = mapper.deleteById(member.getMemberId());
+        // 회원 정보 삭제
+        Member db = mapper.selectById(member.getMemberId());
+        if (db != null) {
+
+            // 쓴 상품 목록 얻기
+            List<Integer> products = productMapper.getProductId(member.getMemberId());
+            // 각 상품 지우기
+            for (Integer productId : products) {
+                productMapper.deleteById(productId);
             }
 
-            // 외래 키 체크 활성화
-            jdbcTemplate.update("SET foreign_key_checks = 1");
+            // 좋아요 목록 지우기
+            List<Integer> likes = productMapper.likedProductByMemberId(member.getMemberId());
+            for (Integer productId : likes) {
+                productMapper.deleteLike(productId, member.getMemberId());
+            }
+
+            // 구매 목록 지우기
+            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());
+            for (Integer productId : purchased) {
+                mypageMapper.deletePurchased(productId);
+            }
+            cnt = mapper.deleteById(member.getMemberId());
+
         }
+
+//            // 외래 키 체크 활성화
+//            jdbcTemplate.update("SET foreign_key_checks = 1");
+//        }
 
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
         return cnt == 1;
@@ -151,9 +173,6 @@ public class MemberService {
     public boolean isPasswordCorrect(String memberId, String password) {
         Member dbMember = mapper.selectById(memberId);
         if (dbMember != null) {
-            System.out.println("Stored password: " + dbMember.getPassword());
-            System.out.println("Input password: " + password);
-
             if (dbMember.getPassword().equals(password)) {
                 return true;
             }

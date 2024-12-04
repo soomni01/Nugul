@@ -133,9 +133,9 @@ public interface ProductMapper {
     @Select("""
             SELECT product_id
             FROM product_like
-            WHERE member_id = #{currentMemberId}
+            WHERE member_id = #{MemberId}
             """)
-    List<Integer> likedProductByMemberId(String currentMemberId);
+    List<Integer> likedProductByMemberId(String MemberId);
 
     @Select("""
             SELECT *
@@ -162,4 +162,11 @@ public interface ProductMapper {
             WHERE product_id = #{productId}
             """)
     int deletePurchasedRecord(Integer productId, String name);
+
+    @Select("""
+            SELECT product_id
+            FROM product
+            WHERE writer = #{memberId}
+            """)
+    List<Integer> getProductId(String memberId);
 }

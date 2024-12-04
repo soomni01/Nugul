@@ -1,6 +1,7 @@
 package com.example.backend.mapper.mypage;
 
 import com.example.backend.dto.product.Product;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -29,4 +30,17 @@ public interface MyPageMapper {
             WHERE buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);
+
+    @Select("""
+            SELECT product_id
+            FROM purchased_record
+            WHERE buyer_id = #{name}
+            """)
+    List<Integer> purchasedProductByMemberId(String name);
+
+    @Delete("""
+            DELETE FROM purchased_record
+            WHERE product_id = #{product_id}
+            """)
+    int deletePurchased(Integer product_id);
 }
