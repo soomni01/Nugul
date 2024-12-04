@@ -99,7 +99,6 @@ export function ChatView() {
         params: { page },
       });
 
-      console.log(response.data);
       // 2
       setPage((prev) => prev + 1);
       const initialMessages = response.data || [];
