@@ -25,6 +25,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
+// 특정 문의 상세 정보를 표시하고, 해당 문의의 댓글을 조회, 작성, 수정, 삭제 기능을 제공
 export function AdminInquiryDetail({
   handleDeleteClick: handleDeleteClickProp,
 }) {
@@ -67,11 +68,10 @@ export function AdminInquiryDetail({
 
   // 게시글 정보 가져오기
   useEffect(() => {
-    console.log("Inquiry ID:", inquiryId);
     axios
       .get(`/api/inquiry/view/${inquiryId}`)
       .then((res) => {
-        console.log("Inquiry data:", res.data);
+        console.log("문의 데이터:", res.data);
         setInquiry(res.data);
       })
       .catch((error) => {
@@ -85,7 +85,7 @@ export function AdminInquiryDetail({
       axios
         .get(`/api/inquiry/comments/${inquiryId}`)
         .then((res) => {
-          console.log("Comments data:", res.data);
+          console.log("댓글 데이터:", res.data);
           setComments(res.data);
         })
         .catch((error) => {
@@ -97,7 +97,10 @@ export function AdminInquiryDetail({
   // 댓글 작성 처리 함수
   const handleCommentSubmit = () => {
     if (!comment.trim()) {
-      alert("댓글 내용을 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "댓글을 입력해 주세요.",
+      });
       return;
     }
 
@@ -164,7 +167,6 @@ export function AdminInquiryDetail({
     axios
       .delete(`/api/inquiry/comment/${commentId}`)
       .then((res) => {
-        console.log("Comments data:", res.data);
         setComments((prevComments) =>
           prevComments.filter((c) => c.id !== commentId),
         );

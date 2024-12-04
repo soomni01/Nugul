@@ -15,17 +15,19 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
 
+// 관리자 페이지에서 모든 문의 목록을 조회, 검색, 페이징 처리하며 특정 문의 상세 페이지로 이동할 수 있는 기능 제공
 export function AdminInquiryList() {
   const [inquiryList, setInquiryList] = useState([]);
   const [search, setSearch] = useState({
     type: "all",
     keyword: "",
   });
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const itemsPerPage = 10; // 페이지당 문의 수
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
+  // 컴포넌트가 처음 렌더링될 때 API에서 문의 목록 데이터를 가져옴
   useEffect(() => {
     axios
       .get("/api/inquiry/list")
@@ -38,10 +40,12 @@ export function AdminInquiryList() {
       });
   }, []);
 
+  // 테이블 행을 클릭하면 해당 문의의 상세 페이지로 이동함
   function handleRowClick(inquiryId) {
     navigate(`/admin/inquiries/${inquiryId}`);
   }
 
+  // 검색 유형 및 키워드에 따라 문의 목록을 필터링함
   const filteredInquiries = inquiryList.filter((inquiry) => {
     const inquiryTitle = inquiry.title;
 
@@ -66,21 +70,25 @@ export function AdminInquiryList() {
     }
   });
 
+  // 필터링된 문의 목록을 현재 페이지와 페이지당 아이템 수에 따라 페이지네이션함
   const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage);
   const paginatedInquiries = filteredInquiries.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
+  // 사용자가 페이지를 변경할 때 현재 페이지를 업데이트함
   function handlePageChange(newPage) {
     setCurrentPage(newPage);
   }
 
+  // 검색 유형이 변경될 때 검색 상태를 업데이트하고 첫 페이지로 이동함
   function handleSearchTypeChange(e) {
     setSearch({ ...search, type: e.target.value });
     setCurrentPage(1);
   }
 
+  // 검색 키워드가 변경될 때 검색 상태를 업데이트하고 첫 페이지로 이동함
   function handleSearchKeywordChange(e) {
     setSearch({ ...search, keyword: e.target.value });
     setCurrentPage(1);
