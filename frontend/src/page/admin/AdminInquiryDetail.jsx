@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
   Input,
+  Spinner,
   Stack,
   Text,
   Textarea,
@@ -181,7 +182,7 @@ export function AdminInquiryDetail({
   };
 
   if (!inquiry) {
-    return <div>로딩 중...</div>;
+    return <Spinner />;
   }
 
   return (

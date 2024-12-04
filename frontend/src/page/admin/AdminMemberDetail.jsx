@@ -6,29 +6,28 @@ import { ProductHorizontalItem } from "../../components/product/ProductHorizonta
 
 export function AdminMemberDetail() {
   const { memberId } = useParams();
-  console.log("Member ID from params:", memberId);
   const [soldList, setSoldList] = useState([]);
   const [purchasedList, setPurchasedList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSoldProducts = axios.get("/api/myPage/sold", {
+    const SoldProducts = axios.get("/api/myPage/sold", {
       params: { id: memberId },
     });
-    const fetchPurchasedProducts = axios.get("/api/myPage/purchased", {
+    const PurchasedProducts = axios.get("/api/myPage/purchased", {
       params: { id: memberId },
     });
 
-    Promise.all([fetchSoldProducts, fetchPurchasedProducts])
+    Promise.all([SoldProducts, PurchasedProducts])
       .then(([soldRes, purchasedRes]) => {
-        console.log("Sold products data:", soldRes.data);
-        console.log("Purchased products data:", purchasedRes.data);
+        console.log("판매 내역 데이터:", soldRes.data);
+        console.log("구매 내역 데이터:", purchasedRes.data);
         setSoldList(soldRes.data);
         setPurchasedList(purchasedRes.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("데이터를 가져오는 중 오류 발생:", error);
         setSoldList([]);
         setPurchasedList([]);
         setLoading(false);
