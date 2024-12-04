@@ -3,6 +3,7 @@ package com.example.backend.service.inquiry;
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.mapper.inquiry.InquiryMapper;
+import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,22 @@ public class InquiryService {
     final InquiryMapper mapper;
     @Autowired
     private InquiryMapper inquiryMapper;
+    private final MemberMapper memberMapper;
+
+    public boolean validate(Inquiry inquiry) {
+        boolean title = inquiry.getTitle().trim().length() > 0;
+        boolean content = inquiry.getContent().trim().length() > 0;
+        return title && content;
+    }
+
+    public boolean add(Inquiry inquiry) {
+        int cnt = mapper.insert(inquiry);
+        return cnt == 1;
+    }
+
+    public Inquiry get(int memberId) {
+        return mapper.viewByMemberId(memberId);
+    }
 
     // 모든 문의 목록을 반환하는 메소드
     public List<Inquiry> list() {

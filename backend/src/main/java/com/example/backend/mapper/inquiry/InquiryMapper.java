@@ -9,11 +9,37 @@ import java.util.List;
 @Mapper
 public interface InquiryMapper {
 
+    @Insert("""
+            INSERT INTO inquiry
+            (title, content, nickname)
+            VALUES (#{title}, #{content}, #{nickname})
+            """)
+    @Options(keyProperty = "id", useGeneratedKeys = true)
+    int insert(Inquiry inquiry);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted,
+                   EXISTS (
+                       SELECT 1
+                       FROM inquiry_comment ic
+                       WHERE ic.inquiry_id = i.inquiry_id
+                   ) AS has_answer
+            FROM inquiry i
+            WHERE i.member_id = #{memberId}
+            """)
+    Inquiry viewByMemberId(int memberId);
+
     @Select("""
             SELECT i.inquiry_id,
                    i.title,
                    i.member_id,
                    i.inserted,
+                   i.nickname,
                    EXISTS (
                        SELECT 1
                        FROM inquiry_comment ic
@@ -25,22 +51,27 @@ public interface InquiryMapper {
     List<Inquiry> InquiryAll();
 
     @Select("""
-            SELECT *
-            FROM inquiry
-            WHERE inquiry_id = #{inquiryId}
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted
+            FROM inquiry i
+            WHERE i.inquiry_id = #{inquiryId}
             """)
     Inquiry findById(int inquiryId);
 
     @Insert("""
             INSERT INTO inquiry_comment
-            (inquiry_id, admin_id,comment)
+            (inquiry_id, admin_id, comment)
             VALUES (#{inquiryId}, #{memberId}, #{comment})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertcomment(InquiryComment inquirycomment);
 
     @Select("""
-            SELECT id, inquiry_id, admin_id member_id, comment, inserted
+            SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
             FROM inquiry_comment
             WHERE inquiry_id = #{inquiryId}
             """)

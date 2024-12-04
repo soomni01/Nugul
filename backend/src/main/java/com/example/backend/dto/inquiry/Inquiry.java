@@ -1,5 +1,6 @@
 package com.example.backend.dto.inquiry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,7 +11,10 @@ public class Inquiry {
     private String title;
     private String content;
     private String memberId;
+    private String nickname;
     private String answer;
+
+    @JsonFormat(pattern = "yyyy.MM.dd") // 날짜 포맷 지정
     private LocalDateTime inserted;
     private boolean hasAnswer;
 

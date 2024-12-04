@@ -6,6 +6,7 @@ import com.example.backend.service.inquiry.InquiryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,32 @@ import java.util.Map;
 public class InquiryController {
 
     final InquiryService service;
+
+    @PostMapping("/add")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> add(@RequestBody Inquiry inquiry, Authentication auth) {
+        String memberId = auth.getName(); // 현재 로그인한 사용자의 ID를 가져옴
+
+        if (memberId != null) {
+            inquiry.setMemberId(memberId);
+
+            if (service.validate(inquiry)) {
+                if (service.add(inquiry)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success", "text", "문의가 등록되었습니다."),
+                                    "data", inquiry));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "warning",
+                                    "text", "문의 등록에 실패하였습니다.")));
+                }
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
+                        "text", "제목이나 본문이 비어있을 수 없습니다.")));
+            }
+        }
+        return null;
+    }
 
     // 모든 문의 목록을 반환
     @GetMapping("/list")

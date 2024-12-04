@@ -21,3 +21,11 @@ VALUES ('탈퇴 문의', '탈퇴하고싶은데 어떻게 하나요?', 'sm@naver
 
 SELECT *
 FROM inquiry;
+
+ALTER TABLE inquiry
+    ADD COLUMN nickname VARCHAR(50);
+
+ALTER TABLE inquiry
+    ADD CONSTRAINT unique_nickname UNIQUE (nickname);
+
+DESC inquiry;
