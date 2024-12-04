@@ -4,6 +4,7 @@ import com.example.backend.dto.product.Product;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ProductMapper {
@@ -31,8 +32,9 @@ public interface ProductMapper {
     List<Product> getProductList();
 
     @Select("""
-            SELECT  *
-            FROM product
+            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname
+            FROM product p
+            JOIN member m ON p.writer = m.member_id
             WHERE product_id = #{id}
             """)
     Product selectById(int id);
@@ -65,8 +67,8 @@ public interface ProductMapper {
 
     @Select("""
             <script>
-                SELECT product_id, product_name, writer, price, created_at
-                FROM product
+                SELECT *
+                 FROM product
                 <where>
                     <if test="category != null and category != 'all'">
                         AND category = #{category}
@@ -74,12 +76,14 @@ public interface ProductMapper {
                     <if test="keyword != null and keyword != ''">
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
+                        AND pay = #{pay}
+                        AND status = 'For Sale'
                 </where>
                 ORDER BY product_id DESC
                 LIMIT #{offset}, 16
             </script>
             """)
-    List<Product> selectPage(Integer offset, String category, String keyword);
+    List<Product> selectPage(Integer offset, String category, String keyword, String pay);
 
     @Select("""
             <script>
@@ -92,8 +96,65 @@ public interface ProductMapper {
                     <if test="keyword != null and keyword != ''">
                         AND product_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
+                        AND pay = #{pay}
+                        AND status = 'For Sale'
                 </where>
             </script>
             """)
-    Integer countAll(String category, String keyword);
+    Integer countAll(String category, String keyword, String pay);
+
+    @Delete("""
+            DELETE FROM product_like
+            WHERE product_id = #{productId}
+            AND member_id = #{name}
+            """)
+    int deleteLike(Integer productId, String name);
+
+    @Insert("""
+            INSERT INTO product_like
+            VALUES (#{productId}, #{name})
+            """)
+    int insertLike(Integer productId, String name);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM product_like
+            WHERE product_id = #{productId}
+            """)
+    int countLike(Integer productId);
+
+    @Select("""
+            SELECT product_id, COUNT(*) as like_count
+            FROM product_like
+            GROUP BY product_id;
+            """)
+    List<Map<String, Object>> countLikeByProductId();
+
+    @Select("""
+            SELECT product_id
+            FROM product_like
+            WHERE member_id = #{currentMemberId}
+            """)
+    List<Integer> likedProductByMemberId(String currentMemberId);
+
+    @Select("""
+            SELECT *
+            FROM product
+            WHERE pay = 'sell'
+            AND status = 'For Sale'
+            ORDER BY product_id DESC
+            LIMIT #{limit}
+            """)
+    List<Product> selectSellProducts(Integer limit);
+
+    @Select("""
+            SELECT *
+            FROM product
+            WHERE pay = 'share'
+            AND status = 'For Sale'
+            ORDER BY product_id DESC
+            LIMIT #{limit}
+            """)
+    List<Product> selectShareProducts(Integer limit);
+
 }

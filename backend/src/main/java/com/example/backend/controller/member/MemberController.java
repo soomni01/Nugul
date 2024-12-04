@@ -73,7 +73,13 @@ public class MemberController {
         }
     }
 
+
     // 관리자 전용 회원 목록 요청 처리
+    @GetMapping("{id}")
+    public Member getMember(@PathVariable String id) {
+        return service.get(id);
+    }
+
     @GetMapping("list")
     @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {

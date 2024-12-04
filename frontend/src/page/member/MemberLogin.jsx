@@ -6,6 +6,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { jwtDecode } from "jwt-decode";
+import { PasswordInput } from "../../components/ui/password-input.jsx";
+
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -51,7 +53,6 @@ export function MemberLogin() {
           type: data.message.type,
           description: data.message.text,
         });
-
         const decodedToken = jwtDecode(data.token);
         const userScope = decodedToken.scope || "";
 
@@ -60,7 +61,7 @@ export function MemberLogin() {
         } else {
           navigate("main");
         }
-
+        navigate("main");
         localStorage.setItem("token", data.token);
       })
       .catch((e) => {
@@ -97,9 +98,10 @@ export function MemberLogin() {
             onChange={(e) => setMemberId(e.target.value)}
           />
         </Field>
-        <Field>
-          <Input
-            placeholder="비밀번호"
+
+        <Field >
+          <PasswordInput
+            placeholder="비밀번호 입력"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

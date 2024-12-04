@@ -17,9 +17,9 @@ public interface MemberMapper {
 
     @Select("""
             SELECT * FROM member
-            WHERE member_id=#{memberId}
+            WHERE member_id=#{id}
             """)
-    Member selectById(String memberId);
+    Member selectById(String id);
 
     @Select("""
             SELECT * FROM member

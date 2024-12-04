@@ -117,6 +117,7 @@ public class MemberService {
                         .issuedAt(Instant.now())
                         .expiresAt(Instant.now().plusSeconds(3600))
                         .claim("nickname", db.getNickname())
+
                         .claim("scope", authsString)
                         .build();
 

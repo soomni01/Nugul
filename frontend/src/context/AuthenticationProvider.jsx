@@ -1,11 +1,9 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
-
-// step 1 : context 만들기
 export const AuthenticationContext = createContext(null);
 
-function AuthenticationProvider({ children }) {
+export function AuthenticationProvider({ children }) {
   const [userToken, setUserToken] = useState({});
 
   useEffect(() => {
@@ -24,7 +22,6 @@ function AuthenticationProvider({ children }) {
 
   function logout() {
     localStorage.removeItem("token");
-    localStorage.removeItem("activeTab");
     setUserToken({});
   }
 
@@ -48,7 +45,6 @@ function AuthenticationProvider({ children }) {
         isAuthenticated,
         isAdmin,
         hasAccess,
-        nickname: userToken.nickname,
       }}
     >
       {children}
