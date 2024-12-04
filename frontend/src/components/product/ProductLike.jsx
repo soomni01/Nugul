@@ -7,11 +7,11 @@ import { ToggleTip } from "../ui/toggle-tip.jsx";
 import { toaster } from "../ui/toaster.jsx";
 
 export function ProductLike({
-  productId,
-  initialLike,
-  initialCount,
-  isHorizontal,
-}) {
+                              productId,
+                              initialLike,
+                              initialCount,
+                              isHorizontal,
+                            }) {
   const [like, setLike] = useState({ like: initialLike, count: initialCount });
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);

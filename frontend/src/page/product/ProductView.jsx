@@ -45,10 +45,6 @@ export function ProductView() {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
-  }, []);
-
-  useEffect(() => {
     if (product && product.latitude && product.longitude) {
       setMarkerPosition({
         lat: product.latitude,
@@ -56,14 +52,17 @@ export function ProductView() {
       });
     }
   }, [product]);
-
+  // 상품과 좋아요 정보 동시에 로드
   useEffect(() => {
-    const fetchLikeData = async () => {
+    const fetchData = async () => {
       try {
-        const [likeRes, userLikeRes] = await Promise.all([
+        const [productRes, likeRes, userLikeRes] = await Promise.all([
+          axios.get(`/api/product/view/${id}`),
           axios.get("/api/product/likes"),
           axios.get("/api/product/like/member"),
         ]);
+
+        setProduct(productRes.data);
 
         const likes = likeRes.data.reduce((acc, item) => {
           acc[item.product_id] = item.like_count;
@@ -71,14 +70,20 @@ export function ProductView() {
         }, {});
 
         setLikeData(likes);
-        setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
+        setUserLikes(new Set(userLikeRes.data)); // 사용자 좋아요 정보
+
+        setLoading(false); // 모든 데이터가 로드되면 로딩 상태 변경
       } catch (error) {
-        console.error("Error fetching like data:", error);
+        console.error("상품 정보를 가져오는데 오류가 발생했습니다.:", error);
       }
     };
 
-    fetchLikeData();
-  }, []);
+    fetchData();
+  }, [id]);
+
+  if (product === null) {
+    return <Spinner />;
+  }
 
   const handleDeleteClick = () => {
     axios
@@ -99,10 +104,6 @@ export function ProductView() {
         });
       });
   };
-
-  if (product === null) {
-    return <Spinner />;
-  }
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
