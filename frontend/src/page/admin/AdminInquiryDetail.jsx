@@ -214,7 +214,6 @@ export function AdminInquiryDetail({
           <Field label={"내용"} readOnly>
             <Textarea h="25vh" value={inquiry.content} readOnly />
           </Field>
-          <Field></Field>
           <Box mt={4}>
             <Heading size="md" mb={2}>
               COMMENTS
