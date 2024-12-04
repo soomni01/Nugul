@@ -7,17 +7,6 @@ import {
   Image,
   Text,
 } from "@chakra-ui/react";
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog.jsx";
-
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { categories } from "../category/CategoryContainer.jsx";
@@ -29,6 +18,17 @@ import { ToggleTip } from "../ui/toggle-tip.jsx";
 import { toaster } from "../ui/toaster.jsx";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBin5Fill } from "react-icons/ri";
+
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
 
 export function ProductHorizontalItem({ product, onRemove, pageType }) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
@@ -48,6 +48,14 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
       month: "long",
       day: "numeric",
     }).format(date);
+  };
+
+  // Sold 상태에 따라 스타일을 어두워지게 설정
+  const isSold = product.status === "Sold";
+  const cardStyle = {
+    opacity: isSold ? 0.5 : 1, // 'Sold' 상태일 때 투명도를 낮춰 어두운 느낌 추가
+    backgroundColor: isSold ? "#f0f0f0" : "white", // 'Sold' 상태일 때 배경색을 회색으로 변경
+    cursor: product.status === "Sold" ? "default" : "pointer",
   };
 
   const handleLikeClick = () => {
@@ -106,8 +114,11 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
       type: "info",
       description: "후기 작성 페이지로 이동합니다.",
     });
-    // 예: 후기 작성 페이지로 이동
-    window.location.href = `/review/write/${product.productId}`;
+    // navigate("/api/member/review");
+  };
+
+  const handleCancelClick = () => {
+    setDialogOpen(false); // 다이얼로그 닫기
   };
 
   return (
@@ -122,7 +133,10 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
       border="1px solid"
       borderColor="gray.200"
       position="relative" // 부모 카드에 relative 위치를 지정
-      onClick={() => navigate(`/product/view/${product.productId}`)}
+      onClick={() =>
+        isSold ? null : navigate(`/product/view/${product.productId}`)
+      } // Sold 상태에서 클릭 방지
+      style={cardStyle}
     >
       {/* 왼쪽: 이미지 */}
       <Image
@@ -131,6 +145,9 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         src="/image/productItem.png"
         alt={product.productName}
         borderRadius="md"
+        style={{
+          opacity: product.status === "Sold" ? 0.5 : 1, // 이미지에도 어두운 효과 적용
+        }}
       />
 
       {/* 오른쪽: 텍스트 및 버튼 */}
@@ -192,7 +209,7 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
             <Button size="xs">후기 작성</Button>
           </Box>
         ) : (
-          <DialogRoot open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogRoot isOpen={dialogOpen} onClose={() => setDialogOpen(false)}>
             <DialogTrigger asChild>
               <RiDeleteBin5Fill color="gray" />
             </DialogTrigger>
@@ -207,12 +224,11 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
                 <DialogActionTrigger>
                   <Button
                     variant={"outline"}
-                    onClick={() => setDialogOpen(false)}
+                    onClick={handleCancelClick} // 취소 버튼 클릭 시 다이얼로그 닫기
                   >
                     취소
                   </Button>
                 </DialogActionTrigger>
-                {/* 삭제 버튼을 클릭하면 handleDeleteClick이 실행되도록 수정 */}
                 <Button
                   colorPalette={"red"}
                   onClick={(e) => {
