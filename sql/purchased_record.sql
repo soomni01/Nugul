@@ -6,6 +6,5 @@ CREATE TABLE expense_record
     date       DATE DEFAULT CURRENT_DATE
 );
 
-RENAME TABLE expense_record TO buy_record;
+RENAME TABLE buy_record TO purchased_record;
 
-DESC buy_record;
