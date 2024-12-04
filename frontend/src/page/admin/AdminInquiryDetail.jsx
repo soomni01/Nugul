@@ -222,17 +222,19 @@ export function AdminInquiryDetail({
             <Flex>
               <Textarea
                 placeholder="댓글을 입력해 주세요."
-                value={comment}
+                value={editingCommentId ? "" : comment} // 수정 중일 땐 입력 영역 초기화
                 onChange={(e) => setComment(e.target.value)}
                 flex="1"
+                isDisabled={!!editingCommentId} // 수정 중일 때 댓글 작성 비활성화
               />
               <Button
                 colorScheme="teal"
                 mt={2}
                 ml={2}
                 onClick={handleCommentSubmit}
+                isDisabled={!!editingCommentId} // 수정 중일 때 버튼 비활성화
               >
-                {editingCommentId ? "수정 완료" : "등록"}
+                등록
               </Button>
             </Flex>
             {comments.map((c) => (
@@ -245,18 +247,35 @@ export function AdminInquiryDetail({
                 mb={1}
               >
                 <Text fontWeight="bold">{c.memberId}</Text>
-                <Text>{c.comment}</Text>
+                {editingCommentId === c.id ? (
+                  <Textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                ) : (
+                  <Text>{c.comment}</Text>
+                )}
                 <Text fontSize="sm" color="gray.500">
                   {new Date(c.inserted).toLocaleDateString()}
                 </Text>
                 <Flex justify="flex-end" mt={2}>
-                  <Button
-                    colorPalette={"white"}
-                    onClick={() => handleEditClick(c.id)}
-                    mr={2}
-                  >
-                    수정
-                  </Button>
+                  {editingCommentId === c.id ? (
+                    <Button
+                      colorScheme="teal"
+                      onClick={() => handleCommentSubmit()}
+                      mr={2}
+                    >
+                      수정 완료
+                    </Button>
+                  ) : (
+                    <Button
+                      colorPalette={"white"}
+                      onClick={() => handleEditClick(c.id)}
+                      mr={2}
+                    >
+                      수정
+                    </Button>
+                  )}
                   <DeleteButton
                     colorPalette={"red"}
                     onClick={() => handleDeleteClick(c.id)}
