@@ -6,5 +6,11 @@ CREATE TABLE expense_record
     date       DATE DEFAULT CURRENT_DATE
 );
 
-RENAME TABLE buy_record TO purchased_record;
+RENAME TABLE expense_record TO purchased_record;
 
+# 구매자 구분 쉽게 컬럼명 변경
+ALTER TABLE purchased_record
+    RENAME COLUMN user_id TO buyer_id;
+
+INSERT INTO purchased_record (buyer_id, product_id)
+VALUES ('sm@naver.com', 56);

@@ -75,6 +75,15 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
     }
   };
 
+  const handleReviewClick = () => {
+    toaster.create({
+      type: "info",
+      description: "후기 작성 페이지로 이동합니다.",
+    });
+    // 예: 후기 작성 페이지로 이동
+    window.location.href = `/review/write/${product.productId}`;
+  };
+
   return (
     <Card.Root
       flexDirection="row"
@@ -93,7 +102,7 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         objectFit="cover"
         src="/image/productItem.png"
         alt={product.productName}
-        borderRadius="md" // 이미지의 모서리 둥글게
+        borderRadius="md"
       />
 
       {/* 오른쪽: 텍스트 및 버튼 */}
@@ -127,7 +136,13 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         position="absolute"
         top={2}
         right={2}
-        onClick={pageType === "wish" ? handleLikeClick : handleDeleteClick}
+        onClick={
+          pageType === "wish"
+            ? handleLikeClick
+            : pageType === "purchased"
+              ? handleReviewClick
+              : handleDeleteClick
+        }
       >
         {pageType === "wish" ? (
           <Box cursor="pointer">
@@ -138,6 +153,8 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
               <GoHeartFill color={isLiked ? "red" : "gray"} />
             </ToggleTip>
           </Box>
+        ) : pageType === "purchased" ? (
+          <Button size="xs">후기 작성</Button>
         ) : (
           <RiDeleteBin5Fill color="gray" />
         )}

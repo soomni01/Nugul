@@ -27,4 +27,9 @@ public class MyPageService {
         List<Product> soldProductsList = mapper.getSoldProducts(authentication.getName());
         return soldProductsList;
     }
+
+    public List<Product> getPurchasedProducts(Authentication authentication) {
+        List<Product> purchasedProductsList = mapper.getPurchasedProducts(authentication.getName());
+        return purchasedProductsList;
+    }
 }

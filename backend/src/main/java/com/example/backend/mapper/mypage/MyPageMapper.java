@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper
 public interface MyPageMapper {
 
-    // 내 관심 상품 목록 가져오기
     @Select("""
             SELECT p.product_id, p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name
             FROM product_like l LEFT JOIN product p ON l.product_id = p.product_id
@@ -17,11 +16,17 @@ public interface MyPageMapper {
             """)
     List<Product> getLikes(String name);
 
-    // 내 판매 상품 목록 가져오기
     @Select("""
             SELECT *
             FROM product
             WHERE writer = #{name}
             """)
     List<Product> getSoldProducts(String name);
+
+    @Select("""
+            SELECT pr.date, p.product_id,  p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name
+            FROM purchased_record pr LEFT JOIN product p ON pr.product_id = p.product_id
+            WHERE buyer_id = #{name}
+            """)
+    List<Product> getPurchasedProducts(String name);
 }
