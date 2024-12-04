@@ -21,5 +21,5 @@ public interface MyPageMapper {
             FROM product
             WHERE writer = #{name}
             """)
-    List<Product> getsoltProducts(String name);
+    List<Product> getsoldProducts(String name);
 }

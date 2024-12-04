@@ -21,8 +21,8 @@ public class MyPageService {
         return likesList;
     }
 
-    public List<Product> getSoldPorducts(Authentication authentication) {
-        List<Product> soldProductsList = mapper.getsoltProducts(authentication.getName());
+    public List<Product> getSoldProducts(Authentication authentication) {
+        List<Product> soldProductsList = mapper.getsoldProducts(authentication.getName());
         return soldProductsList;
     }
 }

@@ -15,8 +15,10 @@ import { GoHeartFill } from "react-icons/go";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { toaster } from "../ui/toaster.jsx";
 
-export function ProductHorizontalItem({ product, onRemove }) {
+export function ProductHorizontalItem({ product, onRemove, pageType }) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
@@ -44,6 +46,25 @@ export function ProductHorizontalItem({ product, onRemove }) {
     } else {
       setLikeTooltipOpen((prev) => !prev);
     }
+  };
+
+  const handleDeleteClick = () => {
+    axios
+      .delete(`/api/product/delete/${product.productId}`)
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      });
   };
 
   return (
@@ -98,15 +119,20 @@ export function ProductHorizontalItem({ product, onRemove }) {
         position="absolute"
         top={2}
         right={2}
+        onClick={pageType === "interest" ? handleLikeClick : handleDeleteClick}
       >
-        <Box onClick={handleLikeClick} cursor="pointer">
-          <ToggleTip
-            open={likeTooltipOpen}
-            content={"로그인 후 좋아요를 클릭해주세요."}
-          >
-            <GoHeartFill />
-          </ToggleTip>
-        </Box>
+        {pageType === "interest" ? (
+          <Box cursor="pointer">
+            <ToggleTip
+              open={likeTooltipOpen}
+              content={"로그인 후 좋아요를 클릭해주세요."}
+            >
+              <GoHeartFill color={isLiked ? "red" : "gray"} />
+            </ToggleTip>
+          </Box>
+        ) : (
+          <RiDeleteBin5Fill color="gray" />
+        )}
       </Button>
 
       {/* 우측 하단 가격 */}

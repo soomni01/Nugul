@@ -2,28 +2,29 @@ import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export function SoldItems() {
   const [soldList, setSoldList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   if (soldList.length > 0) return;
-  //   setLoading(true);
-  //
-  //   axios
-  //     .get("/api/mypage/sold")
-  //     .then((res) => {
-  //       setSoldList(res.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log("판매 상품 정보를 가져오는 데 실패했습니다.", error);
-  //       setSoldList([]); // 실패시 빈 배열 처리
-  //       setLoading(false);
-  //     });
-  // }, [soldList]);
+  useEffect(() => {
+    if (soldList.length > 0) return;
+    setLoading(true);
+
+    axios
+      .get("/api/myPage/sold")
+      .then((res) => {
+        setSoldList(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("판매 상품 정보를 가져오는 데 실패했습니다.", error);
+        setSoldList([]); // 실패시 빈 배열 처리
+        setLoading(false);
+      });
+  }, []);
 
   if (loading) {
     return <Spinner />;
@@ -49,10 +50,7 @@ export function SoldItems() {
                 key={product.productId}
                 style={{ height: "auto", weight: "100%" }}
               >
-                <ProductHorizontalItem
-                  product={product}
-                  onRemove={handleRemove}
-                />
+                <ProductHorizontalItem product={product} />
               </SwiperSlide>
             ))
           ) : (

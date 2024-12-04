@@ -21,7 +21,7 @@ public class MyPageController {
     @GetMapping("sold")
     @PreAuthorize("isAuthenticated()")
     public List<Product> getSoldProducts(Authentication authentication) {
-        return service.getSoldPorducts(authentication);
+        return service.getSoldProducts(authentication);
     }
 
     @GetMapping("like")
