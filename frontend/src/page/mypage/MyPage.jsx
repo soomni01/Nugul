@@ -72,6 +72,13 @@ export function MyPage() {
             구매 상품
           </Button>
           <Button
+            variant={activeTab === "inquiry" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("inquiry")}
+          >
+            문의 내역
+          </Button>
+          <Button
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("profile")}
@@ -92,6 +99,8 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
+        {/*{activeTab === "inquiry" && <Inquiry />}*/}
+        {/*{activeTab === "review" && <Review />}*/}
       </Box>
     </Flex>
   );
