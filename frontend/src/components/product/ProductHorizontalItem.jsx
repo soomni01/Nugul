@@ -7,6 +7,17 @@ import {
   Image,
   Text,
 } from "@chakra-ui/react";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { categories } from "../category/CategoryContainer.jsx";
@@ -15,13 +26,14 @@ import { GoHeartFill } from "react-icons/go";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
-import { RiDeleteBin5Fill } from "react-icons/ri";
 import { toaster } from "../ui/toaster.jsx";
 import { useNavigate } from "react-router-dom";
+import { RiDeleteBin5Fill } from "react-icons/ri";
 
 export function ProductHorizontalItem({ product, onRemove, pageType }) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
@@ -153,11 +165,13 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         right={2}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중단
-          pageType === "wish"
-            ? handleLikeClick()
-            : pageType === "purchased"
-              ? handleReviewClick()
-              : handleDeleteClick();
+          if (pageType === "wish") {
+            handleLikeClick();
+          } else if (pageType === "purchased") {
+            handleReviewClick();
+          } else {
+            setDialogOpen(true);
+          }
         }}
       >
         {pageType === "wish" ? (
@@ -178,7 +192,39 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
             <Button size="xs">후기 작성</Button>
           </Box>
         ) : (
-          <RiDeleteBin5Fill color="gray" />
+          <DialogRoot open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <RiDeleteBin5Fill color="gray" />
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>삭제 확인</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
+                <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+              </DialogBody>
+              <DialogFooter>
+                <DialogActionTrigger>
+                  <Button
+                    variant={"outline"}
+                    onClick={() => setDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                </DialogActionTrigger>
+                {/* 삭제 버튼을 클릭하면 handleDeleteClick이 실행되도록 수정 */}
+                <Button
+                  colorPalette={"red"}
+                  onClick={(e) => {
+                    handleDeleteClick();
+                    setDialogOpen(false); // 삭제 후 다이얼로그 닫기
+                  }}
+                >
+                  삭제
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </DialogRoot>
         )}
       </Button>
 

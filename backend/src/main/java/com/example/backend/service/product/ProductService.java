@@ -83,6 +83,7 @@ public class ProductService {
     // 상품 삭제하기
     public boolean deleteProduct(int id, Authentication authentication) {
         mapper.deleteLike(id, authentication.getName());
+        mapper.deletePurchasedRecord(id, authentication.getName());
         mapper.deleteFileByProductId(id);
 
         int cnt = mapper.deleteById(id);

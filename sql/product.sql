@@ -59,3 +59,8 @@ ALTER TABLE product
     MODIFY COLUMN price INT DEFAULT 0 NULL;
 
 DESC product;
+
+UPDATE product
+SET writer = 'sm@naver.com'
+WHERE product_id = 63;
+
