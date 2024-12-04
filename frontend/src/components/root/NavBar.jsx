@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Box, Flex } from "@chakra-ui/react";
+import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
+import { useContext } from "react";
 
 function NavbarItem({ children, ...rest }) {
   return (
@@ -21,6 +23,9 @@ function NavbarItem({ children, ...rest }) {
 
 export function Navbar() {
   const navigate = useNavigate();
+
+  const { id, nickname } = useContext(AuthenticationContext);
+
   return (
     <Flex gap={3}>
       <NavbarItem onClick={() => navigate("/")}>HOME</NavbarItem>
@@ -33,12 +38,12 @@ export function Navbar() {
       <NavbarItem onClick={() => navigate("/board/list")}>게시판</NavbarItem>
       <NavbarItem onClick={() => navigate("/chat")}>채팅</NavbarItem>
       <NavbarItem onClick={() => navigate("/inquiry")}>문의하기</NavbarItem>
-      <NavbarItem onClick={() => navigate(`/member/${id}`)}>
-        마이페이지
-      </NavbarItem>
+      <NavbarItem>{nickname}</NavbarItem>
+      <NavbarItem onClick={() => navigate(`/myPage`)}>마이페이지</NavbarItem>
       <NavbarItem
         onClick={() => {
           localStorage.removeItem("token");
+          localStorage.removeItem("activeTab");
           navigate("/member/login");
         }}
       >

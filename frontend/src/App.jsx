@@ -10,18 +10,20 @@ import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
 import { InquiryDetail } from "./page/admin/InquiryDetail.jsx";
 
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
-import { MemberInfo } from "./page/member/MemberInfo.jsx";
-import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 
 import { ChatList } from "./page/chat/ChatList.jsx";
 import { ChatView } from "./page/chat/ChatView.jsx";
 
 import { ProductList } from "./page/product/ProductList.jsx";
+import { ProductShareList } from "./page/product/ProductShareList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
+import { MyPage } from "./page/mypage/MyPage.jsx";
+
+import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -51,12 +53,12 @@ const router = createBrowserRouter([
         element: <MemberSignup />,
       },
       {
-        path: "member/:memberId",
-        element: <MemberInfo />,
+        path: "myPage",
+        element: <MyPage />,
       },
       {
-        path: "member/edit/:memberId",
-        element: <MemberEdit />,
+        path: "myPage/edit/:memberId",
+        element: <MyPage />,
       },
       {
         path: "chat",
@@ -70,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "product/list",
         element: <ProductList />,
+      },
+      {
+        path: "product/share/list",
+        element: <ProductShareList />,
       },
       {
         path: "product/add",
@@ -115,7 +121,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <AuthenticationProvider>
+      <RouterProvider router={router} />
+    </AuthenticationProvider>
+  );
 }
 
 export default App;

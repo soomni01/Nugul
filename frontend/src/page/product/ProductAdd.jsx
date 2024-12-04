@@ -35,6 +35,9 @@ export function ProductAdd(props) {
   // 버튼 클릭 시 해당 버튼을 표시
   const buttonClick = (buttonType) => {
     setPay(buttonType);
+    if (buttonType === "share") {
+      setPrice(0);
+    }
   };
 
   // 파일 이미지 클릭 시 input 클릭 트리거
@@ -109,7 +112,6 @@ export function ProductAdd(props) {
   const disabled = !(
     productName.trim().length > 0 &&
     description.trim().length > 0 &&
-    price.trim().length > 0 &&
     location?.name
   );
 
@@ -238,15 +240,17 @@ export function ProductAdd(props) {
             </Button>
           </Flex>
         </Field>
-        <Field label={"가격"}>
-          <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-            <Input
-              value={price}
-              onChange={handlePriceChange}
-              placeholder="가격을 입력하세요"
-            />
-          </InputGroup>
-        </Field>
+        {pay === "sell" && (
+          <Field label={"가격"}>
+            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
+              <Input
+                value={price}
+                onChange={handlePriceChange}
+                placeholder="가격을 입력하세요"
+              />
+            </InputGroup>
+          </Field>
+        )}
         <Field label={"상품 설명"}>
           <Textarea
             h={200}
