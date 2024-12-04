@@ -4,6 +4,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
+import { toaster } from "../ui/toaster.jsx";
 
 export function ProductLike({
   productId,
@@ -20,7 +21,13 @@ export function ProductLike({
       axios
         .post("/api/product/like", { productId })
         .then((res) => res.data)
-        .then((data) => setLike(data))
+        .then((data) => {
+          setLike(data);
+          toaster.create({
+            type: "warning",
+            description: "좋아요 버튼을 눌렀습니다.",
+          });
+        })
         .catch((err) => console.error("관심 상품에 오류가 발생했습니다.", err));
     } else {
       setLikeTooltipOpen(!likeTooltipOpen);

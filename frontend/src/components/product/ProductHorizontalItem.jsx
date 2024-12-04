@@ -46,6 +46,10 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         .post("/api/product/like", { productId: product.productId })
         .then(() => {
           onRemove(product.productId); // 부모 컴포넌트로 제거 요청
+          toaster.create({
+            type: "warning",
+            description: "관심 상품에서 삭제했습니다.",
+          });
         })
         .catch((err) => {
           console.error("관심 상품에 오류가 발생했습니다.", err);
