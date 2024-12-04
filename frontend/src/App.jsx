@@ -29,8 +29,6 @@ import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
 
-
-
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -87,7 +85,7 @@ const router = createBrowserRouter([
         element: <ProductAdd />,
       },
       {
-        path: "product/view/:id",
+        path: "product/view/:productId",
         element: <ProductView />,
       },
       {

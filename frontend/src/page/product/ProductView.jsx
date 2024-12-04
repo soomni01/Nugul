@@ -36,16 +36,20 @@ function ImageFileView() {
 }
 
 export function ProductView() {
-  const { id } = useParams();
+  //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
-  const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
+  const { hasAccess, isAuthenticated, id } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
+    // id >productId
+    axios
+      .get(`/api/product/view/${productId}`)
+      .then((res) => setProduct(res.data));
   }, []);
 
   useEffect(() => {
@@ -133,7 +137,7 @@ export function ProductView() {
   return (
     <Box>
       <HStack>
-        <Heading>{id}번 상품 이름</Heading>
+        <Heading>{productId}번 상품 이름</Heading>
         <Box display="flex" justifyContent="center" alignItems="center">
           <ProductLike
             productId={product.productId}
@@ -193,7 +197,9 @@ export function ProductView() {
             {markerPosition && <MapMarker position={markerPosition} />}
           </Map>
         </Box>
-        <Button onClick={createChatRoom}>거래하기</Button>
+        <Button onClick={createChatRoom} disabled={id === product.writer}>
+          거래하기
+        </Button>
         {hasAccess(product.writer) && (
           <Box>
             <Button
