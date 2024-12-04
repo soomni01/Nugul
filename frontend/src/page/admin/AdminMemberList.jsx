@@ -150,18 +150,19 @@ export function AdminMemberList() {
     setCurrentPage(1);
   }
 
-  function handleDeleteClick(memberId, password, nickname, inserted) {
+  function handleDeleteClick(memberId, password) {
     axios
       .delete("/api/member/remove", {
-        data: { memberId, password, nickname, inserted },
+        data: { memberId, password },
       })
-      .then((res) => {
+      .then(() => {
         toaster.create({
           type: "success",
           description: "회원 탈퇴가 완료되었습니다.",
         });
-        console.log("응답 데이터:", res.data);
-        navigate("/admin/members");
+        setMemberList((prev) =>
+          prev.filter((member) => member.memberId !== memberId),
+        );
       })
       .catch((error) => {
         toaster.create({
