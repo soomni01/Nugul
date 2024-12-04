@@ -7,7 +7,7 @@ import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
-import { InquiryDetail } from "./page/admin/InquiryDetail.jsx";
+import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
 
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
@@ -21,8 +21,10 @@ import { ProductAdd } from "./page/product/ProductAdd.jsx";
 import { ProductView } from "./page/product/ProductView.jsx";
 import { ProductEdit } from "./page/product/ProductEdit.jsx";
 import { MainPage } from "./page/main/MainPage.jsx";
-import { MyPage } from "./page/mypage/MyPage.jsx";
+
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
+import { MyPage } from "./page/mypage/MyPage.jsx";
+
 
 
 // Axios 인터셉터 설정
@@ -64,7 +66,6 @@ const router = createBrowserRouter([
         path: "chat",
         element: <ChatList />,
       },
-
       {
         path: "chat/room/:roomId",
         element: <ChatView />,
@@ -111,10 +112,9 @@ const router = createBrowserRouter([
         path: "inquiries",
         element: <AdminInquiryList />,
       },
-
       {
         path: "inquiries/:inquiryId",
-        element: <InquiryDetail />,
+        element: <AdminInquiryDetail />,
       },
     ],
   },

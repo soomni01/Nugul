@@ -13,6 +13,7 @@ import { FaCommentDots } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button } from "../../components/ui/button.jsx";
 
 export function AdminInquiryList() {
   const [inquiryList, setInquiryList] = useState([]);
@@ -25,10 +26,9 @@ export function AdminInquiryList() {
 
   const navigate = useNavigate();
 
-  // 1:1 문의 목록 요청 및 데이터 처리
   useEffect(() => {
     axios
-      .get("/api/inquiry/list") // API 경로 수정
+      .get("/api/inquiry/list")
       .then((res) => {
         console.log("문의 목록 데이터:", res.data);
         setInquiryList(res.data);
@@ -38,14 +38,12 @@ export function AdminInquiryList() {
       });
   }, []);
 
-  // 테이블 행 클릭 시 상세 페이지로 이동
   function handleRowClick(inquiryId) {
     navigate(`/admin/inquiries/${inquiryId}`);
   }
 
-  // 검색 처리: type에 맞춰 필터링
   const filteredInquiries = inquiryList.filter((inquiry) => {
-    const inquiryTitle = inquiry.title; // 문의 제목
+    const inquiryTitle = inquiry.title;
 
     if (!inquiryTitle) {
       console.error("문의 데이터에 'title'이 누락되었습니다:", inquiry);
@@ -68,8 +66,7 @@ export function AdminInquiryList() {
     }
   });
 
-  // 페이지네이션 처리
-  const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage); // 전체 페이지 수
+  const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage);
   const paginatedInquiries = filteredInquiries.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -79,25 +76,21 @@ export function AdminInquiryList() {
     setCurrentPage(newPage);
   }
 
-  // 검색 조건 변경
   function handleSearchTypeChange(e) {
     setSearch({ ...search, type: e.target.value });
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+    setCurrentPage(1);
   }
 
-  // 검색어 변경
   function handleSearchKeywordChange(e) {
     setSearch({ ...search, keyword: e.target.value });
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+    setCurrentPage(1);
   }
 
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-        1:1 문의 관리
+        1:1 문의
       </Text>
-
-      {/* 검색 박스 */}
       <Box mb={3}>
         <Flex justify="center" align="center" gap={4}>
           <Input
@@ -111,15 +104,12 @@ export function AdminInquiryList() {
             <option value="all">전체</option>
             <option value="title">제목</option>
             <option value="member">작성자</option>
-            {/* 작성자 검색 옵션 */}
           </select>
         </Flex>
       </Box>
       <Text mb={4} m={2}>
         총 {filteredInquiries.length}개
       </Text>
-
-      {/* 문의 리스트 테이블 */}
       <Box>
         <Table.Root interactive>
           <TableHeader>
@@ -144,7 +134,7 @@ export function AdminInquiryList() {
                   {new Date(inquiry.inserted).toLocaleDateString()}{" "}
                 </Table.Cell>
                 <Table.Cell>
-                  {inquiry.answer ? (
+                  {inquiry.hasAnswer ? (
                     <Badge variant={"subtle"} colorPalette={"green"}>
                       <FaCommentDots /> 답변 완료
                     </Badge>
@@ -159,11 +149,9 @@ export function AdminInquiryList() {
           </Table.Body>
         </Table.Root>
       </Box>
-
-      {/* 페이지 버튼 */}
       <Flex justify="center" mt={4} gap={2}>
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
+          <Button
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
             style={{
@@ -177,7 +165,7 @@ export function AdminInquiryList() {
             }}
           >
             {index + 1}
-          </button>
+          </Button>
         ))}
       </Flex>
     </Box>

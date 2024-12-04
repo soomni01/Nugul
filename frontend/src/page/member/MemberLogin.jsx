@@ -1,11 +1,13 @@
-import { Box, Input, Stack } from "@chakra-ui/react";
+import { Box, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { jwtDecode } from "jwt-decode";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
+
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -20,13 +22,22 @@ export function MemberLogin() {
 
     if (!memberId && !password) {
       isValid = false;
-      setErrorMessage("아이디와 비밀번호를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "이메일과 비밀번호를 입력해 주세요.",
+      });
     } else if (!memberId) {
       isValid = false;
-      setErrorMessage("아이디를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "이메일을 입력해 주세요.",
+      });
     } else if (!password) {
       isValid = false;
-      setErrorMessage("비밀번호를 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "비밀번호를 입력해 주세요.",
+      });
     }
 
     if (!isValid) {
@@ -37,10 +48,19 @@ export function MemberLogin() {
       .post("/api/member/login", { memberId, password })
       .then((res) => res.data)
       .then((data) => {
+        console.log(data);
         toaster.create({
           type: data.message.type,
           description: data.message.text,
         });
+        const decodedToken = jwtDecode(data.token);
+        const userScope = decodedToken.scope || "";
+
+        if (userScope === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("main");
+        }
         navigate("main");
         localStorage.setItem("token", data.token);
       })
@@ -51,10 +71,9 @@ export function MemberLogin() {
         };
 
         if (
-          message.text.includes("아이디") ||
+          message.text.includes("이메일") ||
           message.text.includes("비밀번호")
         ) {
-          setErrorMessage("아이디 또는 비밀번호가 틀렸습니다.");
         } else {
           setErrorMessage("알 수 없는 오류가 발생했습니다.");
         }
@@ -68,34 +87,43 @@ export function MemberLogin() {
 
   return (
     <Box>
-      <h3>로그인</h3>
+      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
+        로그인
+      </Text>
       <Stack gap={5}>
-        <Field label={"아이디"}>
+        <Field>
           <Input
-            placeholder="아이디 또는 이메일 입력하세요"
+            placeholder="이메일"
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
           />
         </Field>
 
-        <Field label={"암호"}>
+        <Field >
           <PasswordInput
-            placeholder="암호 입력"
+            placeholder="비밀번호 입력"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Field>
-
         <Box>
           <Button onClick={handleLoginClick}>로그인</Button>
         </Box>
-
         {errorMessage && (
           <Box color="red.500" mt={2}>
             <p>{errorMessage}</p>
           </Box>
         )}
+        <Box textAlign="center" mt={4}>
+          아직 계정이 없으신가요?{" "}
+          <Link
+            to="/member/signup"
+            style={{ color: "blue", textDecoration: "underline" }}
+          >
+            회원가입
+          </Link>
+        </Box>
       </Stack>
     </Box>
   );
