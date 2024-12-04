@@ -2,19 +2,21 @@ import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function SoldItems() {
   const [soldList, setSoldList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
     if (soldList.length > 0) return;
     setLoading(true);
 
     axios
-      .get("/api/myPage/sold")
+      .get("/api/myPage/sold", { params: { id } })
       .then((res) => {
         setSoldList(res.data);
         setLoading(false);

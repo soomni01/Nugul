@@ -1,20 +1,22 @@
 import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function Wishlist() {
   const [productList, setProductList] = useState([]); // 초기값 빈 배열
   const [loading, setLoading] = useState(true);
+  const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
     if (productList.length > 0) return; // 이미 데이터가 있으면 요청을 보내지 않음
     setLoading(true);
 
     axios
-      .get("/api/myPage/like")
+      .get("/api/myPage/like", { params: { id } })
       .then((res) => {
         setProductList(res.data); // 서버 응답에서 상품 목록 설정
         setLoading(false);
