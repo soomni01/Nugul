@@ -216,7 +216,12 @@ export function AdminMemberList() {
           </TableHeader>
           <Table.Body>
             {paginatedMembers.map((member) => (
-              <Table.Row key={member.memberId}>
+              <Table.Row
+                key={member.memberId}
+                onClick={() =>
+                  navigate(`/admin/members/${member.memberId}/detail`)
+                }
+              >
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.nickname}</Table.Cell>
                 <Table.Cell>{member.password}</Table.Cell>
