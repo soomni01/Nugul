@@ -16,10 +16,6 @@ export function MemberLogin() {
   const navigate = useNavigate();
   const authentication = useContext(AuthenticationContext);
 
-  const handleSignupClick = () => {
-    navigate("/member/signup");
-  };
-
   const handleLoginClick = () => {
     let isValid = true;
 
