@@ -202,6 +202,7 @@ export function AdminMemberList() {
             <TableRow>
               <TableColumnHeader>ID</TableColumnHeader>
               <TableColumnHeader>닉네임</TableColumnHeader>
+              <TableColumnHeader>비밀번호</TableColumnHeader>
               <TableColumnHeader>가입 일자</TableColumnHeader>
               <TableColumnHeader>회원 탈퇴</TableColumnHeader>
             </TableRow>
@@ -211,6 +212,7 @@ export function AdminMemberList() {
               <Table.Row key={member.memberId}>
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.nickname}</Table.Cell>
+                <Table.Cell>{member.password}</Table.Cell>
                 <Table.Cell>
                   {new Date(member.inserted).toLocaleDateString()}
                 </Table.Cell>
