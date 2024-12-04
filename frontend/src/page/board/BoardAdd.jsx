@@ -9,7 +9,6 @@ import { toaster } from "../../components/ui/toaster.jsx";
 export function BoardAdd() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
   const [category, setCategory] = useState("");
   const [progress, setProgress] = useState(false);
 
@@ -21,7 +20,6 @@ export function BoardAdd() {
       .post("/api/board/boardAdd", {
         title,
         content,
-        writer,
         category,
       })
       .then((res) => res.data)
@@ -69,14 +67,7 @@ export function BoardAdd() {
             }}
           />
         </Field>
-        <Field label={"작성자"}>
-          <Input
-            value={writer}
-            onChange={(e) => {
-              setWriter(e.target.value);
-            }}
-          />
-        </Field>
+
         <Field label={"카테고리"}>
           <Input
             value={category}
