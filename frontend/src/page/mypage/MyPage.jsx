@@ -6,6 +6,7 @@ import { SoldItems } from "../mypage/SoldItems.jsx";
 import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
 import { Profile } from "../mypage/Profile.jsx";
 import { ProfileEdit } from "./ProfileEdit.jsx";
+import { Review } from "./Review.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function MyPage() {
@@ -81,7 +82,7 @@ export function MyPage() {
           <Button
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
-            onClick={() => handleTabClick("profile")}
+            onClick={() => handleTabClick("review")}
           >
             후기
           </Button>
@@ -100,7 +101,7 @@ export function MyPage() {
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
         {/*{activeTab === "inquiry" && <Inquiry />}*/}
-        {/*{activeTab === "review" && <Review />}*/}
+        {activeTab === "review" && <Review />}
       </Box>
     </Flex>
   );
