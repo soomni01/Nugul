@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { IoClose } from "react-icons/io5";
 import "./MapModal.css";
@@ -10,8 +10,19 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [locationName, setLocationName] = useState(null);
   const [isKakaoMapLoaded, setIsKakaoMapLoaded] = useState(true);
-  const mapRef = useRef(null); // useRef를 사용하여 지도 인스턴스 참조
-  const placesServiceRef = useRef(null);
+  const [map, setMap] = useState(null);
+
+  // 카카오 api
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_APP_KEY}&libraries=services,clusterer`;
+  //   script.async = true;
+  //   document.head.appendChild(script);
+  //
+  //   return () => {
+  //     document.head.removeChild(script);
+  //   };
+  // }, []);
 
   if (!isOpen) return null; // 모달이 닫혀 있으면 렌더링하지 않음
 
@@ -41,56 +52,31 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
   };
 
   const handleSearch = () => {
-    console.log(mapRef.current);
-    if (!isKakaoMapLoaded) {
-      alert("지도 서비스가 아직 로드되지 않았습니다.");
-      return;
-    }
+    if (!map) return;
+    const ps = new kakao.maps.services.Places();
 
-    if (!mapRef.current) {
-      alert("지도가 로드되지 않았습니다.");
-      return;
-    }
-    if (!locationName.trim()) {
-      alert("키워드를 입력해주세요!");
-      return;
-    }
-
-    // Places 서비스 생성
-    if (!placesServiceRef.current) {
-      placesServiceRef.current = new window.kakao.maps.services.Places();
-    }
-
-    placesServiceRef.current.keywordSearch(locationName, placeSearchCB);
+    ps.keywordSearch(locationName, placeSearchCB);
   };
 
-  function placeSearchCB(data, status) {
+  function placeSearchCB(data, status, pagiation) {
+    // 정상 검색 완료시
     if (status === kakao.maps.services.Status.OK) {
-      // 정상 검색 완료
-      displayPlaces(data);
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-      alert("검색 결과가 존재하지 않습니다.");
-      return;
-    } else if (status === kakao.maps.services.Status.ERROR) {
-      alert("검색 결과 중 오류가 발생했습니다.");
-      return;
+      //검색된 장소 위치를 기준으로 지도 범위 재설정 하려고
+      var bounds = new kakao.maps.LatLngBounds();
+      for (var i = 0; i < data.length; i++) {
+        displayMarker(data[i]);
+        bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+      }
+      // 검색된 장소 위치를 기주느로 지도 범위 재설정
+      map.setBounds(bounds);
     }
   }
 
-  function displayPlaces(places) {
-    var bounds = new kakao.maps.LatLngBounds();
-
-    var placePositon = new kakao.maps.LatLng(places[0].y, places[0].x);
-
-    // 객체에 좌표 추가
-    bounds.extend(placePositon);
-
-    if (mapInstance) {
-      mapRef.current.setBounds(bounds);
-    }
-    setMarkerPosition({
-      lat: parseFloat(places[0].y),
-      lng: parseFloat(places[0].x),
+  function displayMarker(places) {
+    // 마커를 생성하고 지도에 표시합니다
+    var marker = new kakao.maps.Marker({
+      map: map,
+      position: new kakao.maps.LatLng(places.y, places.x),
     });
   }
 
@@ -105,13 +91,14 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
             className="map"
             center={{ lat: 33.450701, lng: 126.570667 }}
             level={3}
-            style={{ width: "100%", height: "400px" }}
+            style={{ width: "100%", height: "600px" }}
             onClick={handleMapClick}
-            ref={mapRef}
+            onCreate={setMap}
           >
             {markerPosition && <MapMarker position={markerPosition} />}
             <ZoomControl />
           </Map>
+
           <Field mt={5} label={"선택한 곳의 장소명을 입력해주세요"}>
             <Group w={"100%"}>
               <Input
