@@ -61,4 +61,11 @@ DESC product;
 
 SELECT *
 FROM product
-WHERE writer = 'coogie@naver.com';
+WHERE writer = 'sm@naver.com';
+
+SELECT *
+FROM product;
+
+SELECT *
+FROM product
+WHERE product_id IN (SELECT product_id FROM purchased_record WHERE buyer_id = 'sm@naver.com');

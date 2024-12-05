@@ -10,3 +10,9 @@ RENAME TABLE buy_record TO purchased_record;
 
 SELECT *
 FROM purchased_record;
+
+DESC purchased_record;
+
+SELECT *
+FROM purchased_record
+WHERE buyer_id = 'sm@naver.com'; -- 또는 user_id 필드 사용
