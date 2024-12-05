@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Spinner, Stack, Tabs, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
 
@@ -46,34 +46,45 @@ export function AdminMemberDetail() {
         {" "}
         {/* 각 섹션 사이에 충분한 간격을 줌 */}
         <Box>
-          <Heading size="lg" mb={4}>
-            {memberId}님의 판매 내역
-          </Heading>
-          {soldList.length > 0 ? (
-            soldList.map((product) => (
-              <ProductHorizontalItem
-                key={product.productId}
-                product={product}
-              />
-            ))
-          ) : (
-            <Text>판매 내역이 없습니다.</Text>
-          )}
-        </Box>
-        <Box>
-          <Heading size="lg" mt={8} mb={4}>
-            {memberId}님의 구매 내역
-          </Heading>
-          {purchasedList.length > 0 ? (
-            purchasedList.map((product) => (
-              <ProductHorizontalItem
-                key={product.productId}
-                product={product}
-              />
-            ))
-          ) : (
-            <Text>구매 내역이 없습니다.</Text>
-          )}
+          <Tabs.Root defaultValue="SoldProducts">
+            <Tabs.List
+              style={{ display: "flex", alignItems: "center", gap: "8px" }}
+            >
+              <span>{memberId} 님의</span>
+              <Tabs.Trigger value="SoldProducts">판매 내역</Tabs.Trigger>
+              <Tabs.Trigger value="PurchasedProducts">구매 내역</Tabs.Trigger>
+              <Tabs.Indicator />
+            </Tabs.List>
+            <Tabs.Indicator />
+            <Tabs.Content value="SoldProducts">
+              <Box>
+                {soldList.length > 0 ? (
+                  soldList.map((product) => (
+                    <ProductHorizontalItem
+                      key={product.productId}
+                      product={product}
+                    />
+                  ))
+                ) : (
+                  <Text>판매 내역이 없습니다.</Text>
+                )}
+              </Box>
+            </Tabs.Content>
+            <Tabs.Content value="PurchasedProducts">
+              <Box>
+                {purchasedList.length > 0 ? (
+                  purchasedList.map((product) => (
+                    <ProductHorizontalItem
+                      key={product.productId}
+                      product={product}
+                    />
+                  ))
+                ) : (
+                  <Text>구매 내역이 없습니다.</Text>
+                )}
+              </Box>
+            </Tabs.Content>
+          </Tabs.Root>
         </Box>
       </Stack>
     </Box>
