@@ -1,18 +1,33 @@
 import { Box, Input, Stack, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function BoardAdd() {
+  const { isAuthenticated, logout } = useContext(AuthenticationContext);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [progress, setProgress] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      logout(); // 자동 로그아웃 처리
+      toaster.create({
+        description: "로그인 후 게시글을 작성할 수 있습니다.",
+        type: "warning",
+      });
+      navigate("/"); // 로그인 페이지로 리디렉션
+    } else {
+      navigate("/board/boardAdd"); // 로그인된 경우, 게시글 작성 페이지로 리디렉션
+    }
+  }, [isAuthenticated, logout, navigate]);
 
   const handleSaveClick = () => {
     setProgress(true);
