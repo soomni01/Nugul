@@ -1,6 +1,7 @@
 package com.example.backend.service.mypage;
 
 import com.example.backend.dto.product.Product;
+import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,18 @@ public class MyPageService {
     public List<Product> getPurchasedProducts(String id) {
         List<Product> purchasedProductsList = mapper.getPurchasedProducts(id);
         return purchasedProductsList;
+    }
+
+    // 후기 내용과 별점이 있는지 확인
+    public boolean validate(Review review) {
+        boolean reviewText = review.getReviewText().trim().length() > 0;
+
+        return reviewText;
+    }
+
+    public boolean addReview(Review review) {
+        int cnt = mapper.insertReview(review);
+
+        return cnt == 1;
     }
 }

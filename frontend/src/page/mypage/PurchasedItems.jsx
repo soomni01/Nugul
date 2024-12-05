@@ -40,7 +40,6 @@ export function PurchasedItems() {
     const selectedProduct = purchasedList.find(
       (product) => product.productId === productId,
     );
-    console.log(selectedProduct);
     setSelectedProduct(selectedProduct);
     setIsModalOpen(true);
   };

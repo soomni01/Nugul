@@ -1,15 +1,15 @@
 package com.example.backend.controller.mypage;
 
 import com.example.backend.dto.product.Product;
+import com.example.backend.dto.review.Review;
 import com.example.backend.service.mypage.MyPageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +17,30 @@ import java.util.List;
 public class MyPageController {
 
     final MyPageService service;
+
+    @PostMapping("review/add")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> addReview(
+            @RequestBody Review review) {
+        System.out.println(review);
+        if (service.validate(review)) {
+            if (service.addReview(review)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                        "text", STR."\{review.getProductName()} 상품에 대한 후기가 작성되었습니다."),
+                                "data", review));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "상품에 대한 후기 작성이 실패하였습니다.")));
+            }
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "별점, 후기 내용이 입력되지 않았습니다.")));
+        }
+    }
+
 
     // 내 구매 상품 목록 가져오기
     @GetMapping("purchased")

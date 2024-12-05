@@ -1,9 +1,8 @@
 package com.example.backend.mapper.mypage;
 
 import com.example.backend.dto.product.Product;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.backend.dto.review.Review;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -45,4 +44,12 @@ public interface MyPageMapper {
             WHERE product_id = #{product_id}
             """)
     int deletePurchased(Integer product_id);
+
+    @Insert("""
+            INSERT INTO review
+            (product_id, product_name, buyer_id, buyer_name, review_text, rating, seller_id, price, review_status)
+            VALUES (#{productId}, #{productName}, #{buyerId}, #{buyerName}, #{reviewText}, #{rating}, #{sellerId}, #{price}, #{reviewStatus})
+            """)
+    @Options(keyProperty = "reviewId", useGeneratedKeys = true)
+    int insertReview(Review review);
 }
