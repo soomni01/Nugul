@@ -1,10 +1,8 @@
 package com.example.backend.dto.board;
 
-import com.example.backend.dto.member.Member;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 public class Board {
@@ -15,6 +13,4 @@ public class Board {
     private String writer; // 작성자 닉네임
     private String category;
     private LocalDate createdAt;
-
-    private List<Member> members;
 }
