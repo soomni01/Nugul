@@ -49,12 +49,14 @@ public class InquiryController {
 
     // 모든 문의 목록을 반환
     @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
     public List<Inquiry> list() {
         return service.list();
     }
 
     // 특정 문의를 조회
     @GetMapping("view/{inquiryId}")
+    @PreAuthorize("isAuthenticated()")
     public Inquiry view(@PathVariable int inquiryId) {
         return service.getInquiry(inquiryId);
     }
