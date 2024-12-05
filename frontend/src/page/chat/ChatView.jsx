@@ -2,7 +2,6 @@ import {
   Badge,
   Box,
   Button,
-  DialogActionTrigger,
   Flex,
   Heading,
   HStack,
@@ -16,47 +15,8 @@ import { Client } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import {
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog.jsx";
-import { CiLogout } from "react-icons/ci";
 import { toaster } from "../../components/ui/toaster.jsx";
-
-function DialogCompo({ roomId, onDelete }) {
-  return (
-    <DialogRoot>
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <CiLogout />
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle> 채팅방을 나가기</DialogTitle>
-        </DialogHeader>
-        <DialogBody>
-          <p> 채팅 방을 나가실 경우 , 보낸 메시지기록이 전부 사라집니다.</p>
-        </DialogBody>
-        <DialogFooter>
-          <DialogActionTrigger asChild>
-            <Button variant="outline">취소</Button>
-          </DialogActionTrigger>
-          <Button onClick={onDelete} colorPalette={"red"}>
-            나가기
-          </Button>
-        </DialogFooter>
-        <DialogCloseTrigger />
-      </DialogContent>
-    </DialogRoot>
-  );
-}
+import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 
 export function ChatView({ chatRoomId }) {
   const scrollRef = useRef(null);
@@ -83,6 +43,18 @@ export function ChatView({ chatRoomId }) {
       connectHeaders: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      onDisconnect: () => {
+        const date = new Date();
+
+        // 한국 시간으로 변환 (UTC+9)
+        const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+        // 시간 변환
+        axios.put("/api/chat/updatetime", {
+          roomId: realChatRoomId, // 현재 채팅방 ID
+          userId: id, // 현재 사용자 ID
+          leaveAt: kstDate, // 나간 시간
+        });
+      },
 
       onConnect: () => {
         client.subscribe("/room/" + realChatRoomId, function (message) {
@@ -93,6 +65,7 @@ export function ChatView({ chatRoomId }) {
           ]);
         });
       },
+
       onStompError: (err) => {
         console.error(err);
       },
@@ -124,7 +97,6 @@ export function ChatView({ chatRoomId }) {
 
   function sendMessage(sender, content) {
     const date = new Date();
-
     // 한국 시간으로 변환 (UTC+9)
     const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
     // 시간 변환
@@ -211,6 +183,13 @@ export function ChatView({ chatRoomId }) {
     }
   };
 
+  // 채팅방 나가기서  클라이어트 끊기
+  function leaveRoom() {
+    console.log(stompClient);
+    // stompClient.onDisconnect();
+    // navigate("chat");
+  }
+
   const removeChatRoom = (realChatRoomId) => {
     axios
       .delete("/api/chat/delete/" + realChatRoomId)
@@ -233,6 +212,7 @@ export function ChatView({ chatRoomId }) {
         {" "}
         {realChatRoomId} 번 채팅 화면입니다. <hr />
       </Heading>
+      <Button onClick={leaveRoom()}>뒤로가기</Button>
       <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
 
       <Flex
