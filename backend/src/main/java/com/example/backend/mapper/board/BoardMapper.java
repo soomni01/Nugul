@@ -47,7 +47,7 @@ public interface BoardMapper {
 
     @Select("""
             <script>
-            SELECT b.board_id, b.title, m.nickname AS writer, b.category,b.created_at
+            SELECT b.board_id, b.title, b.writer AS writerId, m.nickname AS writer, b.category,b.created_at
             FROM board b
             LEFT JOIN member m ON b.writer = m.member_id
             WHERE 
