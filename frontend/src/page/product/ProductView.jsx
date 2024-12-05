@@ -42,7 +42,9 @@ export function ProductView() {
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
-  const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
+  const { hasAccess, isAuthenticated, isAdmin } = useContext(
+    AuthenticationContext,
+  );
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
@@ -172,35 +174,39 @@ export function ProductView() {
           </Map>
         </Box>
         <Button>거래하기</Button>
-        {hasAccess(product.writer) && (
+        {(hasAccess(product.writer) || isAdmin) && (
           <Box>
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/product/edit/${product.productId}`)}
-            >
-              수정
-            </Button>
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"}>삭제</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
+            {hasAccess(product.writer) && (
+              <Button
+                colorPalette={"cyan"}
+                onClick={() => navigate(`/product/edit/${product.productId}`)}
+              >
+                수정
+              </Button>
+            )}
+            {(hasAccess(product.writer) || isAdmin) && (
+              <DialogRoot>
+                <DialogTrigger asChild>
+                  <Button colorPalette={"red"}>삭제</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>삭제 확인</DialogTitle>
+                  </DialogHeader>
+                  <DialogBody>
+                    <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogActionTrigger>
+                      <Button variant={"outline"}>취소</Button>
+                    </DialogActionTrigger>
+                    <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                      삭제
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </DialogRoot>
+            )}
           </Box>
         )}
       </Stack>
