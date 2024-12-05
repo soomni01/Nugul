@@ -81,9 +81,9 @@ public class ProductService {
     }
 
     // 상품 삭제하기
-    public boolean deleteProduct(int id, Authentication authentication) {
-        mapper.deleteLike(id, authentication.getName());
-        mapper.deletePurchasedRecord(id, authentication.getName());
+    public boolean deleteProduct(int id) {
+        mapper.deleteLike(id);
+        mapper.deletePurchasedRecord(id);
         mapper.deleteFileByProductId(id);
 
         int cnt = mapper.deleteById(id);
@@ -105,7 +105,7 @@ public class ProductService {
 
     // 상품 좋아요 등록 & 삭제
     public Map<String, Object> like(Product product, Authentication authentication) {
-        int cnt = mapper.deleteLike(product.getProductId(), authentication.getName());
+        int cnt = mapper.deleteLikeByMemberId(product.getProductId(), authentication.getName());
 
         if (cnt == 0) {
             mapper.insertLike(product.getProductId(),

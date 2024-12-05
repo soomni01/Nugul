@@ -18,6 +18,14 @@ public class MyPageController {
 
     final MyPageService service;
 
+    @GetMapping("/review")
+    public List<Review> getReviews(
+            @RequestParam String id,
+            @RequestParam String status
+    ) {
+        return service.getReviewsByStatus(id, status);
+    }
+
     @PostMapping("review/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> addReview(

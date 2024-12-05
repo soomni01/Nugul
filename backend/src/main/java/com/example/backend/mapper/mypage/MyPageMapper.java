@@ -54,4 +54,9 @@ public interface MyPageMapper {
             """)
     @Options(keyProperty = "reviewId", useGeneratedKeys = true)
     int insertReview(Review review);
+
+    @Select("""
+            SELECT product_name, 
+            """)
+    List<Review> getReviews(String id, String status);
 }

@@ -62,7 +62,6 @@ public class MemberService {
 
     // 회원 탈퇴 메소드
     public boolean remove(Member member, Authentication auth) {
-        System.out.println("Attempting to remove member: " + member);
 
         int cnt = 0;
 
@@ -93,7 +92,7 @@ public class MemberService {
             // 좋아요 목록 지우기
             List<Integer> likes = productMapper.likedProductByMemberId(member.getMemberId());
             for (Integer productId : likes) {
-                productMapper.deleteLike(productId, member.getMemberId());
+                productMapper.deleteLike(productId);
             }
 
             // 구매 목록 지우기
