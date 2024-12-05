@@ -58,7 +58,7 @@ function DialogCompo({ roomId, onDelete }) {
   );
 }
 
-export function ChatView() {
+export function ChatView({ chatRoomId }) {
   const scrollRef = useRef(null);
   const chatBoxRef = useRef(null);
   const [message, setMessage] = useState([]);
@@ -72,6 +72,8 @@ export function ChatView() {
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
+  let realChatRoomId = chatRoomId ? chatRoomId : roomId;
+
   //  상품명, 방 번호 , 작성자를 보여줄
 
   //  stomp 객체 생성 및, 연결
@@ -83,7 +85,7 @@ export function ChatView() {
       },
 
       onConnect: () => {
-        client.subscribe("/room/" + roomId, function (message) {
+        client.subscribe("/room/" + realChatRoomId, function (message) {
           const a = JSON.parse(message.body);
           setMessage((prev) => [
             ...prev,
@@ -113,7 +115,7 @@ export function ChatView() {
   function handleSetData() {
     // 전체 데이터 가져오는 코드
     axios
-      .get(`/api/chat/view/${roomId}`)
+      .get(`/api/chat/view/${realChatRoomId}`)
       .then((res) => {
         setChatRoom(res.data);
       })
@@ -134,7 +136,7 @@ export function ChatView() {
     };
     if (stompClient && stompClient.connected)
       stompClient.publish({
-        destination: "/send/" + roomId,
+        destination: "/send/" + realChatRoomId,
         body: JSON.stringify(a),
       });
 
@@ -146,9 +148,12 @@ export function ChatView() {
   const loadInitialMessages = async () => {
     setIsloading(true);
     try {
-      const response = await axios.get(`/api/chat/view/${roomId}/messages`, {
-        params: { page },
-      });
+      const response = await axios.get(
+        `/api/chat/view/${realChatRoomId}/messages`,
+        {
+          params: { page },
+        },
+      );
 
       const initialMessages = response.data || [];
       setMessage(initialMessages.reverse());
@@ -171,11 +176,14 @@ export function ChatView() {
     setIsloading(true);
 
     try {
-      const response = await axios.get(`/api/chat/view/${roomId}/messages`, {
-        params: {
-          page,
+      const response = await axios.get(
+        `/api/chat/view/${realChatRoomId}/messages`,
+        {
+          params: {
+            page,
+          },
         },
-      });
+      );
       const newMessages = response.data || [];
       newMessages.reverse();
 
@@ -203,9 +211,9 @@ export function ChatView() {
     }
   };
 
-  const removeChatRoom = (roomId) => {
+  const removeChatRoom = (realChatRoomId) => {
     axios
-      .delete("/api/chat/delete/" + roomId)
+      .delete("/api/chat/delete/" + realChatRoomId)
       .then((res) => {
         const message = res.data.message;
         toaster.create({
@@ -223,7 +231,7 @@ export function ChatView() {
     <Box>
       <Heading mx={"auto"}>
         {" "}
-        {roomId} 번 채팅 화면입니다. <hr />
+        {realChatRoomId} 번 채팅 화면입니다. <hr />
       </Heading>
       <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
 
@@ -237,8 +245,8 @@ export function ChatView() {
         <Box mx={"auto"} my={3} variant={"outline"} h={"5%"} pr={2}>
           <HStack>
             <DialogCompo
-              roomId={roomId}
-              onDelete={() => removeChatRoom(roomId)}
+              roomId={realChatRoomId}
+              onDelete={() => removeChatRoom(realChatRoomId)}
             />
             {/*판매자 닉네임이 항상 */}
             판매자 닉네임: {chatRoom.nickname}

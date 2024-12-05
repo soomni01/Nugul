@@ -2,11 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Badge, Box, Card, HStack, Image } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button.jsx";
 
-export function ChatListItem({ chat, onDelete }) {
+export function ChatListItem({ chat, onDelete, onClick }) {
   const navigate = useNavigate();
 
   return (
-    <Box variant={"outline"} my={3}>
+    <Box variant={"outline"} my={3} onClick={onClick}>
       <Card.Root flex Direction="row" maxW="xl">
         <HStack>
           <Image

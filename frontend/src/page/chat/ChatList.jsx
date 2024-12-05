@@ -12,7 +12,8 @@ export function ChatList() {
   let navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useContext(AuthenticationContext);
-
+  const [chatRoomId, setChatRoomId] = useState(0);
+  // const roomId = useParams();
   useEffect(() => {
     if (id) {
       fetch(id);
@@ -30,8 +31,6 @@ export function ChatList() {
         },
       })
       .then((res) => {
-        // TODO: 얕은복사?? 깊은 복사 ? 기억은 잘 안남
-
         setChatList(res.data);
       })
       .catch((e) => {
@@ -70,10 +69,13 @@ export function ChatList() {
               key={chat.roomId}
               chat={chat}
               onDelete={() => removeChatRoom(chat.roomId)}
+              onClick={() => {
+                setChatRoomId(chat.roomId);
+              }}
             />
           ))}
         </Box>
-        <ChatView />
+        <ChatView key={chatRoomId} chatRoomId={chatRoomId} />
       </Flex>
     </Box>
   );
