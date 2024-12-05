@@ -41,6 +41,7 @@ export function Inquiry() {
             memberId: id,
             inserted: new Date().toLocaleDateString(),
           });
+          // navigate("/inquiry/list");
         }
       })
       .catch((e) => {
