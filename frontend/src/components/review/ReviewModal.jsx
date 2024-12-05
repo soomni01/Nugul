@@ -1,10 +1,13 @@
-import React from "react";
-import { Box, Button, Input } from "@chakra-ui/react";
+import React, { useContext } from "react";
+import { Box, Button, Heading, Input, Text } from "@chakra-ui/react";
 import { IoClose } from "react-icons/io5";
 import { Field } from "../ui/field.jsx";
+import { Rating } from "../ui/rating.jsx";
+import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 
-export function ReviewModal({ isOpen, onClose }) {
+export function ReviewModal({ isOpen, onClose, productId }) {
   if (!isOpen) return null;
+  const { nickname } = useContext(AuthenticationContext);
 
   return (
     <div className="background">
@@ -13,6 +16,15 @@ export function ReviewModal({ isOpen, onClose }) {
           <IoClose />
         </button>
         <div className="content">
+          <Heading>{nickname}님, 거래가 어떠셨나요?</Heading>
+          <Rating
+            defaultValue={3}
+            size="lg"
+            cursor="pointer"
+            colorPalette="yellow"
+          />
+          <Text>상품명 : </Text>
+          <Text>판매자 : </Text>
           <Box
             className="test"
             center={{ lat: 33.450701, lng: 126.570667 }}

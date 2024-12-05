@@ -10,7 +10,8 @@ import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 export function PurchasedItems() {
   const [purchasedList, setPurchasedList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열기/닫기 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
@@ -33,6 +34,12 @@ export function PurchasedItems() {
   if (loading) {
     return <Spinner />;
   }
+
+  const handleOpenReviewModal = (productId) => {
+    setSelectedProductId(productId);
+    setIsModalOpen(true);
+  };
+
   return (
     <Box>
       <Heading size="lg" mb={4}>
@@ -65,7 +72,7 @@ export function PurchasedItems() {
                 <ProductHorizontalItem
                   product={product}
                   pageType={"purchased"}
-                  onOpen={() => setIsModalOpen(true)}
+                  onOpen={() => handleOpenReviewModal(product.productId)}
                 />
               </SwiperSlide>
             ))
@@ -76,7 +83,8 @@ export function PurchasedItems() {
       </Box>
       <ReviewModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)} // 모달 닫기
+        onClose={() => setIsModalOpen(false)}
+        productId={selectedProductId}
       />
     </Box>
   );
