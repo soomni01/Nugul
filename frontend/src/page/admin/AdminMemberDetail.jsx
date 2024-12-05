@@ -88,6 +88,7 @@ export function AdminMemberDetail() {
           <Tabs.List
             style={{ display: "flex", alignItems: "center", gap: "8px" }}
           >
+            <span>{memberId} 님의</span>
             <Tabs.Trigger value="SoldProducts">판매 내역</Tabs.Trigger>
             <Tabs.Trigger value="PurchasedProducts">구매 내역</Tabs.Trigger>
           </Tabs.List>
@@ -166,7 +167,7 @@ export function AdminMemberDetail() {
 
           {/* 구매 내역 탭 */}
           <Tabs.Content value="PurchasedProducts">
-            <Box>
+            <Box mt={-3}>
               <Table.Root interactive>
                 <TableHeader>
                   <TableRow>
