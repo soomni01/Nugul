@@ -134,6 +134,7 @@ export function AdminInquiryList() {
               <Table.Row
                 onClick={() => handleRowClick(inquiry.inquiryId)}
                 key={inquiry.inquiryId}
+                style={{ cursor: "pointer" }}
               >
                 <Table.Cell>{inquiry.inquiryId}</Table.Cell>
                 <Table.Cell>{inquiry.title}</Table.Cell>

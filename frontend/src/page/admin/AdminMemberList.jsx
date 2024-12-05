@@ -222,6 +222,7 @@ export function AdminMemberList() {
                 onClick={() =>
                   navigate(`/admin/members/${member.memberId}/detail`)
                 }
+                style={{ cursor: "pointer" }}
               >
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.nickname}</Table.Cell>
