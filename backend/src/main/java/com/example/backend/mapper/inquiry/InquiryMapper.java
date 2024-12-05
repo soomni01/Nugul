@@ -38,6 +38,25 @@ public interface InquiryMapper {
     @Select("""
             SELECT i.inquiry_id,
                    i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted,
+                   EXISTS (
+                       SELECT 1
+                       FROM inquiry_comment ic
+                       WHERE ic.inquiry_id = i.inquiry_id
+                   ) AS has_answer
+            FROM inquiry i
+            WHERE i.member_id = #{memberId}
+            ORDER BY i.inquiry_id DESC
+            """)
+    List<Inquiry> findByMemberId(String memberId);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
                    i.category,
                    i.member_id,
                    i.inserted,

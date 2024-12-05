@@ -43,8 +43,18 @@ public class InquiryController {
         }
     }
 
-    // 여기부턴 관리자 페이지 1:1문의 코드
-    // 모든 문의 목록을 반환
+    // 사용자가 작성한 문의 목록을 반환 (마이페이지용)
+    @GetMapping("/mylist")
+    @PreAuthorize("isAuthenticated()")
+    public List<Inquiry> myList(Authentication auth) {
+        if (auth == null) {
+            throw new IllegalStateException("Authentication is null");
+        }
+        String memberId = auth.getName(); // 로그인한 사용자의 ID 가져오기
+        return service.getInquiryByMemberId(memberId);
+    }
+
+    // 모든 문의 목록을 반환 (관리자용)
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
     public List<Inquiry> list() {

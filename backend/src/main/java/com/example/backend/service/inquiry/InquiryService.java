@@ -38,6 +38,10 @@ public class InquiryService {
         return mapper.viewByMemberId(memberId);
     }
 
+    public List<Inquiry> getInquiryByMemberId(String memberId) {
+        return mapper.findByMemberId(memberId);
+    }
+
     // 모든 문의 목록을 반환하는 메소드
     public List<Inquiry> list() {
         return mapper.InquiryAll();

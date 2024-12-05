@@ -7,6 +7,7 @@ import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
 import { Profile } from "../mypage/Profile.jsx";
 import { ProfileEdit } from "./ProfileEdit.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import InquiryList from "../mypage/InquiryList.jsx";
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
@@ -99,7 +100,7 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
-        {/*{activeTab === "inquiry" && <Inquiry />}*/}
+        {activeTab === "inquiry" && <InquiryList />}
         {/*{activeTab === "review" && <Review />}*/}
       </Box>
     </Flex>
