@@ -242,7 +242,7 @@ export function AdminMemberList() {
       </Box>
       <Flex justify="center" mt={4} gap={2}>
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
+          <Button
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
             style={{
@@ -256,7 +256,7 @@ export function AdminMemberList() {
             }}
           >
             {index + 1}
-          </button>
+          </Button>
         ))}
       </Flex>
     </Box>
