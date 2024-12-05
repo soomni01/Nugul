@@ -1,6 +1,6 @@
 import { Box, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import {
@@ -15,11 +15,13 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
   const navigate = useNavigate();
+  const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios
@@ -70,37 +72,39 @@ export function BoardView() {
         <Field label={"작성날짜"} readOnly>
           <Input type={"date"} value={board.createdAt} />
         </Field>
-        <Box>
-          <DialogRoot>
-            <DialogTrigger asChild>
-              <Button colorPalette={"red"} variant={"outline"}>
-                삭제
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>삭제 확인</DialogTitle>
-              </DialogHeader>
-              <DialogBody>
-                <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
-              </DialogBody>
-              <DialogFooter>
-                <DialogActionTrigger>
-                  <Button variant={"outline"}>취소</Button>
-                </DialogActionTrigger>
-                <Button colorPalette={"red"} onClick={handleDeleteClick}>
+        {hasAccess(board.writerId) && (
+          <Box>
+            <DialogRoot>
+              <DialogTrigger asChild>
+                <Button colorPalette={"red"} variant={"outline"}>
                   삭제
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </DialogRoot>
-          <Button
-            colorPalette={"cyan"}
-            onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
-          >
-            수정
-          </Button>
-        </Box>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>삭제 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant={"outline"}>취소</Button>
+                  </DialogActionTrigger>
+                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                    삭제
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+            <Button
+              colorPalette={"cyan"}
+              onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
+            >
+              수정
+            </Button>
+          </Box>
+        )}
       </Stack>
     </Box>
   );
