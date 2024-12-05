@@ -25,8 +25,10 @@ public interface MyPageMapper {
     List<Product> getSoldProducts(String name);
 
     @Select("""
-            SELECT pr.date, p.product_id,  p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name, pr.date AS purchased_at
+            SELECT pr.date, p.product_id,  p.product_name, p.writer, p.price, p.category, p.pay, p.status, p.created_at, p.location_name, pr.date AS purchased_at, m.nickname
             FROM purchased_record pr LEFT JOIN product p ON pr.product_id = p.product_id
+            LEFT JOIN
+                member m ON p.writer = m.member_id
             WHERE buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);
