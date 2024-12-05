@@ -9,20 +9,8 @@ import { toaster } from "../ui/toaster.jsx";
 export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [locationName, setLocationName] = useState(null);
-  const [isKakaoMapLoaded, setIsKakaoMapLoaded] = useState(true);
   const [map, setMap] = useState(null);
-
-  // 카카오 api
-  // useEffect(() => {
-  //   const script = document.createElement("script");
-  //   script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_APP_KEY}&libraries=services,clusterer`;
-  //   script.async = true;
-  //   document.head.appendChild(script);
-  //
-  //   return () => {
-  //     document.head.removeChild(script);
-  //   };
-  // }, []);
+  const [currCategory, setCurrCategory] = useState("");
 
   if (!isOpen) return null; // 모달이 닫혀 있으면 렌더링하지 않음
 
@@ -58,6 +46,24 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
     ps.keywordSearch(locationName, placeSearchCB);
   };
 
+  var handleCategoryClick = (e) => {
+    const order = e.target.dataset.order;
+    const categoryId = e.target.id;
+
+    if (e.className === "on") {
+      setCurrCategory("");
+      changeCategoryClass();
+      removeMarker();
+    } else {
+      setCurrCategory(categoryId);
+      changeCategoryClass();
+      //  현재 내가 누른거 기준으로 보여줘야하니까
+      searchPlaces();
+    }
+  };
+
+  function changeCategoryClass() {}
+
   function placeSearchCB(data, status, pagiation) {
     // 정상 검색 완료시
     if (status === kakao.maps.services.Status.OK) {
@@ -87,6 +93,32 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
           <IoClose />
         </button>
         <div className="content">
+          <ul id="category">
+            <li id="BK9" data-order="0" onClick={handleCategoryClick}>
+              <span className="category_bg bank"></span>
+              은행
+            </li>
+            <li id="MT1" data-order="1" onClick={handleCategoryClick}>
+              <span className="category_bg mart"></span>
+              마트
+            </li>
+            <li id="PM9" data-order="2" onClick={handleCategoryClick}>
+              <span className="category_bg pharmacy"></span>
+              약국
+            </li>
+            <li id="OL7" data-order="3" onClick={handleCategoryClick}>
+              <span className="category_bg oil"></span>
+              주유소
+            </li>
+            <li id="CE7" data-order="4" onClick={handleCategoryClick}>
+              <span className="category_bg cafe"></span>
+              카페
+            </li>
+            <li id="CS2" data-order="5" onClick={handleCategoryClick}>
+              <span className="category_bg store"></span>
+              편의점
+            </li>
+          </ul>
           <Map
             className="map"
             center={{ lat: 33.450701, lng: 126.570667 }}
