@@ -8,7 +8,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 
 export function Wishlist() {
   const [productList, setProductList] = useState([]); // 초기값 빈 배열
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {

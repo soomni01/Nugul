@@ -8,7 +8,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 
 export function SoldItems() {
   const [soldList, setSoldList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
