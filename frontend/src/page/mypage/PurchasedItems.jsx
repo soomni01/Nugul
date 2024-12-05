@@ -9,7 +9,7 @@ import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 
 export function PurchasedItems() {
   const [purchasedList, setPurchasedList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { id } = useContext(AuthenticationContext);
@@ -60,7 +60,6 @@ export function PurchasedItems() {
           style={{
             height: "auto",
             width: "100%",
-            justifyContent: "left",
           }}
         >
           {purchasedList.length > 0 ? (
