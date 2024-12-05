@@ -11,7 +11,6 @@ export function ReviewModal({ isOpen, onClose, product }) {
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(3);
   const [progress, setProgress] = useState(false);
-  console.log(product);
 
   if (!isOpen) return null;
   const { id, nickname } = useContext(AuthenticationContext);

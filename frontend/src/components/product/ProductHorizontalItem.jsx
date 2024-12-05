@@ -201,9 +201,15 @@ export function ProductHorizontalItem({ product, onRemove, pageType, onOpen }) {
             <Text fontSize="xs" color="gray.500" mr={2}>
               구매 일자: {formatDate(product.purchasedAt)}
             </Text>
-            <Button onClick={() => onOpen(product.productId)} size="xs">
-              후기 작성
-            </Button>
+            {product.reviewStatus === "completed" ? (
+              <Button colorPalette={"cyan"} size="xs" isDisabled>
+                작성 완료
+              </Button>
+            ) : (
+              <Button onClick={() => onOpen(product.productId)} size="xs">
+                후기 작성
+              </Button>
+            )}
           </Box>
         ) : (
           <>
