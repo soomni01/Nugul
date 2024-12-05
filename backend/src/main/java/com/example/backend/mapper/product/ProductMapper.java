@@ -172,7 +172,7 @@ public interface ProductMapper {
     @Delete("""
             DELETE FROM product_like
             WHERE product_id = #{productId}
-            AND member_id = #{memberId}
+            AND member_id = #{name}
             """)
     int deleteLikeByMemberId(Integer productId, String name);
 }
