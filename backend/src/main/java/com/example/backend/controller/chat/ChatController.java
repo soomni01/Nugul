@@ -110,4 +110,9 @@ public class ChatController {
 
     }
 
+    @PutMapping("updatetime")
+    public void updateChatRoomTime(@RequestBody ChatRoom chatRoom) {
+        System.out.println("chatRoom = " + chatRoom);
+    }
+
 }
