@@ -87,7 +87,7 @@ export function ChatView() {
           const a = JSON.parse(message.body);
           setMessage((prev) => [
             ...prev,
-            { sender: a.sender, content: a.content },
+            { sender: a.sender, content: a.content, sentAt: a.sentAt },
           ]);
         });
       },
@@ -120,12 +120,17 @@ export function ChatView() {
       .catch((e) => {});
   }
 
-  // Todo 타임 스탬프 mdn에서 하나 얻어와야함
   function sendMessage(sender, content) {
+    const date = new Date();
+
+    // 한국 시간으로 변환 (UTC+9)
+    const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+    // 시간 변환
+
     const a = {
       sender: sender,
       content: content,
-      sentAt: new Date().toISOString().slice(0, 19),
+      sentAt: kstDate.toISOString().slice(0, 19),
     };
     if (stompClient && stompClient.connected)
       stompClient.publish({
@@ -134,6 +139,7 @@ export function ChatView() {
       });
 
     setClientMessage("");
+    console.log(a.sentAt);
   }
 
   // 초기 메세지 로딩
@@ -253,11 +259,18 @@ export function ChatView() {
                   }
                 >
                   <Stack h={"10%"}>
-                    <Badge p={1} size={"lg"} key={index} color="primary">
+                    <Badge
+                      p={1}
+                      size={"lg"}
+                      key={index}
+                      colorPalette={message.sender === id ? "gray" : "yellow"}
+                    >
                       {message.content}
                     </Badge>
                     <p style={{ fontSize: "12px" }}>
-                      {new Date(message.sentAt).toLocaleTimeString()}
+                      {message.sentAt === null
+                        ? new Date().toLocaleTimeString()
+                        : new Date(message.sentAt).toLocaleTimeString()}
                     </p>
                     <div ref={scrollRef}></div>
                   </Stack>

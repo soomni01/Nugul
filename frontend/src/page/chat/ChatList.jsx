@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, Heading, HStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, HStack } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { ChatView } from "./ChatView.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
@@ -62,13 +63,18 @@ export function ChatList() {
         <Button onClick={() => setSearchParams({ type: "buy" })}>구매</Button>
         <Button onClick={() => setSearchParams({ type: "sell" })}>판매</Button>
       </HStack>
-      {chatList.map((chat) => (
-        <ChatListItem
-          key={chat.roomId}
-          chat={chat}
-          onDelete={() => removeChatRoom(chat.roomId)}
-        />
-      ))}
+      <Flex>
+        <Box>
+          {chatList.map((chat) => (
+            <ChatListItem
+              key={chat.roomId}
+              chat={chat}
+              onDelete={() => removeChatRoom(chat.roomId)}
+            />
+          ))}
+        </Box>
+        <ChatView />
+      </Flex>
     </Box>
   );
 }

@@ -26,7 +26,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ProductLike } from "../../components/product/ProductLike.jsx";
@@ -195,6 +195,7 @@ export function ProductView() {
             style={{ width: "100%", height: "400px" }}
           >
             {markerPosition && <MapMarker position={markerPosition} />}
+            <ZoomControl />
           </Map>
         </Box>
         <Button onClick={createChatRoom} disabled={id === product.writer}>
