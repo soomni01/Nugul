@@ -27,7 +27,7 @@ export function AdminMemberDetail() {
   // 카테고리 값을 한글로 변환하는 함수
   function getCategoryLabel(value) {
     const category = categories.find((cat) => cat.value === value);
-    return category ? category.label : value; // 해당 카테고리가 없으면 원래 값을 반환
+    return category ? category.label : "전체"; // "전체"를 기본값으로 반환
   }
 
   // 데이터 로드 및 상태 설정
