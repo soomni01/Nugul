@@ -5,10 +5,12 @@ import { ProductHorizontalItem } from "../../components/product/ProductHorizonta
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 
 export function PurchasedItems() {
   const [purchasedList, setPurchasedList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열기/닫기 상태
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
@@ -63,6 +65,7 @@ export function PurchasedItems() {
                 <ProductHorizontalItem
                   product={product}
                   pageType={"purchased"}
+                  onOpen={() => setIsModalOpen(true)}
                 />
               </SwiperSlide>
             ))
@@ -71,6 +74,10 @@ export function PurchasedItems() {
           )}
         </Swiper>
       </Box>
+      <ReviewModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // 모달 닫기
+      />
     </Box>
   );
 }

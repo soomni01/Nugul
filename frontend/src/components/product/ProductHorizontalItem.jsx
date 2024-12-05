@@ -30,10 +30,11 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 
-export function ProductHorizontalItem({ product, onRemove, pageType }) {
+export function ProductHorizontalItem({ product, onRemove, pageType, onOpen }) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
@@ -110,15 +111,20 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
   };
 
   const handleReviewClick = () => {
-    toaster.create({
-      type: "info",
-      description: "후기 작성 페이지로 이동합니다.",
-    });
-    // navigate("/api/member/review");
+    setIsModalOpen(true); // 모달 열기
   };
 
   const handleCancelClick = () => {
     setDialogOpen(false); // 다이얼로그 닫기
+  };
+
+  const handleButtonClick = (e) => {
+    e.stopPropagation();
+    if (pageType === "wish") {
+      handleLikeClick();
+    } else if (pageType !== "purchased") {
+      setDialogOpen(true);
+    }
   };
 
   return (
@@ -181,14 +187,7 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
         top={2}
         right={2}
         onClick={(e) => {
-          e.stopPropagation(); // 이벤트 전파 중단
-          if (pageType === "wish") {
-            handleLikeClick();
-          } else if (pageType === "purchased") {
-            handleReviewClick();
-          } else {
-            setDialogOpen(true);
-          }
+          handleButtonClick(e);
         }}
       >
         {pageType === "wish" ? (
@@ -206,41 +205,48 @@ export function ProductHorizontalItem({ product, onRemove, pageType }) {
             <Text fontSize="xs" color="gray.500" mr={2}>
               구매 일자: {formatDate(product.purchasedAt)}
             </Text>
-            <Button size="xs">후기 작성</Button>
+            <Button onClick={onOpen} size="xs">
+              후기 작성
+            </Button>
           </Box>
         ) : (
-          <DialogRoot isOpen={dialogOpen} onClose={() => setDialogOpen(false)}>
-            <DialogTrigger asChild>
-              <RiDeleteBin5Fill color="gray" />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>삭제 확인</DialogTitle>
-              </DialogHeader>
-              <DialogBody>
-                <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
-              </DialogBody>
-              <DialogFooter>
-                <DialogActionTrigger>
+          <>
+            <DialogRoot
+              isOpen={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+            >
+              <DialogTrigger asChild>
+                <RiDeleteBin5Fill color="gray" />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>삭제 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button
+                      variant={"outline"}
+                      onClick={handleCancelClick} // 취소 버튼 클릭 시 다이얼로그 닫기
+                    >
+                      취소
+                    </Button>
+                  </DialogActionTrigger>
                   <Button
-                    variant={"outline"}
-                    onClick={handleCancelClick} // 취소 버튼 클릭 시 다이얼로그 닫기
+                    colorPalette={"red"}
+                    onClick={(e) => {
+                      handleDeleteClick();
+                      setDialogOpen(false); // 삭제 후 다이얼로그 닫기
+                    }}
                   >
-                    취소
+                    삭제
                   </Button>
-                </DialogActionTrigger>
-                <Button
-                  colorPalette={"red"}
-                  onClick={(e) => {
-                    handleDeleteClick();
-                    setDialogOpen(false); // 삭제 후 다이얼로그 닫기
-                  }}
-                >
-                  삭제
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </DialogRoot>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </>
         )}
       </Button>
 
