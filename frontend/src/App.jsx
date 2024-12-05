@@ -5,15 +5,13 @@ import { RootLayout } from "./page/root/RootLayout.jsx";
 import AdminLayout from "./page/admin/AdminLayout.jsx";
 import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
+import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
 import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
 import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
-import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
-
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import { ChatList } from "./page/chat/ChatList.jsx";
-
 import { ChatView } from "./page/chat/ChatView.jsx";
 import { ProductList } from "./page/product/ProductList.jsx";
 import { ProductShareList } from "./page/product/ProductShareList.jsx";
@@ -24,7 +22,6 @@ import { MainPage } from "./page/main/MainPage.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
-
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
