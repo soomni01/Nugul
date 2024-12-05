@@ -11,7 +11,7 @@ export function PurchasedItems() {
   const [purchasedList, setPurchasedList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function PurchasedItems() {
       })
       .catch((error) => {
         console.log("구매 상품 정보를 가져오는 데 실패했습니다.", error);
-        setPurchasedList([]); // 실패시 빈 배열 처리
+        setPurchasedList([]);
         setLoading(false);
       });
   }, [id]);
@@ -36,7 +36,12 @@ export function PurchasedItems() {
   }
 
   const handleOpenReviewModal = (productId) => {
-    setSelectedProductId(productId);
+    // 해당 productId에 해당하는 상품 정보를 미리 가져오기
+    const selectedProduct = purchasedList.find(
+      (product) => product.productId === productId,
+    );
+    console.log(selectedProduct);
+    setSelectedProduct(selectedProduct);
     setIsModalOpen(true);
   };
 
@@ -72,7 +77,7 @@ export function PurchasedItems() {
                 <ProductHorizontalItem
                   product={product}
                   pageType={"purchased"}
-                  onOpen={() => handleOpenReviewModal(product.productId)}
+                  onOpen={() => handleOpenReviewModal(product.productId)} // productId만 전달
                 />
               </SwiperSlide>
             ))
@@ -84,7 +89,7 @@ export function PurchasedItems() {
       <ReviewModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        productId={selectedProductId}
+        product={selectedProduct}
       />
     </Box>
   );
