@@ -24,6 +24,10 @@ from chatroom;
 
 desc chatroom;
 
+ALTER TABLE chatroom
+    ADD COLUMN writer_leave_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    ADD COLUMN buyer_leave_at  TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
+
 
 
 

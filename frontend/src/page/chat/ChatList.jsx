@@ -12,7 +12,7 @@ export function ChatList() {
   let navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useContext(AuthenticationContext);
-  const [chatRoomId, setChatRoomId] = useState(0);
+  const [chatRoomId, setChatRoomId] = useState(-1);
   // const roomId = useParams();
   useEffect(() => {
     if (id) {
@@ -58,9 +58,30 @@ export function ChatList() {
     <Box>
       <Heading> 채팅 목록</Heading>
       <HStack>
-        <Button onClick={() => setSearchParams({ type: "all" })}>전체</Button>
-        <Button onClick={() => setSearchParams({ type: "buy" })}>구매</Button>
-        <Button onClick={() => setSearchParams({ type: "sell" })}>판매</Button>
+        <Button
+          onClick={() => {
+            setChatRoomId(-1);
+            setSearchParams({ type: "all" });
+          }}
+        >
+          전체
+        </Button>
+        <Button
+          onClick={() => {
+            setChatRoomId(-1);
+            setSearchParams({ type: "buy" });
+          }}
+        >
+          구매
+        </Button>
+        <Button
+          onClick={() => {
+            setChatRoomId(-1);
+            setSearchParams({ type: "sell" });
+          }}
+        >
+          판매
+        </Button>
       </HStack>
       <Flex>
         <Box>
@@ -75,7 +96,12 @@ export function ChatList() {
             />
           ))}
         </Box>
-        <ChatView key={chatRoomId} chatRoomId={chatRoomId} />
+
+        {chatRoomId === -1 ? (
+          <Box></Box>
+        ) : (
+          <ChatView key={chatRoomId} chatRoomId={chatRoomId} />
+        )}
       </Flex>
     </Box>
   );
