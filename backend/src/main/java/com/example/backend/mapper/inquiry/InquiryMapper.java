@@ -11,10 +11,10 @@ public interface InquiryMapper {
 
     @Insert("""
             INSERT INTO inquiry
-            (title, content, nickname)
-            VALUES (#{title}, #{content}, #{nickname})
+            (title, content, member_id)
+            VALUES (#{title}, #{content}, #{memberId})
             """)
-    @Options(keyProperty = "id", useGeneratedKeys = true)
+    @Options(keyProperty = "inquiryId", useGeneratedKeys = true)
     int insert(Inquiry inquiry);
 
     @Select("""

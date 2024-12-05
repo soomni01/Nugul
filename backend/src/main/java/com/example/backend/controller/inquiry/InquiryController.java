@@ -21,32 +21,29 @@ public class InquiryController {
 
     final InquiryService service;
 
+    // 문의하기 페이지에서 새로운 문의 등록
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> add(@RequestBody Inquiry inquiry, Authentication auth) {
         String memberId = auth.getName(); // 현재 로그인한 사용자의 ID를 가져옴
-
-        if (memberId != null) {
-            inquiry.setMemberId(memberId);
-
-            if (service.validate(inquiry)) {
-                if (service.add(inquiry)) {
-                    return ResponseEntity.ok()
-                            .body(Map.of("message", Map.of("type", "success", "text", "문의가 등록되었습니다."),
-                                    "data", inquiry));
-                } else {
-                    return ResponseEntity.internalServerError()
-                            .body(Map.of("message", Map.of("type", "warning",
-                                    "text", "문의 등록에 실패하였습니다.")));
-                }
+        inquiry.setMemberId(memberId);
+        if (service.validate(inquiry)) {
+            if (service.add(inquiry)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", "문의가 등록되었습니다.")));
             } else {
-                return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
-                        "text", "제목이나 본문이 비어있을 수 없습니다.")));
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "warning",
+                                "text", "문의 등록에 실패하였습니다.")));
             }
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
+                    "text", "제목 또는 본문이 비어 있습니다. 내용을 입력해 주세요.")));
         }
-        return null;
     }
 
+    // 여기부턴 관리자 페이지 1:1문의 코드
     // 모든 문의 목록을 반환
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")

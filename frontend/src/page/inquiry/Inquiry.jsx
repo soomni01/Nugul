@@ -4,37 +4,53 @@ import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { useNavigate } from "react-router-dom";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function Inquiry() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [memberId, setMemberId] = useState("");
-  const [savedData, setSavedData] = useState(null); // 저장된 데이터 상태
+  const [savedData, setSavedData] = useState(null);
   const [progress, setProgress] = useState(false);
   const { id } = useContext(AuthenticationContext);
+  const currentDate = new Date().toLocaleDateString();
   const navigate = useNavigate();
 
-  const currentDate = new Date().toLocaleDateString();
-
+  // 클릭 시 호출되는 함수로, 사용자 입력 데이터를 서버에 저장 요청
   const handleSaveClick = () => {
     const inquiryData = {
-      title: title, // 적절한 값 설정
-      content: content, // 적절한 값 설정
-      memberId: memberId, // 적절한 값 설정
-      // 다른 필드 추가
+      title: title,
+      content: content,
+      memberId: memberId,
     };
     setProgress(true);
+
+    // 서버에 데이터를 저장하고 성공 시 저장된 데이터를 savedData 상태로 업데이트
     axios
       .post("/api/inquiry/add", inquiryData)
-      .then((response) => {
-        if (response.data && response.data.message) {
-          console.log(response.data.message.text);
-        } else {
-          console.error("Invalid response structure:", response.data);
+      .then((res) => {
+        if (res && res.data) {
+          const message = res.data.message;
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+          setSavedData({
+            title: title,
+            content: content,
+            memberId: id,
+            inserted: new Date().toLocaleDateString(),
+          });
         }
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch((e) => {
+        if (e.response && e.response.data && e.response.data.message) {
+          const message = e.response.data.message;
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        }
       })
       .finally(() => {
         setProgress(false);
@@ -71,9 +87,6 @@ export function Inquiry() {
             <Field label="본문">
               <Textarea value={savedData.content} readOnly />
             </Field>
-            <Button onClick={() => navigate("/inquiry/list")}>
-              문의 내역 보기
-            </Button>
           </>
         ) : (
           // 작성 화면 표시
@@ -93,13 +106,12 @@ export function Inquiry() {
                 onChange={(e) => setContent(e.target.value)}
               />
             </Field>
-            <Button
-              disabled={!title || !content}
-              isLoading={progress}
-              onClick={handleSaveClick}
-            >
-              저장
-            </Button>
+            {/* 저장 버튼이 savedData가 없을 때만 표시 */}
+            {!savedData && (
+              <Button onClick={handleSaveClick} isLoading={progress}>
+                저장
+              </Button>
+            )}
           </>
         )}
       </Box>
