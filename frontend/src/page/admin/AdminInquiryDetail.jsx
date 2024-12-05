@@ -35,6 +35,7 @@ export function AdminInquiryDetail({
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
+  const [savedData, setSavedData] = useState(null);
   const { id } = useContext(AuthenticationContext);
 
   function DeleteButton({ onClick, id: memberId }) {
@@ -66,6 +67,16 @@ export function AdminInquiryDetail({
       </>
     );
   }
+
+  // inquiry가 업데이트될 때 savedData의 category를 설정
+  useEffect(() => {
+    if (inquiry) {
+      setSavedData({
+        ...savedData,
+        category: inquiry.category,
+      });
+    }
+  }, [inquiry]);
 
   // 게시글 정보 가져오기
   useEffect(() => {
@@ -202,6 +213,9 @@ export function AdminInquiryDetail({
       >
         <Heading mb={4}>{inquiry.inquiryId}번 문의</Heading>
         <Stack spacing={5}>
+          <Field label="문의 유형">
+            <Input value={inquiry ? inquiry.category : ""} readOnly />
+          </Field>
           <Field label={"제목"} readOnly>
             <Input value={inquiry.title} readOnly />
           </Field>

@@ -11,8 +11,8 @@ public interface InquiryMapper {
 
     @Insert("""
             INSERT INTO inquiry
-            (title, content, member_id)
-            VALUES (#{title}, #{content}, #{memberId})
+            (title, content, category, member_id)
+            VALUES (#{title}, #{content}, #{category}, #{memberId})
             """)
     @Options(keyProperty = "inquiryId", useGeneratedKeys = true)
     int insert(Inquiry inquiry);
@@ -21,6 +21,7 @@ public interface InquiryMapper {
             SELECT i.inquiry_id,
                    i.title,
                    i.content,
+                   i.category,
                    i.member_id,
                    i.nickname,
                    i.inserted,
@@ -37,6 +38,7 @@ public interface InquiryMapper {
     @Select("""
             SELECT i.inquiry_id,
                    i.title,
+                   i.category,
                    i.member_id,
                    i.inserted,
                    i.nickname,
@@ -54,6 +56,7 @@ public interface InquiryMapper {
             SELECT i.inquiry_id,
                    i.title,
                    i.content,
+                   i.category,
                    i.member_id,
                    i.nickname,
                    i.inserted

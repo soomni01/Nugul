@@ -21,6 +21,7 @@ export function AdminInquiryList() {
   const [search, setSearch] = useState({
     type: "all",
     keyword: "",
+    category: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -48,6 +49,7 @@ export function AdminInquiryList() {
   // 검색 유형 및 키워드에 따라 문의 목록을 필터링함
   const filteredInquiries = inquiryList.filter((inquiry) => {
     const inquiryTitle = inquiry.title;
+    const inquiryCategory = inquiry.category;
 
     if (!inquiryTitle) {
       console.error("문의 데이터에 'title'이 누락되었습니다:", inquiry);
@@ -55,16 +57,29 @@ export function AdminInquiryList() {
     }
 
     const searchTerm = search.keyword.toLowerCase();
+    const isCategoryMatch = search.category
+      ? inquiryCategory === search.category
+      : true;
+
     switch (search.type) {
       case "all":
         return (
-          inquiryTitle.toLowerCase().includes(searchTerm) ||
-          inquiry.memberId.toLowerCase().includes(searchTerm)
+          (inquiryTitle.toLowerCase().includes(searchTerm) ||
+            inquiry.memberId.toLowerCase().includes(searchTerm)) &&
+          isCategoryMatch
+        );
+      case "category":
+        return (
+          inquiryCategory.toLowerCase().includes(searchTerm) && isCategoryMatch
         );
       case "title":
-        return inquiryTitle.toLowerCase().includes(searchTerm);
+        return (
+          inquiryTitle.toLowerCase().includes(searchTerm) && isCategoryMatch
+        );
       case "member":
-        return inquiry.memberId.toLowerCase().includes(searchTerm);
+        return (
+          inquiry.memberId.toLowerCase().includes(searchTerm) && isCategoryMatch
+        );
       default:
         return false;
     }
@@ -110,6 +125,7 @@ export function AdminInquiryList() {
           />
           <select value={search.type} onChange={handleSearchTypeChange}>
             <option value="all">전체</option>
+            <option value="category">문의 유형</option>
             <option value="title">제목</option>
             <option value="member">작성자</option>
           </select>
@@ -123,6 +139,7 @@ export function AdminInquiryList() {
           <TableHeader>
             <TableRow>
               <TableColumnHeader>번호</TableColumnHeader>
+              <TableColumnHeader>문의 유형</TableColumnHeader>
               <TableColumnHeader>제목</TableColumnHeader>
               <TableColumnHeader>작성자</TableColumnHeader>
               <TableColumnHeader>작성 일자</TableColumnHeader>
@@ -137,6 +154,7 @@ export function AdminInquiryList() {
                 style={{ cursor: "pointer" }}
               >
                 <Table.Cell>{inquiry.inquiryId}</Table.Cell>
+                <Table.Cell>{inquiry.category}</Table.Cell>
                 <Table.Cell>{inquiry.title}</Table.Cell>
                 <Table.Cell>{inquiry.memberId}</Table.Cell>
                 <Table.Cell>

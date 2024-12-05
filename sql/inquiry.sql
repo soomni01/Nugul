@@ -29,3 +29,6 @@ ALTER TABLE inquiry
     ADD CONSTRAINT unique_nickname UNIQUE (nickname);
 
 DESC inquiry;
+
+ALTER TABLE inquiry
+    ADD COLUMN category ENUM ('이용 안내', '구매 안내', '기타 문의') NOT NULL AFTER member_id;

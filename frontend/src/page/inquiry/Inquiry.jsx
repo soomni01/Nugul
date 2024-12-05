@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Box, Button, Input, Text, Textarea } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
@@ -9,6 +9,7 @@ import { toaster } from "../../components/ui/toaster.jsx";
 export function Inquiry() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
   const [memberId, setMemberId] = useState("");
   const [savedData, setSavedData] = useState(null);
   const [progress, setProgress] = useState(false);
@@ -21,6 +22,7 @@ export function Inquiry() {
     const inquiryData = {
       title: title,
       content: content,
+      category: category,
       memberId: memberId,
     };
     setProgress(true);
@@ -38,10 +40,10 @@ export function Inquiry() {
           setSavedData({
             title: title,
             content: content,
+            category: category,
             memberId: id,
             inserted: new Date().toLocaleDateString(),
           });
-          // navigate("/inquiry/list");
         }
       })
       .catch((e) => {
@@ -76,6 +78,9 @@ export function Inquiry() {
         {savedData ? (
           // 저장된 화면 표시
           <>
+            <Field label="카테고리">
+              <Input value={savedData.category} readOnly />
+            </Field>
             <Field label="제목">
               <Input value={savedData.title} readOnly />
             </Field>
@@ -92,6 +97,27 @@ export function Inquiry() {
         ) : (
           // 작성 화면 표시
           <>
+            <Field>
+              <Flex align="center" gap={4}>
+                <Text fontSize="md" fontWeight="bold">
+                  문의 유형:
+                </Text>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  style={{
+                    padding: "8px",
+                    borderRadius: "4px",
+                    border: "1px solid #CBD5E0", // Chakra UI 기본 회색
+                  }}
+                >
+                  <option value="">문의 유형 선택</option>
+                  <option value="이용 안내">이용 안내</option>
+                  <option value="구매 안내">구매 안내</option>
+                  <option value="기타 문의">기타 문의</option>
+                </select>
+              </Flex>
+            </Field>
             <Field label="제목">
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </Field>

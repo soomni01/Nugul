@@ -10,6 +10,7 @@ public class Inquiry {
     private int inquiryId;
     private String title;
     private String content;
+    private String category;
     private String memberId;
     private String nickname;
     private String answer;
