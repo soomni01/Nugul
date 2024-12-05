@@ -26,7 +26,7 @@ export function SoldItems() {
         setSoldList([]); // 실패시 빈 배열 처리
         setLoading(false);
       });
-  }, []);
+  }, [id]);
 
   const handleDelete = (productId) => {
     setSoldList((prevList) =>
