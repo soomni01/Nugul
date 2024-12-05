@@ -41,6 +41,7 @@ export function ProductView() {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
@@ -72,7 +73,7 @@ export function ProductView() {
         setLikeData(likes);
         setUserLikes(new Set(userLikeRes.data)); // 사용자 좋아요 정보
 
-        setLoading(false); // 모든 데이터가 로드되면 로딩 상태 변경
+        setLoading(false);
       } catch (error) {
         console.error("상품 정보를 가져오는데 오류가 발생했습니다.:", error);
       }
@@ -108,6 +109,10 @@ export function ProductView() {
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
+
+  if (!product && !likeData && !userLikes) {
+    return <Spinner />;
+  }
 
   return (
     <Box>
