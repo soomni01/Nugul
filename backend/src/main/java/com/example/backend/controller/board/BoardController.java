@@ -72,6 +72,7 @@ public class BoardController {
     }
 
     @PostMapping("boardAdd")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> boardAdd(@RequestBody Board board,
                                                         Authentication authentication) {
         if (service.validate(board)) {

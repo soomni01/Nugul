@@ -1,5 +1,5 @@
 import { Box, Flex, HStack, Input, Table } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -9,6 +9,8 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -19,6 +21,7 @@ export function BoardList() {
     keyword: "",
   });
   const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthenticationContext);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -61,6 +64,13 @@ export function BoardList() {
   }
 
   const handleWriteClick = () => {
+    if (!isAuthenticated) {
+      toaster.create({
+        description: "로그인이 필요합니다.",
+        type: "warning",
+      });
+      return;
+    }
     navigate("/board/boardAdd");
   };
 
@@ -91,7 +101,9 @@ export function BoardList() {
     <Box>
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <h3>게시물 목록</h3>
-        <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+        {isAuthenticated && (
+          <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+        )}
       </Flex>
       {boardList.length > 0 ? (
         <Table.Root interactive>
