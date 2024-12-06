@@ -1,30 +1,48 @@
-// InquiryDetail.jsx
 import React, { useEffect, useState } from "react";
-import { Badge, Box, Button, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Spinner, Text } from "@chakra-ui/react";
 import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 
 export const InquiryView = ({ inquiryId }) => {
   const [inquiryDetail, setInquiryDetail] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!inquiryId) {
+      return;
+    }
+
+    // 로컬 스토리지에서 이전 데이터를 불러오기
+    const storedData = localStorage.getItem(`inquiryDetail-${inquiryId}`);
+    if (storedData) {
+      setInquiryDetail(JSON.parse(storedData));
+      return;
+    }
+
+    setLoading(true);
+
     const fetchInquiryDetail = async () => {
       try {
-        const response = await axios.get(
-          `/api/myPage/view?inquiryId=${inquiryId}`,
+        const res = await axios.get(`/api/myPage/view?inquiryId=${inquiryId}`);
+        setInquiryDetail(res.data);
+        // 데이터를 로컬 스토리지에 저장
+        localStorage.setItem(
+          `inquiryDetail-${inquiryId}`,
+          JSON.stringify(res.data),
         );
-        if (response.status === 200) {
-          setInquiryDetail(response.data);
-        }
       } catch (error) {
-        console.error("Failed to fetch inquiry details", error);
+        console.error("Error fetching inquiry detail:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (inquiryId) {
-      fetchInquiryDetail();
-    }
+    fetchInquiryDetail();
   }, [inquiryId]);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <Box mt="20px">
