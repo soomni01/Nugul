@@ -106,7 +106,6 @@ public interface ProductMapper {
     @Delete("""
             DELETE FROM product_like
             WHERE product_id = #{productId}
-            AND member_id = #{name}
             """)
     int deleteLike(Integer productId);
 
@@ -133,9 +132,9 @@ public interface ProductMapper {
     @Select("""
             SELECT product_id
             FROM product_like
-            WHERE member_id = #{MemberId}
+            WHERE member_id = #{memberId}
             """)
-    List<Integer> likedProductByMemberId(String MemberId);
+    List<Integer> likedProductByMemberId(String memberId);
 
     @Select("""
             SELECT *

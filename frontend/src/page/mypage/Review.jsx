@@ -38,7 +38,7 @@ const ReviewCard = ({ review, value }) => (
           {value === "buy" ? (
             <>판매자: {review.sellerName || "알 수 없음"}</>
           ) : (
-            <>구매자: {review.buyerName || "알 수 없음"}</>
+            <>구매자: {review.buyerId ? review.buyerName : "알 수 없음"}</>
           )}
         </HStack>
       </Heading>
