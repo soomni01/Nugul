@@ -1,5 +1,6 @@
 package com.example.backend.mapper.mypage;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
@@ -43,4 +44,23 @@ public interface MyPageMapper {
             WHERE product_id = #{product_id}
             """)
     int deletePurchased(Integer product_id);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted,
+                   EXISTS (
+                       SELECT 1
+                       FROM inquiry_comment ic
+                       WHERE ic.inquiry_id = i.inquiry_id
+                   ) AS has_answer
+            FROM inquiry i
+            WHERE i.member_id = #{memberId}
+            ORDER BY i.inquiry_id DESC
+            """)
+    List<Inquiry> inquiryList(String memberId);
 }

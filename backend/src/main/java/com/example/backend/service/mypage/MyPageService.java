@@ -1,5 +1,6 @@
 package com.example.backend.service.mypage;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
 import com.example.backend.mapper.mypage.MyPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,10 @@ public class MyPageService {
     public List<Product> getPurchasedProducts(String id) {
         List<Product> purchasedProductsList = mapper.getPurchasedProducts(id);
         return purchasedProductsList;
+    }
+
+    // 내 문의 내역 목록 가져오기
+    public List<Inquiry> getInquiryByMemberId(String memberId) {
+        return mapper.inquiryList(memberId);
     }
 }

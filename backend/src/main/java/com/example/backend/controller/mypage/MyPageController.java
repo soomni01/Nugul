@@ -1,5 +1,6 @@
 package com.example.backend.controller.mypage;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
 import com.example.backend.service.mypage.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -39,4 +40,20 @@ public class MyPageController {
     public List<Product> getLikes(Authentication authentication) {
         return service.getLikes(authentication);
     }
+
+    // 내 문의 내역 목록 가져오기
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    public List<Inquiry> List(Authentication auth) {
+        String memberId = auth.getName(); // 로그인한 사용자의 ID 가져오기
+        return service.getInquiryByMemberId(memberId);
+    }
+    
+//    // 내 문의 내역에서 상세 문의 보기
+//    @GetMapping("/detail")
+//    @PreAuthorize("isAuthenticated()")
+//    public Inquiry viewInquiry(@RequestParam String id, Authentication auth) {
+//        String memberId = auth.getName();
+//        return service.getInquiryDetailByMemberId(memberId, inquiryId);
+//    }
 }
