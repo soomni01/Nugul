@@ -54,6 +54,8 @@ export function Navbar() {
       <NavbarItem onClick={() => handleNavigation(`/myPage`)}>
         마이페이지
       </NavbarItem>
+      <NavbarItem onClick={() => handleNavigation("/inquiry")}>문의하기</NavbarItem>
+      <NavbarItem>{nickname}</NavbarItem>
       <NavbarItem
         onClick={() => {
           localStorage.removeItem("token");

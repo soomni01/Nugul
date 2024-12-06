@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
   Input,
+  Spinner,
   Stack,
   Text,
   Textarea,
@@ -25,6 +26,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
+// 특정 문의 상세 정보를 표시하고, 해당 문의의 댓글을 조회, 작성, 수정, 삭제 기능을 제공
 export function AdminInquiryDetail({
   handleDeleteClick: handleDeleteClickProp,
 }) {
@@ -33,6 +35,7 @@ export function AdminInquiryDetail({
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
+  const [savedData, setSavedData] = useState(null);
   const { id } = useContext(AuthenticationContext);
 
   function DeleteButton({ onClick, id: memberId }) {
@@ -65,13 +68,22 @@ export function AdminInquiryDetail({
     );
   }
 
+  // inquiry가 업데이트될 때 savedData의 category를 설정
+  useEffect(() => {
+    if (inquiry) {
+      setSavedData({
+        ...savedData,
+        category: inquiry.category,
+      });
+    }
+  }, [inquiry]);
+
   // 게시글 정보 가져오기
   useEffect(() => {
-    console.log("Inquiry ID:", inquiryId);
     axios
       .get(`/api/inquiry/view/${inquiryId}`)
       .then((res) => {
-        console.log("Inquiry data:", res.data);
+        console.log("문의 데이터:", res.data);
         setInquiry(res.data);
       })
       .catch((error) => {
@@ -85,7 +97,7 @@ export function AdminInquiryDetail({
       axios
         .get(`/api/inquiry/comments/${inquiryId}`)
         .then((res) => {
-          console.log("Comments data:", res.data);
+          console.log("댓글 데이터:", res.data);
           setComments(res.data);
         })
         .catch((error) => {
@@ -97,7 +109,10 @@ export function AdminInquiryDetail({
   // 댓글 작성 처리 함수
   const handleCommentSubmit = () => {
     if (!comment.trim()) {
-      alert("댓글 내용을 입력해 주세요.");
+      toaster.create({
+        type: "error",
+        description: "댓글을 입력해 주세요.",
+      });
       return;
     }
 
@@ -164,7 +179,6 @@ export function AdminInquiryDetail({
     axios
       .delete(`/api/inquiry/comment/${commentId}`)
       .then((res) => {
-        console.log("Comments data:", res.data);
         setComments((prevComments) =>
           prevComments.filter((c) => c.id !== commentId),
         );
@@ -179,7 +193,7 @@ export function AdminInquiryDetail({
   };
 
   if (!inquiry) {
-    return <div>로딩 중...</div>;
+    return <Spinner />;
   }
 
   return (
@@ -199,6 +213,9 @@ export function AdminInquiryDetail({
       >
         <Heading mb={4}>{inquiry.inquiryId}번 문의</Heading>
         <Stack spacing={5}>
+          <Field label="문의 유형">
+            <Input value={inquiry ? inquiry.category : ""} readOnly />
+          </Field>
           <Field label={"제목"} readOnly>
             <Input value={inquiry.title} readOnly />
           </Field>
@@ -214,7 +231,6 @@ export function AdminInquiryDetail({
           <Field label={"내용"} readOnly>
             <Textarea h="25vh" value={inquiry.content} readOnly />
           </Field>
-          <Field></Field>
           <Box mt={4}>
             <Heading size="md" mb={2}>
               COMMENTS
@@ -222,17 +238,19 @@ export function AdminInquiryDetail({
             <Flex>
               <Textarea
                 placeholder="댓글을 입력해 주세요."
-                value={comment}
+                value={editingCommentId ? "" : comment} // 수정 중일 땐 입력 영역 초기화
                 onChange={(e) => setComment(e.target.value)}
                 flex="1"
+                isDisabled={!!editingCommentId} // 수정 중일 때 댓글 작성 비활성화
               />
               <Button
                 colorScheme="teal"
                 mt={2}
                 ml={2}
                 onClick={handleCommentSubmit}
+                isDisabled={!!editingCommentId} // 수정 중일 때 버튼 비활성화
               >
-                {editingCommentId ? "수정 완료" : "등록"}
+                등록
               </Button>
             </Flex>
             {comments.map((c) => (
@@ -245,18 +263,35 @@ export function AdminInquiryDetail({
                 mb={1}
               >
                 <Text fontWeight="bold">{c.memberId}</Text>
-                <Text>{c.comment}</Text>
+                {editingCommentId === c.id ? (
+                  <Textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                ) : (
+                  <Text>{c.comment}</Text>
+                )}
                 <Text fontSize="sm" color="gray.500">
                   {new Date(c.inserted).toLocaleDateString()}
                 </Text>
                 <Flex justify="flex-end" mt={2}>
-                  <Button
-                    colorPalette={"white"}
-                    onClick={() => handleEditClick(c.id)}
-                    mr={2}
-                  >
-                    수정
-                  </Button>
+                  {editingCommentId === c.id ? (
+                    <Button
+                      colorScheme="teal"
+                      onClick={() => handleCommentSubmit()}
+                      mr={2}
+                    >
+                      수정 완료
+                    </Button>
+                  ) : (
+                    <Button
+                      colorPalette={"white"}
+                      onClick={() => handleEditClick(c.id)}
+                      mr={2}
+                    >
+                      수정
+                    </Button>
+                  )}
                   <DeleteButton
                     colorPalette={"red"}
                     onClick={() => handleDeleteClick(c.id)}

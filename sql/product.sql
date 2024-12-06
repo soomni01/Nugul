@@ -10,7 +10,6 @@ CREATE TABLE product
     created_at   DATE                      DEFAULT CURRENT_DATE
 );
 
-
 ALTER TABLE product
     ADD COLUMN pay           VARCHAR(10)  NOT NULL,
     ADD COLUMN latitude      DOUBLE,
@@ -60,7 +59,13 @@ ALTER TABLE product
 
 DESC product;
 
-UPDATE product
-SET STATUS = 'Sold'
-WHERE product_id = 61;
+SELECT *
+FROM product
+WHERE writer = 'sm@naver.com';
 
+SELECT *
+FROM product;
+
+SELECT *
+FROM product
+WHERE product_id IN (SELECT product_id FROM purchased_record WHERE buyer_id = 'sm@naver.com');

@@ -1,15 +1,18 @@
 package com.example.backend.controller.mypage;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.service.mypage.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,5 +72,21 @@ public class MyPageController {
     @PreAuthorize("isAuthenticated()")
     public List<Product> getLikes(@RequestParam String id) {
         return service.getLikes(id);
+    }
+
+    // 내 문의 내역 목록 가져오기
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    public List<Inquiry> List(Authentication auth) {
+        String memberId = auth.getName(); // 로그인한 사용자의 ID 가져오기
+        return service.getInquiryByMemberId(memberId);
+    }
+
+    // 내 문의 내역에서 상세 문의 보기
+    @GetMapping("view")
+    @PreAuthorize("isAuthenticated()")
+    public Inquiry view(@RequestParam int inquiryId, Authentication auth) {
+        String memberId = auth.getName();
+        return service.getview(memberId, inquiryId);
     }
 }

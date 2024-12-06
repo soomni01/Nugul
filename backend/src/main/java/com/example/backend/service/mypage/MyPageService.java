@@ -1,9 +1,10 @@
 package com.example.backend.service.mypage;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
-import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +51,14 @@ public class MyPageService {
     public List<Review> getReviewsByStatus(String id, String role) {
         List<Review> reviewList = mapper.getReviews(id, role);
         return reviewList;
+    }
+    // 내 문의 내역 목록 가져오기
+    public List<Inquiry> getInquiryByMemberId(String memberId) {
+        return mapper.inquiryList(memberId);
+    }
+
+    // 내 문의 내역에서 상세 문의 보기
+    public Inquiry getview(String memberId, int inquiryId) {
+        return mapper.inquiryListview(memberId, inquiryId);
     }
 }

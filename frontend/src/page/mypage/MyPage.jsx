@@ -1,3 +1,4 @@
+import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
@@ -6,12 +7,14 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
+import InquiryList from "./InquiryList.jsx";
+import { InquiryView } from "./InquiryView.jsx";
 import { Review } from "./Review.jsx";
 import { useLocation } from "react-router-dom"; // Context import 예시
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
-  const location = useLocation();
+  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -19,13 +22,20 @@ export function MyPage() {
     return localStorage.getItem("activeTab") || "profile";
   });
 
+  // 탭이 변경될 때마다 상태를 localStorage에 저장
   useEffect(() => {
     // activeTab이 변경되면 localStorage에 저장
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab); // 탭 클릭 시 activeTab 값 변경
+    setActiveTab(tab);
+  };
+
+  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환합니다.
+  const handleRowClick = (inquiryId) => {
+    setSelectedInquiryId(inquiryId);
+    setActiveTab("inquiryDetail");
   };
 
   return (
@@ -106,7 +116,11 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
-        {activeTab === "review" && <Review />}
+        {activeTab === "inquiry" && <InquiryList onRowClick={handleRowClick} />}
+        {activeTab === "inquiryDetail" && (
+          <InquiryView inquiryId={selectedInquiryId} />
+        )}
+        {/*{activeTab === "review" && <Review />}*/}
       </Box>
     </Flex>
   );

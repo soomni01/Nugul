@@ -26,7 +26,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ProductLike } from "../../components/product/ProductLike.jsx";
@@ -36,14 +36,26 @@ function ImageFileView() {
 }
 
 export function ProductView() {
-  const { id } = useParams();
+  //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로  , >router도 변경함
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
+
+  const { hasAccess, isAuthenticated, isAdmin ,id } = useContext(
+    AuthenticationContext,
+  );
+
+
+  useEffect(() => {
+    // id >productId
+    axios
+      .get(`/api/product/view/${productId}`)
+      .then((res) => setProduct(res.data));
+  }, []);
 
   useEffect(() => {
     if (product && product.latitude && product.longitude) {
@@ -106,6 +118,10 @@ export function ProductView() {
       });
   };
 
+  if (product === null) {
+    return <Spinner />;
+  }
+
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
@@ -114,10 +130,32 @@ export function ProductView() {
     return <Spinner />;
   }
 
+  // 챗 방 만들기
+  const createChatRoom = () => {
+    var testId;
+    var productName = product.productName;
+    var writer = product.writer;
+    var nickname = "";
+    var buyer = id;
+    axios
+      .post("/api/chat/create", {
+        productName: productName,
+        writer: writer,
+        nickname: nickname,
+        buyer: buyer,
+      })
+      .then((res) => {
+        console.log(res.data);
+        const roomId = res.data;
+        navigate("/chat/room/" + roomId);
+      });
+    // 추가
+  };
+
   return (
     <Box>
       <HStack>
-        <Heading>{id}번 상품 이름</Heading>
+        <Heading>{productId}번 상품 이름</Heading>
         <Box display="flex" justifyContent="center" alignItems="center">
           <ProductLike
             productId={product.productId}
@@ -175,38 +213,47 @@ export function ProductView() {
             style={{ width: "100%", height: "400px" }}
           >
             {markerPosition && <MapMarker position={markerPosition} />}
+            <ZoomControl />
           </Map>
         </Box>
-        <Button>거래하기</Button>
-        {hasAccess(product.writer) && (
+
+        <Button onClick={createChatRoom} disabled={id === product.writer}>
+          거래하기
+        </Button>
+        {(hasAccess(product.writer) || isAdmin) && (
           <Box>
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/product/edit/${product.productId}`)}
-            >
-              수정
-            </Button>
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"}>삭제</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
+            {hasAccess(product.writer) && (
+              <Button
+                colorPalette={"cyan"}
+                onClick={() => navigate(`/product/edit/${product.productId}`)}
+              >
+                수정
+              </Button>
+            )}
+
+            {(hasAccess(product.writer) || isAdmin) && (
+              <DialogRoot>
+                <DialogTrigger asChild>
+                  <Button colorPalette={"red"}>삭제</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>삭제 확인</DialogTitle>
+                  </DialogHeader>
+                  <DialogBody>
+                    <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogActionTrigger>
+                      <Button variant={"outline"}>취소</Button>
+                    </DialogActionTrigger>
+                    <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                      삭제
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </DialogRoot>
+            )}
           </Box>
         )}
       </Stack>

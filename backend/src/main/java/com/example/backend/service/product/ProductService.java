@@ -25,6 +25,7 @@ public class ProductService {
     public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage, Authentication authentication) {
         product.setWriter(authentication.getName());
 
+
         int cnt = mapper.insert(product);
 
         if (files != null && files.length > 0) {
@@ -87,6 +88,7 @@ public class ProductService {
         mapper.deleteFileByProductId(id);
 
         int cnt = mapper.deleteById(id);
+
         return cnt == 1;
     }
 
@@ -111,6 +113,7 @@ public class ProductService {
             mapper.insertLike(product.getProductId(),
                     authentication.getName());
         }
+
         int countLike = mapper.countLike(product.getProductId());
         Map<String, Object> result = Map.of("like", (cnt == 0), "count", countLike);
         return result;
@@ -134,6 +137,7 @@ public class ProductService {
         Integer limit = 5;
 
         List<Product> sellProducts = mapper.selectSellProducts(limit);
+
         List<Product> shareProducts = mapper.selectShareProducts(limit);
 
         Map<String, List<Product>> result = new HashMap<>();

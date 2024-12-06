@@ -9,17 +9,12 @@ public class Inquiry {
     private int inquiryId;
     private String title;
     private String content;
+    private String category;
     private String memberId;
+    private String nickname;
     private String answer;
+
+    //    @JsonFormat(pattern = "yyyy.MM.dd")
     private LocalDateTime inserted;
     private boolean hasAnswer;
-
-    // Getter 및 Setter
-    public boolean isHasAnswer() {
-        return hasAnswer;
-    }
-
-    public void setHasAnswer(boolean hasAnswer) {
-        this.hasAnswer = hasAnswer;
-    }
 }

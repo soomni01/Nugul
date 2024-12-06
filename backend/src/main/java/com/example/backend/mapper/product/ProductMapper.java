@@ -106,6 +106,7 @@ public interface ProductMapper {
     @Delete("""
             DELETE FROM product_like
             WHERE product_id = #{productId}
+            AND member_id = #{name}
             """)
     int deleteLike(Integer productId);
 
