@@ -16,6 +16,7 @@ import {
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
 
 export function BoardView() {
   const { boardId } = useParams();
@@ -106,6 +107,8 @@ export function BoardView() {
           </Box>
         )}
       </Stack>
+      <hr />
+      <CommentContainer boardId={board.boardId} />
     </Box>
   );
 }
