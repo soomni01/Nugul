@@ -58,10 +58,6 @@ const router = createBrowserRouter([
         path: "inquiry",
         element: <Inquiry />,
       },
-      // {
-      //   path: "/inquiry/list",
-      //   element: <InquiryList />,
-      // },
       {
         path: "myPage",
         element: <MyPage />,
