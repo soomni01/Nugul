@@ -236,7 +236,14 @@ export function ProductHorizontalItem({
             )}
           </Box>
         ) : (
-          <>
+          <HStack>
+            {/* 판매 날짜 표시 */}
+            {product.purchasedAt && (
+              <Text fontSize="xs" color="gray.500">
+                판매 일자: {formatDate(product.purchasedAt)}
+              </Text>
+            )}
+            {/* 삭제 버튼 */}
             <DialogRoot
               isOpen={dialogOpen}
               onClose={() => setDialogOpen(false)}
@@ -272,7 +279,7 @@ export function ProductHorizontalItem({
                 </DialogFooter>
               </DialogContent>
             </DialogRoot>
-          </>
+          </HStack>
         )}
       </Button>
 

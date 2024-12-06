@@ -23,9 +23,10 @@ public interface MyPageMapper {
                 p.product_name, 
                 p.location_name, 
                 p.pay, 
+                p.price,
                 p.status, 
                 p.created_at, 
-                pr.buyer_id, 
+                pr.date AS purchasedAt, 
                 m.nickname AS buyer_nickname
             FROM 
                 product p
