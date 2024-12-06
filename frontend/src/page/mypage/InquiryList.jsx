@@ -26,6 +26,12 @@ const InquiryList = () => {
       try {
         const response = await axios.get("/api/inquiry/mylist");
         if (response.status === 200) {
+          // 날짜를 오래된 순으로 정렬 (오름차순)
+          const sortedInquiries = response.data.sort((a, b) => {
+            const dateA = new Date(a.inserted);
+            const dateB = new Date(b.inserted);
+            return dateA - dateB;
+          });
           setInquiryList(response.data);
         } else {
           console.error(

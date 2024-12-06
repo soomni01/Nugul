@@ -45,7 +45,14 @@ export function AdminMemberDetail() {
         console.log("판매 내역 데이터:", soldRes.data);
         console.log("구매 내역 데이터:", purchasedRes.data);
         setSoldList(soldRes.data);
-        setPurchasedList(purchasedRes.data);
+
+        // 구매 내역을 오름차순으로 정렬
+        const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateA - dateB;
+        });
+        setPurchasedList(sortedPurchasedList);
         setLoading(false);
       })
       .catch((error) => {
