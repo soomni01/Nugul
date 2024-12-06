@@ -23,3 +23,4 @@ from chat_message;
 delete
 from chat_message
 where roomId = 46;
+

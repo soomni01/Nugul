@@ -2,10 +2,11 @@
 .invisible-scrollbar,
 .mostly-customized-scrollbar {
     display: block;
-    width: 1em;
+    width: 8px;
     overflow: auto;
-    height: 2em;
-    padding: 1em;
-    margin: 1em auto;
 
 }
+
+/*::-webkit-scrollbar {*/
+/*    width: 12px; !* 수평 스크롤바의 경우 height로 설정 *!*/
+/*}*/

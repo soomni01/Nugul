@@ -2,12 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { Badge, Box, Card, HStack, Image } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button.jsx";
 
-export function ChatListItem({ chat, onDelete }) {
+export function ChatListItem({ chat, onDelete, onClick }) {
   const navigate = useNavigate();
 
   return (
-    <Box variant={"outline"} my={3}>
-      <Card.Root flex Direction="row" maxW="xl">
+    <Box variant={"outline"} p={3} onClick={onClick}>
+      <Card.Root
+        flex
+        Direction="row"
+        maxW="xl"
+        _hover={{
+          borderColor: "gray",
+        }}
+      >
         <HStack>
           <Image
             objectFit={"cover"}
@@ -17,10 +24,10 @@ export function ChatListItem({ chat, onDelete }) {
           />
           <Box>
             <Card.Body>
-              <Card.Title> {chat.productName} </Card.Title>
-              <Card.Description>
-                제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.
-              </Card.Description>
+              <Card.Title> 상품명: {chat.productName} </Card.Title>
+              {/*<Card.Description>*/}
+              {/*  제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.*/}
+              {/*</Card.Description>*/}
               <HStack mt="4">
                 <Badge> 제품등록자명 : {chat.writer}</Badge>
               </HStack>
@@ -34,13 +41,13 @@ export function ChatListItem({ chat, onDelete }) {
               >
                 대화하러 가기
               </Button>
-              <Button
-                variant={"outline"}
-                colorPalette={"red"}
-                onClick={onDelete}
-              >
-                삭제 버튼
-              </Button>
+              {/*<Button*/}
+              {/*  variant={"outline"}*/}
+              {/*  colorPalette={"red"}*/}
+              {/*  onClick={onDelete}*/}
+              {/*>*/}
+              {/*  삭제 버튼*/}
+              {/*</Button>*/}
             </Card.Footer>
           </Box>
         </HStack>
