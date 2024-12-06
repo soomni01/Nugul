@@ -6,11 +6,13 @@ import { SoldItems } from "../mypage/SoldItems.jsx";
 import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
 import { Profile } from "../mypage/Profile.jsx";
 import { ProfileEdit } from "./ProfileEdit.jsx";
-import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import InquiryList from "./InquiryList.jsx";
+import { InquiryView } from "./InquiryView.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
+  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
   // 새로고침 후에도 탭을 기억할 수 있도록 localStorage에서 상태를 불러옴
   const [activeTab, setActiveTab] = useState(
@@ -24,6 +26,12 @@ export function MyPage() {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+  };
+
+  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환합니다.
+  const handleRowClick = (inquiryId) => {
+    setSelectedInquiryId(inquiryId);
+    setActiveTab("inquiryDetail");
   };
 
   return (
@@ -100,7 +108,10 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
-        {activeTab === "inquiry" && <InquiryList />}
+        {activeTab === "inquiry" && <InquiryList onRowClick={handleRowClick} />}
+        {activeTab === "inquiryDetail" && (
+          <InquiryView inquiryId={selectedInquiryId} />
+        )}
         {/*{activeTab === "review" && <Review />}*/}
       </Box>
     </Flex>
