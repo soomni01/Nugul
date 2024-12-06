@@ -12,6 +12,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 export default function AdminLayout() {
   const navigate = useNavigate();
 
+  // 로그아웃 처리: 토큰을 제거하고 홈 화면으로 이동함
   function logout() {
     localStorage.removeItem("token");
     navigate("/");

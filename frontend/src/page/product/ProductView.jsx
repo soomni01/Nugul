@@ -43,7 +43,11 @@ export function ProductView() {
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
-  const { hasAccess, isAuthenticated, id } = useContext(AuthenticationContext);
+
+  const { hasAccess, isAuthenticated, isAdmin ,id } = useContext(
+    AuthenticationContext,
+  );
+
 
   useEffect(() => {
     // id >productId
@@ -198,38 +202,44 @@ export function ProductView() {
             <ZoomControl />
           </Map>
         </Box>
+
         <Button onClick={createChatRoom} disabled={id === product.writer}>
           거래하기
-        </Button>
-        {hasAccess(product.writer) && (
+        </Button>   
+        {(hasAccess(product.writer) || isAdmin) && (    
           <Box>
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/product/edit/${product.productId}`)}
-            >
-              수정
-            </Button>
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"}>삭제</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
+            {hasAccess(product.writer) && (
+              <Button
+                colorPalette={"cyan"}
+                onClick={() => navigate(`/product/edit/${product.productId}`)}
+              >
+                수정
+              </Button>
+            )}
+            
+            {(hasAccess(product.writer) || isAdmin) && (
+              <DialogRoot>
+                <DialogTrigger asChild>
+                  <Button colorPalette={"red"}>삭제</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>삭제 확인</DialogTitle>
+                  </DialogHeader>
+                  <DialogBody>
+                    <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogActionTrigger>
+                      <Button variant={"outline"}>취소</Button>
+                    </DialogActionTrigger>
+                    <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                      삭제
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </DialogRoot>
+            )}
           </Box>
         )}
       </Stack>

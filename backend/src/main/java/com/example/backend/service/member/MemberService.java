@@ -127,18 +127,6 @@ public class MemberService {
         return null;
     }
 
-    // 접근 권한 확인 메소드
-    public boolean hasAccess(String memberId, Authentication auth) {
-        System.out.println("Member ID: " + memberId);
-        System.out.println("Authenticated name: " + auth.getName());
-
-        if ("admin".equals(auth.getName()) || isAdmin(auth)) {
-            return true;
-        }
-
-        return memberId.equals(auth.getName());
-    }
-
     // 관리자 권한 확인 메소드
     public boolean isAdmin(Authentication auth) {
         return auth.getAuthorities()

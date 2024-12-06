@@ -21,3 +21,14 @@ VALUES ('탈퇴 문의', '탈퇴하고싶은데 어떻게 하나요?', 'sm@naver
 
 SELECT *
 FROM inquiry;
+
+ALTER TABLE inquiry
+    ADD COLUMN nickname VARCHAR(50);
+
+ALTER TABLE inquiry
+    ADD CONSTRAINT unique_nickname UNIQUE (nickname);
+
+DESC inquiry;
+
+ALTER TABLE inquiry
+    ADD COLUMN category ENUM ('이용 안내', '구매 안내', '기타 문의') NOT NULL AFTER member_id;

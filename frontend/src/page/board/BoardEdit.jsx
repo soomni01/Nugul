@@ -1,6 +1,6 @@
 import { Box, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
@@ -15,18 +15,40 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function BoardEdit() {
   const [board, setBoard] = useState(null);
   const [progress, setProgress] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { id, isAuthenticated, hasAccess, nickname } = useContext(
+    AuthenticationContext,
+  );
+
   const { boardId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/board/boardView/${boardId}`).then((res) => {
-      setBoard(res.data);
-    });
-  }, []);
+    axios
+      .get(`/api/board/boardView/${boardId}`)
+      .then((res) => {
+        const boardData = res.data;
+        setBoard(boardData);
+
+        // 사용자가 해당 게시글의 작성자(닉네임, id)가 아니라면, 목록 페이지로 리다이렉트
+        if (boardData.writerId !== id && boardData.writer !== nickname) {
+          if (!isAuthenticated) {
+            navigate("/");
+            return;
+          }
+          navigate("/board/list");
+        }
+      })
+      .catch(() => {
+        navigate("/board/list");
+      });
+  }, [boardId, isAuthenticated, navigate, id, nickname]);
 
   const handleSaveClick = () => {
     setProgress(true);
@@ -52,6 +74,7 @@ export function BoardEdit() {
       })
       .finally(() => {
         setProgress(false);
+        setDialogOpen(false);
       });
   };
 
@@ -79,39 +102,44 @@ export function BoardEdit() {
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
           />
         </Field>
-        <Box>
-          <DialogRoot>
-            <DialogTrigger asChild>
-              <Button
-                disabled={disabled}
-                colorPalette={"cyan"}
-                variant={"outline"}
-              >
-                저장
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>저장 확인</DialogTitle>
-              </DialogHeader>
-              <DialogBody>
-                <p>{board.boardId}번 게시물을 수정하시겠습니까?</p>
-              </DialogBody>
-              <DialogFooter>
-                <DialogActionTrigger>
-                  <Button variant={"outline"}>취소</Button>
-                </DialogActionTrigger>
+        {hasAccess(board.writerId) && (
+          <Box>
+            <DialogRoot
+              open={dialogOpen}
+              onOpenChange={(e) => setDialogOpen(e.open)}
+            >
+              <DialogTrigger asChild>
                 <Button
-                  loading={progress}
-                  colorPalette={"blue"}
-                  onClick={handleSaveClick}
+                  disabled={disabled}
+                  colorPalette={"cyan"}
+                  variant={"outline"}
                 >
                   저장
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </DialogRoot>
-        </Box>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>저장 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>{board.boardId}번 게시물을 수정하시겠습니까?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant={"outline"}>취소</Button>
+                  </DialogActionTrigger>
+                  <Button
+                    loading={progress}
+                    colorPalette={"blue"}
+                    onClick={handleSaveClick}
+                  >
+                    저장
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </Box>
+        )}
       </Stack>
     </Box>
   );

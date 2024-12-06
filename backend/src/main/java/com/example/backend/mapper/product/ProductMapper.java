@@ -157,4 +157,9 @@ public interface ProductMapper {
             """)
     List<Product> selectShareProducts(Integer limit);
 
+    @Delete("""
+            DELETE FROM product_like
+            WHERE product_id = #{id}
+            """)
+    int deleteLikeByProductId(int id);
 }

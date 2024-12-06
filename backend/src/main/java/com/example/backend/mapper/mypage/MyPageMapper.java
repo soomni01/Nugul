@@ -1,6 +1,8 @@
 package com.example.backend.mapper.mypage;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -21,5 +23,57 @@ public interface MyPageMapper {
             FROM product
             WHERE writer = #{name}
             """)
-    List<Product> getsoltProducts(String name);
+    List<Product> getSoldProducts(String name);
+
+    @Select("""
+            SELECT pr.date, p.product_id,  p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name, pr.date AS purchased_at
+            FROM purchased_record pr LEFT JOIN product p ON pr.product_id = p.product_id
+            WHERE buyer_id = #{name}
+            """)
+    List<Product> getPurchasedProducts(String name);
+
+    @Select("""
+            SELECT product_id
+            FROM purchased_record
+            WHERE buyer_id = #{name}
+            """)
+    List<Integer> purchasedProductByMemberId(String name);
+
+    @Delete("""
+            DELETE FROM purchased_record
+            WHERE product_id = #{product_id}
+            """)
+    int deletePurchased(Integer product_id);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted,
+                   EXISTS (
+                       SELECT 1
+                       FROM inquiry_comment ic
+                       WHERE ic.inquiry_id = i.inquiry_id
+                   ) AS has_answer
+            FROM inquiry i
+            WHERE i.member_id = #{memberId}
+            ORDER BY i.inquiry_id DESC
+            """)
+    List<Inquiry> inquiryList(String memberId);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted
+            FROM inquiry i
+            WHERE i.inquiry_id = #{inquiryId}
+            """)
+    Inquiry inquiryListview(String memberId, int inquiryId);
 }
