@@ -26,7 +26,7 @@ export function Profile({ onEditClick }) {
 
   useEffect(() => {
     axios.get(`/api/member/${id}`).then((res) => setMember(res.data));
-  }, [member]);
+  }, []);
 
   if (!member) {
     return <Spinner />;

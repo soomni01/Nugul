@@ -1,4 +1,3 @@
-import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
@@ -10,7 +9,6 @@ import { PurchasedItems } from "./PurchasedItems.jsx";
 import InquiryList from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
 import { Review } from "./Review.jsx";
-import { useLocation } from "react-router-dom"; // Context import 예시
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
@@ -120,7 +118,7 @@ export function MyPage() {
         {activeTab === "inquiryDetail" && (
           <InquiryView inquiryId={selectedInquiryId} />
         )}
-        {/*{activeTab === "review" && <Review />}*/}
+        {activeTab === "review" && <Review />}
       </Box>
     </Flex>
   );
