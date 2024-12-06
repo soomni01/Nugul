@@ -12,6 +12,7 @@ export function BoardAdd() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" }); // 메시지 상태 관리
   const [progress, setProgress] = useState(false);
 
   const navigate = useNavigate();
@@ -20,12 +21,10 @@ export function BoardAdd() {
     if (!isAuthenticated) {
       logout(); // 자동 로그아웃 처리
       toaster.create({
-        description: "로그인 후 게시글을 작성할 수 있습니다.",
-        type: "warning",
+        description: "글쓰기 권한이 없습니다. 로그인 하셔야 합니다.",
+        type: "error", // "error" type 설정
       });
       navigate("/"); // 로그인 페이지로 리디렉션
-    } else {
-      navigate("/board/boardAdd"); // 로그인된 경우, 게시글 작성 페이지로 리디렉션
     }
   }, [isAuthenticated, logout, navigate]);
 
@@ -48,13 +47,22 @@ export function BoardAdd() {
 
         navigate(`/board/boardView/${data.data.boardId}`);
       })
-      .catch((e) => {
-        const message = e.response.data.message;
-        toaster.create({
-          description: message.text,
-          type: message.type,
-        });
-      })
+        .catch((e) => {
+          // 403 오류 처리
+          if (e.response && e.response.status === 403) {
+            const message = e.response.data.message; // 서버에서 보낸 메시지
+            toaster.create({
+              description: message.text, // 서버에서 보낸 오류 메시지
+              type: message.type, // 오류 타입
+            });
+          } else {
+            // 다른 오류 처리
+            toaster.create({
+              description: "오류가 발생했습니다. 다시 시도해 주세요.",
+              type: "error",
+            });
+          }
+        })
       .finally(() => {
         setProgress(false);
       });
