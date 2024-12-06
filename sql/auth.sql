@@ -7,3 +7,4 @@ CREATE TABLE auth
 
 INSERT INTO auth (member_id, auth)
 VALUES ('mk@naver.com', 'admin');
+

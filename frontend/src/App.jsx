@@ -29,7 +29,7 @@ import { MyPage } from "./page/mypage/MyPage.jsx";
 import { useEffect } from "react";
 
 import { Inquiry } from "./page/inquiry/Inquiry.jsx";
-
+import ViewMap from "./page/map/ViewMap.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -113,6 +113,10 @@ const router = createBrowserRouter([
       {
         path: "board/boardEdit/:boardId",
         element: <BoardEdit />,
+      },
+      {
+        path: "map",
+        element: <ViewMap />,
       },
     ],
   },
