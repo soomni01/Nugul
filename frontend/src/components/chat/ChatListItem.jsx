@@ -41,13 +41,13 @@ export function ChatListItem({ chat, onDelete, onClick }) {
               >
                 대화하러 가기
               </Button>
-              <Button
-                variant={"outline"}
-                colorPalette={"red"}
-                onClick={onDelete}
-              >
-                삭제 버튼
-              </Button>
+              {/*<Button*/}
+              {/*  variant={"outline"}*/}
+              {/*  colorPalette={"red"}*/}
+              {/*  onClick={onDelete}*/}
+              {/*>*/}
+              {/*  삭제 버튼*/}
+              {/*</Button>*/}
             </Card.Footer>
           </Box>
         </HStack>

@@ -144,9 +144,16 @@ export function ChatView({ chatRoomId, onDelete }) {
   };
 
   const loadPreviousMessage = async () => {
-    if (isloading || !hasMore) return;
+    //처음에는 true 고 그 다음에 정보를 받아왔는데 ,false가 되면 > 아무것도 안하고 싶은거잖아
+    console.log(hasMore);
+    if (!hasMore) {
+      return null;
+    }
 
     setIsloading(true);
+
+    // 처음 값을 트루로 놓으니까 이러지
+    // if (isloading || !hasMore) return;
 
     try {
       const response = await axios.get(
@@ -160,11 +167,11 @@ export function ChatView({ chatRoomId, onDelete }) {
       const newMessages = response.data || [];
       newMessages.reverse();
 
-      if (newMessages.length === 0) {
+      if (newMessages.length === 8) {
         setMessage((prev) => [...newMessages, ...prev]);
       } else {
         setMessage((prev) => [...newMessages, ...prev]);
-        // 더이상 불러올 메시기  x
+        // 더이상 불러올 메시지  x
         setHasMore(false);
       }
     } catch (error) {

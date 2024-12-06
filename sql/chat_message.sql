@@ -24,6 +24,3 @@ delete
 from chat_message
 where roomId = 46;
 
-select count(*)
-from chat_message
-where roomId = 52;
