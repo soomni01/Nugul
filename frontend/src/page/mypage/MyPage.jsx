@@ -1,22 +1,33 @@
-import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
-import { useContext, useState } from "react";
-import { Button } from "../../components/ui/button.jsx";
-import { Wishlist } from "../mypage/Wishlist.jsx";
-import { SoldItems } from "../mypage/SoldItems.jsx";
-import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
-import { Profile } from "../mypage/Profile.jsx";
-import { ProfileEdit } from "./ProfileEdit.jsx";
-import { Review } from "./Review.jsx";
+import { useContext, useEffect, useState } from "react";
+import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { Profile } from "./Profile.jsx";
+import { ProfileEdit } from "./ProfileEdit.jsx";
+import { Wishlist } from "./Wishlist.jsx";
+import { SoldItems } from "./SoldItems.jsx";
+import { PurchasedItems } from "./PurchasedItems.jsx";
+import { Review } from "./Review.jsx";
+import { useLocation } from "react-router-dom"; // Context import 예시
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
+  const location = useLocation();
 
-  const [activeTab, setActiveTab] = useState("profile");
+  // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
+  const [activeTab, setActiveTab] = useState(() => {
+    // 마이페이지에서만 localStorage 저장된 상태 사용
+    return localStorage.getItem("activeTab") || "profile";
+  });
+
+  useEffect(() => {
+    // activeTab이 변경되면 localStorage에 저장
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab);
+    setActiveTab(tab); // 탭 클릭 시 activeTab 값 변경
   };
+
   return (
     <Flex direction="row" mt={5}>
       {/* 왼쪽 메뉴 */}
