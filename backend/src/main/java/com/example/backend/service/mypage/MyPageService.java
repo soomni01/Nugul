@@ -42,12 +42,14 @@ public class MyPageService {
         return reviewText;
     }
 
+    // 후기 작성하기
     public boolean addReview(Review review) {
         int cnt = mapper.insertReview(review);
 
         return cnt == 1;
     }
 
+    // 후기 상태에 따라 가져오기
     public List<Review> getReviewsByStatus(String id, String role) {
         List<Review> reviewList = mapper.getReviews(id, role);
         return reviewList;

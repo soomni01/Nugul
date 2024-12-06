@@ -20,6 +20,7 @@ public class MyPageController {
 
     final MyPageService service;
 
+    // 후기 상태에 따라 작성하기
     @GetMapping("/review")
     public List<Review> getReviews(
             @RequestParam String id,
@@ -28,6 +29,7 @@ public class MyPageController {
         return service.getReviewsByStatus(id, role);
     }
 
+    // 후기 작성하기
     @PostMapping("review/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> addReview(
