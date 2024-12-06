@@ -11,14 +11,22 @@ import {
 import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
+import { useNavigate } from "react-router-dom";
 
-export const InquiryView = ({ inquiryId }) => {
+export const InquiryView = () => {
   const [inquiryView, setInquiryView] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // inquiryId가 없으면 데이터 로딩을 중단
-    if (!inquiryId) return;
+    // 로컬 스토리지에서 inquiryId 가져오기
+    const inquiryId = localStorage.getItem("selectedInquiryId");
+
+    // inquiryId가 없으면 데이터 로딩 중단
+    if (!inquiryId) {
+      console.error("로컬 스토리지에 selectedInquiryId가 없습니다.");
+      return;
+    }
 
     // 로컬 스토리지에서 데이터 가져오기
     const storedData = localStorage.getItem(`inquiryDetail-${inquiryId}`);
@@ -40,7 +48,7 @@ export const InquiryView = ({ inquiryId }) => {
     setLoading(true);
 
     // 서버에서 문의 상세 정보를 가져오는 함수
-    const fetchInquiryDetail = async () => {
+    const fetchInquiryView = async () => {
       try {
         const res = await axios.get(`/api/myPage/view?inquiryId=${inquiryId}`);
         setInquiryView(res.data);
@@ -57,8 +65,8 @@ export const InquiryView = ({ inquiryId }) => {
       }
     };
 
-    fetchInquiryDetail();
-  }, [inquiryId]);
+    fetchInquiryView();
+  }, []);
 
   // 로딩 중일 때 스피너 표시
   if (loading) return <Spinner />;
@@ -102,7 +110,11 @@ export const InquiryView = ({ inquiryId }) => {
               )}
             </Field>
           </Box>
-          <Button colorScheme="teal" mt={4}>
+          <Button
+            colorScheme="teal"
+            mt={4}
+            onClick={() => navigate(`/myPage/${inquiryView.inquiryId}/edit`)}
+          >
             수정
           </Button>
         </>

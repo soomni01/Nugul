@@ -12,11 +12,13 @@ import {
 } from "@chakra-ui/react";
 import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const InquiryList = ({ onRowClick }) => {
   const [inquiryList, setInquiryList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchInquiries = async () => {
@@ -43,6 +45,13 @@ const InquiryList = ({ onRowClick }) => {
     setCurrentPage(newPage);
   }
 
+  const handleRowClick = (inquiryId) => {
+    // 로컬 스토리지에 선택된 inquiryId 저장
+    localStorage.setItem("selectedInquiryId", inquiryId);
+    // InquiryView 페이지로 이동
+    navigate(`/myPage/${inquiryId}`);
+  };
+
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
@@ -64,7 +73,7 @@ const InquiryList = ({ onRowClick }) => {
             {paginatedInquiries.length > 0 ? (
               paginatedInquiries.map((inquiry) => (
                 <Table.Row
-                  onClick={() => onRowClick(inquiry.inquiryId)}
+                  onClick={() => handleRowClick(inquiry.inquiryId)}
                   key={inquiry.inquiryId}
                   style={{ cursor: "pointer" }}
                 >
@@ -77,11 +86,11 @@ const InquiryList = ({ onRowClick }) => {
                   </Table.Cell>
                   <Table.Cell>
                     {inquiry.hasAnswer ? (
-                      <Badge variant={"subtle"} colorPalette={"green"}>
+                      <Badge variant={"subtle"} colorScheme="green">
                         <FaCommentDots /> 답변 완료
                       </Badge>
                     ) : (
-                      <Badge variant={"subtle"} colorPalette={"red"}>
+                      <Badge variant={"subtle"} colorScheme="red">
                         <FaCommentDots /> 답변 대기
                       </Badge>
                     )}
