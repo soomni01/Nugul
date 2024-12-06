@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Card,
+  Heading,
   HStack,
   Image,
   Text,
@@ -30,7 +31,13 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 
-export function ProductHorizontalItem({ product, onRemove, pageType, onOpen }) {
+export function ProductHorizontalItem({
+  product,
+  onRemove,
+  pageType,
+  onOpen,
+  value,
+}) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -123,6 +130,8 @@ export function ProductHorizontalItem({ product, onRemove, pageType, onOpen }) {
     }
   };
 
+  console.log(product);
+
   return (
     <Card.Root
       flexDirection="row"
@@ -168,9 +177,18 @@ export function ProductHorizontalItem({ product, onRemove, pageType, onOpen }) {
             {product.productName}
           </Card.Title>
           {/* 장소 */}
-          <Text fontSize="sm" color="gray.500">
-            {product.locationName || "장소 정보 없음"}
-          </Text>
+          <HStack spacing={10} justify="space-between">
+            <Text fontSize="sm" color="gray.500">
+              {product.locationName || "장소 정보 없음"}
+            </Text>
+            {value === "buy" ? (
+              <Heading>판매자: {product.nickname || "알 수 없음"}</Heading>
+            ) : value === "sell" && isSold ? (
+              <Heading size="xs">
+                구매자: {product.productId ? product.nickname : "알 수 없음"}
+              </Heading>
+            ) : null}
+          </HStack>
           <Card.Description mt={2}>{daysAgo}</Card.Description>
         </Card.Body>
       </Box>
