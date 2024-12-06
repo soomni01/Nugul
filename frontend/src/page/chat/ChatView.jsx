@@ -17,6 +17,7 @@ import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
+import { LuSend } from "react-icons/lu";
 
 export function ChatView({ chatRoomId }) {
   const scrollRef = useRef(null);
@@ -185,7 +186,6 @@ export function ChatView({ chatRoomId }) {
 
   // 채팅방 나가기서  클라이어트 끊기
   function leaveRoom() {
-    console.log(stompClient);
     // stompClient.onDisconnect();
     // navigate("chat");
   }
@@ -223,7 +223,7 @@ export function ChatView({ chatRoomId }) {
         overflow={"hidden"}
       >
         <Box mx={"auto"} my={3} variant={"outline"} h={"5%"} pr={2}>
-          <HStack>
+          <HStack variant={"outline"}>
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={() => removeChatRoom(realChatRoomId)}
@@ -270,8 +270,9 @@ export function ChatView({ chatRoomId }) {
         <HStack>
           <Field>
             <Input
-              bg={"gray.300"}
               type={"text"}
+              bg={"white"}
+              placeholder={"전송할 메시지를 입력하세요"}
               value={clientMessage}
               onChange={(e) => {
                 setClientMessage(e.target.value);
@@ -279,6 +280,7 @@ export function ChatView({ chatRoomId }) {
             />
           </Field>
           <Button
+            colorPalette={"cyan"}
             variant={"outline"}
             onClick={() => {
               // 세션의 닉네임
@@ -287,7 +289,7 @@ export function ChatView({ chatRoomId }) {
               sendMessage(client, message);
             }}
           >
-            전송
+            <LuSend />
           </Button>
         </HStack>
       </Flex>

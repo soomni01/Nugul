@@ -97,11 +97,10 @@ export function ChatList() {
           ))}
         </Box>
 
-        {chatRoomId === -1 ? (
-          <Box></Box>
-        ) : (
+        {chatRoomId === -1 ? null : (
           <ChatView key={chatRoomId} chatRoomId={chatRoomId} />
         )}
+        <Box>상품 정보</Box>
       </Flex>
     </Box>
   );

@@ -7,7 +7,14 @@ export function ChatListItem({ chat, onDelete, onClick }) {
 
   return (
     <Box variant={"outline"} my={3} onClick={onClick}>
-      <Card.Root flex Direction="row" maxW="xl">
+      <Card.Root
+        flex
+        Direction="row"
+        maxW="xl"
+        _hover={{
+          borderColor: "green",
+        }}
+      >
         <HStack>
           <Image
             objectFit={"cover"}
