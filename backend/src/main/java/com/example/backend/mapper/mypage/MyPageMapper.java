@@ -18,11 +18,36 @@ public interface MyPageMapper {
     List<Product> getLikes(String name);
 
     @Select("""
-            SELECT *
-            FROM product
-            WHERE writer = #{name}
+            SELECT 
+                p.category, 
+                p.product_name, 
+                p.location_name, 
+                p.pay, 
+                p.status, 
+                p.created_at, 
+                pr.buyer_id, 
+                m.nickname AS buyer_nickname
+            FROM 
+                product p
+            LEFT JOIN 
+                purchased_record pr ON p.product_id = pr.product_id
+            LEFT JOIN 
+                member m ON m.member_id = pr.buyer_id 
+            WHERE 
+                writer = #{name}
             """)
     List<Product> getSoldProducts(String name);
+
+
+//    @Select("""
+//            SELECT pr.buyer_id, pr.product_id,  p.product_name, p.price, p.category, p.location_name, m.nickname, p.created_at, p.status, p.pay
+//            FROM purchased_record pr
+//            LEFT JOIN product p ON pr.product_id = p.product_id
+//            LEFT JOIN member m ON pr.buyer_id = m.member_id
+//            WHERE seller_id = #{name}
+//            AND pr.product_id IS NOt NULL
+//            """)
+//    List<Product> getSoldProducts(String name);
 
     @Select("""
             SELECT pr.date, p.product_id,  p.product_name, p.writer, p.price, p.category, p.pay, p.status,

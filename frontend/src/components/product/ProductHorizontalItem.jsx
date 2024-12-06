@@ -182,10 +182,16 @@ export function ProductHorizontalItem({
               {product.locationName || "장소 정보 없음"}
             </Text>
             {value === "buy" ? (
-              <Heading>판매자: {product.nickname || "알 수 없음"}</Heading>
+              <Heading>
+                판매자:{" "}
+                {product.nickname != null ? product.nickname : "알 수 없음"}
+              </Heading>
             ) : value === "sell" && isSold ? (
               <Heading size="xs">
-                구매자: {product.productId ? product.nickname : "알 수 없음"}
+                구매자:{" "}
+                {product.buyerNickname != null
+                  ? product.buyerNickname
+                  : " 알 수 없음"}
               </Heading>
             ) : null}
           </HStack>
