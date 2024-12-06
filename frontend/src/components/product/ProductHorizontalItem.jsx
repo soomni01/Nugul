@@ -181,8 +181,8 @@ export function ProductHorizontalItem({
             <Text fontSize="sm" color="gray.500">
               {product.locationName || "장소 정보 없음"}
             </Text>
-            {value === "buy" ? (
-              <Heading>
+            {value === "purchased" ? (
+              <Heading size="xs">
                 판매자:{" "}
                 {product.nickname != null ? product.nickname : "알 수 없음"}
               </Heading>

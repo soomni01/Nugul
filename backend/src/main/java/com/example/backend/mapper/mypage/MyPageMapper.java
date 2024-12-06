@@ -55,8 +55,8 @@ public interface MyPageMapper {
                 p.created_at, p.location_name, pr.date AS purchased_at, m.nickname, r.review_status
             FROM purchased_record pr
             LEFT JOIN product p ON pr.product_id = p.product_id
-            LEFT JOIN member m ON p.writer = m.member_id
-            LEFT JOIN review r ON r.product_id = pr.product_id
+            LEFT JOIN member m ON pr.seller_id = m.member_id
+            LEFT JOIN review r ON pr.product_id = r.product_id 
             WHERE pr.buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);

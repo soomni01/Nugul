@@ -76,6 +76,7 @@ export function PurchasedItems() {
                   product={product}
                   pageType={"purchased"}
                   onOpen={() => handleOpenReviewModal(product.productId)} // productId만 전달
+                  value={"purchased"}
                 />
               </SwiperSlide>
             ))
