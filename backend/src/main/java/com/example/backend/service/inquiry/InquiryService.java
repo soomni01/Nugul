@@ -3,7 +3,6 @@ package com.example.backend.service.inquiry;
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.mapper.inquiry.InquiryMapper;
-import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,9 +18,6 @@ public class InquiryService {
 
     @Autowired
     final InquiryMapper mapper;
-    @Autowired
-    private InquiryMapper inquiryMapper;
-    private final MemberMapper memberMapper;
 
     // Inquiry 객체의 유효성을 검사하는 메소드
     public boolean validate(Inquiry inquiry) {
@@ -41,23 +37,14 @@ public class InquiryService {
         return mapper.viewByMemberId(memberId);
     }
 
-    // 특정 회원 ID로 연관된 모든 Inquiry 리스트를 조회하는 메소드
-    public List<Inquiry> getInquiryByMemberId(String memberId) {
-        return mapper.findByMemberId(memberId);
+    // 모든 문의 목록을 반환하는 메소드
+    public List<Inquiry> list() {
+        return mapper.InquiryAll();
     }
 
     // 특정 ID의 문의를 반환하는 메소드
     public Inquiry getInquiry(int inquiryId) {
-        Inquiry inquiry = mapper.findById(inquiryId);
-        if (inquiry == null) {
-            throw new RuntimeException("해당 ID로 문의를 찾을 수 없습니다: " + inquiryId);
-        }
-        return inquiry;
-    }
-
-    // 모든 문의 목록을 반환하는 메소드
-    public List<Inquiry> list() {
-        return mapper.InquiryAll();
+        return mapper.findById(inquiryId);
     }
 
     // 댓글을 추가하는 메소드
