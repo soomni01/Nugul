@@ -13,4 +13,4 @@ ALTER TABLE purchased_record
     RENAME COLUMN user_id TO buyer_id;
 
 INSERT INTO purchased_record (buyer_id, product_id)
-VALUES ('111@zz.zz', 4);
+VALUES ('sm@naver.com', 55);

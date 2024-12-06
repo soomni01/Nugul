@@ -1,9 +1,9 @@
 import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
-import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 
@@ -58,7 +58,7 @@ export function PurchasedItems() {
           mousewheel={true}
           modules={[FreeMode, Scrollbar, Mousewheel]}
           style={{
-            height: "auto",
+            height: "100%",
             width: "100%",
           }}
         >
