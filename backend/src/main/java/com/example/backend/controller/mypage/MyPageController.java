@@ -48,12 +48,12 @@ public class MyPageController {
         String memberId = auth.getName(); // 로그인한 사용자의 ID 가져오기
         return service.getInquiryByMemberId(memberId);
     }
-    
-//    // 내 문의 내역에서 상세 문의 보기
-//    @GetMapping("/detail")
-//    @PreAuthorize("isAuthenticated()")
-//    public Inquiry viewInquiry(@RequestParam String id, Authentication auth) {
-//        String memberId = auth.getName();
-//        return service.getInquiryDetailByMemberId(memberId, inquiryId);
-//    }
+
+    // 내 문의 내역에서 상세 문의 보기
+    @GetMapping("view")
+    @PreAuthorize("isAuthenticated()")
+    public Inquiry view(@RequestParam int inquiryId, Authentication auth) {
+        String memberId = auth.getName();
+        return service.getview(memberId, inquiryId);
+    }
 }

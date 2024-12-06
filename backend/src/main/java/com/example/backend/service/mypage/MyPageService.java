@@ -39,4 +39,9 @@ public class MyPageService {
     public List<Inquiry> getInquiryByMemberId(String memberId) {
         return mapper.inquiryList(memberId);
     }
+
+    // 내 문의 내역에서 상세 문의 보기
+    public Inquiry getview(String memberId, int inquiryId) {
+        return mapper.inquiryListview(memberId, inquiryId);
+    }
 }

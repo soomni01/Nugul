@@ -63,4 +63,17 @@ public interface MyPageMapper {
             ORDER BY i.inquiry_id DESC
             """)
     List<Inquiry> inquiryList(String memberId);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.nickname,
+                   i.inserted
+            FROM inquiry i
+            WHERE i.inquiry_id = #{inquiryId}
+            """)
+    Inquiry inquiryListview(String memberId, int inquiryId);
 }
