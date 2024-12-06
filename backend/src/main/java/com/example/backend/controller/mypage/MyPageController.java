@@ -20,7 +20,7 @@ public class MyPageController {
 
     final MyPageService service;
 
-    // 후기 상태에 따라 작성하기
+    // 후기 상태에 따라 가져오기
     @GetMapping("/review")
     public List<Review> getReviews(
             @RequestParam String id,
