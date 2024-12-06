@@ -45,17 +45,7 @@ export function ProductView() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { hasAccess, isAuthenticated, isAdmin ,id } = useContext(
-    AuthenticationContext,
-  );
-
-
-  useEffect(() => {
-    // id >productId
-    axios
-      .get(`/api/product/view/${productId}`)
-      .then((res) => setProduct(res.data));
-  }, []);
+  const { hasAccess, isAdmin, id } = useContext(AuthenticationContext);
 
   useEffect(() => {
     if (product && product.latitude && product.longitude) {
@@ -70,7 +60,7 @@ export function ProductView() {
     const fetchData = async () => {
       try {
         const [productRes, likeRes, userLikeRes] = await Promise.all([
-          axios.get(`/api/product/view/${id}`),
+          axios.get(`/api/product/view/${productId}`),
           axios.get("/api/product/likes"),
           axios.get("/api/product/like/member"),
         ]);

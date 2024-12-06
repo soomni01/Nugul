@@ -77,8 +77,8 @@ public class ProductService {
     }
 
     // 상품 1개의 정보 가져오기
-    public Product getProductView(int id) {
-        return mapper.selectById(id);
+    public Product getProductView(Integer productId) {
+        return mapper.selectById(productId);
     }
 
     // 상품 삭제하기
@@ -99,8 +99,8 @@ public class ProductService {
     }
 
     // 상품 판매자와 로그인한 사용자가 같은지 확인
-    public boolean hasAccess(int id, Authentication authentication) {
-        Product product = mapper.selectById(id);
+    public boolean hasAccess(int productId, Authentication authentication) {
+        Product product = mapper.selectById(productId);
 
         return product.getWriter().equals(authentication.getName());
     }

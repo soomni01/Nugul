@@ -99,9 +99,9 @@ public class ProductController {
     }
 
     // 상품 1개의 정보 가져오기
-    @GetMapping("/view/{id}")
-    public Product view(@PathVariable int id) {
-        return service.getProductView(id);
+    @GetMapping("/view/{productId}")
+    public Product view(@PathVariable Integer productId) {
+        return service.getProductView(productId);
     }
 
     // 페이지, 카테고리, 검색, 지불방법 별 상품 목록 가져오기

@@ -35,9 +35,9 @@ public interface ProductMapper {
             SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname
             FROM product p
             LEFT JOIN member m ON p.writer = m.member_id
-            WHERE product_id = #{id}
+            WHERE product_id = #{productId}
             """)
-    Product selectById(int id);
+    Product selectById(Integer productId);
 
     @Delete("""
             DELETE FROM product
