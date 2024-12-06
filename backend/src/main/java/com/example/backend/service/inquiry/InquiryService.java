@@ -18,8 +18,24 @@ public class InquiryService {
 
     @Autowired
     final InquiryMapper mapper;
-    @Autowired
-    private InquiryMapper inquiryMapper;
+
+    // Inquiry 객체의 유효성을 검사하는 메소드
+    public boolean validate(Inquiry inquiry) {
+        boolean title = inquiry.getTitle().trim().length() > 0;
+        boolean content = inquiry.getContent().trim().length() > 0;
+        return title && content;
+    }
+
+    // Inquiry 객체를 데이터베이스에 저장하여 새로운 게시글을 작성하는 메소드
+    public boolean add(Inquiry inquiry) {
+        int cnt = mapper.insert(inquiry);
+        return cnt == 1;
+    }
+
+    // 특정 회원 ID로 Inquiry 객체를 조회하는 메소드
+    public Inquiry get(int memberId) {
+        return mapper.viewByMemberId(memberId);
+    }
 
     // 모든 문의 목록을 반환하는 메소드
     public List<Inquiry> list() {
@@ -28,11 +44,7 @@ public class InquiryService {
 
     // 특정 ID의 문의를 반환하는 메소드
     public Inquiry getInquiry(int inquiryId) {
-        Inquiry inquiry = mapper.findById(inquiryId);
-        if (inquiry == null) {
-            throw new RuntimeException("Inquiry not found with id: " + inquiryId);
-        }
-        return inquiry;
+        return mapper.findById(inquiryId);
     }
 
     // 댓글을 추가하는 메소드

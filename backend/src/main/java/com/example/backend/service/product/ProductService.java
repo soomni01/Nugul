@@ -80,8 +80,11 @@ public class ProductService {
 
     public boolean deleteProduct(int id) {
         mapper.deleteFileByProductId(id);
-        int cnt = mapper.deleteById(id);
+        
+        // 좋아요 지우기
+        mapper.deleteLikeByProductId(id);
 
+        int cnt = mapper.deleteById(id);
         return cnt == 1;
     }
 

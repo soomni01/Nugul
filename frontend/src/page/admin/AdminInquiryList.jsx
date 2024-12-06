@@ -15,17 +15,20 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
 
+// 관리자 페이지에서 모든 문의 목록을 조회, 검색, 페이징 처리하며 특정 문의 상세 페이지로 이동할 수 있는 기능 제공
 export function AdminInquiryList() {
   const [inquiryList, setInquiryList] = useState([]);
   const [search, setSearch] = useState({
     type: "all",
     keyword: "",
+    category: "",
   });
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const itemsPerPage = 10; // 페이지당 문의 수
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
+  // 컴포넌트가 처음 렌더링될 때 API에서 문의 목록 데이터를 가져옴
   useEffect(() => {
     axios
       .get("/api/inquiry/list")
@@ -38,12 +41,15 @@ export function AdminInquiryList() {
       });
   }, []);
 
+  // 테이블 행을 클릭하면 해당 문의의 상세 페이지로 이동함
   function handleRowClick(inquiryId) {
     navigate(`/admin/inquiries/${inquiryId}`);
   }
 
+  // 검색 유형 및 키워드에 따라 문의 목록을 필터링함
   const filteredInquiries = inquiryList.filter((inquiry) => {
     const inquiryTitle = inquiry.title;
+    const inquiryCategory = inquiry.category;
 
     if (!inquiryTitle) {
       console.error("문의 데이터에 'title'이 누락되었습니다:", inquiry);
@@ -51,36 +57,53 @@ export function AdminInquiryList() {
     }
 
     const searchTerm = search.keyword.toLowerCase();
+    const isCategoryMatch = search.category
+      ? inquiryCategory === search.category
+      : true;
+
     switch (search.type) {
       case "all":
         return (
-          inquiryTitle.toLowerCase().includes(searchTerm) ||
-          inquiry.memberId.toLowerCase().includes(searchTerm)
+          (inquiryTitle.toLowerCase().includes(searchTerm) ||
+            inquiry.memberId.toLowerCase().includes(searchTerm)) &&
+          isCategoryMatch
+        );
+      case "category":
+        return (
+          inquiryCategory.toLowerCase().includes(searchTerm) && isCategoryMatch
         );
       case "title":
-        return inquiryTitle.toLowerCase().includes(searchTerm);
+        return (
+          inquiryTitle.toLowerCase().includes(searchTerm) && isCategoryMatch
+        );
       case "member":
-        return inquiry.memberId.toLowerCase().includes(searchTerm);
+        return (
+          inquiry.memberId.toLowerCase().includes(searchTerm) && isCategoryMatch
+        );
       default:
         return false;
     }
   });
 
+  // 필터링된 문의 목록을 현재 페이지와 페이지당 아이템 수에 따라 페이지네이션함
   const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage);
   const paginatedInquiries = filteredInquiries.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
+  // 사용자가 페이지를 변경할 때 현재 페이지를 업데이트함
   function handlePageChange(newPage) {
     setCurrentPage(newPage);
   }
 
+  // 검색 유형이 변경될 때 검색 상태를 업데이트하고 첫 페이지로 이동함
   function handleSearchTypeChange(e) {
     setSearch({ ...search, type: e.target.value });
     setCurrentPage(1);
   }
 
+  // 검색 키워드가 변경될 때 검색 상태를 업데이트하고 첫 페이지로 이동함
   function handleSearchKeywordChange(e) {
     setSearch({ ...search, keyword: e.target.value });
     setCurrentPage(1);
@@ -102,6 +125,7 @@ export function AdminInquiryList() {
           />
           <select value={search.type} onChange={handleSearchTypeChange}>
             <option value="all">전체</option>
+            <option value="category">문의 유형</option>
             <option value="title">제목</option>
             <option value="member">작성자</option>
           </select>
@@ -115,6 +139,7 @@ export function AdminInquiryList() {
           <TableHeader>
             <TableRow>
               <TableColumnHeader>번호</TableColumnHeader>
+              <TableColumnHeader>문의 유형</TableColumnHeader>
               <TableColumnHeader>제목</TableColumnHeader>
               <TableColumnHeader>작성자</TableColumnHeader>
               <TableColumnHeader>작성 일자</TableColumnHeader>
@@ -126,8 +151,10 @@ export function AdminInquiryList() {
               <Table.Row
                 onClick={() => handleRowClick(inquiry.inquiryId)}
                 key={inquiry.inquiryId}
+                style={{ cursor: "pointer" }}
               >
                 <Table.Cell>{inquiry.inquiryId}</Table.Cell>
+                <Table.Cell>{inquiry.category}</Table.Cell>
                 <Table.Cell>{inquiry.title}</Table.Cell>
                 <Table.Cell>{inquiry.memberId}</Table.Cell>
                 <Table.Cell>
