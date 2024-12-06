@@ -27,3 +27,8 @@ INSERT INTO review (product_id, product_name, buyer_id, buyer_name, review_text,
                     review_status)
 VALUES (29, 'mk 판매', 'mk@naver.com', 'mk', '좋은 거래였습니다.',
         4, 'sm@naver.com', 111111, 'completed');
+
+# 삭제 시 null로 수정
+ALTER TABLE review
+    ADD CONSTRAINT fk_product FOREIGN KEY (seller_id)
+        REFERENCES member (member_id) ON DELETE SET NULL;

@@ -14,3 +14,20 @@ ALTER TABLE purchased_record
 
 INSERT INTO purchased_record (buyer_id, product_id)
 VALUES ('sm@naver.com', 55);
+
+# seller_id 컬럼 추가
+ALTER TABLE purchased_record
+    ADD COLUMN seller_id VARCHAR(50);
+
+INSERT INTO purchased_record (buyer_id, product_id, seller_id)
+VALUES ('tt@tt.tt', 34, 'sm@naver.com')
+
+DESC purchased_record;
+
+ALTER TABLE purchased_record
+    ADD CONSTRAINT fk_buyer FOREIGN KEY (buyer_id)
+        REFERENCES member (member_id) ON DELETE SET NULL;
+
+ALTER TABLE purchased_record
+    ADD CONSTRAINT fk_product FOREIGN KEY (product_id)
+        REFERENCES product (product_id) ON DELETE SET NULL;
