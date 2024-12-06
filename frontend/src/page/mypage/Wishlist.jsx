@@ -26,7 +26,7 @@ export function Wishlist() {
         setProductList([]); // 실패시 빈 배열 처리
         setLoading(false);
       });
-  }, [productList]); // 컴포넌트가 마운트 될 때 한 번만 호출
+  }, [id]); // 컴포넌트가 마운트 될 때 한 번만 호출
 
   const handleRemove = (productId) => {
     setProductList((prevList) =>
