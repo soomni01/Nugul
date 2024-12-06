@@ -23,7 +23,6 @@ function AuthenticationProvider({ children }) {
 
   function logout() {
     localStorage.removeItem("token");
-    localStorage.removeItem("activeTab");
     setUserToken({});
   }
 

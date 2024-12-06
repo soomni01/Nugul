@@ -15,16 +15,49 @@ import { GoHeartFill } from "react-icons/go";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
+import { toaster } from "../ui/toaster.jsx";
+import { useNavigate } from "react-router-dom";
+import { RiDeleteBin5Fill } from "react-icons/ri";
 
-export function ProductHorizontalItem({ product, onRemove }) {
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+
+export function ProductHorizontalItem({ product, onRemove, pageType, onOpen }) {
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체";
   const daysAgo = getDaysAgo(product.createdAt);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  };
+
+  // Sold 상태에 따라 스타일을 어두워지게 설정
+  const isSold = product.status === "Sold";
+  const cardStyle = {
+    opacity: isSold ? 0.5 : 1, // 'Sold' 상태일 때 투명도를 낮춰 어두운 느낌 추가
+    backgroundColor: isSold ? "#f0f0f0" : "white", // 'Sold' 상태일 때 배경색을 회색으로 변경
+    cursor: product.status === "Sold" ? "default" : "pointer",
+  };
 
   const handleLikeClick = () => {
     if (hasAccess) {
@@ -34,6 +67,10 @@ export function ProductHorizontalItem({ product, onRemove }) {
         .post("/api/product/like", { productId: product.productId })
         .then(() => {
           onRemove(product.productId); // 부모 컴포넌트로 제거 요청
+          toaster.create({
+            type: "warning",
+            description: "관심 상품에서 삭제했습니다.",
+          });
         })
         .catch((err) => {
           console.error("관심 상품에 오류가 발생했습니다.", err);
@@ -46,17 +83,62 @@ export function ProductHorizontalItem({ product, onRemove }) {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (hasAccess) {
+      axios
+        .delete(`/api/product/delete/${product.productId}`)
+        .then((res) => res.data)
+        .then((data) => {
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
+          onRemove(product.productId);
+        })
+        .catch((e) => {
+          const data = e.response.data;
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
+        });
+    } else {
+      toaster.create({
+        type: "success",
+        description: "본인 상품만 삭제 가능합니다.",
+      });
+    }
+  };
+
+  const handleCancelClick = () => {
+    setDialogOpen(false); // 다이얼로그 닫기
+  };
+
+  const handleButtonClick = (e) => {
+    e.stopPropagation();
+    if (pageType === "wish") {
+      handleLikeClick();
+    } else if (pageType !== "purchased") {
+      setDialogOpen(true);
+    }
+  };
+
   return (
     <Card.Root
       flexDirection="row"
       maxH="150px"
-      width="100%"
+      width="80%"
       mb={4}
+      cursor="pointer"
       boxShadow="sm" // 카드에 그림자 추가
       borderRadius="md" // 카드 모서리 둥글게
       border="1px solid"
       borderColor="gray.200"
       position="relative" // 부모 카드에 relative 위치를 지정
+      onClick={() =>
+        isSold ? null : navigate(`/product/view/${product.productId}`)
+      } // Sold 상태에서 클릭 방지
+      style={cardStyle}
     >
       {/* 왼쪽: 이미지 */}
       <Image
@@ -64,7 +146,10 @@ export function ProductHorizontalItem({ product, onRemove }) {
         objectFit="cover"
         src="/image/productItem.png"
         alt={product.productName}
-        borderRadius="md" // 이미지의 모서리 둥글게
+        borderRadius="md"
+        style={{
+          opacity: product.status === "Sold" ? 0.5 : 1, // 이미지에도 어두운 효과 적용
+        }}
       />
 
       {/* 오른쪽: 텍스트 및 버튼 */}
@@ -93,20 +178,78 @@ export function ProductHorizontalItem({ product, onRemove }) {
       {/* 우측 상단 좋아요 버튼 */}
       <Button
         variant="ghost"
-        colorScheme="red"
         size="sm"
         position="absolute"
         top={2}
         right={2}
+        onClick={(e) => {
+          handleButtonClick(e);
+        }}
       >
-        <Box onClick={handleLikeClick} cursor="pointer">
-          <ToggleTip
-            open={likeTooltipOpen}
-            content={"로그인 후 좋아요를 클릭해주세요."}
-          >
-            <GoHeartFill />
-          </ToggleTip>
-        </Box>
+        {pageType === "wish" ? (
+          <Box>
+            <ToggleTip
+              open={likeTooltipOpen}
+              content={"로그인 후 좋아요를 클릭해주세요."}
+            >
+              <GoHeartFill color={isLiked ? "red" : "gray"} />
+            </ToggleTip>
+          </Box>
+        ) : pageType === "purchased" ? (
+          <Box display="flex" alignItems="center">
+            {/* 구매 날짜 표시 */}
+            <Text fontSize="xs" color="gray.500" mr={2}>
+              구매 일자: {formatDate(product.purchasedAt)}
+            </Text>
+            {product.reviewStatus === "completed" ? (
+              <Button colorPalette={"cyan"} size="xs" isDisabled>
+                작성 완료
+              </Button>
+            ) : (
+              <Button onClick={() => onOpen(product.productId)} size="xs">
+                후기 작성
+              </Button>
+            )}
+          </Box>
+        ) : (
+          <>
+            <DialogRoot
+              isOpen={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+            >
+              <DialogTrigger asChild>
+                <RiDeleteBin5Fill color="gray" />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>삭제 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button
+                      variant={"outline"}
+                      onClick={handleCancelClick} // 취소 버튼 클릭 시 다이얼로그 닫기
+                    >
+                      취소
+                    </Button>
+                  </DialogActionTrigger>
+                  <Button
+                    colorPalette={"red"}
+                    onClick={(e) => {
+                      handleDeleteClick();
+                      setDialogOpen(false); // 삭제 후 다이얼로그 닫기
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </>
+        )}
       </Button>
 
       {/* 우측 하단 가격 */}

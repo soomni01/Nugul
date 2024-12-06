@@ -50,6 +50,14 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
 
+  // 정렬 옵션 가져오기
+  useEffect(() => {
+    const sortParam = searchParams.get("sort");
+    if (sortParam) {
+      setSortOption(sortParam); // URL에서 정렬 옵션 가져오기
+    }
+  }, [searchParams]);
+
   // 카테고리 변경 처리
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);

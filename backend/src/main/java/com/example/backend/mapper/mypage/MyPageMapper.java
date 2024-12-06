@@ -2,9 +2,8 @@ package com.example.backend.mapper.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.product.Product;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.backend.dto.review.Review;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -26,9 +25,13 @@ public interface MyPageMapper {
     List<Product> getSoldProducts(String name);
 
     @Select("""
-            SELECT pr.date, p.product_id,  p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name, pr.date AS purchased_at
-            FROM purchased_record pr LEFT JOIN product p ON pr.product_id = p.product_id
-            WHERE buyer_id = #{name}
+            SELECT pr.date, p.product_id,  p.product_name, p.writer, p.price, p.category, p.pay, p.status,
+                p.created_at, p.location_name, pr.date AS purchased_at, m.nickname, r.review_status
+            FROM purchased_record pr
+            LEFT JOIN product p ON pr.product_id = p.product_id
+            LEFT JOIN member m ON p.writer = m.member_id
+            LEFT JOIN review r ON r.product_id = pr.product_id
+            WHERE pr.buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);
 
@@ -45,6 +48,31 @@ public interface MyPageMapper {
             """)
     int deletePurchased(Integer product_id);
 
+    @Insert("""
+            INSERT INTO review
+            (product_id, product_name, buyer_id, buyer_name, review_text, rating, seller_id, price, review_status)
+            VALUES (#{productId}, #{productName}, #{buyerId}, #{buyerName}, #{reviewText}, #{rating}, #{sellerId}, #{price}, #{reviewStatus})
+            """)
+    @Options(keyProperty = "reviewId", useGeneratedKeys = true)
+    int insertReview(Review review);
+
+    @Select("""
+            <script>
+            SELECT r.product_name, r.buyer_name, r.price, r.seller_id, r.review_text, r.rating, r.created_at, m.nickname as seller_name
+             FROM review r
+             LEFT JOIN member m ON r.seller_id = m.member_id
+                <where>
+                    <if test="role == 'buyer'">
+                        AND buyer_id = #{id}
+                    </if>
+                    <if test="role == 'seller'">
+                        AND seller_id = #{id}
+                    </if>
+                        AND review_status = 'completed'
+                </where>
+            </script>
+            """)
+    List<Review> getReviews(String id, String role);
     @Select("""
             SELECT i.inquiry_id,
                    i.title,

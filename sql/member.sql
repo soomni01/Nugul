@@ -27,3 +27,6 @@ DESCRIBE member;
 
 DESC member;
 
+UPDATE member
+SET password =1234
+WHERE member_id = 'sm@naver.com'

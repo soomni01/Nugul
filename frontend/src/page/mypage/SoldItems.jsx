@@ -2,28 +2,37 @@ import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function SoldItems() {
   const [soldList, setSoldList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const { id } = useContext(AuthenticationContext);
 
-  // useEffect(() => {
-  //   if (soldList.length > 0) return;
-  //   setLoading(true);
-  //
-  //   axios
-  //     .get("/api/mypage/sold")
-  //     .then((res) => {
-  //       setSoldList(res.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log("판매 상품 정보를 가져오는 데 실패했습니다.", error);
-  //       setSoldList([]); // 실패시 빈 배열 처리
-  //       setLoading(false);
-  //     });
-  // }, [soldList]);
+  useEffect(() => {
+    if (soldList.length > 0) return;
+    setLoading(true);
+
+    axios
+      .get("/api/myPage/sold", { params: { id } })
+      .then((res) => {
+        setSoldList(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("판매 상품 정보를 가져오는 데 실패했습니다.", error);
+        setSoldList([]); // 실패시 빈 배열 처리
+        setLoading(false);
+      });
+  }, [id]);
+
+  const handleDelete = (productId) => {
+    setSoldList((prevList) =>
+      prevList.filter((item) => item.productId !== productId),
+    );
+  };
 
   if (loading) {
     return <Spinner />;
@@ -47,11 +56,16 @@ export function SoldItems() {
             soldList.map((product) => (
               <SwiperSlide
                 key={product.productId}
-                style={{ height: "auto", weight: "100%" }}
+                style={{
+                  height: "auto",
+                  width: "100%",
+                  justifyContent: "left",
+                }}
               >
                 <ProductHorizontalItem
                   product={product}
-                  onRemove={handleRemove}
+                  onRemove={handleDelete}
+                  pageType={"sold"}
                 />
               </SwiperSlide>
             ))

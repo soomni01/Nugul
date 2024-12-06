@@ -21,7 +21,7 @@ public class ProductService {
 
     final ProductMapper mapper;
 
-
+    // 상품 추가하기
     public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage, Authentication authentication) {
         product.setWriter(authentication.getName());
 
@@ -56,6 +56,7 @@ public class ProductService {
         return cnt == 1;
     }
 
+    // 페이지, 카테고리, 검색, 지불방법 별 상품 목록 가져오기
     public Map<String, Object> getProductList(Integer page, String category, String keyword, String pay) {
         // SQL 의 LIMIT 키워드에서 사용되는 offset
         Integer offset = (page - 1) * 16;
@@ -67,6 +68,7 @@ public class ProductService {
                 "count", count);
     }
 
+    // 상품명과 지역명이 있는지 확인
     public boolean validate(Product product) {
         boolean productName = product.getProductName().trim().length() > 0;
         boolean locationName = product.getLocationName().trim().length() > 0;
@@ -74,33 +76,38 @@ public class ProductService {
         return productName && locationName;
     }
 
+    // 상품 1개의 정보 가져오기
     public Product getProductView(int id) {
         return mapper.selectById(id);
     }
 
+    // 상품 삭제하기
     public boolean deleteProduct(int id) {
+        mapper.deleteLike(id);
+        mapper.deletePurchasedRecord(id);
         mapper.deleteFileByProductId(id);
-        
-        // 좋아요 지우기
-        mapper.deleteLikeByProductId(id);
 
         int cnt = mapper.deleteById(id);
+
         return cnt == 1;
     }
 
+    // 상품 정보 수정하기
     public boolean update(Product product) {
         int cnt = mapper.update(product);
         return cnt == 1;
     }
 
+    // 상품 판매자와 로그인한 사용자가 같은지 확인
     public boolean hasAccess(int id, Authentication authentication) {
         Product product = mapper.selectById(id);
 
         return product.getWriter().equals(authentication.getName());
     }
 
+    // 상품 좋아요 등록 & 삭제
     public Map<String, Object> like(Product product, Authentication authentication) {
-        int cnt = mapper.deleteLike(product.getProductId(), authentication.getName());
+        int cnt = mapper.deleteLikeByMemberId(product.getProductId(), authentication.getName());
 
         if (cnt == 0) {
             mapper.insertLike(product.getProductId(),
@@ -112,17 +119,20 @@ public class ProductService {
         return result;
     }
 
+    // 상품별 좋아요 수 가져오기
     public List<Map<String, Object>> productLike() {
         List<Map<String, Object>> likeData = mapper.countLikeByProductId();
 
         return likeData;
     }
 
+    // 본인 상품 좋아요 확인
     public List<Integer> likedProductByMember(Authentication authentication) {
         List<Integer> list = mapper.likedProductByMemberId(authentication.getName());
         return list;
     }
 
+    // 메인 페이지에서 각각 상품 5개씩 가져오기
     public Map<String, List<Product>> getProductMainList() {
         Integer limit = 5;
 

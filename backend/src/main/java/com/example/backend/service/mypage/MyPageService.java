@@ -18,8 +18,8 @@ public class MyPageService {
     final MyPageMapper mapper;
 
     // 내 관심 상품 목록 가져오기
-    public List<Product> getLikes(Authentication authentication) {
-        List<Product> likesList = mapper.getLikes(authentication.getName());
+    public List<Product> getLikes(String id) {
+        List<Product> likesList = mapper.getLikes(id);
         return likesList;
     }
 
@@ -35,6 +35,23 @@ public class MyPageService {
         return purchasedProductsList;
     }
 
+    // 후기 내용과 별점이 있는지 확인
+    public boolean validate(Review review) {
+        boolean reviewText = review.getReviewText().trim().length() > 0;
+
+        return reviewText;
+    }
+
+    public boolean addReview(Review review) {
+        int cnt = mapper.insertReview(review);
+
+        return cnt == 1;
+    }
+
+    public List<Review> getReviewsByStatus(String id, String role) {
+        List<Review> reviewList = mapper.getReviews(id, role);
+        return reviewList;
+    }
     // 내 문의 내역 목록 가져오기
     public List<Inquiry> getInquiryByMemberId(String memberId) {
         return mapper.inquiryList(memberId);

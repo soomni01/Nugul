@@ -42,6 +42,7 @@ export function ProductView() {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const { hasAccess, isAuthenticated, isAdmin ,id } = useContext(
@@ -64,14 +65,17 @@ export function ProductView() {
       });
     }
   }, [product]);
-
+  // 상품과 좋아요 정보 동시에 로드
   useEffect(() => {
-    const fetchLikeData = async () => {
+    const fetchData = async () => {
       try {
-        const [likeRes, userLikeRes] = await Promise.all([
+        const [productRes, likeRes, userLikeRes] = await Promise.all([
+          axios.get(`/api/product/view/${id}`),
           axios.get("/api/product/likes"),
           axios.get("/api/product/like/member"),
         ]);
+
+        setProduct(productRes.data);
 
         const likes = likeRes.data.reduce((acc, item) => {
           acc[item.product_id] = item.like_count;
@@ -79,14 +83,20 @@ export function ProductView() {
         }, {});
 
         setLikeData(likes);
-        setUserLikes(new Set(userLikeRes.data)); // Set으로 저장
+        setUserLikes(new Set(userLikeRes.data)); // 사용자 좋아요 정보
+
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching like data:", error);
+        console.error("상품 정보를 가져오는데 오류가 발생했습니다.:", error);
       }
     };
 
-    fetchLikeData();
-  }, []);
+    fetchData();
+  }, [id]);
+
+  if (product === null) {
+    return <Spinner />;
+  }
 
   const handleDeleteClick = () => {
     axios
@@ -115,6 +125,10 @@ export function ProductView() {
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
+
+  if (!product && !likeData && !userLikes) {
+    return <Spinner />;
+  }
 
   // 챗 방 만들기
   const createChatRoom = () => {
@@ -205,8 +219,8 @@ export function ProductView() {
 
         <Button onClick={createChatRoom} disabled={id === product.writer}>
           거래하기
-        </Button>   
-        {(hasAccess(product.writer) || isAdmin) && (    
+        </Button>
+        {(hasAccess(product.writer) || isAdmin) && (
           <Box>
             {hasAccess(product.writer) && (
               <Button
@@ -216,7 +230,7 @@ export function ProductView() {
                 수정
               </Button>
             )}
-            
+
             {(hasAccess(product.writer) || isAdmin) && (
               <DialogRoot>
                 <DialogTrigger asChild>

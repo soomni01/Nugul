@@ -8,11 +8,9 @@ CREATE TABLE expense_record
 
 RENAME TABLE buy_record TO purchased_record;
 
-SELECT *
-FROM purchased_record;
+# 구매자 구분 쉽게 컬럼명 변경
+ALTER TABLE purchased_record
+    RENAME COLUMN user_id TO buyer_id;
 
-DESC purchased_record;
-
-SELECT *
-FROM purchased_record
-WHERE buyer_id = 'sm@naver.com'; -- 또는 user_id 필드 사용
+INSERT INTO purchased_record (buyer_id, product_id)
+VALUES ('sm@naver.com', 55);

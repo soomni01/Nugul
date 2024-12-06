@@ -1,28 +1,32 @@
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
-import { Button } from "../../components/ui/button.jsx";
-import { Wishlist } from "../mypage/Wishlist.jsx";
-import { SoldItems } from "../mypage/SoldItems.jsx";
-import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
-import { Profile } from "../mypage/Profile.jsx";
+import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { Profile } from "./Profile.jsx";
 import { ProfileEdit } from "./ProfileEdit.jsx";
+import { Wishlist } from "./Wishlist.jsx";
+import { SoldItems } from "./SoldItems.jsx";
+import { PurchasedItems } from "./PurchasedItems.jsx";
 import InquiryList from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
-import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { Review } from "./Review.jsx";
+import { useLocation } from "react-router-dom"; // Context import 예시
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
-  // 새로고침 후에도 탭을 기억할 수 있도록 localStorage에서 상태를 불러옴
-  const [activeTab, setActiveTab] = useState(
-    localStorage.getItem("activeTab") || "profile",
-  );
+  // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
+  const [activeTab, setActiveTab] = useState(() => {
+    // 마이페이지에서만 localStorage 저장된 상태 사용
+    return localStorage.getItem("activeTab") || "profile";
+  });
 
   // 탭이 변경될 때마다 상태를 localStorage에 저장
   useEffect(() => {
+    // activeTab이 변경되면 localStorage에 저장
     localStorage.setItem("activeTab", activeTab);
-  }, [activeTab]);
+  }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -90,7 +94,7 @@ export function MyPage() {
           <Button
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
-            onClick={() => handleTabClick("profile")}
+            onClick={() => handleTabClick("review")}
           >
             후기
           </Button>
@@ -103,7 +107,11 @@ export function MyPage() {
           <Profile onEditClick={() => setActiveTab("editProfile")} />
         )}
         {activeTab === "editProfile" && (
-          <ProfileEdit id={id} onCancel={() => setActiveTab("profile")} />
+          <ProfileEdit
+            id={id}
+            onCancel={() => setActiveTab("profile")}
+            onSave={() => setActiveTab("profile")}
+          />
         )}
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
