@@ -202,7 +202,8 @@ export function ChatView({ chatRoomId }) {
       })
       .catch((e) => console.log(e))
       .finally(() => {
-        navigate("/chat");
+        setChatRoomId(-1);
+        navigate("chat");
       });
   };
 
