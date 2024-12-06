@@ -56,7 +56,19 @@ public interface MyPageMapper {
     int insertReview(Review review);
 
     @Select("""
-            SELECT product_name, 
+            <script>
+            SELECT product_name, buyer_name, seller_id, review_text, rating, created_at
+             FROM review 
+                <where>
+                    <if test="role == 'buyer'">
+                        AND buyer_id = #{id}
+                    </if>
+                    <if test="role == 'seller'">
+                        AND seller_id = #{id}
+                    </if>
+                        AND review_status = 'completed'
+                </where>
+            </script>
             """)
-    List<Review> getReviews(String id, String status);
+    List<Review> getReviews(String id, String role);
 }

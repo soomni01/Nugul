@@ -12,12 +12,12 @@ export function Review(props) {
   const { id } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    if (reviewList.length > 0) return;
+    if (!id) return;
     setLoading(true);
 
     axios
       .get("/api/myPage/review", {
-        params: { id, status: value === "buy" ? "uncompleted" : "completed" },
+        params: { id, role: value === "buy" ? "buyer" : "seller" },
       })
       .then((res) => {
         setReviewList(res.data);
@@ -29,12 +29,16 @@ export function Review(props) {
       });
   }, [id, value]);
 
-  if (loading) {
+  if (!id) {
     return <Spinner />;
   }
 
   return (
-    <Tabs.Root value={value} onValueChange={setValue}>
+    <Tabs.Root
+      value={value}
+      // 객체로 전달되므로 문자열 추출해서 value 설정
+      onValueChange={(newValue) => setValue(newValue?.value || newValue)}
+    >
       <Tabs.List>
         <Tabs.Trigger value="buy">
           <TfiWrite />
@@ -49,7 +53,7 @@ export function Review(props) {
       <Tabs.Content value="buy">
         <Stack>
           {loading ? (
-            <Text>Loading...</Text>
+            <Spinner />
           ) : (
             reviewList.map((review) => (
               <Card.Root size="sm" key={review.id}>

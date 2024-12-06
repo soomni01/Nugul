@@ -21,9 +21,9 @@ public class MyPageController {
     @GetMapping("/review")
     public List<Review> getReviews(
             @RequestParam String id,
-            @RequestParam String status
+            @RequestParam String role
     ) {
-        return service.getReviewsByStatus(id, status);
+        return service.getReviewsByStatus(id, role);
     }
 
     @PostMapping("review/add")

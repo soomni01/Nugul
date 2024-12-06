@@ -47,8 +47,8 @@ public class MyPageService {
         return cnt == 1;
     }
 
-    public List<Review> getReviewsByStatus(String id, String status) {
-        List<Review> reviewList = mapper.getReviews(id, status);
+    public List<Review> getReviewsByStatus(String id, String role) {
+        List<Review> reviewList = mapper.getReviews(id, role);
         return reviewList;
     }
 }

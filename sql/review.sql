@@ -14,3 +14,16 @@ CREATE TABLE review
 );
 
 # product_name, price 는 상품 삭제돼도 어떤 상품인지 정보 보여주기
+
+# 테스트용 코드
+# 작성한 후기
+INSERT INTO review (product_id, product_name, buyer_id, buyer_name, review_text, rating, seller_id, price,
+                    review_status)
+VALUES (109, '구매함', 'sm@naver.com', 'sm', '좋은 거래였습니다.',
+        5, 'qor@naver.com', 5999, 'completed');
+
+# 받은 후기
+INSERT INTO review (product_id, product_name, buyer_id, buyer_name, review_text, rating, seller_id, price,
+                    review_status)
+VALUES (116, '판매함', '111@zz.zz', '111', '좋은 거래였습니다.',
+        2, 'sm@naver.com', 3249, 'completed');
