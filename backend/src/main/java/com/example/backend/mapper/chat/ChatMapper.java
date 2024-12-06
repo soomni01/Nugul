@@ -102,4 +102,10 @@ public interface ChatMapper {
                     where roomId=#{roomId}
             """)
     int deleteChatRoomMessageByRoomId(String roomId);
+
+    @Select("""
+                        select  count(*) from chat_message
+                        where roomId=#{roomId}
+            """)
+    int countMessageByRoomId(String roomId);
 }

@@ -70,9 +70,22 @@ public class ChatService {
 
     }
 
+    // 0인데 , 그럼 select 을 먼저 해보고 해야하나
+//         아 근데 문제가 , 댓글을 나만 작성하고 나만 하는건데,  >chat은 서로나누는거잖아 ,근데 상대가 입력한 정보까지 삭제하면,
+    // 안되는거 아닌가 ?
     public boolean deleteMessageAll(String roomId) {
 
-        int cnt = mapper.deleteChatRoomMessageByRoomId(roomId);
-        return cnt == 1;
+        // 삭제전 메시지  갯수 확인 >  없으면 default 뭐시기 오류 뜸
+        int messageCount = mapper.countMessageByRoomId(roomId);
+
+        //메시지 갯수가 0 보다 크면 > 메세지를 지우고 삭제하고 , 그 여부에 따라 > 실패를 반납,  0이면 > 그냥 삭제하면 됨
+        if (messageCount > 0) {
+            int cnt = mapper.deleteChatRoomMessageByRoomId(roomId);
+            return cnt == 1;
+        } else {
+            return true;
+        }
+
+
     }
 }
