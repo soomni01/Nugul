@@ -64,9 +64,15 @@ public class ChatService {
     // 메시지 로딩
     public List<ChatMessage> getMessageById(String roomId, Integer page) {
         Integer offset = (page - 1) * 8;
-        
+
         return mapper.chatMessagePageByRoomId(roomId, offset);
 
 
+    }
+
+    public boolean deleteMessageAll(String roomId) {
+
+        int cnt = mapper.deleteChatRoomMessageByRoomId(roomId);
+        return cnt == 1;
     }
 }

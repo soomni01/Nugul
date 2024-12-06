@@ -96,4 +96,10 @@ public interface ChatMapper {
                         limit #{offset},8
             """)
     List<ChatMessage> chatMessagePageByRoomId(String roomId, Integer offset);
+
+    @Delete("""
+                    delete from chat_message
+                    where roomId=#{roomId}
+            """)
+    int deleteChatRoomMessageByRoomId(String roomId);
 }

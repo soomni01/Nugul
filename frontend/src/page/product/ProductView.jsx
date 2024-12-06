@@ -36,18 +36,24 @@ function ImageFileView() {
 }
 
 export function ProductView() {
-  const { id } = useParams();
+  //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로  , >router도 변경함
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
-  const { hasAccess, isAuthenticated, isAdmin } = useContext(
+
+  const { hasAccess, isAuthenticated, isAdmin ,id } = useContext(
     AuthenticationContext,
   );
 
+
   useEffect(() => {
-    axios.get(`/api/product/view/${id}`).then((res) => setProduct(res.data));
+    // id >productId
+    axios
+      .get(`/api/product/view/${productId}`)
+      .then((res) => setProduct(res.data));
   }, []);
 
   useEffect(() => {
@@ -110,10 +116,32 @@ export function ProductView() {
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
 
+  // 챗 방 만들기
+  const createChatRoom = () => {
+    var testId;
+    var productName = product.productName;
+    var writer = product.writer;
+    var nickname = "";
+    var buyer = id;
+    axios
+      .post("/api/chat/create", {
+        productName: productName,
+        writer: writer,
+        nickname: nickname,
+        buyer: buyer,
+      })
+      .then((res) => {
+        console.log(res.data);
+        const roomId = res.data;
+        navigate("/chat/room/" + roomId);
+      });
+    // 추가
+  };
+
   return (
     <Box>
       <HStack>
-        <Heading>{id}번 상품 이름</Heading>
+        <Heading>{productId}번 상품 이름</Heading>
         <Box display="flex" justifyContent="center" alignItems="center">
           <ProductLike
             productId={product.productId}
@@ -173,8 +201,11 @@ export function ProductView() {
             {markerPosition && <MapMarker position={markerPosition} />}
           </Map>
         </Box>
-        <Button>거래하기</Button>
-        {(hasAccess(product.writer) || isAdmin) && (
+
+        <Button onClick={createChatRoom} disabled={id === product.writer}>
+          거래하기
+        </Button>   
+        {(hasAccess(product.writer) || isAdmin) && (    
           <Box>
             {hasAccess(product.writer) && (
               <Button
@@ -184,6 +215,7 @@ export function ProductView() {
                 수정
               </Button>
             )}
+            
             {(hasAccess(product.writer) || isAdmin) && (
               <DialogRoot>
                 <DialogTrigger asChild>
