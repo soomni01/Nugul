@@ -50,7 +50,10 @@ export function ChatList() {
           description: message.content,
         });
       })
-      .catch();
+      .catch()
+      .finally(() => {
+        setChatRoomId(-1);
+      });
   };
 
   return (

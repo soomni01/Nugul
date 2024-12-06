@@ -10,9 +10,11 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Button, DialogActionTrigger } from "@chakra-ui/react";
 import { CiLogout } from "react-icons/ci";
-import React from "react";
+import React, { useState } from "react";
 
 export function DialogCompo({ roomId, onDelete }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <DialogRoot>
       <DialogTrigger asChild>
