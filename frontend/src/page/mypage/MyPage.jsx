@@ -7,7 +7,7 @@ import { PurchasedItems } from "../mypage/PurchasedItems.jsx";
 import { Profile } from "../mypage/Profile.jsx";
 import { ProfileEdit } from "./ProfileEdit.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import InquiryList from "../mypage/InquiryList.jsx";
+import InquiryList from "./InquiryList.jsx";
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
