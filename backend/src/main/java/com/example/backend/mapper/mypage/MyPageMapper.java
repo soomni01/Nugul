@@ -131,4 +131,11 @@ public interface MyPageMapper {
             WHERE i.inquiry_id = #{inquiryId}
             """)
     Inquiry inquiryListview(String memberId, int inquiryId);
+
+    @Select("""
+            SELECT AVG(rating) AS average_rating
+            FROM review
+            WHERE seller_id = #{id};
+            """)
+    Double getRating(String id);
 }

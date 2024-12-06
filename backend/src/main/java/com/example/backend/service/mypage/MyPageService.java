@@ -64,4 +64,8 @@ public class MyPageService {
     public Inquiry getview(String memberId, int inquiryId) {
         return mapper.inquiryListview(memberId, inquiryId);
     }
+
+    public Double getRating(String memberId) {
+        return mapper.getRating(memberId);
+    }
 }

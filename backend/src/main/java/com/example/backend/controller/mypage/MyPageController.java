@@ -20,6 +20,15 @@ public class MyPageController {
 
     final MyPageService service;
 
+    // 평점 정보 가져오기
+    @GetMapping("rating")
+    public Double getRating(
+            @RequestParam String memberId
+    ) {
+        System.out.println(memberId);
+        return service.getRating(memberId);
+    }
+
     // 후기 상태에 따라 가져오기
     @GetMapping("/review")
     public List<Review> getReviews(

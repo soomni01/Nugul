@@ -9,10 +9,29 @@ import { PurchasedItems } from "./PurchasedItems.jsx";
 import InquiryList from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
 import { Review } from "./Review.jsx";
+import { Rating } from "../../components/ui/rating.jsx";
+import axios from "axios";
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
+  const [rating, setRating] = useState(0.0);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    axios
+      .get("/api/myPage/rating", { params: { memberId: id } })
+      .then((res) => {
+        // 평점을 반올림한 값으로 설정
+        const roundedRating = Math.round(res.data * 2) / 2; // 소수점 한자리 반올림
+        setRating(roundedRating);
+      })
+      .catch((error) => {
+        console.log("평점 정보를 가져오는 데 실패했습니다.", error);
+      });
+  }, [id, rating]);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -47,6 +66,7 @@ export function MyPage() {
         bgColor="gray.100"
       >
         <VStack align="stretch" spacing={4}>
+          <Rating readOnly value={rating} allowHalf size="sm" />
           <Heading m={5} align="center">
             마이페이지
           </Heading>
