@@ -11,10 +11,10 @@ export function MemberSignup() {
   const [idCheckMessage, setIdCheckMessage] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickName] = useState("");
-  const [nickNameCheckMessage, setNickNameCheckMessage] = useState("");
+  const [nicknameCheckMessage, setNickNameCheckMessage] = useState("");
   const [idCheck, setIdCheck] = useState(false);
   const [rePassword, setRePassword] = useState("");
-  const [nickNameCheck, setNickNameCheck] = useState(false);
+  const [nicknameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
 
   const emailRegEx =
@@ -124,13 +124,13 @@ export function MemberSignup() {
   };
 
   let disabled = true;
-  if (idCheck && nickNameCheck) {
+  if (idCheck && nicknameCheck) {
     if (passwordRegEx.test(password) && password === rePassword) {
       disabled = false;
     }
   }
 
-  let nickNameCheckButtonDisabled = nickname.length === 0;
+  let nicknameCheckButtonDisabled = nickname.length === 0;
 
   const passwordMatchText =
     rePassword.length === 0 ? (
@@ -206,29 +206,28 @@ export function MemberSignup() {
           />
         </Field>
 
-      
         <Field
           helperText={
-            nickNameCheckMessage && (
-              <Text color={nickNameCheck ? "green.500" : "red.500"}>
-                {nickNameCheckMessage}
+            nicknameCheckMessage && (
+              <Text color={nicknameCheck ? "green.500" : "red.500"}>
+                {nicknameCheckMessage}
               </Text>
-            )}
-              >
-       
+            )
+          }
+        >
           <Group attached w={"100%"}>
             <Input
               value={nickname}
               placeholder="별명을 입력하세요"
               onChange={(e) => {
                 setNickName(e.target.value);
-              }}  
+              }}
             />
 
             <Button
               onClick={handleNickNameCheckClick}
               variant={"outline"}
-              disabled={nickNameCheckButtonDisabled}
+              disabled={nicknameCheckButtonDisabled}
             >
               중복 확인
             </Button>

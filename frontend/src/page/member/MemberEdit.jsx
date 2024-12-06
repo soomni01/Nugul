@@ -22,7 +22,7 @@ export function MemberEdit() {
   const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [nickname, setNickName] = useState("");
-  const [nickNameCheck, setNickNameCheck] = useState(false);
+  const [nicknameCheck, setNickNameCheck] = useState(false);
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -89,7 +89,7 @@ export function MemberEdit() {
 
   const isPasswordValid = passwordRegEx.test(password);
 
-  let nickNameCheckButtonDisabled = nickname.length === 0;
+  let nicknameCheckButtonDisabled = nickname.length === 0;
   return (
     <Box>
       <h3>회원정보 수정</h3>
@@ -122,7 +122,7 @@ export function MemberEdit() {
             />
             <Button
               onClick={handleNickNameCheckClick}
-              disabled={nickNameCheckButtonDisabled}
+              disabled={nicknameCheckButtonDisabled}
             >
               중복확인
             </Button>
