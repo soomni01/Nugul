@@ -63,7 +63,6 @@ public class MemberController {
             return ResponseEntity.status(403).body(Map.of("message",
                     Map.of("type", "error", "text", "비밀번호가 일치하지 않습니다.")));
         }
-
         if (service.remove(member, auth)) {
             return ResponseEntity.ok(Map.of("message",
                     Map.of("type", "success", "text", "회원정보를 삭제하였습니다.")));
@@ -73,13 +72,12 @@ public class MemberController {
         }
     }
 
-
-    // 관리자 전용 회원 목록 요청 처리
     @GetMapping("{id}")
     public Member getMember(@PathVariable String id) {
         return service.get(id);
     }
 
+    // 관리자 전용 회원 목록 요청 처리
     @GetMapping("list")
     @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {
@@ -101,8 +99,7 @@ public class MemberController {
         }
     }
 
-
-     // 별명 중복 체크 요청 처리
+    // 별명 중복 체크 요청 처리
     @GetMapping(value = "check", params = "nickname")
     public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam String nickname) {
         if (service.checkNickName(nickname)) {

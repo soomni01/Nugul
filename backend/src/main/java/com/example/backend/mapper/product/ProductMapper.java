@@ -34,7 +34,7 @@ public interface ProductMapper {
     @Select("""
             SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname
             FROM product p
-            JOIN member m ON p.writer = m.member_id
+            LEFT JOIN member m ON p.writer = m.member_id
             WHERE product_id = #{id}
             """)
     Product selectById(int id);
@@ -157,4 +157,9 @@ public interface ProductMapper {
             """)
     List<Product> selectShareProducts(Integer limit);
 
+    @Delete("""
+            DELETE FROM product_like
+            WHERE product_id = #{id}
+            """)
+    int deleteLikeByProductId(int id);
 }

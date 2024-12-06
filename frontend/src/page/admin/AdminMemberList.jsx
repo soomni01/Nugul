@@ -26,6 +26,7 @@ import {
 import { Field } from "../../components/ui/field.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
+// 회원 삭제를 위한 버튼과 비밀번호 입력 및 확인을 관리하는 역할
 function DeleteButton({ memberId, onDelete }) {
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
@@ -80,90 +81,97 @@ function DeleteButton({ memberId, onDelete }) {
   );
 }
 
+// 관리자 페이지에서 회원 목록을 조회, 검색, 페이징 처리 및 회원 삭제를 관리
 export function AdminMemberList() {
   const [memberList, setMemberList] = useState([]);
   const [search, setSearch] = useState({
     type: "all",
     keyword: "",
   });
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const itemsPerPage = 10; // 페이지당 회원 수
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
+  // 컴포넌트가 처음 렌더링될 때 회원 목록 데이터를 가져오고, 가입 날짜 기준으로 정렬함
   useEffect(() => {
     axios
       .get("/api/member/list")
       .then((res) => {
-        console.log("회원 목록 데이터:", res.data);
-        setMemberList(res.data);
+        // 회원 데이터를 'inserted' 날짜 기준으로 오름차순 정렬 후 상태에 저장
+        const sortedMembers = res.data.sort((a, b) => {
+          const dateA = new Date(a.inserted);
+          const dateB = new Date(b.inserted);
+          return dateA - dateB;
+        });
+        setMemberList(sortedMembers);
       })
       .catch((error) => {
         console.error("회원 목록 요청 중 오류 발생:", error);
       });
   }, []);
 
+  // 검색 조건과 키워드에 따라 회원 목록을 필터링함
   const filteredMembers = memberList.filter((member) => {
-    const memberId = member.memberId;
-
-    if (!memberId) {
-      console.error("회원 데이터에 'memberId'가 누락되었습니다:", member);
-      return false;
-    }
-
     const searchTerm = search.keyword.toLowerCase();
+
     switch (search.type) {
       case "all":
         return (
-          memberId.toString().includes(searchTerm) ||
-          member.name.toLowerCase().includes(searchTerm) ||
-          member.nickname.toLowerCase().includes(searchTerm)
+          member.memberId?.toString().toLowerCase().includes(searchTerm) ||
+          member.nickname?.toLowerCase().includes(searchTerm)
         );
       case "id":
-        return memberId.toString().includes(searchTerm);
-      case "name":
-        return member.name.toLowerCase().includes(searchTerm);
+        return member.memberId?.toString().toLowerCase().includes(searchTerm);
       case "nickname":
-        return member.nickname.toLowerCase().includes(searchTerm);
+        return member.nickname?.toLowerCase().includes(searchTerm);
       default:
         return false;
     }
   });
 
-  const totalPages = Math.ceil(filteredMembers.length / itemsPerPage); // 전체 페이지 수
+  // 필터링된 회원 목록을 페이지네이션함
+  const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
   const paginatedMembers = filteredMembers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
+  // 페이지 변경 시 현재 페이지를 업데이함
   function handlePageChange(newPage) {
     setCurrentPage(newPage);
   }
 
+  // 검색 유형 변경 시 검색 상태를 업데이트하고 첫 페이지로 이동함
   function handleSearchTypeChange(e) {
     setSearch({ ...search, type: e.target.value });
     setCurrentPage(1);
   }
 
+  // 검색 키워드 변경 시 검색 상태를 업데이트하고 첫 페이지로 이동함
   function handleSearchKeywordChange(e) {
     setSearch({ ...search, keyword: e.target.value });
     setCurrentPage(1);
   }
 
-  function handleDeleteClick(memberId, password, nickname, inserted) {
+  // 회원 삭제 요청: 관리자 비밀번호 확인 후 해당 회원을 삭제함
+  function handleDeleteClick(memberId, password) {
     axios
       .delete("/api/member/remove", {
-        data: { memberId, password, nickname, inserted },
+        data: { memberId, password },
       })
-      .then((res) => {
+      .then(() => {
+        // 회원 삭제 후 목록에서 해당 회원 제거
         toaster.create({
           type: "success",
           description: "회원 탈퇴가 완료되었습니다.",
         });
-        console.log("응답 데이터:", res.data);
-        navigate("/admin/members");
+        setMemberList((prev) =>
+          prev.filter((member) => member.memberId !== memberId),
+        );
       })
       .catch((error) => {
+        // 비밀번호 불일치 시 에러 메시지 표시
         toaster.create({
           type: "error",
           description: "입력하신 관리자 비밀번호가 일치하지 않습니다.",
@@ -202,15 +210,23 @@ export function AdminMemberList() {
             <TableRow>
               <TableColumnHeader>ID</TableColumnHeader>
               <TableColumnHeader>닉네임</TableColumnHeader>
+              <TableColumnHeader>비밀번호</TableColumnHeader>
               <TableColumnHeader>가입 일자</TableColumnHeader>
               <TableColumnHeader>회원 탈퇴</TableColumnHeader>
             </TableRow>
           </TableHeader>
           <Table.Body>
             {paginatedMembers.map((member) => (
-              <Table.Row key={member.memberId}>
+              <Table.Row
+                key={member.memberId}
+                onClick={() =>
+                  navigate(`/admin/members/${member.memberId}/detail`)
+                }
+                style={{ cursor: "pointer" }}
+              >
                 <Table.Cell>{member.memberId}</Table.Cell>
                 <Table.Cell>{member.nickname}</Table.Cell>
+                <Table.Cell>{member.password}</Table.Cell>
                 <Table.Cell>
                   {new Date(member.inserted).toLocaleDateString()}
                 </Table.Cell>
@@ -225,11 +241,9 @@ export function AdminMemberList() {
           </Table.Body>
         </Table.Root>
       </Box>
-
-      {/* 페이지 버튼 */}
       <Flex justify="center" mt={4} gap={2}>
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
+          <Button
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
             style={{
@@ -243,7 +257,7 @@ export function AdminMemberList() {
             }}
           >
             {index + 1}
-          </button>
+          </Button>
         ))}
       </Flex>
     </Box>
