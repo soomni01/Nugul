@@ -64,6 +64,10 @@ export function ChatView({ chatRoomId, onDelete }) {
             ...prev,
             { sender: a.sender, content: a.content, sentAt: a.sentAt },
           ]);
+          // 스크롤을 하단으로 이동
+          if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+          }
         });
       },
 
@@ -144,8 +148,7 @@ export function ChatView({ chatRoomId, onDelete }) {
   };
 
   const loadPreviousMessage = async () => {
-    //처음에는 true 고 그 다음에 정보를 받아왔는데 ,false가 되면 > 아무것도 안하고 싶은거잖아
-    console.log(hasMore);
+    // 마지막 메시지의 갯수가 8개가 아니면 마지막으로 간주 해서 ,  요청을 보내지 않음
     if (!hasMore) {
       return null;
     }
@@ -184,6 +187,7 @@ export function ChatView({ chatRoomId, onDelete }) {
 
   const handleScroll = async () => {
     const chatBox = chatBoxRef.current;
+    console.log(chatBox.scrollTop);
 
     if (chatBox.scrollTop === 0) {
       // 스크롤 끝 점에서 로드

@@ -98,7 +98,6 @@ export function ChatList() {
             />
           ))}
         </Box>
-
         {chatRoomId === -1 ? null : (
           <ChatView
             key={chatRoomId}
