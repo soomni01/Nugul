@@ -15,11 +15,10 @@ import { Client } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { toaster } from "../../components/ui/toaster.jsx";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import { LuSend } from "react-icons/lu";
 
-export function ChatView({ chatRoomId }) {
+export function ChatView({ chatRoomId, onDelete }) {
   const scrollRef = useRef(null);
   const chatBoxRef = useRef(null);
   const [message, setMessage] = useState([]);
@@ -33,6 +32,7 @@ export function ChatView({ chatRoomId }) {
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
+  // 경로데 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
 
   //  상품명, 방 번호 , 작성자를 보여줄
@@ -190,23 +190,6 @@ export function ChatView({ chatRoomId }) {
     // navigate("chat");
   }
 
-  const removeChatRoom = (realChatRoomId) => {
-    axios
-      .delete("/api/chat/delete/" + realChatRoomId)
-      .then((res) => {
-        const message = res.data.message;
-        toaster.create({
-          type: message.type,
-          description: message.content,
-        });
-      })
-      .catch((e) => console.log(e))
-      .finally(() => {
-        setChatRoomId(-1);
-        navigate("chat");
-      });
-  };
-
   return (
     <Box>
       <Heading mx={"auto"}>
@@ -225,10 +208,7 @@ export function ChatView({ chatRoomId }) {
       >
         <Box mx={"auto"} my={3} variant={"outline"} h={"5%"} pr={2}>
           <HStack variant={"outline"}>
-            <DialogCompo
-              roomId={realChatRoomId}
-              onDelete={() => removeChatRoom(realChatRoomId)}
-            />
+            <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
             {/*판매자 닉네임이 항상 */}
             판매자 닉네임: {chatRoom.nickname}
           </HStack>
