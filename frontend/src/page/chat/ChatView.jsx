@@ -15,8 +15,8 @@ import { Client } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import { LuSend } from "react-icons/lu";
+import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 
 export function ChatView({ chatRoomId, onDelete }) {
   const scrollRef = useRef(null);
@@ -155,9 +155,6 @@ export function ChatView({ chatRoomId, onDelete }) {
 
     setIsloading(true);
 
-    // 처음 값을 트루로 놓으니까 이러지
-    // if (isloading || !hasMore) return;
-
     try {
       const response = await axios.get(
         `/api/chat/view/${realChatRoomId}/messages`,
@@ -180,6 +177,9 @@ export function ChatView({ chatRoomId, onDelete }) {
     } catch (error) {
       console.log("이전 메시지 로딩 중 오류 ", error, page);
     } finally {
+      const chatBox = chatBoxRef.current;
+      const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.4;
+      chatBoxRef.current.scrollTop = reach;
       setPage((prev) => prev + 1);
       setIsloading(false);
     }
@@ -187,9 +187,9 @@ export function ChatView({ chatRoomId, onDelete }) {
 
   const handleScroll = async () => {
     const chatBox = chatBoxRef.current;
-    console.log(chatBox.scrollTop);
+    const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.9;
 
-    if (chatBox.scrollTop === 0) {
+    if (chatBox.scrollTop < reach) {
       // 스크롤 끝 점에서 로드
       loadPreviousMessage();
     }
@@ -203,27 +203,39 @@ export function ChatView({ chatRoomId, onDelete }) {
 
   return (
     <Box>
-      <Heading mx={"auto"}>
-        {" "}
-        {realChatRoomId} 번 채팅 화면입니다. <hr />
-      </Heading>
-      <Button onClick={leaveRoom()}>뒤로가기</Button>
-      <Box mx={"auto"}>상품명: {chatRoom.productName} </Box>
+      {/* Todo 없애햐 할것 */}
+      {/*<Heading mx={"auto"}>*/}
+      {/*  {" "}*/}
+      {/*  {realChatRoomId} 번 채팅 화면입니다. <hr />*/}
+      {/*</Heading>*/}
+      {/*<Button onClick={leaveRoom()}>뒤로가기</Button>*/}
 
       <Flex
         direction="column"
         w={600}
         h={700}
-        bg={"blue.300/50"}
         overflow={"hidden"}
+        borderRadius={"lg"}
+        bg={"blue.300/50"}
+        border={"1px solid"}
+        borderColor={"gray.300"}
       >
-        <Box mx={"auto"} my={3} variant={"outline"} h={"5%"} pr={2}>
-          <HStack variant={"outline"}>
-            <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
-            {/*판매자 닉네임이 항상 */}
-            판매자 닉네임: {chatRoom.nickname}
-          </HStack>
+        {/* 상단 정보 박스 */}
+        <Box
+          display={"flex"}
+          justifyContent={"space-between"}
+          p={5}
+          variant={"outline"}
+          borderBottom={"1px solid gray"}
+        >
+          {/*판매자 닉네임이 항상 */}
+          <Box>
+            <Heading> 판매자 닉네임: {chatRoom.nickname} </Heading>
+            상품명: {chatRoom.productName}
+          </Box>
+          <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
         </Box>
+
         <Box
           h={"85%"}
           overflowY={"auto"}

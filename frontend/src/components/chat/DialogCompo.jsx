@@ -19,7 +19,7 @@ export function DialogCompo({ roomId, onDelete }) {
     <DialogRoot>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <CiLogout />
+          <CiLogout size={"lg"} />
         </Button>
       </DialogTrigger>
       <DialogContent>

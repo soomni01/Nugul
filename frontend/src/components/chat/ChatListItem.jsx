@@ -6,13 +6,13 @@ export function ChatListItem({ chat, onDelete, onClick }) {
   const navigate = useNavigate();
 
   return (
-    <Box variant={"outline"} my={3} onClick={onClick}>
+    <Box variant={"outline"} p={3} onClick={onClick}>
       <Card.Root
         flex
         Direction="row"
         maxW="xl"
         _hover={{
-          borderColor: "green",
+          borderColor: "gray",
         }}
       >
         <HStack>
@@ -24,10 +24,10 @@ export function ChatListItem({ chat, onDelete, onClick }) {
           />
           <Box>
             <Card.Body>
-              <Card.Title> {chat.productName} </Card.Title>
-              <Card.Description>
-                제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.
-              </Card.Description>
+              <Card.Title> 상품명: {chat.productName} </Card.Title>
+              {/*<Card.Description>*/}
+              {/*  제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.*/}
+              {/*</Card.Description>*/}
               <HStack mt="4">
                 <Badge> 제품등록자명 : {chat.writer}</Badge>
               </HStack>

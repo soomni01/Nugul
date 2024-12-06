@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, Flex, Heading, HStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
@@ -85,7 +85,13 @@ export function ChatList() {
           판매
         </Button>
       </HStack>
-      <Flex>
+      <Box
+        display={"flex"}
+        borderRadius={"lg"}
+        border={"1px solid"}
+        borderColor={"gray.300"}
+        bg={"whiteAlpha.300"}
+      >
         <Box>
           {chatList.map((chat) => (
             <ChatListItem
@@ -100,13 +106,14 @@ export function ChatList() {
         </Box>
         {chatRoomId === -1 ? null : (
           <ChatView
+            z-index={1}
             key={chatRoomId}
             chatRoomId={chatRoomId}
             onDelete={() => removeChatRoom(chatRoomId)}
           />
         )}
         <Box>상품 정보</Box>
-      </Flex>
+      </Box>
     </Box>
   );
 }
