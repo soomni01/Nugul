@@ -37,6 +37,7 @@ const ReviewCard = ({ review, value, productNameClick }) => (
         <Heading
           onClick={(e) => productNameClick(e, review.productId)}
           size="lg"
+          color={review.productId ? "black" : "gray.400"}
         >
           {review.productName}
         </Heading>
