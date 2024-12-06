@@ -57,8 +57,9 @@ public interface MyPageMapper {
 
     @Select("""
             <script>
-            SELECT product_name, buyer_name, seller_id, review_text, rating, created_at
-             FROM review 
+            SELECT r.product_name, r.buyer_name, r.price, r.seller_id, r.review_text, r.rating, r.created_at, m.nickname as seller_name
+             FROM review r
+             LEFT JOIN member m ON r.seller_id = m.member_id
                 <where>
                     <if test="role == 'buyer'">
                         AND buyer_id = #{id}

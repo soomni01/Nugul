@@ -14,6 +14,7 @@ public class Review {
     private String reviewText;
     private Integer rating;
     private String sellerId;
+    private String sellerName;
     private Integer price;
     private String reviewStatus;
     private LocalDateTime createdAt;
