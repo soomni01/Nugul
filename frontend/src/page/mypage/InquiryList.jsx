@@ -12,6 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaCommentDots } from "react-icons/fa";
+import axios from "axios";
 import * as search from "eslint-plugin-react/lib/rules/jsx-props-no-spread-multi.js";
 
 const InquiryList = () => {
@@ -19,8 +20,6 @@ const InquiryList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const navigate = useNavigate();
-
-  const userId = "현재 로그인된 사용자의 멤버 아이디"; // 실제로는 인증 시스템을 통해 얻어야 함
 
   useEffect(() => {
     const fetchInquiries = async () => {

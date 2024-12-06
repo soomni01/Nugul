@@ -48,7 +48,8 @@ public class InquiryController {
     @PreAuthorize("isAuthenticated()")
     public List<Inquiry> myList(Authentication auth) {
         if (auth == null) {
-            throw new IllegalStateException("Authentication is null");
+            throw new IllegalStateException(
+                    "인증 정보가 null입니다");
         }
         String memberId = auth.getName(); // 로그인한 사용자의 ID 가져오기
         return service.getInquiryByMemberId(memberId);
