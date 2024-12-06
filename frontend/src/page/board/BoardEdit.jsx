@@ -22,16 +22,33 @@ export function BoardEdit() {
   const [progress, setProgress] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { hasAccess } = useContext(AuthenticationContext);
+  const { id, isAuthenticated, hasAccess, nickname } = useContext(
+    AuthenticationContext,
+  );
 
   const { boardId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/board/boardView/${boardId}`).then((res) => {
-      setBoard(res.data);
-    });
-  }, []);
+    axios
+      .get(`/api/board/boardView/${boardId}`)
+      .then((res) => {
+        const boardData = res.data;
+        setBoard(boardData);
+
+        // 사용자가 해당 게시글의 작성자(닉네임, id)가 아니라면, 목록 페이지로 리다이렉트
+        if (boardData.writerId !== id && boardData.writer !== nickname) {
+          if (!isAuthenticated) {
+            navigate("/");
+            return;
+          }
+          navigate("/board/list");
+        }
+      })
+      .catch(() => {
+        navigate("/board/list");
+      });
+  }, [boardId, isAuthenticated, navigate, id, nickname]);
 
   const handleSaveClick = () => {
     setProgress(true);
