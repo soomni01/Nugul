@@ -16,12 +16,30 @@ import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { Rating } from "../../components/ui/rating.jsx";
+import { useNavigate } from "react-router-dom";
+import { toaster } from "../../components/ui/toaster.jsx";
 
-const ReviewCard = ({ review, value }) => (
+const productNameClick = (navigate, productId) => {
+  if (productId != null) {
+    navigate(`/product/view/${productId}`);
+  } else {
+    toaster.create({
+      type: "error",
+      description: "삭제된 상품입니다.",
+    });
+  }
+};
+
+const ReviewCard = ({ review, value, productNameClick }) => (
   <Card.Root height="90%" width="80%" my={4} size="sm" key={review.id}>
     <Card.Header>
       <HStack justifyContent="space-between">
-        <Heading size="lg">{review.productName}</Heading>
+        <Heading
+          onClick={(e) => productNameClick(e, review.productId)}
+          size="lg"
+        >
+          {review.productName}
+        </Heading>
         <Box>
           <Rating
             readOnly
@@ -71,6 +89,7 @@ export function Review(props) {
   const [value, setValue] = useState("buy");
   const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
@@ -123,7 +142,13 @@ export function Review(props) {
               justifyContent: "left",
             }}
           >
-            <ReviewCard review={review} value={value} />
+            <ReviewCard
+              review={review}
+              value={value}
+              productNameClick={(e) =>
+                productNameClick(navigate, review.productId)
+              }
+            />
           </SwiperSlide>
         ))}
       </Swiper>
