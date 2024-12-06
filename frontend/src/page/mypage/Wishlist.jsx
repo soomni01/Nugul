@@ -58,7 +58,7 @@ export function Wishlist() {
               <SwiperSlide
                 key={product.productId}
                 style={{
-                  height: "100%",
+                  height: "auto",
                   width: "100%",
                   justifyContent: "left",
                 }}
