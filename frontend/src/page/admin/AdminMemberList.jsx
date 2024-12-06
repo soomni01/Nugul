@@ -35,7 +35,7 @@ function DeleteButton({ memberId, onDelete }) {
     if (password.trim() === "") {
       toaster.create({
         type: "error",
-        description: "비밀번호를 입력해 주세요.",
+        description: "관리자 비밀번호를 입력해 주세요.",
       });
       return;
     }

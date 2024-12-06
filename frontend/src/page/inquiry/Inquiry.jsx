@@ -81,16 +81,16 @@ export function Inquiry() {
             <Field label="카테고리">
               <Input value={savedData.category} readOnly />
             </Field>
-            <Field label="제목">
+            <Field label="제목" mb={2}>
               <Input value={savedData.title} readOnly />
             </Field>
-            <Field label="작성자">
+            <Field label="작성자" mb={2}>
               <Input value={savedData.memberId} readOnly />
             </Field>
-            <Field label="작성일자">
+            <Field label="작성일자" mb={2}>
               <Input value={savedData.inserted} readOnly />
             </Field>
-            <Field label="본문">
+            <Field label="내용" mb={2}>
               <Textarea value={savedData.content} readOnly />
             </Field>
           </>
@@ -108,7 +108,7 @@ export function Inquiry() {
                   style={{
                     padding: "8px",
                     borderRadius: "4px",
-                    border: "1px solid #CBD5E0", // Chakra UI 기본 회색
+                    border: "1px solid #CBD5E0",
                   }}
                 >
                   <option value="">문의 유형 선택</option>
@@ -118,16 +118,16 @@ export function Inquiry() {
                 </select>
               </Flex>
             </Field>
-            <Field label="제목">
+            <Field label="제목" mb={2}>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </Field>
-            <Field label="작성자">
+            <Field label="작성자" mb={2}>
               <Input value={id} readOnly />
             </Field>
-            <Field label="작성일자">
+            <Field label="작성일자" mb={2}>
               <Input value={currentDate} readOnly />
             </Field>
-            <Field label="본문">
+            <Field label="내용">
               <Textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}

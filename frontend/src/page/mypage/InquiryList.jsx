@@ -16,7 +16,7 @@ import axios from "axios";
 const InquiryList = ({ onRowClick }) => {
   const [inquiryList, setInquiryList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchInquiries = async () => {
