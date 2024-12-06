@@ -45,7 +45,6 @@ export function Navbar() {
       <NavbarItem
         onClick={() => {
           localStorage.removeItem("token");
-          localStorage.removeItem("activeTab");
           navigate("/");
         }}
       >
