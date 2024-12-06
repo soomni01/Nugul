@@ -26,7 +26,11 @@ export function Profile({ onEditClick }) {
 
   useEffect(() => {
     axios.get(`/api/member/${id}`).then((res) => setMember(res.data));
-  }, []);
+  }, [member]);
+
+  if (!member) {
+    return <Spinner />;
+  }
 
   function handleDeleteClick() {
     axios
@@ -54,10 +58,6 @@ export function Profile({ onEditClick }) {
         setOpen(false);
         setPassword("");
       });
-  }
-
-  if (!member) {
-    return <Spinner />;
   }
 
   return (
