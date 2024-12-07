@@ -11,12 +11,44 @@ import {
 import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export const InquiryView = () => {
+  const [inquiry, setInquiry] = useState(null);
   const [inquiryView, setInquiryView] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { inquiryId } = useParams();
   const navigate = useNavigate();
+
+  // 삭제 클릭 시 호출되는 함수
+  const handleDeleteClick = async () => {
+    try {
+      const response = await axios.delete(`/api/myPage/delete/${inquiryId}`);
+      if (response.status === 200) {
+        toaster.create({
+          type: "success",
+          description: `${inquiryView.inquiryId}번 문의글이 삭제되었습니다.`,
+        });
+        navigate("/myPage");
+      }
+    } catch (error) {
+      toaster.create({
+        type: "error",
+        description: "문의글 삭제에 실패했습니다.",
+      });
+    }
+  };
 
   // 문의 상세 정보를 불러오는 함수
   const fetchInquiryView = async () => {
@@ -104,6 +136,29 @@ export const InquiryView = () => {
           >
             수정
           </Button>
+          <DialogRoot>
+            <DialogTrigger asChild>
+              <Button colorPalette={"red"}>삭제</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>삭제 확인</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
+                {inquiryView && (
+                  <p>{inquiryView.inquiryId}번 문의글을 삭제하시겠습니까?</p>
+                )}
+              </DialogBody>
+              <DialogFooter>
+                <DialogActionTrigger>
+                  <Button variant={"outline"}>취소</Button>
+                </DialogActionTrigger>
+                <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                  삭제
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </DialogRoot>
         </>
       ) : (
         <Text>선택된 문의 내역이 없습니다.</Text>

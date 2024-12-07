@@ -115,6 +115,12 @@ public interface MyPageMapper {
             """)
     int inquiryEdit(Inquiry inquiry);
 
+    @Delete("""
+            DELETE FROM inquiry
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    int deleteInquiry(int inquiryId);
+
     @Select("""
             SELECT inquiry_id, title, content, member_id, answer, inserted
             FROM inquiry

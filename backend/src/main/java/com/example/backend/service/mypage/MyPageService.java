@@ -65,8 +65,14 @@ public class MyPageService {
     }
 
     // 상세 문의 보기에서 수정
-    public boolean edit(Inquiry inquiry) {
+    public boolean editInquiry(Inquiry inquiry) {
         int cnt = mapper.inquiryEdit(inquiry);
+        return cnt == 1;
+    }
+
+    // 상세 문의 보기에서 삭제
+    public boolean deleteInquiry(int inquiryId) {
+        int cnt = mapper.deleteInquiry(inquiryId);
         return cnt == 1;
     }
 
