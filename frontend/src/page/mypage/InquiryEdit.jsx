@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Badge, Box, Button, Input, Text, Textarea } from "@chakra-ui/react";
-import { FaCommentDots } from "react-icons/fa";
+import { Box, Button, Input, Text, Textarea } from "@chakra-ui/react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
@@ -138,16 +137,16 @@ export default function InquiryEdit() {
           value={inquiry.content}
           onChange={handleChange}
         />
-        <Text mb={2}>상태</Text>
-        {inquiry.hasAnswer ? (
-          <Badge variant="subtle" colorScheme="green">
-            <FaCommentDots /> 답변 완료
-          </Badge>
-        ) : (
-          <Badge variant="subtle" colorScheme="red">
-            <FaCommentDots /> 답변 대기
-          </Badge>
-        )}
+        {/*<Text mb={2}>상태</Text>*/}
+        {/*{inquiry.hasAnswer ? (*/}
+        {/*  <Badge variant="subtle" colorScheme="green">*/}
+        {/*    <FaCommentDots /> 답변 완료*/}
+        {/*  </Badge>*/}
+        {/*) : (*/}
+        {/*  <Badge variant="subtle" colorScheme="red">*/}
+        {/*    <FaCommentDots /> 답변 대기*/}
+        {/*  </Badge>*/}
+        {/*)}*/}
       </Box>
       {/* 수정 권한이 있을 때 다이얼로그 및 저장 버튼 표시 */}
       {hasAccess(inquiry.memberId) && (
