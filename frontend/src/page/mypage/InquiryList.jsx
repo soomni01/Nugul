@@ -34,7 +34,12 @@ const InquiryList = ({ onRowClick }) => {
           const sortedInquiries = response.data.sort((a, b) => {
             const dateA = new Date(a.inserted);
             const dateB = new Date(b.inserted);
-            return dateA - dateB;
+            // 먼저 날짜 기준으로 정렬
+            if (dateA - dateB !== 0) {
+              return dateA - dateB;
+            }
+            // 날짜가 같으면 inquiryId 기준으로 정렬
+            return a.inquiryId - b.inquiryId;
           });
           setInquiryList(sortedInquiries);
         }
