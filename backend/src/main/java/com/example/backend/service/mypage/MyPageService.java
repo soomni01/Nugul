@@ -5,6 +5,7 @@ import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ public class MyPageService {
     }
 
     // 후기 내용과 별점이 있는지 확인
-    public boolean validate(Review review) {
+    public boolean validateReview(Review review) {
         boolean reviewText = review.getReviewText().trim().length() > 0;
 
         return reviewText;
@@ -61,5 +62,24 @@ public class MyPageService {
     // 내 문의 내역에서 상세 문의 보기
     public Inquiry getview(String memberId, int inquiryId) {
         return mapper.inquiryListview(memberId, inquiryId);
+    }
+
+    // 상세 문의 보기에서 수정
+    public boolean edit(Inquiry inquiry) {
+        int cnt = mapper.inquiryEdit(inquiry);
+        return cnt == 1;
+    }
+
+    // 주어진 inquiryId에 해당하는 문의가 존재하고, 해당 문의의 작성자 ID가 현재 인증된 사용자와 일치하는지 확인
+    public boolean hasAccess(int inquiryId, Authentication auth) {
+        Inquiry inquiry = mapper.selectByInquiryId(inquiryId);
+        return inquiry != null && inquiry.getMemberId().equals(auth.getName());
+    }
+
+    // 제목과 내용이 있는지 확인
+    public boolean validateInquiry(Inquiry inquiry) {
+        boolean title = inquiry.getTitle().trim().length() > 0;
+        boolean content = inquiry.getContent().trim().length() > 0;
+        return title && content;
     }
 }

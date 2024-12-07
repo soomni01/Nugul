@@ -18,60 +18,51 @@ export const InquiryView = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // 문의 상세 정보를 불러오는 함수
+  const fetchInquiryView = async () => {
     // 로컬 스토리지에서 inquiryId 가져오기
     const inquiryId = localStorage.getItem("selectedInquiryId");
-
-    // inquiryId가 없으면 데이터 로딩 중단
+    // inquiryId가 없으면 에러 메시지 출력 후 종료
     if (!inquiryId) {
       console.error("로컬 스토리지에 selectedInquiryId가 없습니다.");
       return;
     }
 
-    // 로컬 스토리지에서 데이터 가져오기
-    const storedData = localStorage.getItem(`inquiryDetail-${inquiryId}`);
-    if (storedData) {
-      console.log(
-        "로컬 스토리지에서 문의 상세를 불러왔습니다:",
-        JSON.parse(storedData),
-      );
-      setInquiryView(JSON.parse(storedData));
-      return;
-    } else {
-      console.log(
-        "로컬 스토리지에서 inquiryId에 대한 데이터를 찾을 수 없습니다:",
-        inquiryId,
-      );
-    }
-
-    // 데이터 로딩 시작
     setLoading(true);
+    try {
+      const res = await axios.get(`/api/myPage/view?inquiryId=${inquiryId}`);
+      setInquiryView(res.data);
+      // 가져온 데이터를 로컬 스토리지에 저장
+      localStorage.setItem(
+        `inquiryDetail-${inquiryId}`,
+        JSON.stringify(res.data),
+      );
+    } catch (error) {
+      console.error("문의 상세 정보를 가져오는 중 오류 발생:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // 서버에서 문의 상세 정보를 가져오는 함수
-    const fetchInquiryView = async () => {
-      try {
-        const res = await axios.get(`/api/myPage/view?inquiryId=${inquiryId}`);
-        setInquiryView(res.data);
-
-        // 가져온 데이터를 로컬 스토리지에 저장
-        localStorage.setItem(
-          `inquiryDetail-${inquiryId}`,
-          JSON.stringify(res.data),
-        );
-      } catch (error) {
-        console.error("문의 상세 정보를 가져오는 중 오류 발생:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  // 컴포넌트가 처음 마운트될 때 실행
+  useEffect(() => {
     fetchInquiryView();
   }, []);
 
-  // 로딩 중일 때 스피너 표시
+  // 로컬 스토리지가 변경될 때 데이터를 다시 불러오는 이벤트 리스너 설정
+  useEffect(() => {
+    const handleStorageChange = () => {
+      fetchInquiryView(); // 로컬 스토리지가 변경될 때 데이터 다시 불러오기
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   if (loading) return <Spinner />;
 
-  // 문의 상세 정보 렌더링
   return (
     <Box mt="20px">
       {inquiryView ? (
@@ -99,20 +90,16 @@ export const InquiryView = () => {
               <Textarea value={inquiryView.content} readOnly />
             </Field>
             <Field label="상태" mb={2}>
-              {inquiryView.hasAnswer ? (
-                <Badge variant="subtle" colorScheme="green">
-                  <FaCommentDots /> 답변 완료
-                </Badge>
-              ) : (
-                <Badge variant="subtle" colorScheme="red">
-                  <FaCommentDots /> 답변 대기
-                </Badge>
-              )}
+              <Badge
+                variant="subtle"
+                colorScheme={inquiryView.hasAnswer ? "green" : "red"}
+              >
+                <FaCommentDots />{" "}
+                {inquiryView.hasAnswer ? "답변 완료" : "답변 대기"}
+              </Badge>
             </Field>
           </Box>
           <Button
-            colorScheme="teal"
-            mt={4}
             onClick={() => navigate(`/myPage/${inquiryView.inquiryId}/edit`)}
           >
             수정

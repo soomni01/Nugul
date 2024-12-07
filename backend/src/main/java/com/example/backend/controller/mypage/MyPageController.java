@@ -33,7 +33,7 @@ public class MyPageController {
     public ResponseEntity<Map<String, Object>> addReview(
             @RequestBody Review review) {
         System.out.println(review);
-        if (service.validate(review)) {
+        if (service.validateReview(review)) {
             if (service.addReview(review)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
@@ -87,5 +87,33 @@ public class MyPageController {
     public Inquiry view(@RequestParam int inquiryId, Authentication auth) {
         String memberId = auth.getName();
         return service.getview(memberId, inquiryId);
+    }
+
+    // 내 문의 내역의 상세 페이지에서 수정하기
+    @PutMapping("edit")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> edit(@RequestBody Inquiry inquiry, Authentication auth) {
+        System.out.println("수정 요청: " + inquiry);
+        if (service.hasAccess(inquiry.getInquiryId(), auth)) {
+            if (service.validateInquiry(inquiry)) {
+                if (service.edit(inquiry)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                    "text", inquiry.getInquiryId() + "번 게시물이 수정되었습니다.")));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "error",
+                                    "text", inquiry.getInquiryId() + "번 게시물이 수정되지 않았습니다.")));
+                }
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", Map.of("type", "warning",
+                                "text", "제목이나 본문이 비어있을 수 없습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "수정 권한이 없습니다.")));
+        }
     }
 }

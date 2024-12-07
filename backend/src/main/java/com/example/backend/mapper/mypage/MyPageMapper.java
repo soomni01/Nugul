@@ -73,6 +73,7 @@ public interface MyPageMapper {
             </script>
             """)
     List<Review> getReviews(String id, String role);
+
     @Select("""
             SELECT i.inquiry_id,
                    i.title,
@@ -104,4 +105,20 @@ public interface MyPageMapper {
             WHERE i.inquiry_id = #{inquiryId}
             """)
     Inquiry inquiryListview(String memberId, int inquiryId);
+
+    @Update("""
+            UPDATE inquiry
+            SET category = #{category},
+                title = #{title},
+                content = #{content}
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    int inquiryEdit(Inquiry inquiry);
+
+    @Select("""
+            SELECT inquiry_id, title, content, member_id, answer, inserted
+            FROM inquiry
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    Inquiry selectByInquiryId(int inquiryId);
 }
