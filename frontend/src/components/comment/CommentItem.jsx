@@ -27,7 +27,7 @@ function DeleteButton({ onClick }) {
                         <DialogTitle>삭제 확인</DialogTitle>
                     </DialogHeader>
                     <DialogBody>
-                        <p>댓글을 삭제하시겠습니까?</p>
+                        <p>댓글을 삭제하시겠습니까? </p>
                     </DialogBody>
                     <DialogFooter>
                         <DialogActionTrigger>
