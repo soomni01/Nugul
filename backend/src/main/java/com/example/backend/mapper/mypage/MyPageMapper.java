@@ -1,6 +1,7 @@
 package com.example.backend.mapper.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import org.apache.ibatis.annotations.*;
@@ -105,6 +106,13 @@ public interface MyPageMapper {
             WHERE i.inquiry_id = #{inquiryId}
             """)
     Inquiry inquiryListview(String memberId, int inquiryId);
+
+    @Select("""
+            SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
+            FROM inquiry_comment
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    List<InquiryComment> findCommentsByInquiryId(int inquiryId);
 
     @Update("""
             UPDATE inquiry

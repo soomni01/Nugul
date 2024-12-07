@@ -7,6 +7,7 @@ import {
   Spinner,
   Text,
   Textarea,
+  VStack,
 } from "@chakra-ui/react";
 import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
@@ -25,8 +26,8 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 
 export const InquiryView = () => {
-  const [inquiry, setInquiry] = useState(null);
   const [inquiryView, setInquiryView] = useState(null);
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
   const { inquiryId } = useParams();
   const navigate = useNavigate();
@@ -50,13 +51,32 @@ export const InquiryView = () => {
     }
   };
 
+  // 댓글을 가져오는 함수
+  const fetchComments = async () => {
+    try {
+      console.log("Fetching comments for inquiryId:", inquiryId);
+      const response = await axios.get(`/api/myPage/comments/${inquiryId}`);
+      console.log("Comments fetched:", response.data);
+      if (Array.isArray(response.data)) {
+        setComments(response.data);
+      } else {
+        console.error("댓글 데이터 형식이 예상과 다릅니다.");
+      }
+    } catch (error) {
+      console.error("댓글을 가져오는 중 오류 발생:", error);
+      if (error.response) {
+        console.error("Error response:", error.response);
+      }
+    }
+  };
+
   // 문의 상세 정보를 불러오는 함수
   const fetchInquiryView = async () => {
     // 로컬 스토리지에서 inquiryId 가져오기
     const inquiryId = localStorage.getItem("selectedInquiryId");
     // inquiryId가 없으면 에러 메시지 출력 후 종료
     if (!inquiryId) {
-      console.error("로컬 스토리지에 selectedInquiryId가 없습니다.");
+      console.error("로컬 스토리지가 selectedInquiryId가 없습니다.");
       return;
     }
 
@@ -69,6 +89,7 @@ export const InquiryView = () => {
         `inquiryDetail-${inquiryId}`,
         JSON.stringify(res.data),
       );
+      fetchComments(); // 댓글도 불러오기
     } catch (error) {
       console.error("문의 상세 정보를 가져오는 중 오류 발생:", error);
     } finally {
@@ -76,22 +97,9 @@ export const InquiryView = () => {
     }
   };
 
-  // 컴포넌트가 처음 마운트될 때 실행
   useEffect(() => {
     fetchInquiryView();
-  }, []);
-
-  // 로컬 스토리지가 변경될 때 데이터를 다시 불러오는 이벤트 리스너 설정
-  useEffect(() => {
-    const handleStorageChange = () => {
-      fetchInquiryView(); // 로컬 스토리지가 변경될 때 데이터 다시 불러오기
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  }, [inquiryId]);
 
   if (loading) return <Spinner />;
 
@@ -159,6 +167,39 @@ export const InquiryView = () => {
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
+
+          <Box mt={4}>
+            <Text fontSize="xl" fontWeight="bold">
+              댓글
+            </Text>
+            {comments.length > 0 ? (
+              <VStack spacing={3}>
+                {comments.map((comment) => (
+                  <Box
+                    key={comment.id}
+                    borderWidth="1px"
+                    p={3}
+                    borderRadius="md"
+                  >
+                    <Text fontWeight="bold" fontSize="lg">
+                      {comment.memberId}{" "}
+                      <Text
+                        as="span"
+                        color="gray.500"
+                        fontSize="sm"
+                        fontWeight="medium"
+                      >
+                        {new Date(comment.inserted).toLocaleDateString()}
+                      </Text>
+                    </Text>
+                    <Text>{comment.comment}</Text>
+                  </Box>
+                ))}
+              </VStack>
+            ) : (
+              <Text>댓글이 없습니다.</Text>
+            )}
+          </Box>
         </>
       ) : (
         <Text>선택된 문의 내역이 없습니다.</Text>

@@ -1,6 +1,7 @@
 package com.example.backend.service.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
@@ -62,6 +63,11 @@ public class MyPageService {
     // 내 문의 내역에서 상세 문의 보기
     public Inquiry getview(String memberId, int inquiryId) {
         return mapper.inquiryListview(memberId, inquiryId);
+    }
+
+    // 특정 문의의 모든 댓글을 조회
+    public List<InquiryComment> getCommentByInquiryId(int inquiryId) {
+        return mapper.findCommentsByInquiryId(inquiryId);
     }
 
     // 상세 문의 보기에서 수정

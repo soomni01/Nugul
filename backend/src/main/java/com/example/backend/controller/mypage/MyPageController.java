@@ -1,6 +1,7 @@
 package com.example.backend.controller.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.service.mypage.MyPageService;
@@ -89,7 +90,13 @@ public class MyPageController {
         return service.getview(memberId, inquiryId);
     }
 
-    // 내 문의 내역의 상세 페이지에서 수정하기
+    // 특정 문의의 모든 댓글을 조회
+    @GetMapping("/comments/{inquiryId}")
+    public List<InquiryComment> getComments(@PathVariable int inquiryId) {
+        return service.getCommentByInquiryId(inquiryId);
+    }
+
+    // 상세 문의 보기에서 수정
     @PutMapping("edit")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> editInquiry(@RequestBody Inquiry inquiry, Authentication auth) {
@@ -116,7 +123,7 @@ public class MyPageController {
         }
     }
 
-    // 내 문의 내역의 상세 페이지에서 삭제하기
+    // 상세 문의 보기에서 삭제
     @DeleteMapping("delete/{inquiryId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteInquiry(@PathVariable int inquiryId, Authentication auth) {
