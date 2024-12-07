@@ -103,11 +103,11 @@ const InquiryList = ({ onRowClick }) => {
                   </Table.Cell>
                   <Table.Cell>
                     {inquiry.hasAnswer ? (
-                      <Badge variant={"subtle"} colorScheme="green">
+                      <Badge variant={"subtle"} colorPalette={"green"}>
                         <FaCommentDots /> 답변 완료
                       </Badge>
                     ) : (
-                      <Badge variant={"subtle"} colorScheme="red">
+                      <Badge variant={"subtle"} colorPalette={"red"}>
                         <FaCommentDots /> 답변 대기
                       </Badge>
                     )}
