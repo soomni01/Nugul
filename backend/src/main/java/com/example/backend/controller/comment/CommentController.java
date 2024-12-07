@@ -3,11 +3,13 @@ package com.example.backend.controller.comment;
 import com.example.backend.dto.comment.Comment;
 import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +32,10 @@ public class CommentController {
 
     @PostMapping("commentAdd")
     @PreAuthorize("isAuthenticated()")
-    public void commentAdd(@RequestBody Comment comment, Authentication authentication) {
+    public ResponseEntity<Map<String,Object>> commentAdd(@RequestBody Comment comment, Authentication authentication) {
         service.commentAdd(comment, authentication);
+        return ResponseEntity.ok().body(Map.of("message",
+                Map.of("type", "success",
+                        "text", "새 댓글이 등록되었습니다.")));
     }
 }

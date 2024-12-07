@@ -3,6 +3,7 @@ import { CommentInput } from "./CommentInput.jsx";
 import { CommentList } from "./CommentList.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {toaster} from "../ui/toaster.jsx";
 
 export function CommentContainer({ boardId }) {
     const [commentList, setCommentList] = useState([]);
@@ -23,6 +24,12 @@ export function CommentContainer({ boardId }) {
             .post("/api/comment/commentAdd", {
                 boardId: boardId,
                 comment: comment,
+            }).then((res)=>res.data.message)
+            .then((message)=>{
+                toaster.create({
+                    type: message.type,
+                    description: message.text,
+                })
             })
             .finally(() => {
                 setProcessing(false);
