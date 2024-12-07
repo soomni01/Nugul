@@ -32,4 +32,9 @@ public class CommentService {
     public void remove(Integer commentId) {
         mapper.deleteById(commentId);
     }
+
+    public boolean update(Comment comment) {
+        int cnt = mapper.update(comment);
+        return cnt == 1;
+    }
 }

@@ -43,12 +43,24 @@ export function CommentContainer({ boardId }) {
         });
     }
 
+    function handleEditClick(commentId, comment) {
+        setProcessing(true);
+        axios.put(`/api/comment/commentEdit`, { commentId, comment }).finally(() => {
+            setProcessing(false);
+        });
+    }
+
     return (
         <Box>
             <Stack gap={5}>
                 <h3>댓글</h3>
                 <CommentInput boardId={boardId} onSaveClick={handleSaveClick} />
-                <CommentList boardId={boardId} commentList={commentList} onDeleteClick={handleDeleteClick} />
+                <CommentList
+                    boardId={boardId}
+                    commentList={commentList}
+                    onDeleteClick={handleDeleteClick}
+                    onEditClick={handleEditClick}
+                />
             </Stack>
         </Box>
     );
