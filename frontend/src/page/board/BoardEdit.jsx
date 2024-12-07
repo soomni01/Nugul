@@ -33,16 +33,7 @@ export function BoardEdit() {
   const { boardId } = useParams();
   const navigate = useNavigate();
 
-  const showedLoginMessage = useRef(false);
-  const showedNoPermissionMessage = useRef(false);
-
   useEffect(() => {
-    // 1. 로그인 상태 및 id 확인
-    if (!hasAccess) {
-      // id가 설정되지 않았으면 게시물 조회를 진행하지 않음
-      return;
-    }
-
     axios
         .get(`/api/board/boardView/${boardId}`)
         .then((res) => {
@@ -78,7 +69,7 @@ export function BoardEdit() {
           console.log("게시물 조회 실패");
           navigate("/board/list"); // 오류 발생 시 목록 페이지로 리디렉션
         });
-  }, [boardId,hasAccess, id, isAuthenticated, navigate]); // id, isAuthenticated가 변경될 때마다 실행
+  }, [boardId, id, isAuthenticated, navigate]); // id, isAuthenticated가 변경될 때마다 실행
 
 
 
