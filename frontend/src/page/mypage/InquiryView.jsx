@@ -159,9 +159,9 @@ export const InquiryView = () => {
             </DialogContent>
           </DialogRoot>
           <Box mt={4}>
-            <Text fontSize="xl" fontWeight="bold">
-              댓글
-            </Text>
+            {/*<Text fontSize="xl" fontWeight="bold">*/}
+            {/*  댓글*/}
+            {/*</Text>*/}
             {comments.length === 0 ? (
               <Text mt={4}>아직 관리자가 답변하지 않았습니다.</Text>
             ) : (
