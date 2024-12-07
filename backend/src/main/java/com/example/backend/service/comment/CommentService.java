@@ -23,4 +23,13 @@ public class CommentService {
     public List<Comment> commentList(Integer boardId) {
         return mapper.selectByBoardId(boardId);
     }
+
+    public boolean hashCode(Integer commentId, Authentication authentication) {
+        Comment comment = mapper.selectById(commentId);
+        return comment.getMemberId().equals(authentication.getName());
+    }
+
+    public void remove(Integer commentId) {
+        mapper.deleteById(commentId);
+    }
 }

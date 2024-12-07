@@ -15,6 +15,14 @@ import java.util.List;
 public class CommentController {
     final CommentService service;
 
+    @DeleteMapping("remove/{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    public void remove(@PathVariable Integer commentId,Authentication authentication) {
+        if (service.hashCode(commentId,authentication)){
+            service.remove(commentId);
+        };
+    }
+
     @GetMapping("commentList/{boardId}")
     public List<Comment> commentList(@PathVariable Integer boardId) {
         return service.commentList(boardId);
