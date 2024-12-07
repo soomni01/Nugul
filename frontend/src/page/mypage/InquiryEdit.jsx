@@ -18,14 +18,13 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 
 export default function InquiryEdit() {
   const [inquiry, setInquiry] = useState(null);
-  const [category, setCategory] = useState("");
   const [progress, setProgress] = useState(false);
   const { inquiryId } = useParams();
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
 
-  // 컴포넌트 마운트 시 문의 정보를 가져오는 useEffect
+  // 문의 내역의 상세 문의 보기 데이터 로드
   useEffect(() => {
     const fetchInquiry = async () => {
       try {
@@ -34,7 +33,6 @@ export default function InquiryEdit() {
         );
         if (response.status === 200) {
           setInquiry(response.data);
-          setCategory(response.data.category);
         }
       } catch (error) {
         console.error("문의 내역을 불러오는 중 오류가 발생했습니다:", error);
@@ -50,16 +48,6 @@ export default function InquiryEdit() {
       ...prevInquiry,
       [name]: value,
     }));
-  };
-
-  // 카테고리 선택 핸들러
-  const handleCategoryChange = (e) => {
-    const { value } = e.target;
-    setInquiry((prevInquiry) => ({
-      ...prevInquiry,
-      category: value,
-    }));
-    setCategory(value);
   };
 
   // 저장 버튼 클릭 시 호출되는 함수
@@ -91,15 +79,14 @@ export default function InquiryEdit() {
       });
   };
 
+  // 저장 버튼 비활성화 상태 확인
+  const isSaveDisabled = () =>
+    !(inquiry.title.trim().length > 0 && inquiry.content.trim().length > 0);
+
   // 문의 정보가 없으면 로딩 중 메시지 출력
   if (!inquiry) {
     return <Text>문의 내역을 불러오는 중입니다...</Text>;
   }
-
-  // 제목과 내용이 빈 경우 저장 버튼 비활성화
-  const disabled = !(
-    inquiry.title.trim().length > 0 && inquiry.content.trim().length > 0
-  );
 
   return (
     <Box mt="20px">
@@ -109,8 +96,9 @@ export default function InquiryEdit() {
       <Box mb={3}>
         <Field mb={2}>문의 유형</Field>
         <select
-          value={category}
-          onChange={handleCategoryChange}
+          name="category"
+          value={inquiry.category}
+          onChange={handleChange}
           style={{
             padding: "8px",
             borderRadius: "4px",
@@ -137,26 +125,15 @@ export default function InquiryEdit() {
           value={inquiry.content}
           onChange={handleChange}
         />
-        {/*<Text mb={2}>상태</Text>*/}
-        {/*{inquiry.hasAnswer ? (*/}
-        {/*  <Badge variant="subtle" colorScheme="green">*/}
-        {/*    <FaCommentDots /> 답변 완료*/}
-        {/*  </Badge>*/}
-        {/*) : (*/}
-        {/*  <Badge variant="subtle" colorScheme="red">*/}
-        {/*    <FaCommentDots /> 답변 대기*/}
-        {/*  </Badge>*/}
-        {/*)}*/}
       </Box>
-      {/* 수정 권한이 있을 때 다이얼로그 및 저장 버튼 표시 */}
-      {hasAccess(inquiry.memberId) && (
+      {hasAccess?.(inquiry?.memberId) && (
         <Box>
           <DialogRoot
             open={dialogOpen}
             onOpenChange={(e) => setDialogOpen(e.open)}
           >
             <DialogTrigger asChild>
-              <Button disabled={disabled} colorPalette={"blue"}>
+              <Button disabled={isSaveDisabled()} colorPalette={"blue"}>
                 저장
               </Button>
             </DialogTrigger>
