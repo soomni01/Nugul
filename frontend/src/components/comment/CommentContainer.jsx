@@ -38,7 +38,8 @@ export function CommentContainer({ boardId }) {
 
     function handleDeleteClick(commentId) {
         setProcessing(true);
-        axios.delete(`/api/comment/remove/${commentId}`).finally(() => {
+        axios.delete(`/api/comment/remove/${commentId}`)
+            .finally(() => {
             setProcessing(false);
         });
     }
@@ -47,7 +48,17 @@ export function CommentContainer({ boardId }) {
         setProcessing(true);
         axios.put(`/api/comment/commentEdit`, { commentId, comment }).finally(() => {
             setProcessing(false);
-        });
+        })
+            .then((res)=> res.data.message)
+            .then((message)=>{
+                toaster.create({
+                    type: message.type,
+                    description: message.text,
+                })
+            })
+            .finally(()=>{
+                setProcessing(false)
+            });
     }
 
     return (

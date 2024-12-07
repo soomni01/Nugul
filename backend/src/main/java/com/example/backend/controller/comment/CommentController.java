@@ -19,7 +19,9 @@ public class CommentController {
 
     @PutMapping("commentEdit")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> edit(@RequestBody Comment comment) {
+    public ResponseEntity<Map<String, Object>> edit(
+            @RequestBody Comment comment, Authentication authentication) {
+        if (service.hashCode(comment.getCommentId(),authentication)){
         if (service.update(comment)) {
             return ResponseEntity.ok().body(Map.of("message",
                     Map.of("type", "success",
@@ -28,6 +30,9 @@ public class CommentController {
             return ResponseEntity.internalServerError().body(Map.of("message",
                     Map.of("type", "error",
                             "text", "댓글이 수정되지 않았습니다.")));
+        }
+        }else {
+            return ResponseEntity.status(403).build();
         }
     }
 
