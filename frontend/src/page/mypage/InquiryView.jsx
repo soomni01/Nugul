@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Badge,
   Box,
   Button,
   Input,
@@ -9,7 +8,6 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import { useNavigate, useParams } from "react-router-dom";
@@ -54,19 +52,12 @@ export const InquiryView = () => {
   // 댓글을 가져오는 함수
   const fetchComments = async () => {
     try {
-      console.log("Fetching comments for inquiryId:", inquiryId);
       const response = await axios.get(`/api/myPage/comments/${inquiryId}`);
-      console.log("Comments fetched:", response.data);
       if (Array.isArray(response.data)) {
         setComments(response.data);
-      } else {
-        console.error("댓글 데이터 형식이 예상과 다릅니다.");
       }
     } catch (error) {
-      console.error("댓글을 가져오는 중 오류 발생:", error);
-      if (error.response) {
-        console.error("Error response:", error.response);
-      }
+      console.error("댓글을 가져오는 중 오류가 발생했습니다:", error);
     }
   };
 
@@ -129,15 +120,15 @@ export const InquiryView = () => {
             <Field label="내용" mb={2}>
               <Textarea value={inquiryView.content} readOnly />
             </Field>
-            <Field label="상태" mb={2}>
-              <Badge
-                variant="subtle"
-                colorScheme={inquiryView.hasAnswer ? "green" : "red"}
-              >
-                <FaCommentDots />{" "}
-                {inquiryView.hasAnswer ? "답변 완료" : "답변 대기"}
-              </Badge>
-            </Field>
+            {/*<Field label="상태" mb={2}>*/}
+            {/*  <Badge*/}
+            {/*    variant="subtle"*/}
+            {/*    colorScheme={inquiryView.hasAnswer ? "green" : "red"}*/}
+            {/*  >*/}
+            {/*    <FaCommentDots />{" "}*/}
+            {/*    {inquiryView.hasAnswer ? "답변 완료" : "답변 대기"}*/}
+            {/*  </Badge>*/}
+            {/*</Field>*/}
           </Box>
           <Button
             onClick={() => navigate(`/myPage/${inquiryView.inquiryId}/edit`)}
@@ -167,37 +158,38 @@ export const InquiryView = () => {
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
-
           <Box mt={4}>
             <Text fontSize="xl" fontWeight="bold">
               댓글
             </Text>
-            {comments.length > 0 ? (
-              <VStack spacing={3}>
-                {comments.map((comment) => (
-                  <Box
-                    key={comment.id}
-                    borderWidth="1px"
-                    p={3}
-                    borderRadius="md"
-                  >
-                    <Text fontWeight="bold" fontSize="lg">
-                      {comment.memberId}{" "}
-                      <Text
-                        as="span"
-                        color="gray.500"
-                        fontSize="sm"
-                        fontWeight="medium"
-                      >
-                        {new Date(comment.inserted).toLocaleDateString()}
-                      </Text>
-                    </Text>
-                    <Text>{comment.comment}</Text>
-                  </Box>
-                ))}
-              </VStack>
+            {comments.length === 0 ? (
+              <Text mt={4}>아직 관리자가 답변하지 않았습니다.</Text>
             ) : (
-              <Text>댓글이 없습니다.</Text>
+              <Box mt={4}>
+                <VStack spacing={3}>
+                  {comments.map((comment) => (
+                    <Box
+                      key={comment.id}
+                      borderWidth="1px"
+                      p={3}
+                      borderRadius="md"
+                    >
+                      <Text fontWeight="bold" fontSize="lg">
+                        {comment.memberId}{" "}
+                        <Text
+                          as="span"
+                          color="gray.500"
+                          fontSize="sm"
+                          fontWeight="medium"
+                        >
+                          {new Date(comment.inserted).toLocaleDateString()}
+                        </Text>
+                      </Text>
+                      <Text>{comment.comment}</Text>
+                    </Box>
+                  ))}
+                </VStack>
+              </Box>
             )}
           </Box>
         </>
