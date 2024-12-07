@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Flex,
+  Spinner,
   Table,
   TableColumnHeader,
   TableHeader,
@@ -17,21 +18,33 @@ import { useNavigate } from "react-router-dom";
 const InquiryList = ({ onRowClick }) => {
   const [inquiryList, setInquiryList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 5;
   const navigate = useNavigate();
 
+  // 컴포넌트가 마운트될 때 데이터를 불러오고, 이미 데이터가 있으면 불러오지 않으며, 로딩 상태를 관리하는 useEffect 훅
   useEffect(() => {
     const fetchInquiries = async () => {
-      const response = await axios.get("/api/myPage/list");
-      if (response.status === 200) {
-        const sortedInquiries = response.data.sort((a, b) => {
-          const dateA = new Date(a.inserted);
-          const dateB = new Date(b.inserted);
-          return dateA - dateB;
-        });
-        setInquiryList(sortedInquiries);
+      if (inquiryList.length > 0) return; // 이미 데이터가 있으면 아무 작업도 하지 않음
+      setLoading(true); // 데이터 로딩 시작
+
+      try {
+        const response = await axios.get("/api/myPage/list");
+        if (response.status === 200) {
+          const sortedInquiries = response.data.sort((a, b) => {
+            const dateA = new Date(a.inserted);
+            const dateB = new Date(b.inserted);
+            return dateA - dateB;
+          });
+          setInquiryList(sortedInquiries);
+        }
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류가 발생했습니다:", error);
+      } finally {
+        setLoading(false); // 데이터 로딩 완료
       }
     };
+
     fetchInquiries();
   }, []);
 
@@ -51,6 +64,10 @@ const InquiryList = ({ onRowClick }) => {
     // InquiryView 페이지로 이동
     navigate(`/myPage/${inquiryId}`);
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <Box mt="60px">
