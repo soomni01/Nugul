@@ -13,4 +13,6 @@ public class Board {
     private String writer; // 작성자 닉네임
     private String category;
     private LocalDate createdAt;
+
+    private Integer countComment;
 }

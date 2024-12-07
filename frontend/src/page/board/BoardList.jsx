@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Input, Table } from "@chakra-ui/react";
+import {Badge, Box, Flex, HStack, Input, Table} from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
@@ -11,6 +11,7 @@ import {
 } from "../../components/ui/pagination.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import {FaCommentDots} from "react-icons/fa";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -123,7 +124,15 @@ export function BoardList() {
                 key={board.boardId}
               >
                 <Table.Cell>{board.boardId}</Table.Cell>
-                <Table.Cell>{board.title}</Table.Cell>
+                <Table.Cell>
+                  {board.title}
+                  {board.countComment > 0 && (
+                      <Badge variant={"subtle"} colorPalette={"green"}>
+                        <FaCommentDots />
+                        {board.countComment}
+                      </Badge>
+                  )}
+                </Table.Cell>
                 <Table.Cell>{board.writer}</Table.Cell>
                 <Table.Cell>{board.category}</Table.Cell>
                 <Table.Cell>{board.createdAt}</Table.Cell>

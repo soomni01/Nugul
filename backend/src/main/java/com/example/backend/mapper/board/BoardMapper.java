@@ -47,8 +47,9 @@ public interface BoardMapper {
 
     @Select("""
             <script>
-            SELECT b.board_id, b.title, b.writer AS writerId, m.nickname AS writer, b.category,b.created_at
-            FROM board b
+            SELECT b.board_id, b.title, b.writer AS writerId, m.nickname AS writer, b.category,b.created_at,COUNT(c.board_id) AS countComment
+            FROM board b 
+            LEFT JOIN comment c ON b.board_id = c.board_id
             LEFT JOIN member m ON b.writer = m.member_id
             WHERE 
                 <trim prefixOverrides="OR">
@@ -62,7 +63,8 @@ public interface BoardMapper {
                         OR category LIKE CONCAT('%', #{searchKeyword}, '%')
                     </if>
                 </trim>
-            ORDER BY board_id DESC
+            GROUP BY b.board_id
+            ORDER BY b.board_id DESC
             LIMIT #{offset}, 10
             </script>
             """)
