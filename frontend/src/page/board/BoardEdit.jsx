@@ -37,47 +37,48 @@ export function BoardEdit() {
   const showedNoPermissionMessage = useRef(false);
 
   useEffect(() => {
-    const fetchBoardData = async () => {
-      try {
-        const res = await axios.get(`/api/board/boardView/${boardId}`);
-        const boardData = res.data;
-        setBoard(boardData);
+    // 1. 로그인 상태 및 id 확인
+    if (!hasAccess) {
+      // id가 설정되지 않았으면 게시물 조회를 진행하지 않음
+      return;
+    }
 
-        // 작성자 확인
-        const isWriter = String(boardData.writerId) === String(id);
+    axios
+        .get(`/api/board/boardView/${boardId}`)
+        .then((res) => {
+          const boardData = res.data;
+          setBoard(boardData);
 
-        if (!isWriter) {
-          if (!isAuthenticated) {
-            // 비로그인 상태일 때
-            if (!showedLoginMessage.current) {
+          // 2. 작성자 확인
+          const isWriter = String(boardData.writerId) === String(id);
+
+          // 3. 작성자가 아니라면 처리
+          if (!isWriter) {
+            if (!isAuthenticated) {
+              // 비로그인 상태
               toaster.create({
                 type: "error",
                 description: "로그인이 필요합니다. 로그인 후 수정할 수 있습니다.",
               });
-              showedLoginMessage.current = true; // 중복 메시지 방지
               navigate("/"); // 로그인 페이지로 리디렉션
-            }
-          } else {
-            // 로그인했지만 작성자가 아닌 경우
-            if (!showedNoPermissionMessage.current) {
+            } else {
+              // 로그인했지만 작성자가 아닌 경우
               toaster.create({
                 type: "error",
                 description: "수정 권한이 없습니다. 작성자만 수정할 수 있습니다.",
               });
-              showedNoPermissionMessage.current = true; // 중복 메시지 방지
               navigate("/board/list"); // 목록 페이지로 리디렉션
             }
+            return; // 더 이상 실행하지 않도록 종료
           }
-          return; // 더 이상 실행하지 않음
-        }
-      } catch (error) {
-        console.error("Error fetching board data:", error);
-        navigate("/board/list"); // 오류 발생 시 목록 페이지로 리디렉션
-      }
-    };
 
-    fetchBoardData();
-  }, [boardId, id, isAuthenticated, navigate]); // 의존성 추가
+          // 4. 작성자일 경우 정상적인 처리 추가
+        })
+        .catch(() => {
+          console.log("게시물 조회 실패");
+          navigate("/board/list"); // 오류 발생 시 목록 페이지로 리디렉션
+        });
+  }, [boardId,hasAccess, id, isAuthenticated, navigate]); // id, isAuthenticated가 변경될 때마다 실행
 
 
 
