@@ -1,6 +1,6 @@
 import { Box, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
@@ -26,29 +26,60 @@ export function BoardEdit() {
     AuthenticationContext,
   );
 
+  console.log("id:", id); // id 확인
+  console.log("isAuthenticated:", isAuthenticated); // 로그인 상태 확인
+  console.log("nickname:", nickname); // 닉네임 확인
+
   const { boardId } = useParams();
   const navigate = useNavigate();
 
+  const showedLoginMessage = useRef(false);
+  const showedNoPermissionMessage = useRef(false);
+
   useEffect(() => {
-    axios
-      .get(`/api/board/boardView/${boardId}`)
-      .then((res) => {
+    const fetchBoardData = async () => {
+      try {
+        const res = await axios.get(`/api/board/boardView/${boardId}`);
         const boardData = res.data;
         setBoard(boardData);
 
-        // 사용자가 해당 게시글의 작성자(닉네임, id)가 아니라면, 목록 페이지로 리다이렉트
-        if (boardData.writerId !== id && boardData.writer !== nickname) {
+        // 작성자 확인
+        const isWriter = String(boardData.writerId) === String(id);
+
+        if (!isWriter) {
           if (!isAuthenticated) {
-            navigate("/");
-            return;
+            // 비로그인 상태일 때
+            if (!showedLoginMessage.current) {
+              toaster.create({
+                type: "error",
+                description: "로그인이 필요합니다. 로그인 후 수정할 수 있습니다.",
+              });
+              showedLoginMessage.current = true; // 중복 메시지 방지
+              navigate("/"); // 로그인 페이지로 리디렉션
+            }
+          } else {
+            // 로그인했지만 작성자가 아닌 경우
+            if (!showedNoPermissionMessage.current) {
+              toaster.create({
+                type: "error",
+                description: "수정 권한이 없습니다. 작성자만 수정할 수 있습니다.",
+              });
+              showedNoPermissionMessage.current = true; // 중복 메시지 방지
+              navigate("/board/list"); // 목록 페이지로 리디렉션
+            }
           }
-          navigate("/board/list");
+          return; // 더 이상 실행하지 않음
         }
-      })
-      .catch(() => {
-        navigate("/board/list");
-      });
-  }, [boardId, isAuthenticated, navigate, id, nickname]);
+      } catch (error) {
+        console.error("Error fetching board data:", error);
+        navigate("/board/list"); // 오류 발생 시 목록 페이지로 리디렉션
+      }
+    };
+
+    fetchBoardData();
+  }, [boardId, id, isAuthenticated, navigate]); // 의존성 추가
+
+
 
   const handleSaveClick = () => {
     setProgress(true);

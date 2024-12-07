@@ -12,7 +12,6 @@ export function BoardAdd() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [message, setMessage] = useState({ text: "", type: "" }); // 메시지 상태 관리
   const [progress, setProgress] = useState(false);
 
   const navigate = useNavigate();
