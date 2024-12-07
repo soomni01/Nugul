@@ -38,10 +38,20 @@ public class CommentController {
 
     @DeleteMapping("remove/{commentId}")
     @PreAuthorize("isAuthenticated()")
-    public void remove(@PathVariable Integer commentId,Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> remove(@PathVariable Integer commentId,Authentication authentication) {
         if (service.hashCode(commentId,authentication)){
-            service.remove(commentId);
-        };
+            if (service.remove(commentId)){
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "success",
+                                "text", "댓글이 삭제되었습니다.")));
+            }else {
+                return ResponseEntity.internalServerError().body(Map.of("message",
+                        Map.of("type", "error",
+                                "text", "댓글이 수정되지 않았습니다.")));
+            }
+        }else {
+            return ResponseEntity.status(403).build();
+        }
     }
 
     @GetMapping("commentList/{boardId}")

@@ -39,6 +39,13 @@ export function CommentContainer({ boardId }) {
     function handleDeleteClick(commentId) {
         setProcessing(true);
         axios.delete(`/api/comment/remove/${commentId}`)
+            .then((res)=> res.data.message)
+            .then((message)=>{
+                toaster.create({
+                    type: message.type,
+                    description: message.text,
+                })
+            })
             .finally(() => {
             setProcessing(false);
         });
