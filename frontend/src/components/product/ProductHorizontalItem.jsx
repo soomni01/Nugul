@@ -30,6 +30,8 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaLocationDot } from "react-icons/fa6";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { GoHeartFill } from "react-icons/go";
+import { EmptyState } from "../ui/empty-state.jsx";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -91,10 +93,6 @@ const DeleteDialog = ({ isOpen, onClose, productId, handleDeleteClick }) => (
     </DialogContent>
   </DialogRoot>
 );
-
-function PiCurren() {
-  return null;
-}
 
 export function ProductHorizontalItem({
   product,
@@ -172,14 +170,30 @@ export function ProductHorizontalItem({
       onClick={() => !isSold && navigate(`/product/view/${product.productId}`)}
       style={cardStyle}
     >
-      <Image
-        maxW="150px"
-        objectFit="cover"
-        src="/image/productItem.png"
-        alt={product.productName}
-        borderRadius="md"
-        style={{ opacity: isSold ? 0.5 : 1 }}
-      />
+      {product.productId != null ? (
+        <Image
+          maxW="150px"
+          objectFit="cover"
+          src="/image/productItem.png"
+          alt={product.productName}
+          borderRadius="md"
+          style={{ opacity: isSold ? 0.5 : 1 }}
+        />
+      ) : (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          maxW="150px"
+          height="150px"
+          borderRadius="md"
+        >
+          <EmptyState
+            icon={<MdOutlineProductionQuantityLimits />}
+            description="삭제된 상품"
+          />
+        </Box>
+      )}
 
       <Box
         ml={4}

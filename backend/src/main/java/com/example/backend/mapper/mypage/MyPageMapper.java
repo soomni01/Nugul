@@ -19,6 +19,7 @@ public interface MyPageMapper {
 
     @Select("""
             SELECT 
+                p.product_id,
                 p.category, 
                 p.product_name, 
                 p.location_name, 
@@ -38,18 +39,7 @@ public interface MyPageMapper {
                 writer = #{name}
             """)
     List<Product> getSoldProducts(String name);
-
-
-//    @Select("""
-//            SELECT pr.buyer_id, pr.product_id,  p.product_name, p.price, p.category, p.location_name, m.nickname, p.created_at, p.status, p.pay
-//            FROM purchased_record pr
-//            LEFT JOIN product p ON pr.product_id = p.product_id
-//            LEFT JOIN member m ON pr.buyer_id = m.member_id
-//            WHERE seller_id = #{name}
-//            AND pr.product_id IS NOt NULL
-//            """)
-//    List<Product> getSoldProducts(String name);s
-
+    
     @Select("""
             SELECT pr.date, p.product_id,  pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
                 p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status
@@ -60,13 +50,6 @@ public interface MyPageMapper {
             WHERE pr.buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);
-
-    @Select("""
-            SELECT product_id
-            FROM purchased_record
-            WHERE buyer_id = #{name}
-            """)
-    List<Integer> purchasedProductByMemberId(String name);
 
     @Delete("""
             DELETE FROM purchased_record
