@@ -2,6 +2,7 @@ package com.example.backend.service.board;
 
 import com.example.backend.dto.board.Board;
 import com.example.backend.mapper.board.BoardMapper;
+import com.example.backend.mapper.comment.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
     final BoardMapper mapper;
+    final CommentMapper commentMapper;
 
     public Map<String, Object> list(Integer page, String searchType, String searchKeyword) {
 
@@ -47,6 +49,9 @@ public class BoardService {
     }
 
     public boolean remove(int boardId) {
+        // 댓글 지우기
+        commentMapper.deleteByBoardId(boardId);
+
         int cnt = mapper.deleteById(boardId);
         return cnt == 1;
     }

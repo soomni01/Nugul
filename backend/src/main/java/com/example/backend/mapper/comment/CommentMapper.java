@@ -63,5 +63,11 @@ public interface CommentMapper {
     WHERE board_id = #{boardId}
 """)
     Integer countByBoardId(Integer boardId);
+
+    @Delete("""
+            DELETE FROM comment
+            WHERE board_id=#{boardId}
+            """)
+    int deleteByBoardId(int boardId);
 }
 
