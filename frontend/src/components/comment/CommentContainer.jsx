@@ -13,6 +13,8 @@ export function CommentContainer({ boardId }) {
     const [currentPage, setCurrentPage] = useState(1); // 페이지 번호 상태
 
     useEffect(() => {
+        const controller = new AbortController();
+
         // 페이지 번호를 쿼리 파라미터에서 가져옵니다
         const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
         setCurrentPage(Number(pageParam)); // 페이지 번호 업데이트
@@ -21,11 +23,16 @@ export function CommentContainer({ boardId }) {
             axios
                 .get(`/api/comment/commentList/${boardId}`, {
                     params: { page: currentPage }, // 페이지 번호를 요청에 포함
+                    signal: controller.signal,
                 })
                 .then((res) => res.data)
                 .then((data) => setCommentList(data));
+
+            return () => {
+                controller.abort(); // 요청 취소
+            };
         }
-    }, [processing, searchParams, boardId, currentPage]); // 페이지 번호, 검색 파라미터, 게시판 ID, 처리 상태가 변경될 때마다 실행
+    }, [searchParams,boardId,processing]); // 페이지 번호는 searchParams에서 동적으로 가져오기
 
     const handlePageChange = (e) => {
         console.log(e.page); // 페이지 번호 확인
