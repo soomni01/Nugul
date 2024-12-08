@@ -13,6 +13,7 @@ export function CommentContainer({ boardId }) {
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
+        const controller = new AbortController();
         if (!processing) {
             axios
                 .get(`/api/comment/commentList/${boardId}`,{
@@ -20,6 +21,9 @@ export function CommentContainer({ boardId }) {
                 })
                 .then((res) => res.data)
                 .then((data) => setCommentList(data));
+            return () => {
+                controller.abort();
+            };
         }
     }, [processing,searchParams]);
 
