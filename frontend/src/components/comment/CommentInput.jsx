@@ -14,11 +14,11 @@ export function CommentInput({ boardId, onSaveClick }) {
                 <Textarea
                     value={comment}
                     disabled={!isAuthenticated}
-                    placeholder={isAuthenticated ? "" : "로그인 후 댓글을 남겨주세요."}
+                    placeholder={isAuthenticated ? "댓글을 작성하세요" : "로그인 후 댓글을 남겨주세요."}
                     onChange={(e) => setComment(e.target.value)}
                 />
                 <Button
-                    disabled={!isAuthenticated}
+                    disabled={!isAuthenticated || !comment.trim()}
                     onClick={() => {
                     setComment("")
                     onSaveClick(comment)}}>댓글 쓰기</Button>
