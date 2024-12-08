@@ -9,6 +9,7 @@ import {PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, Paginatio
 
 export function CommentContainer({ boardId }) {
     const [commentList, setCommentList] = useState([]);
+    const [count, setCount] = useState(0)
     const [processing, setProcessing] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -20,7 +21,10 @@ export function CommentContainer({ boardId }) {
                     params: searchParams,
                 })
                 .then((res) => res.data)
-                .then((data) => setCommentList(data));
+                .then((data) => {
+                    setCommentList(data.list); // 댓글 리스트만 저장
+                    setCount(data.count);      // 댓글 총 개수 저장
+                });
             return () => {
                 controller.abort();
             };
@@ -104,7 +108,7 @@ export function CommentContainer({ boardId }) {
                     />
                 <PaginationRoot
                     onPageChange={handlePageChange}
-                    count={1500}
+                    count={count}
                     pageSize={10}
                     page={page}>
                     <HStack>

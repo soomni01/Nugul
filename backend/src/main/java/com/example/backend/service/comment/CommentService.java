@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -20,8 +21,9 @@ public class CommentService {
         mapper.insert(comment);
     }
 
-    public List<Comment> commentList(Integer boardId, Integer page) {
-        return mapper.selectByBoardId(boardId,(page - 1) * 10);
+    public Map<String, Object> commentList(Integer boardId, Integer page) {
+        return Map.of("list", mapper.selectCommentPage(boardId,(page - 1) * 10),
+                "count", mapper.countByBoardId(boardId));
     }
 
     public boolean hashCode(Integer commentId, Authentication authentication) {

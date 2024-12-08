@@ -55,7 +55,7 @@ public class CommentController {
     }
 
     @GetMapping("commentList/{boardId}")
-    public List<Comment> commentList(@PathVariable Integer boardId,
+    public Map<String, Object> commentList(@PathVariable Integer boardId,
                                      @RequestParam(value = "page", defaultValue = "1") Integer page) {
         return service.commentList(boardId,page);
     }
