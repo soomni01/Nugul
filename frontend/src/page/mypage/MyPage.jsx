@@ -6,8 +6,9 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
-import InquiryList from "./InquiryList.jsx";
+import { InquiryList } from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
+import { Budget } from "./Budget.jsx";
 import { Review } from "./Review.jsx";
 
 export function MyPage() {
@@ -104,6 +105,13 @@ export function MyPage() {
             문의 내역
           </Button>
           <Button
+            variant={activeTab === "budget" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("budget")}
+          >
+            가계부
+          </Button>
+          <Button
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("review")}
@@ -132,6 +140,7 @@ export function MyPage() {
         {activeTab === "inquiryDetail" && (
           <InquiryView inquiryId={selectedInquiryId} />
         )}
+        {activeTab === "budget" && <Budget />}
         {activeTab === "review" && <Review />}
       </Box>
     </Flex>
