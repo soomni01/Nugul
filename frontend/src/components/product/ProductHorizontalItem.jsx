@@ -30,6 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
+import { FaLocationDot } from "react-icons/fa6";
 
 export function ProductHorizontalItem({
   product,
@@ -179,7 +180,10 @@ export function ProductHorizontalItem({
           {/* 장소 */}
           <HStack spacing={10} justify="space-between">
             <Text fontSize="sm" color="gray.500">
-              {product.locationName || "장소 정보 없음"}
+              <HStack>
+                <FaLocationDot />
+                {product.locationName || "장소 정보 없음"}
+              </HStack>
             </Text>
             {value === "purchased" ? (
               <Heading size="xs">
