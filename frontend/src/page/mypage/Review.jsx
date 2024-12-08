@@ -67,7 +67,7 @@ const ReviewCard = ({ review, value, productNameClick }) => (
         상품 후기
       </Heading>
       {review.price === 0 ? (
-        <Box colorScheme="green"> 나눔</Box> // 나눔 뱃지 표시
+        <Box> 나눔</Box> // 나눔 뱃지 표시
       ) : (
         <Box> {review.price}원</Box> // 가격 표시
       )}

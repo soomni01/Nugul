@@ -89,7 +89,11 @@ export function ReviewModal({ isOpen, onClose, product }) {
           <Box>
             <HStack gap="10">
               <Text>상품명 : {product.productName}</Text>
-              <HStack gap={1}>가격 : {product.price}원</HStack>
+              {product.price === 0 ? (
+                <HStack gap={1}>나눔</HStack>
+              ) : (
+                <HStack gap={1}>가격 : {product.price}원</HStack>
+              )}
             </HStack>
           </Box>
           <HStack justify="space-between" mr={3}>

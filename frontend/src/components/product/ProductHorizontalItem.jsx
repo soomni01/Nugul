@@ -218,7 +218,6 @@ export function ProductHorizontalItem({
                 {product.locationName || "장소 정보 없음"}
               </HStack>
             </Text>
-            ㄱ
             {value === "purchased" ? (
               <Heading size="xs">
                 판매자: {product.nickname || "알 수 없음"}
