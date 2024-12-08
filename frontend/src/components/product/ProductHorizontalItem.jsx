@@ -203,7 +203,11 @@ export function ProductHorizontalItem({
         flex="1"
       >
         <Card.Body>
-          <Badge colorScheme="teal">{categoryLabel}</Badge>
+          {product.productId != null ? (
+            <Badge colorScheme="teal">{categoryLabel}</Badge>
+          ) : (
+            <Box></Box>
+          )}
           <Card.Title mb={2} fontSize="lg" fontWeight="bold">
             {product.productName}
           </Card.Title>
@@ -214,6 +218,7 @@ export function ProductHorizontalItem({
                 {product.locationName || "장소 정보 없음"}
               </HStack>
             </Text>
+            ㄱ
             {value === "purchased" ? (
               <Heading size="xs">
                 판매자: {product.nickname || "알 수 없음"}
