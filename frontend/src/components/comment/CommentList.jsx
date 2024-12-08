@@ -7,8 +7,6 @@ export function CommentList({
                                 commentList,
                                 onDeleteClick,
                                 onEditClick,
-                                currentPage,
-                                handlePageChange, // 부모로부터 페이지 변경 핸들러를 전달받음
                             }) {
 
     return (
@@ -21,18 +19,6 @@ export function CommentList({
                     onEditClick={onEditClick}
                 />
             ))}
-            <PaginationRoot
-                count={1500} // 전체 아이템 수
-                pageSize={10} // 한 페이지당 아이템 수
-                page={currentPage} // 현재 페이지 번호
-                onPageChange={handlePageChange} // 페이지 변경 핸들러
-            >
-                <HStack>
-                    <PaginationPrevTrigger />
-                    <PaginationItems />
-                    <PaginationNextTrigger />
-                </HStack>
-            </PaginationRoot>
         </Box>
     );
 }

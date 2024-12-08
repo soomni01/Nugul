@@ -21,8 +21,7 @@ public class CommentService {
     }
 
     public List<Comment> commentList(Integer boardId, Integer page) {
-        Integer offset = (page - 1) * 10;
-        return mapper.selectByBoardId(boardId,offset);
+        return mapper.selectByBoardId(boardId,(page - 1) * 10);
     }
 
     public boolean hashCode(Integer commentId, Authentication authentication) {
