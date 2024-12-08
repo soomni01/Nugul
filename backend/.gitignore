@@ -36,3 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/resources/secret/
+
+# 특정 경로의 application.yml 파일을 Git 버전 관리에서 제외
+/src/main/resources/application.yml

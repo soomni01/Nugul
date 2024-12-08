@@ -35,6 +35,30 @@ export function ChatView({ chatRoomId, onDelete }) {
   // 경로데 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
 
+  const handlePaymentRequest = async () => {
+    try {
+      const response = await axios.post("/api/payment/ready");
+      if (response.status === 200) {
+        // 결제 준비 요청이 성공한 경우
+        console.log("결제 준비 완료:", response.data);
+        // 카카오페이 결제 페이지로 리디렉션 등 추가 작업 필요
+        window.location.href = response.data.nextRedirectPcUrl; // 예: 리디렉션 URL
+      } else {
+        alert("결제 준비 요청 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Request data:", error.request);
+      } else {
+        console.error("Error message:", error.message);
+      }
+    }
+  };
+
   //  상품명, 방 번호 , 작성자를 보여줄
 
   //  stomp 객체 생성 및, 연결
@@ -233,7 +257,10 @@ export function ChatView({ chatRoomId, onDelete }) {
             <Heading> 판매자 닉네임: {chatRoom.nickname} </Heading>
             상품명: {chatRoom.productName}
           </Box>
-          <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
+          <Flex>
+            <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
+            <Button onClick={handlePaymentRequest}>송금하기</Button>
+          </Flex>
         </Box>
 
         <Box
