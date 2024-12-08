@@ -22,8 +22,9 @@ public interface CommentMapper {
     LEFT JOIN board b ON c.board_id = b.board_id
     WHERE c.board_id = #{boardId}
     ORDER BY c.comment_id
+    LIMIT #{offset}, 10
 """)
-    List<Comment> selectByBoardId(Integer boardId);
+    List<Comment> selectByBoardId(Integer boardId, Integer offset);
 
     @Select("""
             SELECT * 

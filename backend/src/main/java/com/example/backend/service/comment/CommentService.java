@@ -20,8 +20,9 @@ public class CommentService {
         mapper.insert(comment);
     }
 
-    public List<Comment> commentList(Integer boardId) {
-        return mapper.selectByBoardId(boardId);
+    public List<Comment> commentList(Integer boardId, Integer page) {
+        Integer offset = (page - 1) * 10;
+        return mapper.selectByBoardId(boardId,offset);
     }
 
     public boolean hashCode(Integer commentId, Authentication authentication) {
