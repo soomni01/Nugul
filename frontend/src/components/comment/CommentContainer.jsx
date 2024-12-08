@@ -1,22 +1,40 @@
-import { Box, Stack } from "@chakra-ui/react";
+import {Box, HStack, Stack} from "@chakra-ui/react";
 import { CommentInput } from "./CommentInput.jsx";
 import { CommentList } from "./CommentList.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {toaster} from "../ui/toaster.jsx";
+import {useSearchParams} from "react-router-dom";
+import {PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot} from "../ui/pagination.jsx";
 
 export function CommentContainer({ boardId }) {
     const [commentList, setCommentList] = useState([]);
     const [processing, setProcessing] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         if (!processing) {
             axios
-                .get(`/api/comment/commentList/${boardId}`)
+                .get(`/api/comment/commentList/${boardId}`,{
+                    params: searchParams,
+                })
                 .then((res) => res.data)
                 .then((data) => setCommentList(data));
         }
-    }, [processing]);
+    }, [processing,searchParams]);
+
+    // searchParams
+    console.log(searchParams.toString());
+    // page 번호
+    const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
+    const page = Number(pageParam);
+
+    function handlePageChange(e) {
+        console.log(e.page);
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.set("page", e.page);
+        setSearchParams(nextSearchParams);
+    }
 
     function handleSaveClick(comment) {
         setProcessing(true);
@@ -73,18 +91,24 @@ export function CommentContainer({ boardId }) {
             <Stack gap={5}>
                 <h3>댓글</h3>
                 <CommentInput boardId={boardId} onSaveClick={handleSaveClick} />
-                <Box
-                    css={{
-                        maxHeight: "200px",   // 원하는 최대 높이를 설정
-                        overflowY: "auto",    // 세로 스크롤 활성화
-                    }}>
+
                     <CommentList
                         boardId={boardId}
                         commentList={commentList}
                         onDeleteClick={handleDeleteClick}
                         onEditClick={handleEditClick}
                     />
-                </Box>
+                <PaginationRoot
+                    onPageChange={handlePageChange}
+                    count={1500}
+                    pageSize={10}
+                    page={page}>
+                    <HStack>
+                        <PaginationPrevTrigger />
+                        <PaginationItems />
+                        <PaginationNextTrigger />
+                    </HStack>
+                </PaginationRoot>
             </Stack>
         </Box>
     );
