@@ -75,7 +75,6 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> boardAdd(@RequestBody Board board,
                                                         Authentication authentication) {
-        if (service.hasAccess(board.getBoardId(), authentication)) {
             if (service.validate(board)) {
                 if (service.boardAdd(board, authentication)) {
                     return ResponseEntity.ok()
@@ -91,11 +90,6 @@ public class BoardController {
                 return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
                         "text", "제목이나 본문이 비어있을 수 없습니다.")));
             }
-        }else {
-            return ResponseEntity.status(403)
-                    .body(Map.of("message", Map.of("type", "error"
-                            , "text", "글쓰기 권한이 없습니다. 로그인 하셔야 합니다.")));
-        }
     }
 
     @GetMapping("list")
