@@ -106,17 +106,19 @@ export function CommentContainer({ boardId }) {
                         onDeleteClick={handleDeleteClick}
                         onEditClick={handleEditClick}
                     />
-                <PaginationRoot
-                    onPageChange={handlePageChange}
-                    count={count}
-                    pageSize={10}
-                    page={page}>
-                    <HStack>
-                        <PaginationPrevTrigger />
-                        <PaginationItems />
-                        <PaginationNextTrigger />
-                    </HStack>
-                </PaginationRoot>
+                <Box display="flex" justifyContent="center">
+                    <PaginationRoot
+                        onPageChange={handlePageChange}
+                        count={count}
+                        pageSize={10}
+                        page={page}>
+                        <HStack>
+                            <PaginationPrevTrigger />
+                            <PaginationItems />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
+                </Box>
             </Stack>
         </Box>
     );
