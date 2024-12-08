@@ -47,6 +47,7 @@ export function ReviewModal({ isOpen, onClose, product }) {
         sellerId: product.writer,
         price: product.price,
         reviewStatus: "completed",
+        expenseId: product.expenseId,
       })
       .then((res) => res.data)
       .then((data) => {

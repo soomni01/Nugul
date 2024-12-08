@@ -44,10 +44,21 @@ public class MyPageService {
 
     // 후기 작성하기
     public boolean addReview(Review review) {
-        int cnt = mapper.insertReview(review);
+        // sellerId가 member 테이블에 존재하는지 확인
+        boolean sellerExists = mapper.checkSellerExists(review.getSellerId());
 
-        return cnt == 1;
+        if (!sellerExists) {
+            System.out.println("탈퇴한 회원");
+            return false; // 탈퇴한 회원이므로 후기를 작성할 수 없음
+        }
+
+        // sellerId가 존재하면 후기를 작성
+        int cnt = mapper.insertReview(review);
+        mapper.updatePurchasedReviewStatus(review.getExpenseId());
+
+        return cnt == 1; // 후기 작성 성공 여부 반환
     }
+
 
     // 후기 상태에 따라 가져오기
     public List<Review> getReviewsByStatus(String id, String role) {
