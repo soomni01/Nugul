@@ -73,7 +73,7 @@ export function BoardView() {
         <Field label={"작성날짜"} readOnly>
           <Input type={"date"} value={board.createdAt} />
         </Field>
-        {hasAccess(board.writerId) && (
+        {hasAccess(board.memberId) && (
           <Box>
             <DialogRoot>
               <DialogTrigger asChild>

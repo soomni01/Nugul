@@ -58,6 +58,6 @@ public class BoardService {
 
     public boolean hasAccess(int boardId, Authentication authentication) {
         Board board = mapper.selectById(boardId);
-        return board.getWriterId().equals(authentication.getName());
+        return board.getMemberId().equals(authentication.getName());
     }
 }

@@ -41,7 +41,7 @@ export function BoardEdit() {
           setBoard(boardData);
 
           // 2. 작성자 확인
-          const isWriter = String(boardData.writerId) === String(id);
+          const isWriter = String(boardData.memberId) === String(id);
 
           // 3. 작성자가 아니라면 처리
           if (!isWriter) {
@@ -125,7 +125,7 @@ export function BoardEdit() {
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
           />
         </Field>
-        {hasAccess(board.writerId) && (
+        {hasAccess(board.memberId) && (
           <Box>
             <DialogRoot
               open={dialogOpen}

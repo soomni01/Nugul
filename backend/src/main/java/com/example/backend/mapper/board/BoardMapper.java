@@ -23,7 +23,7 @@ public interface BoardMapper {
     int insert(Board board);
 
     @Select("""
-            SELECT b.board_id, b.title, b.content, b.writer AS writerId, m.nickname AS writer, b.category, b.created_at
+            SELECT b.board_id, b.title, b.content, b.writer AS memberId, m.nickname AS writer, b.category, b.created_at
             FROM board b
             LEFT JOIN member m ON b.writer = m.member_id
             WHERE b.board_id = #{boardId}
@@ -47,7 +47,7 @@ public interface BoardMapper {
 
     @Select("""
             <script>
-            SELECT b.board_id, b.title, b.writer AS writerId, m.nickname AS writer, b.category,b.created_at,COUNT(c.board_id) AS countComment
+            SELECT b.board_id, b.title, b.writer AS memberId, m.nickname AS writer, b.category,b.created_at,COUNT(c.board_id) AS countComment
             FROM board b 
             LEFT JOIN comment c ON b.board_id = c.board_id
             LEFT JOIN member m ON b.writer = m.member_id
