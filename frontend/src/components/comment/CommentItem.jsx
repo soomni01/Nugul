@@ -84,10 +84,10 @@ function EditButton({ comment, onEditClick }) {
 export function CommentItem({ comment, onDeleteClick, onEditClick }) {
     const {hasAccess} = useContext(AuthenticationContext)
   return (
-    <HStack boarder={"1px solid black"} m={5}>
+    <HStack border={"1px solid black"} m={5}>
         <Box flex={1}>
       <Flex justify={"space-between"}>
-        <h3>{comment.memberId}</h3>
+        <h3>{comment.nickname}</h3>
         <h4>{comment.inserted}</h4>
       </Flex>
             <Box css={{whiteSpace:"pre"}}>{comment.comment}</Box>
