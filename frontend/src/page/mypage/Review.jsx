@@ -103,7 +103,6 @@ export function Review(props) {
       .then((res) => {
         setReviewList(res.data);
         setLoading(false);
-        console.log(reviewList);
       })
       .catch((error) => {
         console.log("후기를 가져오는 데 실패했습니다.", error);
