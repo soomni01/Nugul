@@ -73,12 +73,18 @@ export function CommentContainer({ boardId }) {
             <Stack gap={5}>
                 <h3>댓글</h3>
                 <CommentInput boardId={boardId} onSaveClick={handleSaveClick} />
+                <Box
+                css={{
+                    maxHeight: "200px",   // 원하는 최대 높이를 설정
+                    overflowY: "auto",    // 세로 스크롤 활성화
+                }}>
                 <CommentList
                     boardId={boardId}
                     commentList={commentList}
                     onDeleteClick={handleDeleteClick}
                     onEditClick={handleEditClick}
                 />
+                </Box>
             </Stack>
         </Box>
     );
