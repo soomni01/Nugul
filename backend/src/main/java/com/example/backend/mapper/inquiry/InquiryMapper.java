@@ -22,8 +22,7 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.member_id,
-                   i.nickname,
+                   i.nickname,  -- 멤버 아이디 대신 닉네임을 가져옴
                    i.inserted,
                    EXISTS (
                        SELECT 1
@@ -39,9 +38,8 @@ public interface InquiryMapper {
             SELECT i.inquiry_id,
                    i.title,
                    i.category,
-                   i.member_id,
+                   i.nickname,  -- 멤버 아이디 대신 닉네임을 가져옴
                    i.inserted,
-                   i.nickname,
                    EXISTS (
                        SELECT 1
                        FROM inquiry_comment ic
@@ -57,8 +55,7 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.member_id,
-                   i.nickname,
+                   i.nickname,  -- 멤버 아이디 대신 닉네임을 가져옴
                    i.inserted
             FROM inquiry i
             WHERE i.inquiry_id = #{inquiryId}

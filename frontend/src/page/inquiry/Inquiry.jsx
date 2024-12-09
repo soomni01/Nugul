@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
@@ -10,12 +10,23 @@ export function Inquiry() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [memberId, setMemberId] = useState("");
+  const [nickname, setNickname] = useState(""); // 닉네임 상태 추가
   const [savedData, setSavedData] = useState(null);
   const [progress, setProgress] = useState(false);
-  const { id } = useContext(AuthenticationContext);
+  const { id, nickname: userNickname } = useContext(AuthenticationContext); // 컨텍스트에서 닉네임 가져오기
   const currentDate = new Date().toLocaleDateString();
   const navigate = useNavigate();
+
+  // 컴포넌트가 마운트될 때 로컬 스토리지에서 닉네임 불러오기
+  useEffect(() => {
+    const storedNickname = localStorage.getItem("nickname");
+    if (storedNickname) {
+      setNickname(storedNickname);
+    } else if (userNickname) {
+      setNickname(userNickname);
+      localStorage.setItem("nickname", userNickname); // 로컬 스토리지에 저장
+    }
+  }, [userNickname]);
 
   // 클릭 시 호출되는 함수로, 사용자 입력 데이터를 서버에 저장 요청
   const handleSaveClick = () => {
@@ -23,7 +34,8 @@ export function Inquiry() {
       title: title,
       content: content,
       category: category,
-      memberId: memberId,
+      memberId: id,
+      nickname: nickname, // 닉네임 추가
     };
     setProgress(true);
 
@@ -42,6 +54,7 @@ export function Inquiry() {
             content: content,
             category: category,
             memberId: id,
+            nickname: nickname, // 닉네임 추가
             inserted: new Date().toLocaleDateString(),
           });
         }
@@ -85,7 +98,7 @@ export function Inquiry() {
               <Input value={savedData.title} readOnly />
             </Field>
             <Field label="작성자" mb={2}>
-              <Input value={savedData.memberId} readOnly />
+              <Input value={savedData.nickname} readOnly />
             </Field>
             <Field label="작성일자" mb={2}>
               <Input value={savedData.inserted} readOnly />
@@ -123,7 +136,7 @@ export function Inquiry() {
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </Field>
             <Field label="작성자" mb={2}>
-              <Input value={id} readOnly />
+              <Input value={nickname} readOnly />
             </Field>
             <Field label="작성일자" mb={2}>
               <Input value={currentDate} readOnly />
