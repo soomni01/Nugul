@@ -112,8 +112,9 @@ export function Inquiry() {
                   }}
                 >
                   <option value="">문의 유형 선택</option>
+                  <option value="신고">신고</option>
                   <option value="이용 안내">이용 안내</option>
-                  <option value="구매 안내">구매 안내</option>
+                  <option value="계정 문의">계정 문의</option>
                   <option value="기타 문의">기타 문의</option>
                 </select>
               </Flex>
