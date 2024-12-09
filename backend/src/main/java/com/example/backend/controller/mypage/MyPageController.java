@@ -143,4 +143,22 @@ public class MyPageController {
                             "text", "삭제 권한이 없습니다.")));
         }
     }
+
+    // 월별 구매 내역 합계 가져오기
+    @GetMapping("monthly-purchases")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlyPurchases(Authentication auth) {
+        String memberId = auth.getName();
+        List<Map<String, Object>> monthlyPurchases = service.getMonthlyPurchases(memberId);
+        return ResponseEntity.ok(monthlyPurchases);
+    }
+
+    // 월별 판매 내역 합계 가져오기
+    @GetMapping("monthly-sales")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlySales(Authentication auth) {
+        String memberId = auth.getName();
+        List<Map<String, Object>> monthlySales = service.getMonthlySales(memberId);
+        return ResponseEntity.ok(monthlySales);
+    }
 }

@@ -7,6 +7,7 @@ import com.example.backend.dto.review.Review;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MyPageMapper {
@@ -135,4 +136,20 @@ public interface MyPageMapper {
             WHERE inquiry_id = #{inquiryId}
             """)
     Inquiry selectByInquiryId(int inquiryId);
+
+    @Select("""
+            SELECT DATE_FORMAT(date, '%Y-%m') AS month,
+            SUM(CASE WHEN buyer_id = #{memberId} THEN price ELSE 0 END) AS total_purchases
+            FROM purchased_record
+            GROUP BY DATE_FORMAT(date, '%Y-%m')
+            """)
+    List<Map<String, Object>> getMonthlyPurchases(String memberId);
+
+    @Select("""
+            SELECT DATE_FORMAT(created_at, '%Y-%m') AS month,
+                   SUM(CASE WHEN writer = #{memberId} THEN price ELSE 0 END) AS total_sales
+            FROM product
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+            """)
+    List<Map<String, Object>> getMonthlySales(String memberId);
 }

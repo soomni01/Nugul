@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -93,5 +94,15 @@ public class MyPageService {
         boolean title = inquiry.getTitle().trim().length() > 0;
         boolean content = inquiry.getContent().trim().length() > 0;
         return title && content;
+    }
+
+    // 월별 구매 내역 합계 가져오기
+    public List<Map<String, Object>> getMonthlyPurchases(String memberId) {
+        return mapper.getMonthlyPurchases(memberId);
+    }
+
+    // 월별 판매 내역 합계 가져오기
+    public List<Map<String, Object>> getMonthlySales(String memberId) {
+        return mapper.getMonthlySales(memberId);
     }
 }
