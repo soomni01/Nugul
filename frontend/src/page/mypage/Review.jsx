@@ -99,7 +99,7 @@ export function Review(props) {
 
     axios
       .get("/api/myPage/review", {
-        params: { id, role: value === "buy" ? "buyer" : "seller" },
+        params: { memberId: id, role: value === "buy" ? "buyer" : "seller" },
       })
       .then((res) => {
         setReviewList(res.data);

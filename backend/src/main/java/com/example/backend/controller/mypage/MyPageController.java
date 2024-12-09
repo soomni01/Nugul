@@ -32,10 +32,10 @@ public class MyPageController {
     // 후기 상태에 따라 가져오기
     @GetMapping("/review")
     public List<Review> getReviews(
-            @RequestParam String id,
+            @RequestParam String memberId,
             @RequestParam String role
     ) {
-        return service.getReviewsByStatus(id, role);
+        return service.getReviewsByStatus(memberId, role);
     }
 
     // 후기 작성하기

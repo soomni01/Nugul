@@ -69,10 +69,10 @@ public interface MyPageMapper {
     int deletePurchased(Integer product_id);
 
     @Select("""
-            SELECT COUNT(*) 
+            SELECT member_id
             FROM member 
             WHERE member_id = #{sellerId}""")
-    boolean checkSellerExists(String sellerId);
+    String checkSellerExists(String sellerId);
 
     @Update("""
             UPDATE purchased_record
@@ -96,16 +96,16 @@ public interface MyPageMapper {
              LEFT JOIN member m ON r.seller_id = m.member_id
                 <where>
                     <if test="role == 'buyer'">
-                        AND buyer_id = #{id}
+                        AND buyer_id = #{memberId}
                     </if>
                     <if test="role == 'seller'">
-                        AND seller_id = #{id}
+                        AND seller_id = #{memberId}
                     </if>
                         AND review_status = 'completed'
                 </where>
             </script>
             """)
-    List<Review> getReviews(String id, String role);
+    List<Review> getReviews(String memberId, String role);
 
     @Select("""
             SELECT i.inquiry_id,

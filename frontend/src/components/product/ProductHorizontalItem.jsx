@@ -15,7 +15,6 @@ import React, { useContext, useState } from "react";
 import { GoHeartFill } from "react-icons/go";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
-import { toaster } from "../ui/toaster.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
 import { toaster } from "../ui/toaster.jsx";
 import { useNavigate } from "react-router-dom";
@@ -31,13 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
-import { getDaysAgo } from "./ProductDate.jsx";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaLocationDot } from "react-icons/fa6";
-import { PiCurrencyKrwBold } from "react-icons/pi";
-import { GoHeartFill } from "react-icons/go";
 import { EmptyState } from "../ui/empty-state.jsx";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 
