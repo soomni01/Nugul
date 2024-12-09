@@ -17,6 +17,7 @@ import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
+import {BoardCategories} from "../../components/board/BoardCategories.jsx";
 
 export function BoardView() {
   const { boardId } = useParams();
@@ -68,7 +69,11 @@ export function BoardView() {
           <Input value={board.writer} />
         </Field>
         <Field label={"카테고리"} readOnly>
-          <Input value={board.category} />
+          <Input
+              value={
+                  BoardCategories.find((cat) => cat.value === board.category)?.label || ""
+              }
+          />
         </Field>
         <Field label={"작성날짜"} readOnly>
           <Input type={"date"} value={board.createdAt} />

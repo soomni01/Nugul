@@ -12,6 +12,7 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import {FaCommentDots} from "react-icons/fa";
+import {BoardCategories} from "../../components/board/BoardCategories.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -134,7 +135,11 @@ export function BoardList() {
                   )}
                 </Table.Cell>
                 <Table.Cell>{board.writer}</Table.Cell>
-                <Table.Cell>{board.category}</Table.Cell>
+                <Table.Cell>
+                  {
+                      BoardCategories.find((cat) => cat.value === board.category)?.label || board.category
+                  }
+                </Table.Cell>
                 <Table.Cell>{board.createdAt}</Table.Cell>
               </Table.Row>
             ))}
