@@ -160,15 +160,6 @@ export function ProductHorizontalItem({
       });
   };
 
-  const handleButtonClick = (e) => {
-    e.stopPropagation();
-    if (pageType === "wish") {
-      handleLikeClick();
-    } else if (pageType !== "purchased") {
-      setDialogOpen(true);
-    }
-  };
-
   const productClick = (navigate, productId, status) => {
     if (productId != null && status == "For Sale") {
       navigate(`/product/view/${productId}`);
