@@ -44,6 +44,17 @@ export function PurchasedItems() {
     setIsModalOpen(true);
   };
 
+  // 리뷰 완료 후 상태 업데이트
+  const handleReviewComplete = (productId) => {
+    setPurchasedList((prevList) =>
+      prevList.map((product) =>
+        product.productId === productId
+          ? { ...product, reviewStatus: "completed" }
+          : product,
+      ),
+    );
+  };
+
   return (
     <Box>
       <Heading size="lg" mb={4}>
@@ -89,6 +100,7 @@ export function PurchasedItems() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={selectedProduct}
+        onComplete={(productId) => handleReviewComplete(productId)}
       />
     </Box>
   );

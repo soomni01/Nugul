@@ -7,7 +7,7 @@ import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
 
-export function ReviewModal({ isOpen, onClose, product }) {
+export function ReviewModal({ isOpen, onClose, product, onComplete }) {
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(3);
   const [progress, setProgress] = useState(false);
@@ -55,6 +55,7 @@ export function ReviewModal({ isOpen, onClose, product }) {
           description: data.message.text,
           type: data.message.type,
         });
+        onComplete(product.productId); // 리뷰 작성 완료 콜백 호출
         setReviewText(""); // 후기 내용 초기화
         setRating(3); // 별점 초기화 (기본값 3)
         onClose();
