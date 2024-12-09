@@ -193,6 +193,21 @@ public class ProductService {
         result.put("sellProducts", sellProducts);
         result.put("shareProducts", shareProducts);
 
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (List<Product> products : result.values()) {
+            for (Product product : products) {
+                if (product.getMainImageName() != null) {
+                    // S3 URL을 기반으로 메인 이미지 경로 설정
+                    String mainImageUrl = String.format(STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}");
+                    product.setMainImageName(mainImageUrl); // 메인 이미지 URL 설정
+                } else {
+                    // 메인 이미지가 없으면 기본 이미지 사용
+                    product.setMainImageName("/image/testImage.png"); // 기본 이미지 URL을 설정
+                }
+            }
+        }
+
         return result;
     }
 

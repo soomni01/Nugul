@@ -49,9 +49,9 @@ export function ProductItem({ product, likeCount, isLiked }) {
         cursor="pointer"
       >
         <Image
-          width="100%" // 가로 크기를 100%로 지정
-          height="300px" // 세로 크기를 일정 크기로 설정
-          objectFit="cover" // 이미지 비율에 맞게 크기를 맞추고 잘라서 표시
+          width="100%"
+          height="250px"
+          objectFit="cover"
           src={mainImage}
           alt={product.productName}
         />

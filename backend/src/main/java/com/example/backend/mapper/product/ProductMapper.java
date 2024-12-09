@@ -132,8 +132,9 @@ public interface ProductMapper {
     List<Integer> likedProductByMemberId(String memberId);
 
     @Select("""
-            SELECT *
-            FROM product
+            SELECT p.*, pf.name AS main_image_name
+            FROM product p
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE pay = 'sell'
             AND status = 'For Sale'
             ORDER BY product_id DESC
@@ -142,8 +143,9 @@ public interface ProductMapper {
     List<Product> selectSellProducts(Integer limit);
 
     @Select("""
-            SELECT *
-            FROM product
+            SELECT p.*, pf.name AS main_image_name
+            FROM product p
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE pay = 'share'
             AND status = 'For Sale'
             ORDER BY product_id DESC
