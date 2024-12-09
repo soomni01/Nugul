@@ -32,8 +32,7 @@ export function BoardList() {
     const controller = new AbortController();
     axios
       .get("/api/board/list", {
-        params: {searchParams,
-          category: selectedCategory !== "all" ? selectedCategory : undefined,},
+        params: searchParams,
         signal: controller.signal,
       })
       .then((res) => res.data)
@@ -45,7 +44,7 @@ export function BoardList() {
     return () => {
       controller.abort();
     };
-  }, [searchParams,selectedCategory]);
+  }, [searchParams]);
 
   useEffect(() => {
     const nextSearch = { ...search };
@@ -105,26 +104,23 @@ export function BoardList() {
 
   function handleCategorySelect(categoryValue) {
     setSelectedCategory(categoryValue);
-
-    // 카테고리 변경 시 페이지 초기화
     const nextSearchParams = new URLSearchParams(searchParams);
-    nextSearchParams.set("page", 1);
+    nextSearchParams.set("category", categoryValue);
     setSearchParams(nextSearchParams);
   }
 
   return (
     <Box>
 
-      <Box textAlign="center" my={4} fontSize="2xl" fontWeight="bold">
+      <Box>
         <h3>
           {selectedCategory === "all"
-              ? "통합"
-              : BoardCategories.find((cat) => cat.value === selectedCategory)?.label || "잘못된 카테고리"}{" "}
+              ? "전체"
+              : BoardCategories.  find((cat) => cat.value === selectedCategory)?.label || "잘못된 카테고리"}{" "}
           게시판
         </h3>
       </Box>
-
-      {/* BoardCategoryContainer 컴포넌트 사용 */}
+      {/* 카테고리 선택 컴포넌트 */}
       <BoardCategoryContainer
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
@@ -134,10 +130,16 @@ export function BoardList() {
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <h3>게시물 목록 </h3>
         {isAuthenticated && (
-            <Button colorPalette={"blue"} variant="outline" onClick={handleWriteClick}>게시물 쓰기</Button>
+            <Button onClick={handleWriteClick}>게시물 쓰기</Button>
         )}
       </Flex>
-      hr
+
+      {/*<Flex justifyContent="space-between" alignItems="center" mb={4}>
+        <h3>게시물 목록</h3>
+        {isAuthenticated && (
+          <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+        )}
+      </Flex>*/}
       {boardList.length > 0 ? (
         <Table.Root interactive>
           <Table.Header>
@@ -196,7 +198,7 @@ export function BoardList() {
           placeholder="검색 하세요"
           onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
         />
-        <Button colorPalette={"blue"} onClick={handleSearchClick}>검색</Button>
+        <Button onClick={handleSearchClick}>검색</Button>
       </HStack>
 
       <PaginationRoot
