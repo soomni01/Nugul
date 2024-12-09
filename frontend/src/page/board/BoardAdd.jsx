@@ -92,7 +92,7 @@ export function BoardAdd() {
           <HStack  >
               <Box border="1px solid #ccc" borderRadius="4px" padding="7px">
                 <select
-                    value={category}
+                    value={category || "all"}
                     onChange={(e) => setCategory(e.target.value)}
                 >
                   {BoardCategories.map((cat) => (
