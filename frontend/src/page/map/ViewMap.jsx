@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CustomOverlayMap,
   Map,
@@ -17,6 +17,16 @@ function ViewMap() {
   const [markerPosition, setMarkerPosition] = useState({});
   const [locationName, setLocationName] = useState("");
   const [markerOpen, setMarkerOpen] = useState(false);
+  const [customOverlay, setCustomOverlay] = useState(null);
+  const [overlayMarkers, setOverlayMarkers] = useState([]);
+  const [currCategory, setCurrCategory] = useState("");
+
+  useEffect(() => {
+    addCategoryClickEvent();
+
+    // 아무것도 안할때의 이벤트 추가해놓기
+    // map.addListener(map, "idle", searchPlaces);
+  }, []);
 
   const handleSearch = () => {
     if (!map) return;
@@ -139,16 +149,35 @@ function ViewMap() {
     paginationEl.appendChild(fragment);
   }
 
-  function displayInfowindow(marker, title) {
-    var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
-    infowindow.setContent(content);
-    infowindow.open(map, marker);
-  }
-
   // 검색시 리스트 초기화 후 붙이기
   function removeAllChildNods(el) {
     while (el.hasChildNodes()) {
       el.removeChild(el.lastChild);
+    }
+  }
+
+  function addCategoryClickEvent() {
+    var category = document.getElementById("category"),
+      children = category.children;
+
+    for (var i = 0; i < children.length; i++) {
+      children[i].onclick = onClickCategory;
+    }
+  }
+
+  function onClickCategory() {
+    var id = this.id,
+      className = this.className;
+    setCustomOverlay(null);
+    // 켜져있으면  끄고 카테고리 변경
+    if (className === "on") {
+      setCurrCategory("");
+      changeCategoryClass();
+      removeMarker();
+    } else {
+      setCurrCategory(id);
+      changeCategoryClass(this);
+      searchPlaces();
     }
   }
 
@@ -202,13 +231,43 @@ function ViewMap() {
             </MapMarker>
           ))}
 
-          <CustomOverlayMap position={{ lat: 33.450701, lng: 126.570667 }}>
+          <CustomOverlayMap
+            onCreate={setCustomOverlay}
+            position={{ lat: 33.450701, lng: 126.570667 }}
+          >
             <Box> hello</Box>
           </CustomOverlayMap>
 
           <ZoomControl />
         </Map>
+        <ul id="category">
+          <li id="BK9" data-order="0">
+            <span className="category_bg bank"></span>
+            은행
+          </li>
+          <li id="MT1" data-order="1">
+            <span className="category_bg mart"></span>
+            마트
+          </li>
+          <li id="PM9" data-order="2">
+            <span className="category_bg pharmacy"></span>
+            약국
+          </li>
+          <li id="OL7" data-order="3">
+            <span className="category_bg oil"></span>
+            주유소
+          </li>
+          <li id="CE7" data-order="4">
+            <span className="category_bg cafe"></span>
+            카페
+          </li>
+          <li id="CS2" data-order="5">
+            <span className="category_bg store"></span>
+            편의점
+          </li>
+        </ul>
       </Stack>
+      {currCategory}
     </Box>
   );
 }
