@@ -1,50 +1,42 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Image, Text, VStack } from "@chakra-ui/react";
 
 export function Budget({ memberId }) {
   const [monthlyPurchases, setMonthlyPurchases] = useState([]);
   const [monthlySales, setMonthlySales] = useState([]);
-  const [loadingPurchases, setLoadingPurchases] = useState(true);
-  const [loadingSales, setLoadingSales] = useState(true);
-  const [errorPurchases, setErrorPurchases] = useState(null);
-  const [errorSales, setErrorSales] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("2024-12");
 
   // 월별 구매 내역 불러오기
   useEffect(() => {
-    const fetchMonthlyPurchases = async () => {
+    const MonthlyPurchases = async () => {
       try {
         const response = await axios.get("/api/myPage/monthly-purchases", {
           params: { id: memberId },
         });
         setMonthlyPurchases(response.data);
-        setLoadingPurchases(false);
       } catch (err) {
-        setErrorPurchases("Failed to load monthly purchases");
-        setLoadingPurchases(false);
+        console.error("월별 구매 내역을 불러오는 데 실패했습니다.");
       }
     };
 
-    fetchMonthlyPurchases();
+    MonthlyPurchases();
   }, [memberId]);
 
   // 월별 판매 내역 불러오기
   useEffect(() => {
-    const fetchMonthlySales = async () => {
+    const MonthlySales = async () => {
       try {
         const response = await axios.get("/api/myPage/monthly-sales", {
           params: { id: memberId },
         });
         setMonthlySales(response.data);
-        setLoadingSales(false);
       } catch (err) {
-        setErrorSales("Failed to load monthly sales");
-        setLoadingSales(false);
+        console.error("월별 판매 내역을 불러오는 데 실패했습니다.");
       }
     };
 
-    fetchMonthlySales();
+    MonthlySales();
   }, [memberId]);
 
   // 선택한 월을 업데이트하는 함수
@@ -85,9 +77,35 @@ export function Budget({ memberId }) {
 
   // 12월을 기본값으로 설정하고 나머지 월들을 표시
   const monthsToShow = uniqueMonths.filter((month) => month !== "2024-12");
-  console.log("Monthly Purchases:", monthlyPurchases);
-  console.log("Monthly Sales:", monthlySales);
-  console.log("Unique Months:", uniqueMonths);
+
+  // 자동차 연비와 기름값을 설정
+  const fuelEfficiency = 10; // 1리터당 주행 가능한 km
+  const fuelPrice = 1500; // 리터당 가격 (예시: 리터당 1500원)
+
+  // 거래 금액을 자동차 주행 거리로 변환하는 함수
+  const calculateEquivalentDistance = (amount) => {
+    const fuelConsumed = amount / fuelPrice; // 소비된 기름 리터
+    const distance = fuelConsumed * fuelEfficiency; // 주행 거리 계산
+    return distance;
+  };
+
+  // 보일러 사용 시간으로 변환하는 함수
+  const boilerHourlyCost = 2000; // 보일러를 1시간 작동시켰을 때의 비용 (예시: 2000원)
+  const calculateBoilerHours = (amount) => {
+    const hours = amount / boilerHourlyCost; // 거래 금액을 보일러 1시간 작동 비용으로 나눔
+    return hours;
+  };
+
+  const coffeePrice = 4500; // 커피 한 잔의 평균 가격 (원)
+  const calculateCoffeeCups = (amount) => {
+    return amount / coffeePrice; // 거래 금액에 따른 커피 잔 수 계산
+  };
+
+  // 전체 거래 금액을 기준으로 계산
+  const equivalentDrivingDistance =
+    calculateEquivalentDistance(totalTransaction);
+  const equivalentCoffeeCups = calculateCoffeeCups(totalTransaction);
+  const equivalentBoilerHours = calculateBoilerHours(totalTransaction);
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg="white">
@@ -116,7 +134,9 @@ export function Budget({ memberId }) {
         <Text>{totalTransaction} 원</Text>
       </Box>
       <hr style={{ marginBottom: "16px" }} />
-      <Box>
+
+      {/* 판매 내역 박스 */}
+      <Box mb={4}>
         {filteredSales.length > 0 ? (
           <ul>
             {filteredSales.map((item, index) => (
@@ -127,8 +147,9 @@ export function Budget({ memberId }) {
           <p>판매 내역이 없습니다.</p>
         )}
       </Box>
+
+      {/* 구매 내역 박스 */}
       <Box mt={4}>
-        {" "}
         {filteredPurchases.length > 0 ? (
           <ul>
             {filteredPurchases.map((item, index) => (
@@ -138,6 +159,46 @@ export function Budget({ memberId }) {
         ) : (
           <p>구매 내역이 없습니다.</p>
         )}
+      </Box>
+
+      {/* 거래 가치 박스 */}
+      <Box
+        p={4}
+        borderWidth="1px"
+        borderRadius="lg"
+        boxShadow="md"
+        bg="gray.50"
+        mt={4}
+      >
+        <Text fontSize="lg" fontWeight="bold" mb={2}>
+          거래의 가치
+        </Text>
+        <VStack align="start" spacing={4}>
+          <Text display="inline-flex" alignItems="center">
+            <Image src="/image/Car.png" alt="Car Icon" boxSize="20px" mr={2} />
+            자동차를 {equivalentDrivingDistance.toFixed(2)}km 덜 탄 것과 같아요.
+          </Text>
+          <Text display="inline-flex" alignItems="center">
+            <Image
+              src="/image/Boiler.png"
+              alt="Boiler Icon"
+              boxSize="20px"
+              mr={2}
+            />
+            보일러를 약 {equivalentBoilerHours.toFixed(2)}시간 덜 킨 것과
+            같아요.
+          </Text>
+          <Text display="inline-flex" alignItems="center">
+            <Image
+              src="/image/Coffee.png"
+              alt="Coffee Icon"
+              boxSize="20px"
+              mr={2}
+            />
+            커피를 약 {equivalentCoffeeCups.toFixed(2)}잔 마실 수 있는 것과
+            같아요.
+          </Text>
+        </VStack>
       </Box>
     </Box>
   );
