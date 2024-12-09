@@ -13,6 +13,7 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import {FaCommentDots} from "react-icons/fa";
 import {BoardCategories} from "../../components/board/BoardCategories.jsx";
+import {BoardCategoryContainer} from "../../components/board/BoardCategoryContainer.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -31,7 +32,8 @@ export function BoardList() {
     const controller = new AbortController();
     axios
       .get("/api/board/list", {
-        params: searchParams,
+        params: {searchParams,
+          category: selectedCategory !== "all" ? selectedCategory : undefined,},
         signal: controller.signal,
       })
       .then((res) => res.data)
@@ -43,7 +45,7 @@ export function BoardList() {
     return () => {
       controller.abort();
     };
-  }, [searchParams]);
+  }, [searchParams,selectedCategory]);
 
   useEffect(() => {
     const nextSearch = { ...search };
@@ -101,8 +103,13 @@ export function BoardList() {
     }
   }
 
-  function handleCategoryClick(categoryValue) {
+  function handleCategorySelect(categoryValue) {
     setSelectedCategory(categoryValue);
+
+    // 카테고리 변경 시 페이지 초기화
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("page", 1);
+    setSearchParams(nextSearchParams);
   }
 
   return (
@@ -116,31 +123,21 @@ export function BoardList() {
           게시판
         </h3>
       </Box>
-      {/* 게시판 카테고리 버튼 */}
-      <Flex justifyContent="center" mb={4}>
-        <HStack spacing={4}>
-          {BoardCategories.map((category) => (
-              <Button key={category.value} onClick={() => handleCategoryClick(category.value)}>
-                {category.label}
-              </Button>
-          ))}
-        </HStack>
-      </Flex>
+
+      {/* BoardCategoryContainer 컴포넌트 사용 */}
+      <BoardCategoryContainer
+          selectedCategory={selectedCategory}
+          onCategorySelect={handleCategorySelect}
+      />
 
       {/* 게시물 제목 */}
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <h3>게시물 목록 </h3>
         {isAuthenticated && (
-            <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+            <Button colorPalette={"blue"} variant="outline" onClick={handleWriteClick}>게시물 쓰기</Button>
         )}
       </Flex>
-
-      {/*<Flex justifyContent="space-between" alignItems="center" mb={4}>
-        <h3>게시물 목록</h3>
-        {isAuthenticated && (
-          <Button onClick={handleWriteClick}>게시물 쓰기</Button>
-        )}
-      </Flex>*/}
+      hr
       {boardList.length > 0 ? (
         <Table.Root interactive>
           <Table.Header>
@@ -199,7 +196,7 @@ export function BoardList() {
           placeholder="검색 하세요"
           onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
         />
-        <Button onClick={handleSearchClick}>검색</Button>
+        <Button colorPalette={"blue"} onClick={handleSearchClick}>검색</Button>
       </HStack>
 
       <PaginationRoot
