@@ -144,13 +144,7 @@ export function ProductView() {
 
   const handleSuccessTransaction = () => {
     axios
-      .post(`/api/product/transaction/${productId}`, {
-        // productId,
-        // productName: product.productName,
-        // price: product.price,
-        // writer: product.writer,
-        // location_name: product.location_name,
-      })
+      .post(`/api/product/transaction/${productId}`, {})
       .then((res) => res.data)
       .then((data) => {
         toaster.create({
