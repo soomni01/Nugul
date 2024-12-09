@@ -105,7 +105,7 @@ export function ProductHorizontalItem({
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { hasAccess } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
@@ -117,19 +117,22 @@ export function ProductHorizontalItem({
   const cardStyle = getCardStyle(isSold);
 
   const handleLikeClick = () => {
-    if (!hasAccess) return setLikeTooltipOpen(true);
+    if (!hasAccess || isProcessing) return setLikeTooltipOpen(true);
+
+    setIsProcessing(true); // 요청 처리 중 상태 설정
     setIsLiked((prev) => !prev);
 
     axios
       .post("/api/product/like", { productId: product.productId })
       .then(() => {
-        onRemove(product.productId);
         toaster.create({
           type: "warning",
           description: "관심 상품에서 삭제했습니다.",
         });
+        onRemove(product.productId);
       })
-      .catch(() => setIsLiked((prev) => !prev));
+      .catch(() => setIsLiked((prev) => !prev))
+      .finally(() => setIsProcessing(false));
   };
 
   const handleDeleteClick = () => {
