@@ -10,10 +10,10 @@ export function Inquiry() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [nickname, setNickname] = useState(""); // 닉네임 상태 추가
+  const [nickname, setNickname] = useState("");
   const [savedData, setSavedData] = useState(null);
   const [progress, setProgress] = useState(false);
-  const { id, nickname: userNickname } = useContext(AuthenticationContext); // 컨텍스트에서 닉네임 가져오기
+  const { id, nickname: userNickname } = useContext(AuthenticationContext);
   const currentDate = new Date().toLocaleDateString();
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export function Inquiry() {
       setNickname(storedNickname);
     } else if (userNickname) {
       setNickname(userNickname);
-      localStorage.setItem("nickname", userNickname); // 로컬 스토리지에 저장
+      localStorage.setItem("nickname", userNickname);
     }
   }, [userNickname]);
 
@@ -35,7 +35,7 @@ export function Inquiry() {
       content: content,
       category: category,
       memberId: id,
-      nickname: nickname, // 닉네임 추가
+      nickname: nickname,
     };
     setProgress(true);
 
@@ -54,7 +54,7 @@ export function Inquiry() {
             content: content,
             category: category,
             memberId: id,
-            nickname: nickname, // 닉네임 추가
+            nickname: nickname,
             inserted: new Date().toLocaleDateString(),
           });
         }
