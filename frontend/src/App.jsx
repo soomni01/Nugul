@@ -6,7 +6,6 @@ import AdminLayout from "./page/admin/AdminLayout.jsx";
 import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
-import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
 import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
@@ -140,10 +139,6 @@ const router = createBrowserRouter([
       {
         path: "members/:memberId/detail",
         element: <AdminMemberDetail />,
-      },
-      {
-        path: "reports",
-        element: <AdminReportList />,
       },
       {
         path: "inquiries",
