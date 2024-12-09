@@ -7,7 +7,7 @@ import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { ProductLike } from "./ProductLike.jsx";
 import { FaLocationDot } from "react-icons/fa6";
-import { MapModal } from "../map/MapModal.jsx";
+import { MiniMapModal } from "../../components/map/MiniMapModal.jsx";
 
 export function ProductItem({ product, likeCount, isLiked }) {
   const navigate = useNavigate();
@@ -83,7 +83,15 @@ export function ProductItem({ product, likeCount, isLiked }) {
         </Card.Footer>
       </Card.Root>
 
-      <MapModal isOpen={isModalOpen} onClose={closeMapModal} />
+      <MiniMapModal
+        isOpen={isModalOpen}
+        onClose={closeMapModal}
+        product={{
+          latitude: product.latitude,
+          longitude: product.longitude,
+          locationName: product.locationName,
+        }}
+      />
     </Box>
   );
 }
