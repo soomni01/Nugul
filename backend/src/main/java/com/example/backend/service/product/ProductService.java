@@ -1,6 +1,7 @@
 package com.example.backend.service.product;
 
 import com.example.backend.dto.product.Product;
+import com.example.backend.dto.product.ProductFile;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,7 +88,14 @@ public class ProductService {
 
     // 상품 1개의 정보 가져오기
     public Product getProductView(Integer productId) {
-        return mapper.selectById(productId);
+        Product product = mapper.selectById(productId);
+        List<String> fileNameList = mapper.selectFilesByProductId(productId);
+        List<ProductFile> fileSrcList = fileNameList.stream()
+                .map(name -> new ProductFile(name, STR."\{imageSrcPrefix}/\{productId}/\{name}"))
+                .toList();
+
+        product.setFileList(fileSrcList);
+        return product;
     }
 
     // 상품 삭제하기

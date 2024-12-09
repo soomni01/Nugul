@@ -30,10 +30,8 @@ import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ProductLike } from "../../components/product/ProductLike.jsx";
-
-function ImageFileView() {
-  return null;
-}
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
 
 export function ProductView() {
   //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로  , >router도 변경함
@@ -178,9 +176,27 @@ export function ProductView() {
           />
         </Box>
       </HStack>
+      <Swiper
+        slidesPerView={1}
+        spaceBetween={30}
+        loop={true}
+        pagination={{
+          clickable: true,
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="mySwiper"
+      >
+        {product.fileList.map((file) => (
+          <SwiperSlide>
+            <Box w="300px" h="auto">
+              <img src={file.src} alt={file.name} />
+            </Box>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <Stack gap={5}>
         <Box>판매자: {product.nickname}</Box>
-        <ImageFileView />
         <Flex gap={3}>
           <Box minWidth="100px">
             <Field label={"카테고리"} readOnly>

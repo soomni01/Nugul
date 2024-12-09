@@ -45,12 +45,6 @@ public interface ProductMapper {
             """)
     int deleteById(int id);
 
-    @Delete("""
-            DELETE FROM product_file
-            WHERE product_id = #{id}
-            """)
-    int deleteFileByProductId(int id);
-
     @Update("""
             UPDATE product
             SET product_name = #{productName},
@@ -189,4 +183,18 @@ public interface ProductMapper {
             VALUES (#{buyerId}, #{id}, #{writer}, #{productName}, #{locationName}, #{price})
             """)
     int insertTranscation(int id, String buyerId, String writer, String productName, String locationName, Integer price);
+
+    @Select("""
+            SELECT name
+            FROM product_file
+            WHERE product_id = #{productId}
+            """)
+    List<String> selectFilesByProductId(Integer productId);
+
+    @Delete("""
+            DELETE FROM product_file
+            WHERE product_id = #{id}
+            """)
+    int deleteFileByProductId(int id);
+    
 }
