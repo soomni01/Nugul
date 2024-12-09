@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
@@ -99,13 +100,31 @@ public class ProductService {
     }
 
     // 상품 삭제하기
-    public boolean deleteProduct(int id) {
-        mapper.deleteLike(id);
-        mapper.deletePurchasedRecord(id);
-        mapper.deleteFileByProductId(id);
+    public boolean deleteProduct(int productId) {
+        // 파일(s3) 지우기
+        List<String> fileName = mapper.selectFilesByProductId(productId);
 
-        int cnt = mapper.deleteById(id);
+        for (String file : fileName) {
+            String key = STR."prj1114/\{productId}/\{file}";
+            DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
 
+            s3.deleteObject(dor);
+        }
+
+        // 파일의 db 지우기
+        mapper.deleteFileByProductId(productId);
+
+        // 상품의 좋아요 지우기
+        mapper.deleteLike(productId);
+
+        // 상품의 구매 내역 지우기 (purchased_record 테이블엔 null 값)
+        mapper.deletePurchasedRecord(productId);
+
+
+        int cnt = mapper.deleteById(productId);
         return cnt == 1;
     }
 

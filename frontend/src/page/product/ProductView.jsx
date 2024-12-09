@@ -88,7 +88,7 @@ export function ProductView() {
 
   const handleDeleteClick = () => {
     axios
-      .delete(`/api/product/delete/${product.productId}`)
+      .delete(`/api/product/delete/${productId}`)
       .then((res) => res.data)
       .then((data) => {
         toaster.create({

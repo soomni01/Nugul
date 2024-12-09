@@ -99,16 +99,16 @@ public class ProductController {
     }
 
     // 상품 삭제하기
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("delete/{productId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteProduct(
-            @PathVariable int id,
+            @PathVariable int productId,
             Authentication authentication) {
-        if (service.hasAccess(id, authentication)) {
-            if (service.deleteProduct(id)) {
+        if (service.hasAccess(productId, authentication)) {
+            if (service.deleteProduct(productId)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
-                                "text", STR."\{id}번 상품이 삭제되었습니다.")));
+                                "text", STR."\{productId}번 상품이 삭제되었습니다.")));
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
