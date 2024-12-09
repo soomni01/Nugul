@@ -18,16 +18,13 @@ public class BoardService {
     final BoardMapper mapper;
     final CommentMapper commentMapper;
 
-    public Map<String, Object> list(Integer page, String searchType, String searchKeyword) {
-
+    public Map<String, Object> list(Integer page, String searchType, String searchKeyword, String category) {
         Integer offset = (page - 1) * 10;
 
-        List<Board> list = mapper.selectPage(offset, searchType, searchKeyword);
+        List<Board> list = mapper.selectPage(offset, searchType, searchKeyword, category);
 
-        Integer count = mapper.countAll(searchType, searchKeyword);
-        return Map.of("list", list,
-                "count", count);
-
+        Integer count = mapper.countAll(searchType, searchKeyword, category);
+        return Map.of("list", list, "count", count);
     }
 
     public boolean boardAdd(Board board, Authentication authentication) {

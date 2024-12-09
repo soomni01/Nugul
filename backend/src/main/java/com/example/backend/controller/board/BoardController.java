@@ -93,10 +93,12 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                    @RequestParam(value = "searchType", defaultValue = "all") String searchType,
-                                    @RequestParam(value = "searchKeyword", defaultValue = "") String searchKeyword) {
+    public Map<String, Object> list(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "searchType", defaultValue = "all") String searchType,
+            @RequestParam(value = "searchKeyword", defaultValue = "") String searchKeyword,
+            @RequestParam(value = "category", defaultValue = "all") String category) {
 
-        return service.list(page, searchType, searchKeyword);
+        return service.list(page, searchType, searchKeyword, category);
     }
 }
