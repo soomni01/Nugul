@@ -38,6 +38,7 @@ const ReviewCard = ({ review, value, productNameClick }) => (
           onClick={(e) => productNameClick(e, review.productId)}
           size="lg"
           color={review.productId ? "black" : "gray.400"}
+          cursor="pointer"
         >
           {review.productName}
         </Heading>

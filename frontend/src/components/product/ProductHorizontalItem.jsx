@@ -130,6 +130,22 @@ export function ProductHorizontalItem({
     }
   };
 
+  const productClick = (navigate, productId, status) => {
+    if (productId != null && status == "For Sale") {
+      navigate(`/product/view/${productId}`);
+    } else if (productId != null && status == "Sold") {
+      navigate(`/product/view/${productId}`);
+      toaster.create({
+        type: "warning",
+        description: "판매 완료된 상품입니다.",
+      });
+    } else
+      toaster.create({
+        type: "error",
+        description: "삭제된 상품입니다.",
+      });
+  };
+
   console.log(product);
 
   return (
@@ -144,9 +160,7 @@ export function ProductHorizontalItem({
       border="1px solid"
       borderColor="gray.200"
       position="relative" // 부모 카드에 relative 위치를 지정
-      onClick={() =>
-        isSold ? null : navigate(`/product/view/${product.productId}`)
-      } // Sold 상태에서 클릭 방지
+      onClick={() => productClick(navigate, product.productId, product.status)} // Sold 상태에서 클릭 방지
       style={cardStyle}
     >
       {/* 왼쪽: 이미지 */}

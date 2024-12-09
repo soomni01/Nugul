@@ -18,7 +18,8 @@ public interface MyPageMapper {
     List<Product> getLikes(String name);
 
     @Select("""
-            SELECT 
+            SELECT
+                p.product_id,
                 p.category, 
                 p.product_name, 
                 p.location_name, 
