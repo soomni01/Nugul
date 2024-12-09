@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
+import {
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  ZoomControl,
+} from "react-kakao-maps-sdk";
 import "./ViewMap.css";
-import { Box, Input } from "@chakra-ui/react";
+import { Box, Input, ListRoot, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 
@@ -11,7 +16,7 @@ function ViewMap() {
   const [markers, setMarkers] = useState([]);
   const [markerPosition, setMarkerPosition] = useState({});
   const [locationName, setLocationName] = useState("");
-  const [listItem, setListItem] = useState([]);
+  const [markerOpen, setMarkerOpen] = useState(false);
 
   const handleSearch = () => {
     if (!map) return;
@@ -31,6 +36,7 @@ function ViewMap() {
           listStr = "";
 
         // 검색 버튼 클릭시 , 기존창 지워야 함
+        removeAllChildNods(listEl);
 
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
@@ -48,15 +54,15 @@ function ViewMap() {
           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
 
           fragment.appendChild(itemEl);
-          setMarkers(markers);
-          // 마커 밑 info  끝
-
-          listEl.appendChild(fragment);
-
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-          map.setBounds(bounds);
-          displayPagination(_pagination);
         }
+        setMarkers(markers);
+        // 마커 밑 info  끝
+
+        listEl.appendChild(fragment);
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds);
+        displayPagination(_pagination);
       }
     });
   };
@@ -133,42 +139,76 @@ function ViewMap() {
     paginationEl.appendChild(fragment);
   }
 
+  function displayInfowindow(marker, title) {
+    var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
+    infowindow.setContent(content);
+    infowindow.open(map, marker);
+  }
+
+  // 검색시 리스트 초기화 후 붙이기
+  function removeAllChildNods(el) {
+    while (el.hasChildNodes()) {
+      el.removeChild(el.lastChild);
+    }
+  }
+
   return (
-    <Box className={"map_wrap"}>
-      <Map
-        className="map"
-        center={{ lat: 33.450701, lng: 126.570667 }}
-        level={3}
-        style={{ width: "100%", height: "800px" }}
-        onCreate={setMap}
-        onClick={handleMapClick}
-      >
-        {markers.map((marker) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            onClick={() => setInfo(marker)}
-          >
-            {info && info.content === marker.content && (
-              <div style={{ color: "#5e5959" }}>{marker.content}</div>
-            )}
-          </MapMarker>
-        ))}
-        <ZoomControl />
-      </Map>
-      <Field>
-        <Input
-          value={locationName}
-          onChange={(e) => {
-            setLocationName(e.target.value);
-          }}
-        />
-      </Field>
+    <Box display={"flex"} w={"100%"} className={"map_wrap"}>
+      <Stack w={"20%"} className={"menu_wrap"}>
+        <Field>
+          <Input
+            value={locationName}
+            onChange={(e) => {
+              setLocationName(e.target.value);
+            }}
+          />
+        </Field>
 
-      <Button onClick={handleSearch}> 검색하기</Button>
+        <Button onClick={handleSearch}> 검색하기</Button>
 
-      <ul id={"placeList"}></ul>
-      <div id={"pagination"}></div>
+        <ListRoot id={"placeList"} as={"ol"}></ListRoot>
+        <div id={"pagination"}></div>
+      </Stack>
+      <Stack w={"80%"}>
+        <Map
+          className="map"
+          center={{ lat: 33.450701, lng: 126.570667 }}
+          level={3}
+          style={{ width: "100%", height: "800px" }}
+          onCreate={setMap}
+          onClick={handleMapClick}
+        >
+          {markers.map((marker) => (
+            <MapMarker
+              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+              position={marker.position}
+              // onClick={() => setInfo(marker)}
+              onMouseOver={
+                // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+                () => {
+                  setInfo(marker);
+                  setMarkerOpen(true);
+                }
+              }
+              // 마커에 마우스아웃 이벤트를 등록합니다
+              onMouseOut={
+                // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+                () => setMarkerOpen(false)
+              }
+            >
+              {markerOpen && info && info.content === marker.content && (
+                <div style={{ color: "#5e5959" }}>{marker.content}</div>
+              )}
+            </MapMarker>
+          ))}
+
+          <CustomOverlayMap position={{ lat: 33.450701, lng: 126.570667 }}>
+            <Box> hello</Box>
+          </CustomOverlayMap>
+
+          <ZoomControl />
+        </Map>
+      </Stack>
     </Box>
   );
 }
