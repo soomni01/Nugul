@@ -52,7 +52,7 @@ public interface MyPageMapper {
 //    List<Product> getSoldProducts(String name);
 
     @Select("""
-            SELECT pr.expense_id, pr.date, p.product_id,  pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
+            SELECT DISTINCT p.product_id, pr.expense_id, pr.date, pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
                 p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status
             FROM purchased_record pr
             LEFT JOIN product p ON pr.product_id = p.product_id
