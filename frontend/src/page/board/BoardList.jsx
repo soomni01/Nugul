@@ -17,6 +17,7 @@ import {BoardCategories} from "../../components/board/BoardCategories.jsx";
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [count, setCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState({
     type: "all",
@@ -24,6 +25,7 @@ export function BoardList() {
   });
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -99,14 +101,46 @@ export function BoardList() {
     }
   }
 
+  function handleCategoryClick(categoryValue) {
+    setSelectedCategory(categoryValue);
+  }
+
   return (
     <Box>
+
+      <Box textAlign="center" my={4} fontSize="2xl" fontWeight="bold">
+        <h3>
+          {selectedCategory === "all"
+              ? "통합"
+              : BoardCategories.find((cat) => cat.value === selectedCategory)?.label || "잘못된 카테고리"}{" "}
+          게시판
+        </h3>
+      </Box>
+      {/* 게시판 카테고리 버튼 */}
+      <Flex justifyContent="center" mb={4}>
+        <HStack spacing={4}>
+          {BoardCategories.map((category) => (
+              <Button key={category.value} onClick={() => handleCategoryClick(category.value)}>
+                {category.label}
+              </Button>
+          ))}
+        </HStack>
+      </Flex>
+
+      {/* 게시물 제목 */}
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
+        <h3>게시물 목록 </h3>
+        {isAuthenticated && (
+            <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+        )}
+      </Flex>
+
+      {/*<Flex justifyContent="space-between" alignItems="center" mb={4}>
         <h3>게시물 목록</h3>
         {isAuthenticated && (
           <Button onClick={handleWriteClick}>게시물 쓰기</Button>
         )}
-      </Flex>
+      </Flex>*/}
       {boardList.length > 0 ? (
         <Table.Root interactive>
           <Table.Header>
