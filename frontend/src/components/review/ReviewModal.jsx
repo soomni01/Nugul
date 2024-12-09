@@ -61,9 +61,13 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
         onClose();
       })
       .catch((e) => {
+        const errorMessage =
+          e.response?.data?.message?.text || "알 수 없는 오류가 발생했습니다.";
+        const errorType = e.response?.data?.message?.type || "error";
+
         toaster.create({
-          description: e.response.message.text,
-          type: e.response.message.type,
+          description: errorMessage,
+          type: errorType,
         });
       })
       .finally(() => setProgress(false));

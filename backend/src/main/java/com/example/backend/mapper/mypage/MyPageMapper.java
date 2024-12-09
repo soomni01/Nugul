@@ -69,17 +69,17 @@ public interface MyPageMapper {
     int deletePurchased(Integer product_id);
 
     @Select("""
-            SELECT member_id
+            SELECT COUNT(*)
             FROM member 
             WHERE member_id = #{sellerId}""")
-    String checkSellerExists(String sellerId);
+    boolean checkSellerExists(String sellerId);
 
     @Update("""
             UPDATE purchased_record
             SET review_status = 'completed'
             WHERE expense_id=#{expenseId}
             """)
-    void updatePurchasedReviewStatus(Integer expenseId);
+    int updatePurchasedReviewStatus(Integer expenseId);
 
     @Insert("""
             INSERT INTO review

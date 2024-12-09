@@ -176,6 +176,17 @@ export function ProductHorizontalItem({
       });
   };
 
+  const handleReviewClick = (productId) => {
+    if (!product.nickname) {
+      toaster.create({
+        type: "error",
+        description: "이미 탈퇴한 회원입니다.",
+      });
+    } else {
+      onOpen(productId);
+    }
+  };
+
   console.log(product);
 
   return (
@@ -280,11 +291,14 @@ export function ProductHorizontalItem({
               구매 일자: {formatDate(product.purchasedAt)}
             </Text>
             {product.reviewStatus === "completed" ? (
-              <Button colorPalette="cyan" size="xs" isDisabled>
+              <Button colorPalette="cyan" size="xs" isDisabled cursor="default">
                 작성 완료
               </Button>
             ) : (
-              <Button onClick={() => onOpen(product.productId)} size="xs">
+              <Button
+                onClick={() => handleReviewClick(product.productId)}
+                size="xs"
+              >
                 후기 작성
               </Button>
             )}

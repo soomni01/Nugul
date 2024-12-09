@@ -45,15 +45,21 @@ public class MyPageController {
             @RequestBody Review review) {
         System.out.println(review);
         if (service.validate(review)) {
-            if (service.addReview(review)) {
-                return ResponseEntity.ok()
-                        .body(Map.of("message", Map.of("type", "success",
-                                        "text", STR."\{review.getProductName()} 상품에 대한 후기가 작성되었습니다."),
-                                "data", review));
+            if (service.checkSeller(review.getSellerId())) {
+                if (service.addReview(review)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                            "text", STR."\{review.getProductName()} 상품에 대한 후기가 작성되었습니다."),
+                                    "data", review));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "error",
+                                    "text", "상품에 대한 후기 작성이 실패하였습니다.")));
+                }
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
-                                "text", "상품에 대한 후기 작성이 실패하였습니다.")));
+                                "text", "이미 탈퇴한 회원입니다.")));
             }
         } else {
             return ResponseEntity.badRequest()

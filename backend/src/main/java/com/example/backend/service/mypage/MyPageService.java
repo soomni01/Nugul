@@ -38,25 +38,21 @@ public class MyPageService {
     // 후기 내용과 별점이 있는지 확인
     public boolean validate(Review review) {
         boolean reviewText = review.getReviewText().trim().length() > 0;
-
         return reviewText;
+    }
+
+    // 탈퇴한 회원인지 아닌지 확인하기
+    public boolean checkSeller(String sellerId) {
+        return mapper.checkSellerExists(sellerId);
     }
 
     // 후기 작성하기
     public boolean addReview(Review review) {
-        // sellerId가 member 테이블에 존재하는지 확인
-        String sellerExists = mapper.checkSellerExists(review.getSellerId());
+        int insertCount = mapper.insertReview(review); // 리뷰 삽입 결과
+        int updateCount = mapper.updatePurchasedReviewStatus(review.getExpenseId()); // 상태 업데이트 결과
 
-        if (sellerExists == null) {
-            System.out.println("탈퇴한 회원");
-            return false; // 탈퇴한 회원이므로 후기를 작성할 수 없음
-        }
-
-        // sellerId가 존재하면 후기를 작성
-        int cnt = mapper.insertReview(review);
-        mapper.updatePurchasedReviewStatus(review.getExpenseId());
-
-        return cnt == 1; // 후기 작성 성공 여부 반환
+        // 두 쿼리가 모두 성공한 경우에만 true 반환
+        return insertCount == 1 && updateCount == 1;
     }
 
 
@@ -76,7 +72,9 @@ public class MyPageService {
         return mapper.inquiryListview(memberId, inquiryId);
     }
 
+    // 평점 가져오기
     public Double getRating(String memberId) {
         return mapper.getRating(memberId);
     }
+
 }
