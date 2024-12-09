@@ -25,7 +25,6 @@ public class MyPageController {
     public Double getRating(
             @RequestParam String memberId
     ) {
-        System.out.println(memberId);
         return service.getRating(memberId);
     }
 
