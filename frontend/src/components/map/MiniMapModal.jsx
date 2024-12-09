@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { IoClose } from "react-icons/io5";
 import "./MapModal.css";
-import { SiOpenstreetmap } from "react-icons/si";
+import { FaLocationArrow } from "react-icons/fa";
 
 export const MiniMapModal = ({ isOpen, onClose, product }) => {
   const [markerPosition, setMarkerPosition] = useState({
@@ -63,7 +63,7 @@ export const MiniMapModal = ({ isOpen, onClose, product }) => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <SiOpenstreetmap />
+                    <FaLocationArrow />
                   </a>
                 </div>
               </MapMarker>
