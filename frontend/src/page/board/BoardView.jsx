@@ -17,19 +17,21 @@ import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
-import {BoardCategories} from "../../components/board/BoardCategories.jsx";
+import { BoardCategories } from "../../components/board/BoardCategories.jsx";
+import { BoardCategoryContainer } from "../../components/board/BoardCategoryContainer.jsx";
 
 export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios
-      .get(`/api/board/boardView/${boardId}`)
-      .then((res) => setBoard(res.data));
-  }, []);
+        .get(`/api/board/boardView/${boardId}`)
+        .then((res) => setBoard(res.data));
+  }, [boardId]);
 
   if (!board) {
     return <Spinner />;
@@ -37,83 +39,93 @@ export function BoardView() {
 
   const handleDeleteClick = () => {
     axios
-      .delete(`/api/board/boardDelete/${board.boardId}`)
-      .then((res) => res.data)
-      .then((data) => {
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
+        .delete(`/api/board/boardDelete/${board.boardId}`)
+        .then((res) => res.data)
+        .then((data) => {
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
+          navigate("/board/list");
+        })
+        .catch((e) => {
+          const data = e.response.data;
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
         });
-        navigate("/board/list");
-      })
-      .catch((e) => {
-        const data = e.response.data;
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
-      });
+  };
+
+  // 카테고리 선택 처리
+  const handleCategorySelect = (categoryValue) => {
+    setSelectedCategory(categoryValue);
+    navigate(`/board/list?category=${categoryValue}&page=1`);
   };
 
   return (
-    <Box>
-      <h3>{boardId} 번 게시글</h3>
-      <Stack gap={5}>
-        <Field label="제목" readOnly>
-          <Input value={board.title} />
-        </Field>
-        <Field label="본문" readOnly>
-          <Textarea value={board.content} />
-        </Field>
-        <Field label="작성자" readOnly>
-          <Input value={board.writer} />
-        </Field>
-        <Field label={"카테고리"} readOnly>
-          <Input
-              value={
-                  BoardCategories.find((cat) => cat.value === board.category)?.label || ""
-              }
-          />
-        </Field>
-        <Field label={"작성날짜"} readOnly>
-          <Input type={"date"} value={board.createdAt} />
-        </Field>
-        {hasAccess(board.memberId) && (
-          <Box>
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"} variant={"outline"}>
-                  삭제
+      <Box>
+        <BoardCategoryContainer
+            selectedCategory={selectedCategory}
+            onCategorySelect={handleCategorySelect}
+        />
+        <h3>{boardId}번 게시글</h3>
+        <Stack gap={5}>
+          <Field label="제목" readOnly>
+            <Input value={board.title} />
+          </Field>
+          <Field label="본문" readOnly>
+            <Textarea value={board.content} />
+          </Field>
+          <Field label="작성자" readOnly>
+            <Input value={board.writer} />
+          </Field>
+          <Field label={"카테고리"} readOnly>
+            <Input
+                value={
+                    BoardCategories.find((cat) => cat.value === board.category)?.label || ""
+                }
+            />
+          </Field>
+          <Field label={"작성날짜"} readOnly>
+            <Input type={"date"} value={board.createdAt} />
+          </Field>
+          {hasAccess(board.memberId) && (
+              <Box>
+                <DialogRoot>
+                  <DialogTrigger asChild>
+                    <Button colorPalette={"red"} variant={"outline"}>
+                      삭제
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>삭제 확인</DialogTitle>
+                    </DialogHeader>
+                    <DialogBody>
+                      <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
+                    </DialogBody>
+                    <DialogFooter>
+                      <DialogActionTrigger>
+                        <Button variant={"outline"}>취소</Button>
+                      </DialogActionTrigger>
+                      <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                        삭제
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </DialogRoot>
+                <Button
+                    colorPalette={"cyan"}
+                    onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
+                >
+                  수정
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
-            >
-              수정
-            </Button>
-          </Box>
-        )}
-      </Stack>
-      <hr />
-      <CommentContainer boardId={board.boardId} />
-    </Box>
+              </Box>
+          )}
+        </Stack>
+        <hr />
+        <CommentContainer boardId={board.boardId} />
+      </Box>
   );
 }
