@@ -27,4 +27,5 @@ public class Product {
     private String mainImage;
     private Integer likeCount;
     private String reviewStatus;
+    private Integer expenseId;
 }

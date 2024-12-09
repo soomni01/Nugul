@@ -18,4 +18,5 @@ public class Review {
     private Integer price;
     private String reviewStatus;
     private LocalDateTime createdAt;
+    private Integer expenseId;
 }

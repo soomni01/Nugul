@@ -18,7 +18,7 @@ public interface MyPageMapper {
     List<Product> getLikes(String name);
 
     @Select("""
-            SELECT
+            SELECT 
                 p.product_id,
                 p.category, 
                 p.product_name, 
@@ -52,8 +52,8 @@ public interface MyPageMapper {
 //    List<Product> getSoldProducts(String name);
 
     @Select("""
-            SELECT pr.date, p.product_id,  p.product_name, p.writer, p.price, p.category, p.pay, p.status,
-                p.created_at, p.location_name, pr.date AS purchased_at, m.nickname, r.review_status
+            SELECT pr.expense_id, pr.date, p.product_id,  pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
+                p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status
             FROM purchased_record pr
             LEFT JOIN product p ON pr.product_id = p.product_id
             LEFT JOIN member m ON pr.seller_id = m.member_id
@@ -62,18 +62,24 @@ public interface MyPageMapper {
             """)
     List<Product> getPurchasedProducts(String name);
 
-    @Select("""
-            SELECT product_id
-            FROM purchased_record
-            WHERE buyer_id = #{name}
-            """)
-    List<Integer> purchasedProductByMemberId(String name);
-
     @Delete("""
             DELETE FROM purchased_record
             WHERE product_id = #{product_id}
             """)
     int deletePurchased(Integer product_id);
+
+    @Select("""
+            SELECT COUNT(*) 
+            FROM member 
+            WHERE member_id = #{sellerId}""")
+    boolean checkSellerExists(String sellerId);
+
+    @Update("""
+            UPDATE purchased_record
+            SET review_status = 'completed'
+            WHERE expense_id=#{expenseId}
+            """)
+    void updatePurchasedReviewStatus(Integer expenseId);
 
     @Insert("""
             INSERT INTO review
@@ -85,7 +91,7 @@ public interface MyPageMapper {
 
     @Select("""
             <script>
-            SELECT r.product_id, r.product_name, r.buyer_id, r.buyer_name, r.price, r.seller_id, r.review_text, r.rating, r.created_at, m.nickname as seller_name
+            SELECT r.review_id, r.product_id, r.product_name, r.buyer_id, r.buyer_name, r.price, r.seller_id, r.review_text, r.rating, r.created_at, m.nickname as seller_name
              FROM review r
              LEFT JOIN member m ON r.seller_id = m.member_id
                 <where>

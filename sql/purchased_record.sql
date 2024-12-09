@@ -31,3 +31,10 @@ ALTER TABLE purchased_record
 ALTER TABLE purchased_record
     ADD CONSTRAINT fk_product FOREIGN KEY (product_id)
         REFERENCES product (product_id) ON DELETE SET NULL;
+
+# 삭제 시 사용할 컬럼 추가
+ALTER TABLE purchased_record
+    ADD COLUMN product_name VARCHAR(50) NOT NULL,
+    ADD COLUMN location_name VARCHAR(100) NOT NULL,
+    ADD COLUMN review_status ENUM ('uncompleted', 'completed') DEFAULT 'uncompleted'
+    ADD COLUMN price INT NOT NULL;
