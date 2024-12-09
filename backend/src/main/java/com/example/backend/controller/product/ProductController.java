@@ -145,7 +145,6 @@ public class ProductController {
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
             @RequestParam(value = "mainImageName", required = false) String mainImageName,
             Authentication authentication) {
-        System.out.println(mainImageName);
         if (service.validate(product)) {
             if (service.add(product, files, mainImageName, authentication)) {
                 return ResponseEntity.ok()
