@@ -22,10 +22,8 @@ public class ProductController {
     // 거래 완료
     @PostMapping("transaction/{id}")
     public ResponseEntity<Map<String, Object>> transaction(
-//            Product product,
             @PathVariable int id,
             Authentication authentication) {
-//        System.out.println(product);
         if (service.hasAccess(id, authentication)) {
             if (service.transaction(id)) {
                 return ResponseEntity.ok()
