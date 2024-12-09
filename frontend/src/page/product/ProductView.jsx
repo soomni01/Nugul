@@ -142,10 +142,39 @@ export function ProductView() {
     // 추가
   };
 
+  const handleSuccessTransaction = () => {
+    axios
+      .post(`/api/product/transaction/${productId}`, {
+        // productId,
+        // productName: product.productName,
+        // price: product.price,
+        // writer: product.writer,
+        // location_name: product.location_name,
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      });
+  };
+
   return (
     <Box>
       <HStack>
         <Heading>{productId}번 상품 이름</Heading>
+        {/* 테스트용 거래 완료 시 버튼 */}
+        <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
+          거래완료
+        </Button>
         <Box display="flex" justifyContent="center" alignItems="center">
           <ProductLike
             productId={product.productId}

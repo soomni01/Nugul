@@ -146,5 +146,15 @@ public class ProductService {
 
         return result;
     }
+
+    public boolean transaction(int id) {
+        Product product = mapper.selectById(id);
+        // 거래 완료 시에 Sold로 상태 변경
+        int updateStatus = mapper.updateProductStatus(id);
+        // 구매 테이블에 추가 (buyer 임의로 설정)
+        String buyer_id = "tt@tt.tt";
+        int insertTrasaction = mapper.insertTranscation(id, buyer_id, product.getWriter(), product.getProductName(), product.getLocationName(), product.getPrice());
+        return updateStatus == 1 && insertTrasaction == 1;
+    }
 }
 

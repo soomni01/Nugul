@@ -175,4 +175,18 @@ public interface ProductMapper {
             AND member_id = #{name}
             """)
     int deleteLikeByMemberId(Integer productId, String name);
+
+    @Update("""
+            UPDATE product
+            SET status = 'Sold'
+            WHERE product_id = #{id}
+            """)
+    int updateProductStatus(int id);
+
+    @Insert("""
+            Insert purchased_record
+            (buyer_id, product_id, seller_id, product_name, location_name, price)
+            VALUES (#{buyerId}, #{id}, #{writer}, #{productName}, #{locationName}, #{price})
+            """)
+    int insertTranscation(int id, String buyerId, String writer, String productName, String locationName, Integer price);
 }
