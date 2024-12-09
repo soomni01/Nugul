@@ -11,6 +11,7 @@ function ViewMap() {
   const [markers, setMarkers] = useState([]);
   const [markerPosition, setMarkerPosition] = useState({});
   const [locationName, setLocationName] = useState("");
+  const [listItem, setListItem] = useState([]);
 
   const handleSearch = () => {
     if (!map) return;
@@ -24,7 +25,13 @@ function ViewMap() {
 
         // 마커에 데이터 넣는 코드
         let markers = [];
-        let item = [];
+        var listEl = document.getElementById("placeList"),
+          menuEl = document.getElementById("menu_wrap"),
+          fragment = document.createDocumentFragment(),
+          listStr = "";
+
+        // 검색 버튼 클릭시 , 기존창 지워야 함
+
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
           markers.push({
@@ -35,45 +42,21 @@ function ViewMap() {
             content: data[i].place_name,
           });
           //데이터 리스트에 집어 넣는 함수
-          getItem(i, data);
+          var itemEl = getItem(i, data[i]);
+
           // @ts-ignore
           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+
+          fragment.appendChild(itemEl);
+          setMarkers(markers);
+          // 마커 밑 info  끝
+
+          listEl.appendChild(fragment);
+
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          map.setBounds(bounds);
+          displayPagination(_pagination);
         }
-        setMarkers(markers);
-        // 마커 밑 info  끝
-        // 리스트 아이템 넣는 코드
-        function displayPagination(pagination) {
-          var paginationEl = document.getElementById("pagination"),
-            fragment = document.createDocumentFragment(),
-            i;
-
-          // 기존에 추가된 페이지번호를 삭제합니다
-          while (paginationEl.hasChildNodes()) {
-            paginationEl.removeChild(paginationEl.lastChild);
-          }
-
-          for (i = 1; i <= pagination.last; i++) {
-            var el = document.createElement("a");
-            el.href = "#";
-            el.innerHTML = i;
-
-            if (i === pagination.current) {
-              el.className = "on";
-            } else {
-              el.onclick = (function (i) {
-                return function () {
-                  pagination.gotoPage(i);
-                };
-              })(i);
-            }
-
-            fragment.appendChild(el);
-          }
-          paginationEl.appendChild(fragment);
-        }
-
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        map.setBounds(bounds);
       }
     });
   };
@@ -151,7 +134,7 @@ function ViewMap() {
   }
 
   return (
-    <Box>
+    <Box className={"map_wrap"}>
       <Map
         className="map"
         center={{ lat: 33.450701, lng: 126.570667 }}
@@ -160,7 +143,6 @@ function ViewMap() {
         onCreate={setMap}
         onClick={handleMapClick}
       >
-        <Box zIndex={1}> 한글 </Box>
         {markers.map((marker) => (
           <MapMarker
             key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
@@ -184,6 +166,9 @@ function ViewMap() {
       </Field>
 
       <Button onClick={handleSearch}> 검색하기</Button>
+
+      <ul id={"placeList"}></ul>
+      <div id={"pagination"}></div>
     </Box>
   );
 }
