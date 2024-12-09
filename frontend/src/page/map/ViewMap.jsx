@@ -86,6 +86,8 @@ function ViewMap() {
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         map.setBounds(bounds);
+        // customOverlay.setPosition(bounds);
+        // console.log(bounds);
         displayPagination(_pagination);
       }
     });
@@ -183,7 +185,9 @@ function ViewMap() {
     var id = this.id,
       className = this.className;
     console.log(id);
-    customOverlay.setMap(null);
+
+    // Todo 이거 어케 건드리지 ..
+    // customOverlay.setMap(null);
     // 켜져있으면  끄고 카테고리 변경
     if (className === "on") {
       setCurrCategory("");
@@ -191,6 +195,7 @@ function ViewMap() {
       removeMarker();
     } else {
       console.log("실행 전", currCategory);
+      console.log(id);
       setCurrCategory(id);
       console.log("실행 후", currCategory);
       changeCategoryClass(this);
@@ -208,7 +213,7 @@ function ViewMap() {
     for (i = 0; i < children.length; i++) {
       children[i].className = "";
     }
-
+    // 자기 자신의 클래스 네임 on > csss 변경
     if (el) {
       el.className = "on";
     }
@@ -221,7 +226,7 @@ function ViewMap() {
       return;
     }
 
-    const ps = new kakao.maps.services.Places();
+    const ps = new kakao.maps.services.Places(map);
     // 커스텀 오버레이를 숨깁니다
 
     customOverlay.setMap(null);
@@ -338,11 +343,11 @@ function ViewMap() {
       '<div class="after"></div>';
 
     contentNode.innerHTML = content;
-    placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-    placeOverlay.setMap(map);
+    customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+    customOverlay.setMap(map);
   }
 
-  // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+  // 커스텀 마커 삭제
   function removeMarker() {
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
