@@ -23,14 +23,17 @@ import { BoardCategoryContainer } from "../../components/board/BoardCategoryCont
 export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all"); // 카테고리 상태 추가
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios
         .get(`/api/board/boardView/${boardId}`)
-        .then((res) => setBoard(res.data));
+        .then((res) => {
+          setBoard(res.data);
+          setSelectedCategory(res.data.category || "all"); // 게시물 카테고리 설정
+        });
   }, [boardId]);
 
   if (!board) {
@@ -57,19 +60,22 @@ export function BoardView() {
         });
   };
 
-  // 카테고리 선택 처리
+  // 카테고리 선택 핸들러
   const handleCategorySelect = (categoryValue) => {
-    setSelectedCategory(categoryValue);
-    navigate(`/board/list?category=${categoryValue}&page=1`);
+    setSelectedCategory(categoryValue);  // 카테고리 상태 갱신
+    navigate(`/board/list?category=${categoryValue}`);  // 카테고리 변경 시 게시물 리스트로 이동
   };
 
   return (
       <Box>
+        <h3>{boardId} 번 게시글</h3>
+
+        {/* 카테고리 선택 */}
         <BoardCategoryContainer
-            selectedCategory={selectedCategory}
-            onCategorySelect={handleCategorySelect}
+            selectedCategory={selectedCategory}  // 선택된 카테고리 상태 전달
+            onCategorySelect={handleCategorySelect}  // 카테고리 선택 함수 전달
         />
-        <h3>{boardId}번 게시글</h3>
+
         <Stack gap={5}>
           <Field label="제목" readOnly>
             <Input value={board.title} />
@@ -94,9 +100,7 @@ export function BoardView() {
               <Box>
                 <DialogRoot>
                   <DialogTrigger asChild>
-                    <Button colorPalette={"red"} variant={"outline"}>
-                      삭제
-                    </Button>
+                    <Button colorPalette={"red"} variant={"outline"}>삭제</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -109,9 +113,7 @@ export function BoardView() {
                       <DialogActionTrigger>
                         <Button variant={"outline"}>취소</Button>
                       </DialogActionTrigger>
-                      <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                        삭제
-                      </Button>
+                      <Button colorPalette={"red"} onClick={handleDeleteClick}>삭제</Button>
                     </DialogFooter>
                   </DialogContent>
                 </DialogRoot>
