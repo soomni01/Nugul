@@ -69,12 +69,25 @@ public class ProductService {
 
     // 페이지, 카테고리, 검색, 지불방법 별 상품 목록 가져오기
     public Map<String, Object> getProductList(Integer page, String category, String keyword, String pay) {
+
         // SQL 의 LIMIT 키워드에서 사용되는 offset
         Integer offset = (page - 1) * 16;
+
         // 조회되는 게시물들
         List<Product> list = mapper.selectPage(offset, category, keyword, pay);
+
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (Product product : list) {
+            if (product.getMainImageName() != null) {
+                // S3 URL을 기반으로 메인 이미지 경로 설정
+                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                product.setMainImageName(mainImageUrl);
+            }
+        }
+
         // 전체 게시물 수
         Integer count = mapper.countAll(category, keyword, pay);
+
         return Map.of("list", list,
                 "count", count);
     }

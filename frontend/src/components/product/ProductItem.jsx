@@ -36,15 +36,25 @@ export function ProductItem({ product, likeCount, isLiked }) {
     navigate(`/product/view/${product.productId}`);
   };
 
+  const mainImage = product.mainImageName
+    ? product.mainImageName
+    : "/image/productItem.png";
+
   return (
     <Box>
       <Card.Root
         maxW="sm"
         overflow="hidden"
-        onClick={handleCardClick} // 카드 클릭 시 페이지 이동
+        onClick={handleCardClick}
         cursor="pointer"
       >
-        <Image src="/image/productItem.png" alt={product.productName} />
+        <Image
+          width="100%" // 가로 크기를 100%로 지정
+          height="300px" // 세로 크기를 일정 크기로 설정
+          objectFit="cover" // 이미지 비율에 맞게 크기를 맞추고 잘라서 표시
+          src={mainImage}
+          alt={product.productName}
+        />
         <Card.Body gap="2" px="4" py="2">
           <HStack justify="space-between" w="100%">
             <Badge>{categoryLabel}</Badge>

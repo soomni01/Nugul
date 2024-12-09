@@ -61,8 +61,9 @@ public interface ProductMapper {
 
     @Select("""
             <script>
-                SELECT *
-                 FROM product
+                SELECT p.*, pf.name AS main_image_name
+                FROM product p
+                LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
                 <where>
                     <if test="category != null and category != 'all'">
                         AND category = #{category}
@@ -196,5 +197,5 @@ public interface ProductMapper {
             WHERE product_id = #{id}
             """)
     int deleteFileByProductId(int id);
-    
+
 }
