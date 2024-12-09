@@ -7,10 +7,10 @@ import { PiCurrencyKrwBold } from "react-icons/pi";
 import { FcAddImage } from "react-icons/fc";
 import { MapModal } from "../../components/map/MapModal.jsx";
 import { categories } from "../../components/category/CategoryContainer.jsx";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import axios from "axios";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -73,23 +73,26 @@ export function ProductAdd(props) {
   // 상품 등록 요청
   const handleSaveClick = () => {
     setProgress(true);
-    console.log(productName, category, pay, price, description, location);
 
+    const formData = new FormData();
+    formData.append("productName", productName);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("category", category);
+    formData.append("latitude", location?.latitude || "");
+    formData.append("longitude", location?.longitude || "");
+    formData.append("locationName", location?.name || "");
+    formData.append("pay", pay);
+    formData.append("writer", id);
+
+    // 메인이미지와 파일 추가
+    if (mainImage) formData.append("mainImageName", mainImage.name);
+    files.forEach((file) => formData.append("files[]", file));
+
+    console.log(mainImage.name);
     axios
-      .postForm("/api/product/add", {
-        productName,
-        description,
-        price,
-        category,
-        location,
-        //  토큰에서 받아서 값 넣음
-        writer: id,
-        pay,
-        latitude: location?.latitude,
-        longitude: location?.longitude,
-        locationName: location?.name,
-        files,
-        mainImage,
+      .postForm("/api/product/add", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => res.data)
       .then((data) => {

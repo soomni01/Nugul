@@ -3,12 +3,16 @@ package com.example.backend.service.product;
 import com.example.backend.dto.product.Product;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -20,35 +24,40 @@ import java.util.Map;
 public class ProductService {
 
     final ProductMapper mapper;
+    final S3Client s3;
+
+    @Value("${image.src.prefix}")
+    String imageSrcPrefix;
+
+    @Value("${bucket.name}")
+    String bucketName;
 
     // 상품 추가하기
-    public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage, Authentication authentication) {
+    public boolean add(Product product, MultipartFile[] files, String mainImageName, Authentication authentication) {
         product.setWriter(authentication.getName());
-
 
         int cnt = mapper.insert(product);
 
         if (files != null && files.length > 0) {
-            // 폴더 만들기
-            String directory = STR."C:/Temp/prj1126/\{product.getProductId()}";
-            File dir = new File(directory);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            // 파일 업로드
             for (MultipartFile file : files) {
                 boolean isMain = false;
-                if (mainImage != null && file.getOriginalFilename().equals(mainImage.getOriginalFilename())) {
+                if (mainImageName != null && file.getOriginalFilename().equals(mainImageName)) {
                     isMain = true; // 해당 파일을 메인 이미지로 설정
                 }
 
-                String filePath = STR."C:/Temp/prj1126/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
                 try {
-                    file.transferTo(new File(filePath));
+                    s3.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("S3 업로드 실패: " + objectKey, e);
                 }
-                // product_file 테이블에 파일명 입력
+
                 mapper.insertFile(product.getProductId(), file.getOriginalFilename(), isMain);
             }
         }

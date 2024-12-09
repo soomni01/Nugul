@@ -143,10 +143,11 @@ public class ProductController {
     public ResponseEntity<Map<String, Object>> add(
             Product product,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-            @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+            @RequestParam(value = "mainImageName", required = false) String mainImageName,
             Authentication authentication) {
+        System.out.println(mainImageName);
         if (service.validate(product)) {
-            if (service.add(product, files, mainImage, authentication)) {
+            if (service.add(product, files, mainImageName, authentication)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                         "text", STR."\{product.getProductId()}번 상품이 등록되었습니다."),
