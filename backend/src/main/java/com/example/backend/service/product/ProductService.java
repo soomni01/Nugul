@@ -194,7 +194,6 @@ public class ProductService {
         result.put("shareProducts", shareProducts);
 
         // S3 URL을 기반으로 메인 이미지 경로 설정
-        // S3 URL을 기반으로 메인 이미지 경로 설정
         for (List<Product> products : result.values()) {
             for (Product product : products) {
                 if (product.getMainImageName() != null) {
