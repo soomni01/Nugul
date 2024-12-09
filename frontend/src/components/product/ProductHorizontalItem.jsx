@@ -187,6 +187,10 @@ export function ProductHorizontalItem({
     }
   };
 
+  const mainImage = product.mainImageName
+    ? product.mainImageName
+    : "/image/productItem.png";
+
   console.log(product);
 
   return (
@@ -208,7 +212,7 @@ export function ProductHorizontalItem({
         <Image
           maxW="150px"
           objectFit="cover"
-          src="/image/productItem.png"
+          src={mainImage}
           alt={product.productName}
           borderRadius="md"
           style={{ opacity: isSold ? 0.5 : 1 }}

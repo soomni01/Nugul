@@ -5,6 +5,7 @@ import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,21 @@ public class MyPageService {
 
     final MyPageMapper mapper;
 
+    @Value("${image.src.prefix}")
+    String imageSrcPrefix;
+
     // 내 관심 상품 목록 가져오기
     public List<Product> getLikes(String id) {
         List<Product> likesList = mapper.getLikes(id);
+
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (Product product : likesList) {
+            if (product.getMainImageName() != null) {
+                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                product.setMainImageName(mainImageUrl);
+            }
+        }
+
         return likesList;
     }
 

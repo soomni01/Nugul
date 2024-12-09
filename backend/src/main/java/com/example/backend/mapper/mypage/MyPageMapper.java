@@ -11,21 +11,23 @@ import java.util.List;
 public interface MyPageMapper {
 
     @Select("""
-            SELECT p.product_id, p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name
-            FROM product_like l LEFT JOIN product p ON l.product_id = p.product_id
+            SELECT p.product_id, p.product_name, p.price, p.category, p.pay, p.status, p.created_at, p.location_name, pf.name AS main_image_name
+            FROM product_like l
+            LEFT JOIN product p ON l.product_id = p.product_id
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE l.member_id = #{name} 
             """)
     List<Product> getLikes(String name);
 
     @Select("""
-            SELECT 
+            SELECT
                 p.product_id,
-                p.category, 
-                p.product_name, 
-                p.location_name, 
-                p.pay, 
+                p.category,
+                p.product_name,
+                p.location_name,
+                p.pay,
                 p.price,
-                p.status, 
+                p.status,
                 p.created_at, 
                 pr.date AS purchasedAt, 
                 m.nickname AS buyer_nickname
