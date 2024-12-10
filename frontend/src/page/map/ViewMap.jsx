@@ -20,7 +20,9 @@ function ViewMap() {
   const [customOverlay, setCustomOverlay] = useState(null);
   const [customOverlayMarker, setCustomOverlayMarker] = useState([]);
   const [currCategory, setCurrCategory] = useState("");
+  const [, set] = useState();
   var contentNode = document.createElement("div");
+
   contentNode.className = "placeinfo_wrap";
   useEffect(() => {
     // 아무것도 안할때의 이벤트 추가해놓기
@@ -185,18 +187,11 @@ function ViewMap() {
     console.log(id);
 
     //
-    if (customOverlay.getVisible() === true) {
-      customOverlay.setMap(null);
-    }
-    if (markers.getVisible()) {
-      removeMarker();
-    }
 
     // 켜져있으면  끄고 카테고리 변경
     if (className === "on") {
       setCurrCategory("");
       changeCategoryClass();
-
       removeCustomMarker();
     } else {
       console.log("실행 전", "id=", id);
@@ -297,9 +292,16 @@ function ViewMap() {
 
     marker.setMap(map); // 지도 위에 마커를 표출합니다
     //  기존꺼
-    // markers.push(marker); // 배열에 생성된 마커를 추가합니다
-    customOverlayMarker.push(marker);
+    customOverlayMarker.push(marker); // 배열에 생성된 마커를 추가
+    // 현재 배열을 깊은 복사
+    // const itemMarker = { ...marker };
+    // const newMarker = customOverlayMarker.map((item) => ({ ...item }));
+    // setCustomOverlayMarker([...newMarker, { itemMarker }]);
 
+    // console.log(itemMarker);
+    // customOverlayMarker[customOverlayMarker.length - 1].setMap(map);
+    // setCustomOverlayMarker((prev) => [...prev, marker]);
+    // console.log(marker);
     return marker;
   }
 
@@ -353,16 +355,24 @@ function ViewMap() {
   // ㄴㄴ 그냥 마커
   function removeMarker() {
     for (var i = 0; i < markers.length; i++) {
+      // markers[i].getVisible() === true && markers[i].setVisible(false);
       markers[i].setMap(null);
     }
     setMarkers([]);
   }
 
   function removeCustomMarker() {
-    for (var i = 0; i < customOverlayMarker.length; i++) {
-      customOverlayMarker[i].setMap(null);
-    }
-    setCustomOverlayMarker([]);
+    console.log("커스텀 마커 삭제 실행확인");
+    console.log(customOverlayMarker);
+
+    // 지도에서 모든 마커 제거
+    customOverlayMarker.forEach((marker) => marker.setMap(null));
+
+    // 상태 배열 초기화
+    const a = [];
+    setCustomOverlayMarker(a);
+
+    console.log(customOverlayMarker);
   }
 
   return (
