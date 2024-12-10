@@ -30,23 +30,20 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { FcAddImage } from "react-icons/fc";
 
-function ImageFileView() {
-  return null;
-}
-
 export function ProductEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { hasAccess } = useContext(AuthenticationContext);
+  const fileInputRef = useRef(null);
+
   const [product, setProduct] = useState(null);
   const [progress, setProgress] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [files, setFiles] = useState([]);
   const [filesUrl, setFilesUrl] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
-  const navigate = useNavigate();
-  const { hasAccess } = useContext(AuthenticationContext);
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => {
@@ -57,27 +54,21 @@ export function ProductEdit() {
   useEffect(() => {
     if (product && product.fileList) {
       // 파일 목록이 있으면 filesUrl에 해당 URL들을 추가
-      const fileUrls = product.fileList.map((file) => file.src); // 'src'가 이미지 URL이라고 가정
+      const fileUrls = product.fileList.map((file) => file.src);
       setFilesUrl(fileUrls);
-      setFiles(product.fileList); // fileList를 files 상태에 저장
-      // 가장 왼쪽에 배치된 이미지를 대표 이미지로 설정 (첫 번째 파일)
+      setFiles(product.fileList);
+
       if (product.fileList && files.length > 0) {
-        setMainImage(product.fileList[0]); // 첫 번째 파일을 대표 이미지로 설정
+        setMainImage(product.fileList[0]);
       }
     }
   }, [product]);
 
-  // console.log(files);
-
   const handleCategoryChange = (e) =>
     setProduct({ ...product, category: e.target.value });
 
-  const buttonClick = (buttonType) => {
-    setProduct({
-      ...product,
-      pay: buttonType,
-    });
-  };
+  const handleButtonClick = (payType) =>
+    setProduct({ ...product, pay: payType });
 
   const handlePriceChange = (e) => {
     const value = e.target.value;
@@ -85,7 +76,6 @@ export function ProductEdit() {
   };
 
   const handleLocationSelect = (location) => {
-    // 모달에서 선택한 위치를 product 상태에 반영
     setProduct({
       ...product,
       locationName: location.locationName,
@@ -95,6 +85,7 @@ export function ProductEdit() {
 
   const handleSaveClick = () => {
     setProgress(true);
+
     const formData = new FormData();
     formData.append("productId", product.productId);
     formData.append("productName", product.productName);
@@ -106,33 +97,23 @@ export function ProductEdit() {
     formData.append("longitude", product.longitude);
     formData.append("locationName", product.locationName);
 
-    // 메인이미지와 파일 추가
     if (mainImage) formData.append("mainImageName", mainImage.name);
     files.forEach((file) => formData.append("uploadFiles[]", file));
-
-    // 삭제할 파일 목록도 전송
     removeFiles.forEach((fileName) =>
       formData.append("removeFiles[]", fileName),
     );
 
-    console.log(formData);
     axios
       .putForm("/api/product/update", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((res) => res.data)
-      .then((data) => {
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
+      .then((res) => {
+        const { type, text } = res.data.message;
+        toaster.create({ type, description: text });
       })
       .catch((e) => {
-        const message = e.response.data.message;
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
+        const { type, text } = e.response.data.message;
+        toaster.create({ type, description: text });
       })
       .finally(() => {
         setProgress(false);
@@ -141,7 +122,28 @@ export function ProductEdit() {
       });
   };
 
-  if (product === null) {
+  const handleFileUpload = (e) => {
+    const newFiles = Array.from(e.target.files);
+    setFiles((prev) => [...prev, ...newFiles]);
+    setFilesUrl((prev) => [
+      ...prev,
+      ...newFiles.map((file) => URL.createObjectURL(file)),
+    ]);
+  };
+
+  const handleRemoveClick = (index) => {
+    // 클릭한 이미지를 목록에서 제거
+    setFilesUrl((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setRemoveFiles((prev) => [...prev, files[index]?.name]);
+
+    // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
+    if (index === 0 && files.length > 1) {
+      setMainImage(files[1]);
+    }
+  };
+
+  if (!product) {
     return <Spinner />;
   }
 
@@ -159,35 +161,9 @@ export function ProductEdit() {
     }
   };
 
-  // 이미지 파일 업로드
-  const imageUploadButton = (e) => {
-    const files = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...files]);
-    const newFiles = files.map((file) => URL.createObjectURL(file)); // 파일을 보기위한 URL
-    setFilesUrl((prev) => [...prev, ...newFiles]);
-  };
-
-  const handleRemoveClick = (index) => {
-    // 클릭한 이미지를 목록에서 제거
-    setFilesUrl((prev) => prev.filter((_, i) => i !== index));
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-
-    // 삭제된 파일을 removeFiles 상태에 추가
-    setRemoveFiles((prev) => [...prev, files[index]?.name]);
-
-    // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
-    if (index === 0 && files.length > 1) {
-      setMainImage(files[1]);
-    }
-  };
-  const test = () => {
-    console.log(mainImage);
-  };
-
   return (
     <Box>
       <Heading>{id}번 상품 수정</Heading>
-      <Button onClick={test}>dd</Button>
       <Stack gap={5}>
         <Flex alignItems="center">
           <Box minWidth="150px">
@@ -197,13 +173,13 @@ export function ProductEdit() {
                 borderWidth="1px"
                 borderColor="lightgray"
                 borderRadius="10px"
-                onClick={handleBoxClick} // Box 클릭 이벤트
+                onClick={() => fileInputRef.current?.click()}
                 cursor="pointer"
                 textAlign="center"
               >
                 <input
                   ref={fileInputRef} // input 참조
-                  onChange={imageUploadButton}
+                  onChange={handleFileUpload}
                   type="file"
                   accept="image/*"
                   multiple
@@ -289,14 +265,14 @@ export function ProductEdit() {
             <Button
               borderRadius="10px"
               variant={product.pay === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
-              onClick={() => buttonClick("sell")} // 판매하기 버튼 클릭 시
+              onClick={() => handleButtonClick("sell")} // 판매하기 버튼 클릭 시
             >
               판매하기
             </Button>
             <Button
               borderRadius="10px"
               variant={product.pay === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
-              onClick={() => buttonClick("share")} // 나눔하기 버튼 클릭 시
+              onClick={() => handleButtonClick("share")} // 나눔하기 버튼 클릭 시
             >
               나눔하기
             </Button>

@@ -35,35 +35,34 @@ export function ProductAdd(props) {
   };
 
   // 버튼 클릭 시 해당 버튼을 표시
-  const buttonClick = (buttonType) => {
-    setPay(buttonType);
-    if (buttonType === "share") {
-      setPrice(0);
-    }
+  const handlePayClick = (type) => {
+    setPay(type);
+    if (type === "share") setPrice(0);
   };
 
-  // 파일 이미지 클릭 시 input 클릭 트리거
-  const handleBoxClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+  const handleBoxClick = () => fileInputRef.current?.click();
+
+  const handleImageUpload = (e) => {
+    const newFiles = Array.from(e.target.files);
+    setFiles((prev) => [...prev, ...newFiles]);
+    setFilesUrl((prev) => [
+      ...prev,
+      ...newFiles.map((file) => URL.createObjectURL(file)),
+    ]);
+    if (!mainImage && newFiles.length > 0) setMainImage(newFiles[0]);
   };
 
-  // 이미지 파일 업로드
-  const imageUploadButton = (e) => {
-    const files = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...files]);
-    const newFiles = files.map((file) => URL.createObjectURL(file)); // 파일을 보기위한 URL
-    setFilesUrl((prev) => [...prev, ...newFiles]);
-
-    // 가장 왼쪽에 배치된 이미지를 대표 이미지로 설정 (첫 번째 파일)
-    if (mainImage === null && files.length > 0) {
-      setMainImage(files[0]); // 첫 번째 파일을 대표 이미지로 설정
-    }
+  const handleRemoveImage = (index) => {
+    setFilesUrl((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
+      setMainImage(updated.length > 0 ? updated[0] : null);
+      return updated;
+    });
   };
 
   // 선택된 장소 처리
-  const handleSelectLocation = ({ lat, lng, locationName }) => {
+  const handleLocationSelect = ({ lat, lng, locationName }) => {
     setLocation({ latitude: lat, longitude: lng, name: locationName });
   };
 
@@ -71,7 +70,7 @@ export function ProductAdd(props) {
   const handleCategoryChange = (e) => setCategory(e.target.value);
 
   // 상품 등록 요청
-  const handleSaveClick = () => {
+  const handleSave = () => {
     setProgress(true);
 
     const formData = new FormData();
@@ -85,37 +84,28 @@ export function ProductAdd(props) {
     formData.append("pay", pay);
     formData.append("writer", id);
 
-    // 메인이미지와 파일 추가
     if (mainImage) formData.append("mainImageName", mainImage.name);
     files.forEach((file) => formData.append("files[]", file));
 
-    console.log(mainImage.name);
     axios
       .postForm("/api/product/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => res.data)
       .then((data) => {
-        const message = data.message;
-
         toaster.create({
-          description: message.text,
-          type: message.type,
+          description: data.message.text,
+          type: data.message.type,
         });
-
         navigate(`/product/view/${data.data.productId}`);
       })
       .catch((e) => {
         const message = e.response.data.message;
-        toaster.create({
-          description: message.text,
-          type: message.type,
-        });
+        toaster.create({ description: message.text, type: message.type });
       })
       .finally(() => setProgress(false));
   };
 
-  // 버튼 활성화 여부 판단
   const disabled = !(
     productName.trim().length > 0 &&
     description.trim().length > 0 &&
@@ -134,13 +124,13 @@ export function ProductAdd(props) {
                 borderWidth="1px"
                 borderColor="lightgray"
                 borderRadius="10px"
-                onClick={handleBoxClick} // Box 클릭 이벤트
+                onClick={handleBoxClick}
                 cursor="pointer"
                 textAlign="center"
               >
                 <input
-                  ref={fileInputRef} // input 참조
-                  onChange={imageUploadButton}
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
                   type="file"
                   accept="image/*"
                   multiple
@@ -169,19 +159,8 @@ export function ProductAdd(props) {
                 overflow="hidden"
                 cursor="pointer"
                 display="inline-block"
-                flexShrink={0} // 이미지가 축소되지 않도록 설정s
-                onClick={() => {
-                  // 클릭한 이미지를 목록에서 제거
-                  setFilesUrl((prev) => prev.filter((_, i) => i !== index));
-                  setFiles((prev) => {
-                    const updatedFiles = prev.filter((_, i) => i !== index);
-                    // 대표 이미지 업데이트
-                    setMainImage(
-                      updatedFiles.length > 0 ? updatedFiles[0] : null,
-                    );
-                    return updatedFiles;
-                  });
-                }}
+                flexShrink={0} // 이미지가 축소되지 않도록 설정
+                onClick={() => handleRemoveImage(index)}
               >
                 <img
                   src={file}
@@ -233,15 +212,15 @@ export function ProductAdd(props) {
           <Flex gap={4}>
             <Button
               borderRadius="10px"
-              variant={pay === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
-              onClick={() => buttonClick("sell")} // 판매하기 버튼 클릭 시
+              variant={pay === "sell" ? "solid" : "outline"}
+              onClick={() => handlePayClick("sell")}
             >
               판매하기
             </Button>
             <Button
               borderRadius="10px"
-              variant={pay === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
-              onClick={() => buttonClick("share")} // 나눔하기 버튼 클릭 시
+              variant={pay === "share" ? "solid" : "outline"}
+              onClick={() => handlePayClick("share")}
             >
               나눔하기
             </Button>
@@ -268,22 +247,18 @@ export function ProductAdd(props) {
         <Field label={"거래 희망 장소"}>
           <Input
             value={location?.name || ""}
-            onClick={() => setIsModalOpen(true)} // 거래 장소 input 클릭 시 모달 열기
+            onClick={() => setIsModalOpen(true)}
             placeholder="거래 희망 장소를 선택하세요"
             readOnly
           />
         </Field>
-        {/* MapModal 컴포넌트 호출 */}
+
         <MapModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSelectLocation={handleSelectLocation} // 장소 선택 시 처리
+          onSelectLocation={handleLocationSelect}
         />
-        <Button
-          disabled={disabled}
-          loading={progress}
-          onClick={handleSaveClick}
-        >
+        <Button disabled={disabled} loading={progress} onClick={handleSave}>
           상품 등록
         </Button>
       </Stack>
