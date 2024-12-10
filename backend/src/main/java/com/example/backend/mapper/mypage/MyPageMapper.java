@@ -42,17 +42,6 @@ public interface MyPageMapper {
             """)
     List<Product> getSoldProducts(String name);
 
-
-//    @Select("""
-//            SELECT pr.buyer_id, pr.product_id,  p.product_name, p.price, p.category, p.location_name, m.nickname, p.created_at, p.status, p.pay
-//            FROM purchased_record pr
-//            LEFT JOIN product p ON pr.product_id = p.product_id
-//            LEFT JOIN member m ON pr.buyer_id = m.member_id
-//            WHERE seller_id = #{name}
-//            AND pr.product_id IS NOt NULL
-//            """)
-//    List<Product> getSoldProducts(String name);
-
     @Select("""
             SELECT DISTINCT p.product_id, pr.expense_id, pr.date, pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
                 p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status
@@ -63,12 +52,6 @@ public interface MyPageMapper {
             WHERE pr.buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);
-
-    @Delete("""
-            DELETE FROM purchased_record
-            WHERE product_id = #{product_id}
-            """)
-    int deletePurchased(Integer product_id);
 
     @Select("""
             SELECT COUNT(*)
