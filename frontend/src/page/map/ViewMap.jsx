@@ -85,8 +85,7 @@ function ViewMap() {
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         map.setBounds(bounds);
-        // customOverlay.setPosition(bounds);
-        // console.log(bounds);
+
         displayPagination(_pagination);
       }
     });
@@ -185,13 +184,20 @@ function ViewMap() {
       className = this.className;
     console.log(id);
 
-    // customOverlay.setMap(null);
+    //
+    if (customOverlay.getVisible() === true) {
+      customOverlay.setMap(null);
+    }
+    if (markers.getVisible()) {
+      removeMarker();
+    }
 
     // 켜져있으면  끄고 카테고리 변경
     if (className === "on") {
       setCurrCategory("");
       changeCategoryClass();
-      removeMarker();
+
+      removeCustomMarker();
     } else {
       console.log("실행 전", "id=", id);
       setCurrCategory(id);
@@ -226,9 +232,9 @@ function ViewMap() {
     const ps = new kakao.maps.services.Places(map);
     // 커스텀 오버레이를 숨깁니다
 
-    customOverlay.setMap(null);
+    // customOverlay.setMap(null);
 
-    removeMarker();
+    // removeMarker();
 
     ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
   }
@@ -292,6 +298,7 @@ function ViewMap() {
     marker.setMap(map); // 지도 위에 마커를 표출합니다
     //  기존꺼
     // markers.push(marker); // 배열에 생성된 마커를 추가합니다
+    customOverlayMarker.push(marker);
 
     return marker;
   }
@@ -337,6 +344,7 @@ function ViewMap() {
       '<div class="after"></div>';
 
     contentNode.innerHTML = content;
+    // customovelay  위치 및,  map 설정
     customOverlay.setContent(contentNode);
     customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
     customOverlay.setMap(map);
@@ -348,6 +356,13 @@ function ViewMap() {
       markers[i].setMap(null);
     }
     setMarkers([]);
+  }
+
+  function removeCustomMarker() {
+    for (var i = 0; i < customOverlayMarker.length; i++) {
+      customOverlayMarker[i].setMap(null);
+    }
+    setCustomOverlayMarker([]);
   }
 
   return (
