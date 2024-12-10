@@ -30,13 +30,15 @@ public interface MyPageMapper {
                 p.status,
                 p.created_at, 
                 pr.date AS purchasedAt, 
-                m.nickname AS buyer_nickname
+                m.nickname AS buyer_nickname,
+                pf.name AS main_image_name
             FROM 
                 product p
             LEFT JOIN 
                 purchased_record pr ON p.product_id = pr.product_id
             LEFT JOIN 
                 member m ON m.member_id = pr.buyer_id 
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE 
                 writer = #{name}
             """)
@@ -44,11 +46,12 @@ public interface MyPageMapper {
 
     @Select("""
             SELECT DISTINCT p.product_id, pr.expense_id, pr.date, pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
-                p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status
+                p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status , pf.name AS main_image_name
             FROM purchased_record pr
             LEFT JOIN product p ON pr.product_id = p.product_id
             LEFT JOIN member m ON pr.seller_id = m.member_id
             LEFT JOIN review r ON pr.product_id = r.product_id 
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE pr.buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);

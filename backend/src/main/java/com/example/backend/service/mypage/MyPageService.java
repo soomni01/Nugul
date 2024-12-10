@@ -39,12 +39,30 @@ public class MyPageService {
     // 내 판매 상품 목록 가져오기
     public List<Product> getSoldProducts(String id) {
         List<Product> soldProductsList = mapper.getSoldProducts(id);
+
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (Product product : soldProductsList) {
+            if (product.getMainImageName() != null) {
+                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                product.setMainImageName(mainImageUrl);
+            }
+        }
+
         return soldProductsList;
     }
 
     // 내 구매 상품 목록 가져오기
     public List<Product> getPurchasedProducts(String id) {
         List<Product> purchasedProductsList = mapper.getPurchasedProducts(id);
+
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (Product product : purchasedProductsList) {
+            if (product.getMainImageName() != null) {
+                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                product.setMainImageName(mainImageUrl);
+            }
+        }
+
         return purchasedProductsList;
     }
 
