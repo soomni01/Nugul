@@ -32,10 +32,12 @@ public interface ProductMapper {
     List<Product> getProductList();
 
     @Select("""
-            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname
+            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, 
+            p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname, pf.name as mainImageName
             FROM product p
             LEFT JOIN member m ON p.writer = m.member_id
-            WHERE product_id = #{productId}
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
+            WHERE p.product_id = #{productId}
             """)
     Product selectById(Integer productId);
 
