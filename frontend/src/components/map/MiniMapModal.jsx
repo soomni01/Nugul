@@ -3,6 +3,7 @@ import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { IoClose } from "react-icons/io5";
 import "./MapModal.css";
 import { FaLocationArrow } from "react-icons/fa";
+import { createPortal } from "react-dom";
 
 export const MiniMapModal = ({ isOpen, onClose, product }) => {
   const [markerPosition, setMarkerPosition] = useState({
@@ -27,7 +28,7 @@ export const MiniMapModal = ({ isOpen, onClose, product }) => {
     )},${product.latitude},${product.longitude}`;
   };
 
-  return (
+  return createPortal(
     <div className="background">
       <div className="mini-modal">
         <button className="close" onClick={onClose}>
@@ -72,6 +73,7 @@ export const MiniMapModal = ({ isOpen, onClose, product }) => {
           </Map>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
