@@ -20,7 +20,9 @@ function ViewMap() {
   const [customOverlay, setCustomOverlay] = useState(null);
   const [customOverlayMarker, setCustomOverlayMarker] = useState([]);
   const [currCategory, setCurrCategory] = useState("");
-  const [, set] = useState();
+  const [categorySearchResultList, setCategorySearchResultList] = useState([]);
+  const [categoryImageNumber, setCategoryImageNumber] = useState(0);
+
   var contentNode = document.createElement("div");
 
   contentNode.className = "placeinfo_wrap";
@@ -34,6 +36,27 @@ function ViewMap() {
     // 카테고리 이벤트 추가
     addCategoryClickEvent();
   }, []);
+
+  useEffect(() => {
+    if (currCategory) {
+      const ps = new kakao.maps.services.Places(map);
+      // 커스텀 오버레이를 숨깁니다
+
+      // customOverlay.setMap(null);
+
+      // removeMarker();
+
+      ps.categorySearch(
+        currCategory,
+        (result) => setCategorySearchResultList(result),
+        { useMapBounds: true },
+      );
+    } else {
+      setCategorySearchResultList([]);
+    }
+  }, [currCategory]);
+
+  // console.log(categorySearchResultList);
 
   function addEventHandle(target, type, callback) {
     if (target.addEventListener) {
@@ -190,15 +213,15 @@ function ViewMap() {
 
     // 켜져있으면  끄고 카테고리 변경
     if (className === "on") {
-      setCurrCategory("");
-      changeCategoryClass();
-      removeCustomMarker();
+      // setCurrCategory("");
+      // changeCategoryClass();
+      // removeCustomMarker();
     } else {
       console.log("실행 전", "id=", id);
-      setCurrCategory(id);
+      // setCurrCategory(id);
       console.log("실행 후", "curr=", currCategory, "id=", id);
-      changeCategoryClass(this);
-      searchCategoryPlaces();
+      // changeCategoryClass(this);
+      // searchCategoryPlaces();
     }
   }
 
@@ -218,21 +241,6 @@ function ViewMap() {
   }
 
   // 카테고리 검색을 요청하는 함수입니다
-  function searchCategoryPlaces() {
-    console.log(currCategory, "1");
-    if (!currCategory) {
-      return;
-    }
-
-    const ps = new kakao.maps.services.Places(map);
-    // 커스텀 오버레이를 숨깁니다
-
-    // customOverlay.setMap(null);
-
-    // removeMarker();
-
-    ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
-  }
 
   function placesSearchCB(data, status, pagination) {
     console.log("실행 확인");
@@ -242,10 +250,10 @@ function ViewMap() {
       displayPlaces(data);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
       // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
-      alert("검색 결과 x");
+      // alert("검색 결과 x");
     } else if (status === kakao.maps.services.Status.ERROR) {
       // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
-      alert("에러 발생");
+      // alert("에러 발생");
     }
     console.log("끝");
   }
@@ -375,6 +383,15 @@ function ViewMap() {
     console.log(customOverlayMarker);
   }
 
+  function handleCategoryListClick(categoryId, categoryImageNumber) {
+    setCategoryImageNumber(categoryImageNumber);
+    if (categoryId === currCategory) {
+      setCurrCategory("");
+    } else {
+      setCurrCategory(categoryId);
+    }
+  }
+
   return (
     <Box display={"flex"} w={"100%"} className={"map_wrap"}>
       <Stack w={"20%"} className={"menu_wrap"}>
@@ -400,31 +417,50 @@ function ViewMap() {
           style={{ width: "100%", height: "800px" }}
           onCreate={setMap}
           onClick={handleMapClick}
-          onIdle={searchCategoryPlaces}
+          // onIdle={searchCategoryPlaces}
         >
-          {markers.map((marker) => (
-            <MapMarker
-              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-              position={marker.position}
-              // onClick={() => setInfo(marker)}
-              onMouseOver={
-                // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
-                () => {
-                  setInfo(marker);
-                  setMarkerOpen(true);
-                }
-              }
-              // 마커에 마우스아웃 이벤트를 등록합니다
-              onMouseOut={
-                // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
-                () => setMarkerOpen(false)
-              }
-            >
-              {markerOpen && info && info.content === marker.content && (
-                <div style={{ color: "#5e5959" }}>{marker.content}</div>
-              )}
-            </MapMarker>
-          ))}
+          {categorySearchResultList.map((item, index) => {
+            return (
+              <MapMarker
+                key={index}
+                position={{ lat: item.y, lng: item.x }}
+                image={{
+                  src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
+                  size: { width: 27, height: 28 },
+                  options: {
+                    spriteSize: { width: 72, height: 208 },
+                    spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
+                    offset: { x: 11, y: 28 },
+                  },
+                }}
+              >
+                {console.log(getItem(index, item))}
+              </MapMarker>
+            );
+          })}
+          {/*{markers.map((marker) => (*/}
+          {/*  <MapMarker*/}
+          {/*    key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}*/}
+          {/*    position={marker.position}*/}
+          {/*    // onClick={() => setInfo(marker)}*/}
+          {/*    onMouseOver={*/}
+          {/*      // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다*/}
+          {/*      () => {*/}
+          {/*        setInfo(marker);*/}
+          {/*        setMarkerOpen(true);*/}
+          {/*      }*/}
+          {/*    }*/}
+          {/*    // 마커에 마우스아웃 이벤트를 등록합니다*/}
+          {/*    onMouseOut={*/}
+          {/*      // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다*/}
+          {/*      () => setMarkerOpen(false)*/}
+          {/*    }*/}
+          {/*  >*/}
+          {/*    {markerOpen && info && info.content === marker.content && (*/}
+          {/*      <div style={{ color: "#5e5959" }}>{marker.content}</div>*/}
+          {/*    )}*/}
+          {/*  </MapMarker>*/}
+          {/*))}*/}
 
           <CustomOverlayMap
             onCreate={setCustomOverlay}
@@ -434,27 +470,57 @@ function ViewMap() {
           <ZoomControl />
         </Map>
         <ul id="category">
-          <li id="BK9" data-order="0">
+          <li
+            id="BK9"
+            data-order="0"
+            className={currCategory === "BK9" ? "on" : ""}
+            onClick={() => handleCategoryListClick("BK9", 0)}
+          >
             <span className="category_bg bank"></span>
             은행
           </li>
-          <li id="MT1" data-order="1">
+          <li
+            id="MT1"
+            data-order="1"
+            className={currCategory === "MT1" ? "on" : ""}
+            onClick={() => handleCategoryListClick("MT1", 1)}
+          >
             <span className="category_bg mart"></span>
             마트
           </li>
-          <li id="PM9" data-order="2">
+          <li
+            id="PM9"
+            data-order="2"
+            className={currCategory === "PM9" ? "on" : ""}
+            onClick={() => handleCategoryListClick("PM9", 2)}
+          >
             <span className="category_bg pharmacy"></span>
             약국
           </li>
-          <li id="OL7" data-order="3">
+          <li
+            id="OL7"
+            data-order="3"
+            className={currCategory === "OL7" ? "on" : ""}
+            onClick={() => handleCategoryListClick("OL7", 3)}
+          >
             <span className="category_bg oil"></span>
             주유소
           </li>
-          <li id="CE7" data-order="4">
+          <li
+            id="CE7"
+            data-order="4"
+            className={currCategory === "CE7" ? "on" : ""}
+            onClick={() => handleCategoryListClick("CE7", 4)}
+          >
             <span className="category_bg cafe"></span>
             카페
           </li>
-          <li id="CS2" data-order="5">
+          <li
+            id="CS2"
+            data-order="5"
+            className={currCategory === "CS2" ? "on" : ""}
+            onClick={() => handleCategoryListClick("CS2", 5)}
+          >
             <span className="category_bg store"></span>
             편의점
           </li>
