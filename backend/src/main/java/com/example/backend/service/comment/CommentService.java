@@ -40,4 +40,8 @@ public class CommentService {
         int cnt = mapper.update(comment);
         return cnt == 1;
     }
+
+    public List<Comment> getCommentsByMemberId(String memberId) {
+        return mapper.findCommentsByMemberId(memberId);
+    }
 }

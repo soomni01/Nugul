@@ -95,4 +95,12 @@ public interface BoardMapper {
         </script>
         """)
     Integer countAll(String searchType, String searchKeyword, String category);
+
+    @Select("""
+        SELECT * 
+        FROM board 
+        WHERE member_id = #{memberId}
+        ORDER BY inserted DESC
+    """)
+    List<Board> findBoardsByMemberId(String memberId);
 }

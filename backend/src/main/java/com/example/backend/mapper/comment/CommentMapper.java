@@ -69,5 +69,13 @@ public interface CommentMapper {
             WHERE board_id=#{boardId}
             """)
     int deleteByBoardId(int boardId);
+
+    @Select("""
+        SELECT * 
+        FROM comment 
+        WHERE member_id = #{memberId}
+        ORDER BY inserted DESC
+    """)
+    List<Comment> findCommentsByMemberId(String memberId);
 }
 

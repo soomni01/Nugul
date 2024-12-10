@@ -1,13 +1,16 @@
 package com.example.backend.controller.board;
 
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.comment.Comment;
 import com.example.backend.service.board.BoardService;
+import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,6 +18,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardController {
     final BoardService service;
+    final CommentService commentService;
+
+    @GetMapping("/boardsAndComments/{memberId}")
+    public Map<String, Object> getBoardsAndComments(@PathVariable String memberId) {
+        List<Board> boards = service.getBoardsByMemberId(memberId); // 사용자가 작성한 게시물
+        List<Comment> comments = commentService.getCommentsByMemberId(memberId); // 사용자가 작성한 댓글
+        return Map.of(
+                "boards", boards,
+                "comments", comments
+        );
+    }
 
     @PutMapping("boardUpdate")
     @PreAuthorize("isAuthenticated()")
