@@ -173,14 +173,14 @@ export function ProductAdd(props) {
                 onClick={() => {
                   // 클릭한 이미지를 목록에서 제거
                   setFilesUrl((prev) => prev.filter((_, i) => i !== index));
-                  setFiles((prev) => prev.filter((_, i) => i !== index));
-
-                  // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
-                  if (index === 0 && files.length > 1) {
-                    setMainImage(filesUrl[1]); // 다음 이미지를 대표 이미지로 설정
-                  } else if (files.length === 1) {
-                    setMainImage(null); // 이미지가 없으면 대표 이미지 초기화
-                  }
+                  setFiles((prev) => {
+                    const updatedFiles = prev.filter((_, i) => i !== index);
+                    // 대표 이미지 업데이트
+                    setMainImage(
+                      updatedFiles.length > 0 ? updatedFiles[0] : null,
+                    );
+                    return updatedFiles;
+                  });
                 }}
               >
                 <img
