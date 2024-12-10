@@ -18,18 +18,17 @@ function ViewMap() {
   const [locationName, setLocationName] = useState("");
   const [markerOpen, setMarkerOpen] = useState(false);
   const [customOverlay, setCustomOverlay] = useState(null);
-  const [overlayMarkers, setOverlayMarkers] = useState([]);
+  const [customOverlayMarker, setCustomOverlayMarker] = useState([]);
   const [currCategory, setCurrCategory] = useState("");
   var contentNode = document.createElement("div");
+  contentNode.className = "placeinfo_wrap";
   useEffect(() => {
     // 아무것도 안할때의 이벤트 추가해놓기
 
-    contentNode.className = "placeinfo_wrap";
     // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
     // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
     addEventHandle(contentNode, "mousedown", kakao.maps.event.preventMap);
     addEventHandle(contentNode, "touchstart", kakao.maps.event.preventMap);
-    // customOverlay.setContent(contentNode);
     // 카테고리 이벤트 추가
     addCategoryClickEvent();
   }, []);
@@ -186,20 +185,18 @@ function ViewMap() {
       className = this.className;
     console.log(id);
 
-    // Todo 이거 어케 건드리지 ..
     // customOverlay.setMap(null);
+
     // 켜져있으면  끄고 카테고리 변경
     if (className === "on") {
       setCurrCategory("");
       changeCategoryClass();
       removeMarker();
     } else {
-      console.log("실행 전", currCategory);
-      console.log(id);
+      console.log("실행 전", "id=", id);
       setCurrCategory(id);
-      console.log("실행 후", currCategory);
+      console.log("실행 후", "curr=", currCategory, "id=", id);
       changeCategoryClass(this);
-      //  이거 흠
       searchCategoryPlaces();
     }
   }
@@ -231,7 +228,6 @@ function ViewMap() {
 
     customOverlay.setMap(null);
 
-    // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker();
 
     ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
@@ -254,7 +250,6 @@ function ViewMap() {
   }
 
   function displayPlaces(places) {
-    console.log(places);
     // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
     // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
     var order = document
@@ -267,7 +262,6 @@ function ViewMap() {
         new kakao.maps.LatLng(places[i].y, places[i].x),
         order,
       );
-      // setOverlayMarkers((prev) => [...prev, { ...marker }]);
 
       // 마커와 검색결과 항목을 클릭 했을 때
       // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
@@ -296,14 +290,14 @@ function ViewMap() {
       });
 
     marker.setMap(map); // 지도 위에 마커를 표출합니다
-    markers.push(marker); // 배열에 생성된 마커를 추가합니다
+    //  기존꺼
+    // markers.push(marker); // 배열에 생성된 마커를 추가합니다
 
     return marker;
   }
 
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
   function displayPlaceInfo(place) {
-    console.log(place);
     var content =
       '<div class="placeinfo">' +
       '   <a class="title" href="' +
@@ -343,11 +337,12 @@ function ViewMap() {
       '<div class="after"></div>';
 
     contentNode.innerHTML = content;
+    customOverlay.setContent(contentNode);
     customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
     customOverlay.setMap(map);
   }
 
-  // 커스텀 마커 삭제
+  // ㄴㄴ 그냥 마커
   function removeMarker() {
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
@@ -409,9 +404,7 @@ function ViewMap() {
           <CustomOverlayMap
             onCreate={setCustomOverlay}
             position={{ lat: 33.450701, lng: 126.570667 }}
-          >
-            <Box> hello</Box>
-          </CustomOverlayMap>
+          ></CustomOverlayMap>
 
           <ZoomControl />
         </Map>
