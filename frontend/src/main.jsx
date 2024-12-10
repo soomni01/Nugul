@@ -5,10 +5,10 @@ import { Toaster } from "./components/ui/toaster.jsx";
 import { StrictMode } from "react";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  //<StrictMode>
     <Provider>
       <App />
       <Toaster />
     </Provider>
-  </StrictMode>,
+  //</StrictMode>,
 );

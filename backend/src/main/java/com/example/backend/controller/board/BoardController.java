@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
@@ -22,7 +25,9 @@ public class BoardController {
 
     @GetMapping("/boardsAndComments/{memberId}")
     public Map<String, Object> getBoardsAndComments(@PathVariable String memberId) {
-        List<Board> boards = service.getBoardsByMemberId(memberId); // 사용자가 작성한 게시물
+
+
+        List<Board> boards = service.selectByMemberId(memberId); // 작성자의 게시물 가져오기
         List<Comment> comments = commentService.getCommentsByMemberId(memberId); // 사용자가 작성한 댓글
         return Map.of(
                 "boards", boards,

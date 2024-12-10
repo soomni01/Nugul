@@ -97,10 +97,14 @@ public interface BoardMapper {
     Integer countAll(String searchType, String searchKeyword, String category);
 
     @Select("""
-        SELECT * 
-        FROM board 
-        WHERE member_id = #{memberId}
-        ORDER BY inserted DESC
+        SELECT b.board_id, b.title, b.writer AS memberId, m.nickname AS writer,
+               b.category, b.created_at, COUNT(c.board_id) AS countComment
+        FROM board b
+        LEFT JOIN comment c ON b.board_id = c.board_id
+        LEFT JOIN member m ON b.writer = m.member_id
+        WHERE b.writer = #{memberId}
+        GROUP BY b.board_id
+        ORDER BY b.created_at DESC
     """)
-    List<Board> findBoardsByMemberId(String memberId);
+    List<Board> selectByMemberId(String memberId);
 }

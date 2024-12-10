@@ -63,7 +63,7 @@ public class BoardService {
         return board.getMemberId().equals(authentication.getName());
     }
 
-    public List<Board> getBoardsByMemberId(String memberId) {
-        return mapper.findBoardsByMemberId(memberId);
+    public List<Board> selectByMemberId(String memberId) {
+        return mapper.selectByMemberId(memberId);
     }
 }
