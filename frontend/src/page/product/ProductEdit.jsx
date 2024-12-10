@@ -5,6 +5,7 @@ import {
   Input,
   Spinner,
   Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -133,10 +134,24 @@ export function ProductEdit() {
   const handleFileUpload = (e) => {
     const newFiles = Array.from(e.target.files);
     setFiles((prev) => [...prev, ...newFiles]);
-    setFilesUrl((prev) => [
-      ...prev,
-      ...newFiles.map((file) => URL.createObjectURL(file)),
-    ]);
+    // 중복 파일 체크
+    const uniqueFiles = newFiles.filter((newFile) => {
+      return !files.some((file) => file.name === newFile.name);
+    });
+
+    if (uniqueFiles.length > 0) {
+      setFiles((prev) => [...prev, ...uniqueFiles]);
+      setFilesUrl((prev) => [
+        ...prev,
+        ...uniqueFiles.map((file) => URL.createObjectURL(file)),
+      ]);
+      if (!mainImage && uniqueFiles.length > 0) setMainImage(uniqueFiles[0]);
+    } else {
+      toaster.create({
+        description: "중복된 파일이 있습니다.",
+        type: "warning",
+      });
+    }
   };
 
   const handleRemoveClick = (index) => {
@@ -164,17 +179,23 @@ export function ProductEdit() {
     product.locationName.trim().length > 0
   );
 
+  let fileInputInvalid = false;
+  let sumOfFileSize = 0;
+  let invalidOneFileSize = false;
+
+  for (const file of files) {
+    sumOfFileSize += file.size;
+    if (file.size > 1024 * 1024) {
+      invalidOneFileSize = true;
+    }
+  }
+  if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
+    fileInputInvalid = true;
+  }
+
   return (
     <Box>
       <Heading>{id}번 상품 수정</Heading>
-      <Button
-        onClick={() => {
-          console.log(mainImage);
-          console.log(files);
-        }}
-      >
-        메인이미지 테스트
-      </Button>
       <Stack gap={5}>
         <Flex alignItems="center">
           <Box minWidth="150px">
@@ -237,7 +258,15 @@ export function ProductEdit() {
             ))}
           </Box>
         </Flex>
-        <Box>가장 처음 이미지가 대표이미지입니다.</Box>
+        <Text size="xs" mt={-2}>
+          {!fileInputInvalid ? (
+            "가장 처음 이미지가 대표이미지입니다."
+          ) : (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
+            </span>
+          )}
+        </Text>
 
         <Flex gap={3}>
           <Box minWidth="100px">

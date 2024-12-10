@@ -1,5 +1,13 @@
 import React, { useContext, useRef, useState } from "react";
-import { Box, Flex, Heading, Input, Stack, Textarea } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  Textarea,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
@@ -44,12 +52,25 @@ export function ProductAdd(props) {
 
   const handleImageUpload = (e) => {
     const newFiles = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...newFiles]);
-    setFilesUrl((prev) => [
-      ...prev,
-      ...newFiles.map((file) => URL.createObjectURL(file)),
-    ]);
-    if (!mainImage && newFiles.length > 0) setMainImage(newFiles[0]);
+
+    // 중복 파일 체크
+    const uniqueFiles = newFiles.filter((newFile) => {
+      return !files.some((file) => file.name === newFile.name);
+    });
+
+    if (uniqueFiles.length > 0) {
+      setFiles((prev) => [...prev, ...uniqueFiles]);
+      setFilesUrl((prev) => [
+        ...prev,
+        ...uniqueFiles.map((file) => URL.createObjectURL(file)),
+      ]);
+      if (!mainImage && uniqueFiles.length > 0) setMainImage(uniqueFiles[0]);
+    } else {
+      toaster.create({
+        description: "중복된 파일이 있습니다.",
+        type: "warning",
+      });
+    }
   };
 
   const handleRemoveImage = (index) => {
@@ -111,6 +132,20 @@ export function ProductAdd(props) {
     description.trim().length > 0 &&
     location?.name
   );
+
+  let fileInputInvalid = false;
+  let sumOfFileSize = 0;
+  let invalidOneFileSize = false;
+
+  for (const file of files) {
+    sumOfFileSize += file.size;
+    if (file.size > 1024 * 1024) {
+      invalidOneFileSize = true;
+    }
+  }
+  if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
+    fileInputInvalid = true;
+  }
 
   return (
     <Box>
@@ -175,7 +210,16 @@ export function ProductAdd(props) {
             ))}
           </Box>
         </Flex>
-        <Box>가장 처음 이미지가 대표이미지입니다.</Box>
+
+        <Text size="xs" mt={-2}>
+          {!fileInputInvalid ? (
+            "가장 처음 이미지가 대표이미지입니다."
+          ) : (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
+            </span>
+          )}
+        </Text>
 
         <Flex gap={3}>
           <Box minWidth="100px">
