@@ -1,14 +1,15 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
-import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { Profile } from "./Profile.jsx";
-import { ProfileEdit } from "./ProfileEdit.jsx";
-import { Wishlist } from "./Wishlist.jsx";
-import { SoldItems } from "./SoldItems.jsx";
-import { PurchasedItems } from "./PurchasedItems.jsx";
+import {useContext, useEffect, useState} from "react";
+import {Box, Button, Flex, Heading, VStack} from "@chakra-ui/react";
+import {AuthenticationContext} from "../../components/context/AuthenticationProvider.jsx";
+import {Profile} from "./Profile.jsx";
+import {ProfileEdit} from "./ProfileEdit.jsx";
+import {Wishlist} from "./Wishlist.jsx";
+import {SoldItems} from "./SoldItems.jsx";
+import {PurchasedItems} from "./PurchasedItems.jsx";
 import InquiryList from "./InquiryList.jsx";
-import { InquiryView } from "./InquiryView.jsx";
-import { Review } from "./Review.jsx";
+import {InquiryView} from "./InquiryView.jsx";
+import {Review} from "./Review.jsx";
+import {BoardsAndComments} from "./BoardsAndComments.jsx";
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
@@ -96,6 +97,12 @@ export function MyPage() {
           >
             후기
           </Button>
+          <Button
+              variant={activeTab === "BoardsAndComments" ? "solid" : "ghost"}
+              colorScheme="teal"
+          >
+            내 게시물과 댓글
+          </Button>
         </VStack>
       </Box>
 
@@ -119,6 +126,7 @@ export function MyPage() {
           <InquiryView inquiryId={selectedInquiryId} />
         )}
         {activeTab === "review" && <Review />}
+        {activeTab === "BoardsAndComments" && <BoardsAndComments/>}
       </Box>
     </Flex>
   );
