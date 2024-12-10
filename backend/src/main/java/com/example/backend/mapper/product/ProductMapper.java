@@ -206,4 +206,11 @@ public interface ProductMapper {
             WHERE product_id = #{productId} AND name=#{originalFilename}
             """)
     int updateFile(Integer productId, String originalFilename, boolean isMain);
+
+    @Delete("""
+            DELETE FROM product_file
+            WHERE product_id = #{productId}
+              AND name = #{name}
+            """)
+    int deleteFile(Integer productId, String name);
 }

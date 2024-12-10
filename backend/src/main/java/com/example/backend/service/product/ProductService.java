@@ -142,42 +142,50 @@ public class ProductService {
     }
 
     // 상품 정보 수정하기
-    public boolean update(Product product, MultipartFile[] files, String mainImageName) {
+    public boolean update(Product product, List<String> removeFiles, MultipartFile[] uploadFiles, String mainImageName) {
 
-        System.out.println(product);
-        System.out.println(files);
-        System.out.println(mainImageName);
-        // 수정된 파일 새로 넣기
-//        if (files != null && files.length > 0) {
-//            for (MultipartFile file : files) {
-//                boolean isMain = false;
-//                if (mainImageName != null && file.getOriginalFilename().equals(mainImageName)) {
-//                    isMain = true; // 해당 파일을 메인 이미지로 설정
-//                }
-//
-//                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
-//                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-//                        .bucket(bucketName)
-//                        .key(objectKey)
-//                        .acl(ObjectCannedACL.PUBLIC_READ)
-//                        .build();
-//
-//                try {
-//                    s3.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-//                } catch (IOException e) {
-//                    throw new RuntimeException("S3 업로드 실패: " + objectKey, e);
-//                }
-//                // 기존에 있는 파일일 경우 메인이미지 인지만 확인 후 변경
-//                mapper.updateFile(product.getProductId(), file.getOriginalFilename(), isMain);
-//                // 새로 추가된 파일일 경우 추가
-//                mapper.insertFile(product.getProductId(), file.getOriginalFilename(), isMain);
-//            }
-//        }
-//
-//        // 상품 정보 수정하기
-//        int cnt = mapper.update(product);
-//        return cnt == 1;
-        return true;
+        if (removeFiles != null) {
+            for (String file : removeFiles) {
+                String key = STR."prj1114/\{product.getProductId()}/\{file}";
+                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                // s3 파일 지우기
+                s3.deleteObject(dor);
+                // db 파일 지우기
+                mapper.deleteFile(product.getProductId(), file);
+            }
+        }
+        if (uploadFiles != null && uploadFiles.length > 0) {
+            for (MultipartFile file : uploadFiles) {
+                boolean isMain = false;
+                if (mainImageName != null && file.getOriginalFilename().equals(mainImageName)) {
+                    System.out.println("이름: " + file.getOriginalFilename());
+                    isMain = true; // 해당 파일을 메인 이미지로 설정
+                }
+
+                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                try {
+                    s3.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException("S3 업로드 실패: " + objectKey, e);
+                }
+
+                // 새로 추가된 파일일 경우 추가
+                mapper.insertFile(product.getProductId(), file.getOriginalFilename(), isMain);
+            }
+        }
+
+        // 상품 정보 수정하기
+        int cnt = mapper.update(product);
+        return cnt == 1;
     }
 
     // 상품 판매자와 로그인한 사용자가 같은지 확인
