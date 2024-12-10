@@ -118,7 +118,7 @@ public class ProductService {
                 })
                 .map(name -> new ProductFile(name, String.format("%s/%s/%s", imageSrcPrefix, productId, name)))
                 .toList();
-        
+
         product.setFileList(fileSrcList);
         return product;
     }
@@ -168,8 +168,18 @@ public class ProductService {
                 mapper.deleteFile(product.getProductId(), file);
             }
         }
+
         if (uploadFiles != null && uploadFiles.length > 0) {
             for (MultipartFile file : uploadFiles) {
+
+                // 기존 db에 있는 이미지일 경우 메인이미지로 설정
+                List<String> mainImage = mapper.selectFilesByProductId(product.getProductId());
+                for (String name : mainImage) {
+                    name.equals(mainImageName);
+                    mapper.updateMainUImage(product.getProductId(), name, mainImageName);
+                }
+
+                // 새로 추가된 메인이미지일 경우
                 boolean isMain = false;
                 if (mainImageName != null && file.getOriginalFilename().equals(mainImageName)) {
                     System.out.println("이름: " + file.getOriginalFilename());

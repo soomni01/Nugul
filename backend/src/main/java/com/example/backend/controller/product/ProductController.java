@@ -78,9 +78,6 @@ public class ProductController {
             @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
             @RequestParam(value = "mainImageName", required = false) String mainImageName,
             Authentication authentication) {
-        System.out.println("main: " + mainImageName);
-        System.out.println(uploadFiles);
-        System.out.println(removeFiles);
         if (service.hasAccess(product.getProductId(), authentication)) {
             if (service.validate(product)) {
                 if (service.update(product, removeFiles, uploadFiles, mainImageName)) {

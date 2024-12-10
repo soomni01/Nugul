@@ -215,4 +215,14 @@ public interface ProductMapper {
               AND name = #{name}
             """)
     int deleteFile(Integer productId, String name);
+
+    @Update("""
+            UPDATE product_file
+               SET is_main = CASE
+                   WHEN name = #{mainImageName} THEN 1
+                   ELSE 0
+               END
+            WHERE product_id = #{productId} AND name=#{name}
+            """)
+    int updateMainUImage(Integer productId, String name, String mainImageName);
 }

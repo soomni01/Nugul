@@ -64,6 +64,14 @@ export function ProductEdit() {
     }
   }, [product]);
 
+  useEffect(() => {
+    if (files.length === 0) {
+      setMainImage(null);
+    } else if (files.length > 0) {
+      setMainImage(files[0]);
+    }
+  }, [files]);
+
   const handleCategoryChange = (e) =>
     setProduct({ ...product, category: e.target.value });
 
@@ -140,6 +148,8 @@ export function ProductEdit() {
     // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
     if (index === 0 && files.length > 1) {
       setMainImage(files[1]);
+    } else if (files.length === 1) {
+      setMainImage(null);
     }
   };
 
@@ -154,16 +164,17 @@ export function ProductEdit() {
     product.locationName.trim().length > 0
   );
 
-  // 파일 이미지 클릭 시 input 클릭 트리거
-  const handleBoxClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <Box>
       <Heading>{id}번 상품 수정</Heading>
+      <Button
+        onClick={() => {
+          console.log(mainImage);
+          console.log(files);
+        }}
+      >
+        메인이미지 테스트
+      </Button>
       <Stack gap={5}>
         <Flex alignItems="center">
           <Box minWidth="150px">
