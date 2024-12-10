@@ -18,7 +18,10 @@ public interface ProductMapper {
 
     @Insert("""
             INSERT INTO product_file
-            VALUES (#{id}, #{fileName}, #{isMain})
+             SELECT #{id}, #{fileName}, #{isMain}
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM product_file WHERE product_id = #{id} AND name = #{fileName}
+                )
             """)
     int insertFile(Integer id, String fileName, boolean isMain);
 
@@ -200,4 +203,10 @@ public interface ProductMapper {
             """)
     int deleteFileByProductId(int id);
 
+    @Update("""
+            UPDATE product_file
+            SET is_main=#{isMain}
+            WHERE product_id = #{productId} AND name=#{originalFilename}
+            """)
+    int updateFile(Integer productId, String originalFilename, boolean isMain);
 }

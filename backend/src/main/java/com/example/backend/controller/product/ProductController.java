@@ -74,10 +74,13 @@ public class ProductController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> update(
             Product product,
+            @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+            @RequestParam(value = "mainImageName", required = false) String mainImageName,
             Authentication authentication) {
+        System.out.println(mainImageName);
         if (service.hasAccess(product.getProductId(), authentication)) {
             if (service.validate(product)) {
-                if (service.update(product)) {
+                if (service.update(product, files, mainImageName)) {
                     return ResponseEntity.ok()
                             .body(Map.of("message", Map.of("type", "success",
                                     "text", STR."\{product.getProductId()}번 상품 수정되었습니다.")));
