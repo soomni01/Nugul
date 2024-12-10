@@ -17,7 +17,6 @@ import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
-import { PayButton } from "../../components/chat/PayButton.jsx";
 
 export function ChatView({ chatRoomId, onDelete }) {
   const scrollRef = useRef(null);
@@ -202,6 +201,12 @@ export function ChatView({ chatRoomId, onDelete }) {
     // navigate("chat");
   }
 
+  const handlePayment = () => {
+    // Payment 컴포넌트의 requestPay 호출
+    const payment = new Payment();
+    payment.requestPay();
+  };
+
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -236,7 +241,7 @@ export function ChatView({ chatRoomId, onDelete }) {
           </Box>
           <Flex>
             <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
-            <PayButton paymentLink="https://link.kakaopay.com/_/FdI3mJB" />
+            <Button onClick={handlePayment}>결제하기</Button>
           </Flex>
         </Box>
 
