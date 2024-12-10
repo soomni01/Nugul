@@ -18,10 +18,7 @@ public interface ProductMapper {
 
     @Insert("""
             INSERT INTO product_file
-             SELECT #{id}, #{fileName}, #{isMain}
-                WHERE NOT EXISTS (
-                    SELECT 1 FROM product_file WHERE product_id = #{id} AND name = #{fileName}
-                )
+             VALUES (#{id}, #{fileName}, #{isMain})
             """)
     int insertFile(Integer id, String fileName, boolean isMain);
 
