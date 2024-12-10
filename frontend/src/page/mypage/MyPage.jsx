@@ -98,8 +98,9 @@ export function MyPage() {
             후기
           </Button>
           <Button
-              variant={activeTab === "BoardsAndComments" ? "solid" : "ghost"}
+              variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
               colorScheme="teal"
+              onClick={() => handleTabClick("boardsAndComments")}
           >
             내 게시물과 댓글
           </Button>
@@ -126,7 +127,7 @@ export function MyPage() {
           <InquiryView inquiryId={selectedInquiryId} />
         )}
         {activeTab === "review" && <Review />}
-        {activeTab === "BoardsAndComments" && <BoardsAndComments/>}
+        {activeTab === "boardsAndComments" && <BoardsAndComments/>}
       </Box>
     </Flex>
   );
