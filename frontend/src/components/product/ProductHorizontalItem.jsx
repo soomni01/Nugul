@@ -8,6 +8,7 @@ import {
   Image,
   Text,
 } from "@chakra-ui/react";
+import debounce from "lodash.debounce";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { categories } from "../category/CategoryContainer.jsx";
@@ -116,24 +117,46 @@ export function ProductHorizontalItem({
   const isSold = product.status === "Sold";
   const cardStyle = getCardStyle(isSold);
 
-  const handleLikeClick = () => {
-    if (!hasAccess || isProcessing) return setLikeTooltipOpen(true);
+  const handleLikeClick = debounce(() => {
+    // 로그인 여부와 처리 중인지 확인하여 요청을 차단
+    if (!hasAccess || isProcessing) {
+      setLikeTooltipOpen(true);
+      return;
+    }
 
-    setIsProcessing(true); // 요청 처리 중 상태 설정
-    setIsLiked((prev) => !prev);
+    // 요청 중 상태 설정
+    setIsProcessing(true);
+    setLikeTooltipOpen(false);
+
+    // 상태 변경을 UI에 즉시 반영 (서버 요청이 완료되기 전에 반영)
+    const newLikedState = !isLiked;
+    setIsLiked(newLikedState);
 
     axios
       .post("/api/product/like", { productId: product.productId })
       .then(() => {
         toaster.create({
           type: "warning",
-          description: "관심 상품에서 삭제했습니다.",
+          description: newLikedState
+            ? "관심 상품에서 삭제했습니다."
+            : "관심 상품에 추가했습니다.",
         });
-        onRemove(product.productId);
+        console.log(product.productId);
+        onRemove(product.productId); // 관심 목록에서 제거 또는 추가
       })
-      .catch(() => setIsLiked((prev) => !prev))
-      .finally(() => setIsProcessing(false));
-  };
+      .catch((error) => {
+        // 요청 실패 시 상태 원복
+        setIsLiked(isLiked);
+        toaster.create({
+          type: "error",
+          description: "좋아요 처리 중 오류가 발생했습니다.",
+        });
+      })
+      .finally(() => {
+        // 요청 처리 후 상태 초기화
+        setIsProcessing(false);
+      });
+  }, 200); // 200ms 후에 호출
 
   const handleDeleteClick = () => {
     if (!hasAccess) {
@@ -191,8 +214,6 @@ export function ProductHorizontalItem({
     ? product.mainImageName
     : "/image/productItem.png";
 
-  console.log(product);
-
   return (
     <Card.Root
       flexDirection="row"
@@ -248,6 +269,7 @@ export function ProductHorizontalItem({
           )}
           <Card.Title mb={2} fontSize="lg" fontWeight="bold">
             {product.productName}
+            {product.productId}
           </Card.Title>
           <HStack spacing={10} justify="space-between">
             <Text fontSize="sm" color="gray.500">
