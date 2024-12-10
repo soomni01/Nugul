@@ -37,8 +37,11 @@ export function ProductEdit() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [progress, setProgress] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열고 닫을 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [filesUrl, setFilesUrl] = useState([]);
+  const [mainImage, setMainImage] = useState(null);
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
 
@@ -72,18 +75,25 @@ export function ProductEdit() {
 
   const handleSaveClick = () => {
     setProgress(true);
+    const formData = new FormData();
+    formData.append("productId", product.productId);
+    formData.append("productName", product.productName);
+    formData.append("description", product.description);
+    formData.append("price", product.pay === "share" ? 0 : product.price);
+    formData.append("category", product.category);
+    formData.append("pay", product.pay);
+    formData.append("latitude", product.latitude);
+    formData.append("longitude", product.longitude);
+    formData.append("locationName", product.locationName);
+
+    // 메인이미지와 파일 추가
+    if (mainImage) formData.append("mainImageName", mainImage.name);
+    files.forEach((file) => formData.append("files[]", file));
+
+    console.log(formData);
     axios
-      .putForm("/api/product/update", {
-        productId: product.productId,
-        productName: product.productName,
-        description: product.description,
-        category: product.category,
-        price: product.pay === "share" ? 0 : product.price,
-        pay: product.pay,
-        latitude: product.latitude,
-        longitude: product.longitude,
-        locationName: product.locationName,
-        // file과 mainImage도 추후 변경
+      .putForm("/api/product/update", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => res.data)
       .then((data) => {
@@ -116,10 +126,16 @@ export function ProductEdit() {
     product.description.trim().length > 0 &&
     product.locationName.trim().length > 0
   );
+  const test = () => {
+    console.log(files);
+    console.log(filesUrl);
+    console.log(mainImage);
+  };
 
   return (
     <Box>
       <Heading>{id}번 상품 수정</Heading>
+      <Button onClick={test}>테스트</Button>
       <Stack gap={5}>
         <ImageFileView />
         <Flex gap={3}>
