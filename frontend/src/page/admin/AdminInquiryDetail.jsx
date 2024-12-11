@@ -220,7 +220,7 @@ export function AdminInquiryDetail({
             <Input value={inquiry.title} readOnly />
           </Field>
           <Field label={"작성자"} readOnly>
-            <Input value={inquiry.memberId} readOnly />
+            <Input value={inquiry.nickname} readOnly />
           </Field>
           <Field label={"작성일자"} readOnly>
             <Input

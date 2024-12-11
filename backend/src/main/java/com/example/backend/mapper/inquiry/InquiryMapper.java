@@ -38,12 +38,14 @@ public interface InquiryMapper {
                    i.title,
                    i.category,
                    i.inserted,
+                   m.nickname,
                    EXISTS (
                        SELECT 1
                        FROM inquiry_comment ic
                        WHERE ic.inquiry_id = i.inquiry_id
                    ) AS has_answer
             FROM inquiry i
+            LEFT JOIN member m ON i.member_id = m.member_id
             ORDER BY i.inquiry_id
             """)
     List<Inquiry> InquiryAll();
@@ -53,8 +55,10 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.inserted
+                   i.inserted,
+                   m.nickname
             FROM inquiry i
+            LEFT JOIN member m ON i.member_id = m.member_id
             WHERE i.inquiry_id = #{inquiryId}
             """)
     Inquiry findById(int inquiryId);
