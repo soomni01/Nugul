@@ -79,44 +79,44 @@ function ViewMap() {
         // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds();
 
-        // 마커에 데이터 넣는 코드
+        // 마커 배열 초기화
+        const newMarkers = data.map((item, i) => {
+          // 경계 확장
+          bounds.extend(new kakao.maps.LatLng(item.y, item.x));
 
-        var listEl = document.getElementById("placeList"),
-          menuEl = document.getElementById("menu_wrap"),
-          fragment = document.createDocumentFragment(),
-          listStr = "";
+          return (
+            <MapMarker
+              key={item.id || i}
+              position={{ lat: item.y, lng: item.x }}
+            >
+              {item.place_name}
+            </MapMarker>
+          );
+        });
 
-        // 검색 버튼 클릭시 , 기존창 지워야 함
+        // 마커 상태 업데이트
+        setMarkers(newMarkers);
+
+        // DOM 조작 부분
+        const listEl = document.getElementById("placeList");
+        const fragment = document.createDocumentFragment();
+
+        // 기존 리스트 초기화
         removeAllChildNods(listEl);
 
-        useEffect(() => {
-          for (var i = 0; i < data.length; i++) {
-            // @ts-ignore
+        // 리스트 아이템 생성
+        data.forEach((item, i) => {
+          const itemEl = getItem(i, item);
+          fragment.appendChild(itemEl);
+        });
 
-            var newMarker = (
-              <MapMarker key={i} position={{ lat: data[i].y, lng: data[i].x }}>
-                {data[i].place_name}
-              </MapMarker>
-            );
-
-            //Todo  > 마커 부분 다 고쳐야 돌아갈듯 ?
-            setMarkers((prev) => [...prev, ...newMarker]);
-
-            //데이터 리스트에 집어 넣는 함수
-            var itemEl = getItem(i, data[i]);
-
-            // @ts-ignore
-            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-
-            fragment.appendChild(itemEl);
-          }
-        }, [data]);
-
+        // 프래그먼트를 리스트에 추가
         listEl.appendChild(fragment);
 
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        // 지도 범위 재설정
         map.setBounds(bounds);
 
+        // 페이지네이션 표시
         displayPagination(_pagination);
       }
     });
