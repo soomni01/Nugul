@@ -7,7 +7,7 @@ import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
 
-export function ReviewModal({ isOpen, onClose, product }) {
+export function ReviewModal({ isOpen, onClose, product, onComplete }) {
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(3);
   const [progress, setProgress] = useState(false);
@@ -47,6 +47,7 @@ export function ReviewModal({ isOpen, onClose, product }) {
         sellerId: product.writer,
         price: product.price,
         reviewStatus: "completed",
+        expenseId: product.expenseId,
       })
       .then((res) => res.data)
       .then((data) => {
@@ -54,14 +55,19 @@ export function ReviewModal({ isOpen, onClose, product }) {
           description: data.message.text,
           type: data.message.type,
         });
+        onComplete(product.productId); // 리뷰 작성 완료 콜백 호출
         setReviewText(""); // 후기 내용 초기화
         setRating(3); // 별점 초기화 (기본값 3)
         onClose();
       })
       .catch((e) => {
+        const errorMessage =
+          e.response?.data?.message?.text || "알 수 없는 오류가 발생했습니다.";
+        const errorType = e.response?.data?.message?.type || "error";
+
         toaster.create({
-          description: e.response.message.text,
-          type: e.response.message.type,
+          description: errorMessage,
+          type: errorType,
         });
       })
       .finally(() => setProgress(false));
@@ -89,7 +95,11 @@ export function ReviewModal({ isOpen, onClose, product }) {
           <Box>
             <HStack gap="10">
               <Text>상품명 : {product.productName}</Text>
-              <HStack gap={1}>가격 : {product.price}원</HStack>
+              {product.price === 0 ? (
+                <HStack gap={1}>나눔</HStack>
+              ) : (
+                <HStack gap={1}>가격 : {product.price}원</HStack>
+              )}
             </HStack>
           </Box>
           <HStack justify="space-between" mr={3}>

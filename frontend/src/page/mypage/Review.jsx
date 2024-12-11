@@ -16,12 +16,32 @@ import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { Rating } from "../../components/ui/rating.jsx";
+import { useNavigate } from "react-router-dom";
+import { toaster } from "../../components/ui/toaster.jsx";
 
-const ReviewCard = ({ review, value }) => (
+const productNameClick = (navigate, productId) => {
+  if (productId != null) {
+    navigate(`/product/view/${productId}`);
+  } else {
+    toaster.create({
+      type: "error",
+      description: "삭제된 상품입니다.",
+    });
+  }
+};
+
+const ReviewCard = ({ review, value, productNameClick }) => (
   <Card.Root height="90%" width="80%" my={4} size="sm" key={review.id}>
     <Card.Header>
       <HStack justifyContent="space-between">
-        <Heading size="lg">{review.productName}</Heading>
+        <Heading
+          onClick={(e) => productNameClick(e, review.productId)}
+          size="lg"
+          color={review.productId ? "black" : "gray.400"}
+          cursor="pointer"
+        >
+          {review.productName}
+        </Heading>
         <Box>
           <Rating
             readOnly
@@ -38,7 +58,7 @@ const ReviewCard = ({ review, value }) => (
           {value === "buy" ? (
             <>판매자: {review.sellerName || "알 수 없음"}</>
           ) : (
-            <>구매자: {review.buyerName || "알 수 없음"}</>
+            <>구매자: {review.buyerId ? review.buyerName : "알 수 없음"}</>
           )}
         </HStack>
       </Heading>
@@ -48,7 +68,7 @@ const ReviewCard = ({ review, value }) => (
         상품 후기
       </Heading>
       {review.price === 0 ? (
-        <Box colorScheme="green"> 나눔</Box> // 나눔 뱃지 표시
+        <Box> 나눔</Box> // 나눔 뱃지 표시
       ) : (
         <Box> {review.price}원</Box> // 가격 표시
       )}
@@ -71,6 +91,7 @@ export function Review(props) {
   const [value, setValue] = useState("buy");
   const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
@@ -78,12 +99,11 @@ export function Review(props) {
 
     axios
       .get("/api/myPage/review", {
-        params: { id, role: value === "buy" ? "buyer" : "seller" },
+        params: { memberId: id, role: value === "buy" ? "buyer" : "seller" },
       })
       .then((res) => {
         setReviewList(res.data);
         setLoading(false);
-        console.log(reviewList);
       })
       .catch((error) => {
         console.log("후기를 가져오는 데 실패했습니다.", error);
@@ -123,7 +143,13 @@ export function Review(props) {
               justifyContent: "left",
             }}
           >
-            <ReviewCard review={review} value={value} />
+            <ReviewCard
+              review={review}
+              value={value}
+              productNameClick={(e) =>
+                productNameClick(navigate, review.productId)
+              }
+            />
           </SwiperSlide>
         ))}
       </Swiper>

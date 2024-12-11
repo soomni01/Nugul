@@ -19,11 +19,16 @@ CREATE TABLE review
 # 작성한 후기
 INSERT INTO review (product_id, product_name, buyer_id, buyer_name, review_text, rating, seller_id, price,
                     review_status)
-VALUES (109, '구매함', 'sm@naver.com', 'sm', '좋은 거래였습니다.',
-        5, 'qor@naver.com', 5999, 'completed');
+VALUES (48, '구매함', 'sm@naver.com', 'sm', '좋은 거래였습니다.',
+        5, '111@zz.zz', 5999, 'completed');
 
 # 받은 후기
 INSERT INTO review (product_id, product_name, buyer_id, buyer_name, review_text, rating, seller_id, price,
                     review_status)
-VALUES (116, '판매함', '111@zz.zz', '111', '좋은 거래였습니다.',
-        2, 'sm@naver.com', 3249, 'completed');
+VALUES (29, 'mk 판매', 'mk@naver.com', 'mk', '좋은 거래였습니다.',
+        4, 'sm@naver.com', 111111, 'completed');
+
+# 삭제 시 null로 수정
+ALTER TABLE review
+    ADD CONSTRAINT fk_product FOREIGN KEY (seller_id)
+        REFERENCES member (member_id) ON DELETE SET NULL;

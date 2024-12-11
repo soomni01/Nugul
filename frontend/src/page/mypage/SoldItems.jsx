@@ -66,6 +66,7 @@ export function SoldItems() {
                   product={product}
                   onRemove={handleDelete}
                   pageType={"sold"}
+                  value={"sell"}
                 />
               </SwiperSlide>
             ))

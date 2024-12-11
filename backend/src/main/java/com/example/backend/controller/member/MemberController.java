@@ -54,9 +54,6 @@ public class MemberController {
     @DeleteMapping("remove")
     @PreAuthorize("isAuthenticated() or hasAuthority('SCOPE_admin')")
     public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member, Authentication auth) {
-        System.out.println("Received request: " + member);
-        System.out.println("Authenticated user: " + auth.getName());
-        System.out.println("Auth authorities: " + auth.getAuthorities());
 
         // 현재 인증된 사용자의 비밀번호 확인
         if (!service.isPasswordCorrect(auth.getName(), member.getPassword())) {

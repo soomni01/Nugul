@@ -35,7 +35,7 @@ function DeleteButton({ memberId, onDelete }) {
     if (password.trim() === "") {
       toaster.create({
         type: "error",
-        description: "비밀번호를 입력해 주세요.",
+        description: "관리자 비밀번호를 입력해 주세요.",
       });
       return;
     }
@@ -45,11 +45,23 @@ function DeleteButton({ memberId, onDelete }) {
 
   return (
     <>
-      <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+      <DialogRoot
+        open={open}
+        onOpenChange={(e) => setOpen(e.open)}
+        onClick={(e) => e.stopPropagation()}
+      >
         <DialogTrigger asChild>
-          <Button colorPalette={"red"}>탈퇴</Button>
+          <Button
+            colorPalette={"red"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(true);
+            }}
+          >
+            탈퇴
+          </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader ml={0.5}>
             <DialogTitle>탈퇴 확인</DialogTitle>
           </DialogHeader>
@@ -58,20 +70,33 @@ function DeleteButton({ memberId, onDelete }) {
               <Field>
                 <Input
                   type="password"
-                  placeholder={"관리자 비밀번호를 입력해 주세요."}
+                  placeholder={"관리자 비밀번호를 입력해 주세요. "}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
                 />
               </Field>
             </Stack>
           </DialogBody>
           <DialogFooter>
             <DialogActionTrigger>
-              <Button variant={"outline"} onClick={() => setOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpen(false);
+                }}
+              >
                 취소
               </Button>
             </DialogActionTrigger>
-            <Button colorPalette={"red"} onClick={handleDeleteClick}>
+            <Button
+              colorPalette={"red"}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteClick();
+              }}
+            >
               탈퇴
             </Button>
           </DialogFooter>

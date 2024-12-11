@@ -18,7 +18,7 @@ public interface ProductMapper {
 
     @Insert("""
             INSERT INTO product_file
-            VALUES (#{id}, #{fileName}, #{isMain})
+             VALUES (#{id}, #{fileName}, #{isMain})
             """)
     int insertFile(Integer id, String fileName, boolean isMain);
 
@@ -32,24 +32,20 @@ public interface ProductMapper {
     List<Product> getProductList();
 
     @Select("""
-            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname
+            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, 
+            p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname, pf.name as mainImageName
             FROM product p
             LEFT JOIN member m ON p.writer = m.member_id
-            WHERE product_id = #{id}
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
+            WHERE p.product_id = #{productId}
             """)
-    Product selectById(int id);
+    Product selectById(Integer productId);
 
     @Delete("""
             DELETE FROM product
             WHERE product_id = #{id}
             """)
     int deleteById(int id);
-
-    @Delete("""
-            DELETE FROM product_file
-            WHERE product_id = #{id}
-            """)
-    int deleteFileByProductId(int id);
 
     @Update("""
             UPDATE product
@@ -67,8 +63,9 @@ public interface ProductMapper {
 
     @Select("""
             <script>
-                SELECT *
-                 FROM product
+                SELECT p.*, pf.name AS main_image_name
+                FROM product p
+                LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
                 <where>
                     <if test="category != null and category != 'all'">
                         AND category = #{category}
@@ -106,7 +103,6 @@ public interface ProductMapper {
     @Delete("""
             DELETE FROM product_like
             WHERE product_id = #{productId}
-            AND member_id = #{name}
             """)
     int deleteLike(Integer productId);
 
@@ -133,13 +129,14 @@ public interface ProductMapper {
     @Select("""
             SELECT product_id
             FROM product_like
-            WHERE member_id = #{MemberId}
+            WHERE member_id = #{memberId}
             """)
-    List<Integer> likedProductByMemberId(String MemberId);
+    List<Integer> likedProductByMemberId(String memberId);
 
     @Select("""
-            SELECT *
-            FROM product
+            SELECT p.*, pf.name AS main_image_name
+            FROM product p
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE pay = 'sell'
             AND status = 'For Sale'
             ORDER BY product_id DESC
@@ -148,8 +145,9 @@ public interface ProductMapper {
     List<Product> selectSellProducts(Integer limit);
 
     @Select("""
-            SELECT *
-            FROM product
+            SELECT p.*, pf.name AS main_image_name
+            FROM product p
+            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE pay = 'share'
             AND status = 'For Sale'
             ORDER BY product_id DESC
@@ -176,4 +174,55 @@ public interface ProductMapper {
             AND member_id = #{name}
             """)
     int deleteLikeByMemberId(Integer productId, String name);
+
+    @Update("""
+            UPDATE product
+            SET status = 'Sold'
+            WHERE product_id = #{id}
+            """)
+    int updateProductStatus(int id);
+
+    @Insert("""
+            Insert purchased_record
+            (buyer_id, product_id, seller_id, product_name, location_name, price)
+            VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price})
+            """)
+    int insertTranscation(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
+
+    @Select("""
+            SELECT name
+            FROM product_file
+            WHERE product_id = #{productId}
+            """)
+    List<String> selectFilesByProductId(Integer productId);
+
+    @Delete("""
+            DELETE FROM product_file
+            WHERE product_id = #{id}
+            """)
+    int deleteFileByProductId(int id);
+
+    @Update("""
+            UPDATE product_file
+            SET is_main=#{isMain}
+            WHERE product_id = #{productId} AND name=#{originalFilename}
+            """)
+    int updateFile(Integer productId, String originalFilename, boolean isMain);
+
+    @Delete("""
+            DELETE FROM product_file
+            WHERE product_id = #{productId}
+              AND name = #{name}
+            """)
+    int deleteFile(Integer productId, String name);
+
+    @Update("""
+            UPDATE product_file
+               SET is_main = CASE
+                   WHEN name = #{mainImageName} THEN 1
+                   ELSE 0
+               END
+            WHERE product_id = #{productId} AND name=#{name}
+            """)
+    int updateMainUImage(Integer productId, String name, String mainImageName);
 }

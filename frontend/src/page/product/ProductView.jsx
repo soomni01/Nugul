@@ -30,10 +30,8 @@ import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ProductLike } from "../../components/product/ProductLike.jsx";
-
-function ImageFileView() {
-  return null;
-}
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
 
 export function ProductView() {
   //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로  , >router도 변경함
@@ -45,10 +43,10 @@ export function ProductView() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { hasAccess, isAuthenticated, isAdmin ,id } = useContext(
+
+  const { hasAccess, isAuthenticated, isAdmin, id } = useContext(
     AuthenticationContext,
   );
-
 
   useEffect(() => {
     // id >productId
@@ -56,6 +54,7 @@ export function ProductView() {
       .get(`/api/product/view/${productId}`)
       .then((res) => setProduct(res.data));
   }, []);
+
 
   useEffect(() => {
     if (product && product.latitude && product.longitude) {
@@ -70,7 +69,7 @@ export function ProductView() {
     const fetchData = async () => {
       try {
         const [productRes, likeRes, userLikeRes] = await Promise.all([
-          axios.get(`/api/product/view/${id}`),
+          axios.get(`/api/product/view/${productId}`),
           axios.get("/api/product/likes"),
           axios.get("/api/product/like/member"),
         ]);
@@ -100,14 +99,21 @@ export function ProductView() {
 
   const handleDeleteClick = () => {
     axios
-      .delete(`/api/product/delete/${product.productId}`)
+      .delete(`/api/product/delete/${productId}`)
       .then((res) => res.data)
       .then((data) => {
         toaster.create({
           type: data.message.type,
           description: data.message.text,
         });
-        navigate("/product/list");
+
+        // 관리자가 상품을 삭제한 경우, 해당 회원 상세 페이지로 이동
+        if (isAdmin) {
+          navigate(`/admin/members/${product.writer}/detail`);
+        } else {
+          // 일반 사용자일 경우 상품 목록 페이지로 이동
+          navigate("/product/list");
+        }
       })
       .catch((e) => {
         const data = e.response.data;
@@ -140,6 +146,7 @@ export function ProductView() {
     axios
       .post("/api/chat/create", {
         productName: productName,
+        productId: productId,
         writer: writer,
         nickname: nickname,
         buyer: buyer,
@@ -152,10 +159,34 @@ export function ProductView() {
     // 추가
   };
 
+  // 성공적으로 거래할 경우(채팅방에서 거래완료 버튼 누르면 실행)
+  const handleSuccessTransaction = () => {
+    axios
+      .post(`/api/product/transaction/${productId}`, {})
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      });
+  };
+
   return (
     <Box>
       <HStack>
         <Heading>{productId}번 상품 이름</Heading>
+        {/* 테스트용 거래 완료 시 버튼 */}
+        <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
+          거래완료
+        </Button>
         <Box display="flex" justifyContent="center" alignItems="center">
           <ProductLike
             productId={product.productId}
@@ -165,9 +196,27 @@ export function ProductView() {
           />
         </Box>
       </HStack>
+      <Swiper
+        slidesPerView={1}
+        spaceBetween={30}
+        loop={true}
+        pagination={{
+          clickable: true,
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="mySwiper"
+      >
+        {product.fileList.map((file) => (
+          <SwiperSlide>
+            <Box w="300px" h="auto">
+              <img src={file.src} alt={file.name} />
+            </Box>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <Stack gap={5}>
         <Box>판매자: {product.nickname}</Box>
-        <ImageFileView />
         <Flex gap={3}>
           <Box minWidth="100px">
             <Field label={"카테고리"} readOnly>
@@ -241,7 +290,18 @@ export function ProductView() {
                     <DialogTitle>삭제 확인</DialogTitle>
                   </DialogHeader>
                   <DialogBody>
-                    <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                    {/* 관리자일 때만 표시되는 메시지 */}
+                    {isAdmin && (
+                      <Box color="red.500" fontSize="sm" mb={2}>
+                        관리자 권한으로 삭제하시겠습니까?
+                      </Box>
+                    )}
+                    {/* 관리자일 때는 일반 메시지를 표시하지 않도록 조건 추가 */}
+                    {!isAdmin && (
+                      <p>
+                        등록한 {product.productId}번 상품을 삭제하시겠습니까?
+                      </p>
+                    )}
                   </DialogBody>
                   <DialogFooter>
                     <DialogActionTrigger>

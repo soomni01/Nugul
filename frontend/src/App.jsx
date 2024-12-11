@@ -3,10 +3,9 @@ import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 
 import AdminLayout from "./page/admin/AdminLayout.jsx";
-import AdminDashBoard from "./page/admin/AdminDashBoard.jsx";
+import { AdminDashBoard } from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
-import { AdminReportList } from "./page/admin/AdminReportList.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
 import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
@@ -29,6 +28,11 @@ import { MyPage } from "./page/mypage/MyPage.jsx";
 import { useEffect } from "react";
 
 import { Inquiry } from "./page/inquiry/Inquiry.jsx";
+
+import ViewMap from "./page/map/ViewMap.jsx";
+
+import { InquiryView } from "./page/mypage/InquiryView.jsx";
+import InquiryEdit from "./page/mypage/InquiryEdit.jsx";
 
 
 // Axios 인터셉터 설정
@@ -69,6 +73,14 @@ const router = createBrowserRouter([
       {
         path: "myPage/edit/:memberId",
         element: <MyPage />,
+      },
+      {
+        path: "myPage/:inquiryId",
+        element: <InquiryView />,
+      },
+      {
+        path: "myPage/:inquiryId/edit",
+        element: <InquiryEdit />,
       },
       {
         path: "chat",
@@ -114,6 +126,10 @@ const router = createBrowserRouter([
         path: "board/boardEdit/:boardId",
         element: <BoardEdit />,
       },
+      {
+        path: "map",
+        element: <ViewMap />,
+      },
     ],
   },
   {
@@ -131,10 +147,6 @@ const router = createBrowserRouter([
       {
         path: "members/:memberId/detail",
         element: <AdminMemberDetail />,
-      },
-      {
-        path: "reports",
-        element: <AdminReportList />,
       },
       {
         path: "inquiries",

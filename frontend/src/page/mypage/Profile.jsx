@@ -21,16 +21,21 @@ export function Profile({ onEditClick }) {
   const [member, setMember] = useState(null);
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/member/${id}`).then((res) => setMember(res.data));
-  }, []);
+    if (!id) {
+      return;
+    }
+    setLoading(true);
 
-  if (!member) {
-    return <Spinner />;
-  }
+    axios
+      .get(`/api/member/${id}`)
+      .then((res) => setMember(res.data))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   function handleDeleteClick() {
     axios
@@ -58,6 +63,10 @@ export function Profile({ onEditClick }) {
         setOpen(false);
         setPassword("");
       });
+  }
+
+  if (loading || !id || !member) {
+    return <Spinner />;
   }
 
   return (
