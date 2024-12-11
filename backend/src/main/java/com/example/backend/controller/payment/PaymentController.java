@@ -5,6 +5,7 @@ import com.example.backend.service.payment.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,7 @@ public class PaymentController {
 
     // 결제 확인 API
     @PostMapping("/verifyIamport/{imp_uid}")
-    public IamportResponse<PaymentDTO> paymentByImpUid(@PathVariable("imp_uid") String imp_uid) throws IamportResponseException, IOException {
+    public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid) throws IamportResponseException, IOException {
         System.out.println("Received imp_uid: " + imp_uid);  // 로그 추가
         return iamportClient.paymentByImpUid(imp_uid);
     }
