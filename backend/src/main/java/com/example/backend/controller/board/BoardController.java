@@ -24,11 +24,12 @@ public class BoardController {
     final CommentService commentService;
 
     @GetMapping("/boardsAndComments/{memberId}")
-    public Map<String, Object> getBoardsAndComments(@PathVariable String memberId) {
+    public Map<String, Object> getBoardsAndComments(@PathVariable String memberId,
+                                                    @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
 
-        List<Board> boards = service.selectByMemberId(memberId); // 작성자의 게시물 가져오기
-        List<Comment> comments = commentService.getCommentsByMemberId(memberId); // 사용자가 작성한 댓글
+        List<Board> boards = service.selectByMemberId(memberId,page); // 작성자의 게시물 가져오기
+        List<Comment> comments = commentService.getCommentsByMemberId(memberId,page); // 사용자가 작성한 댓글
         return Map.of(
                 "boards", boards,
                 "comments", comments

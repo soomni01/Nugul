@@ -75,7 +75,8 @@ public interface CommentMapper {
         FROM comment 
         WHERE member_id = #{memberId}
         ORDER BY inserted DESC
+    LIMIT 10 OFFSET #{offset}
     """)
-    List<Comment> findCommentsByMemberId(String memberId);
+    List<Comment> findCommentsByMemberId(String memberId, Integer offset);
 }
 
