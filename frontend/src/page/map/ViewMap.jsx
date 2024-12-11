@@ -45,6 +45,7 @@ function ViewMap() {
         setIsOverlayOpen(false);
         customOverlay.setMap(null);
       }
+      // 마커 켜져있으면 지워야하는데 ,
       // removeMarker();
 
       ps.categorySearch(
@@ -400,7 +401,9 @@ function ViewMap() {
 
           {/*  검색 클릭시 */}
           {markers.map((item, index) => (
-            <MapMarker key={index} position={item.position}></MapMarker>
+            <MapMarker key={index} position={item.position}>
+              {item.content}
+            </MapMarker>
           ))}
 
           <ZoomControl />
