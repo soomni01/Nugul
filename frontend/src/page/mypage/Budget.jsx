@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Box, Image, Text, VStack } from "@chakra-ui/react";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function Budget({ memberId }) {
   const [monthlyPurchases, setMonthlyPurchases] = useState([]);
   const [monthlySales, setMonthlySales] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState("2024-12");
+  const { nickname } = useContext(AuthenticationContext);
 
   // 월별 구매 내역 불러오기
   useEffect(() => {
@@ -129,7 +131,7 @@ export function Budget({ memberId }) {
       </Box>
       <Box mb={4}>
         <Text fontSize="lg" fontWeight="bold" mb={2}>
-          {selectedMonth.split("-")[1]}월 전체 거래 내역
+          {nickname}님의 {selectedMonth.split("-")[1]}월 전체 거래 내역
         </Text>
         <Text>{totalTransaction} 원</Text>
       </Box>
