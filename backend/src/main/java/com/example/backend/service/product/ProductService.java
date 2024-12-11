@@ -47,7 +47,7 @@ public class ProductService {
                     isMain = true; // 해당 파일을 메인 이미지로 설정
                 }
 
-                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1126/\{product.getProductId()}/\{file.getOriginalFilename()}";
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -129,7 +129,7 @@ public class ProductService {
         List<String> fileName = mapper.selectFilesByProductId(productId);
 
         for (String file : fileName) {
-            String key = STR."prj1114/\{productId}/\{file}";
+            String key = STR."prj1126/\{productId}/\{file}";
             DeleteObjectRequest dor = DeleteObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
@@ -157,7 +157,7 @@ public class ProductService {
 
         if (removeFiles != null) {
             for (String file : removeFiles) {
-                String key = STR."prj1114/\{product.getProductId()}/\{file}";
+                String key = STR."prj1126/\{product.getProductId()}/\{file}";
                 DeleteObjectRequest dor = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -186,7 +186,7 @@ public class ProductService {
                     isMain = true; // 해당 파일을 메인 이미지로 설정
                 }
 
-                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1126/\{product.getProductId()}/\{file.getOriginalFilename()}";
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
