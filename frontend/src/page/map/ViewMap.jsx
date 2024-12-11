@@ -13,15 +13,15 @@ import { Button } from "../../components/ui/button.jsx";
 function ViewMap() {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
-  const [markerPosition, setMarkerPosition] = useState({});
   const [locationName, setLocationName] = useState("");
-  const [markerOpen, setMarkerOpen] = useState(false);
+
   const [customOverlay, setCustomOverlay] = useState(null);
   const [customOverlayMarker, setCustomOverlayMarker] = useState([]);
   const [currCategory, setCurrCategory] = useState("");
   const [categorySearchResultList, setCategorySearchResultList] = useState([]);
   const [categoryImageNumber, setCategoryImageNumber] = useState(0);
   const [isoverlayOpen, setIsOverlayOpen] = useState(false);
+  const [markerOpen, setMarkerOpen] = useState(false);
 
   var contentNode = document.createElement("div");
 
@@ -57,8 +57,6 @@ function ViewMap() {
       setCategorySearchResultList([]);
     }
   }, [currCategory]);
-
-  // console.log(categorySearchResultList);
 
   function addEventHandle(target, type, callback) {
     if (target.addEventListener) {
@@ -154,15 +152,6 @@ function ViewMap() {
     return el;
   }
 
-  const handleMapClick = (_target, mouseEvent) => {
-    // mouseEvent 객체에서 latLng 가져오기
-    const clickedPosition = mouseEvent.latLng;
-    setMarkerPosition({
-      lat: clickedPosition.getLat(),
-      lng: clickedPosition.getLng(),
-    });
-  };
-
   function displayPagination(pagination) {
     var paginationEl = document.getElementById("pagination"),
       fragment = document.createDocumentFragment(),
@@ -218,30 +207,6 @@ function ViewMap() {
     console.log("끝");
   }
 
-  function displayPlaces(places) {
-    // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
-    // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
-    var order = document
-      .getElementById(currCategory)
-      .getAttribute("data-order");
-
-    for (var i = 0; i < places.length; i++) {
-      // 마커를 생성하고 지도에 표시합니다
-      var marker = addMarker(
-        new kakao.maps.LatLng(places[i].y, places[i].x),
-        order,
-      );
-
-      // 마커와 검색결과 항목을 클릭 했을 때
-      // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
-      (function (marker, place) {
-        kakao.maps.event.addListener(marker, "click", function () {
-          displayPlaceInfo(place);
-        });
-      })(marker, places[i]);
-    }
-  }
-
   // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
   function addMarker(position, order) {
     var imageSrc =
@@ -261,17 +226,17 @@ function ViewMap() {
     marker.setMap(map); // 지도 위에 마커를 표출합니다
     //  기존꺼
     customOverlayMarker.push(marker); // 배열에 생성된 마커를 추가
-
     return marker;
   }
 
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
+  //
   function displayPlaceInfo(place) {
     var open = !isoverlayOpen;
     setIsOverlayOpen(open);
 
-    console.log(isoverlayOpen);
-    console.log(open);
+    console.log("isoverlayOpen", isoverlayOpen);
+    console.log("open", open);
 
     if (open) {
       var content =
@@ -307,6 +272,7 @@ function ViewMap() {
     } else {
       customOverlay.setMap(null);
     }
+    console.log(isoverlayOpen);
   }
 
   // ㄴㄴ 그냥 마커
@@ -365,7 +331,6 @@ function ViewMap() {
           level={3}
           style={{ width: "100%", height: "800px" }}
           onCreate={setMap}
-          onClick={handleMapClick}
         >
           {categorySearchResultList.map((item, index) => {
             return (
@@ -396,7 +361,6 @@ function ViewMap() {
 
           {/*  검색 클릭시 */}
           {markers.map((item, index) => {
-            console.log(item);
             return <p key={index}>{item} </p>;
           })}
 
