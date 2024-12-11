@@ -11,12 +11,13 @@ public interface ChatMapper {
 
 
     @Insert("""
-              INSERT INTO chatroom (productName, writer, nickname,buyer)
+              INSERT INTO chatroom (productName, writer, nickname,buyer, product_id)
               VALUES (
                   #{productName},
                   #{writer},
                   (SELECT  distinct (nickname) FROM member WHERE member_id = #{writer}),
-                    #{buyer}
+                    #{buyer},
+                    #{productId}
               )
             """)
     @Options(useGeneratedKeys = true, keyProperty = "roomId")
@@ -84,7 +85,7 @@ public interface ChatMapper {
     @Select("""
                     select roomId
                     from chatroom
-                    where productName=#{productName} and writer=#{writer} and buyer=#{buyer}
+                    where product_id=#{productId} and writer=#{writer} and buyer=#{buyer}
             """)
     Integer findChatRoomId(ChatRoom chatRoom);
 

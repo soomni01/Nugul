@@ -9,7 +9,6 @@ create table chatroom
 ALTER TABLE chatroom
     CHANGE COLUMN sender nickname VARCHAR(50) NOT NULL DEFAULT 'Unknown';
 
-
 ALTER TABLE chatroom
     ADD CONSTRAINT writer
         FOREIGN KEY (writer) REFERENCES member (member_id);
@@ -20,16 +19,15 @@ alter table chatroom
 select *
 from chatroom;
 
-
-
 desc chatroom;
 
 ALTER TABLE chatroom
     ADD COLUMN writer_leave_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     ADD COLUMN buyer_leave_at  TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
 
-
-
-
-
-
+# 변경일 : 2024/12/11 14:37
+# chatroom 테이블 변경 product_id 컬럼 추가
+# 참조 제약사항은 걸지 않음.. 필요하면 수정해주세요.
+# 나중에 product_name이 필요 없다면 지우기... (혹시 몰라서 남겨둠)
+ALTER TABLE chatroom
+    ADD COLUMN product_id INT AFTER roomId;

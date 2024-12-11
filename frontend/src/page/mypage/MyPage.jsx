@@ -6,13 +6,18 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
-import InquiryList from "./InquiryList.jsx";
+import { InquiryList } from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
+import { Budget } from "./Budget.jsx";
 import { Review } from "./Review.jsx";
 
 export function MyPage() {
   const { id } = useContext(AuthenticationContext);
-  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
+  const [selectedInquiryId, setSelectedInquiryId] = useState(() => {
+    // 새로고침 시 로컬 스토리지에서 selectedInquiryId 불러오기
+    const storedId = localStorage.getItem("selectedInquiryId");
+    return storedId ? JSON.parse(storedId) : null;
+  });
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -25,6 +30,16 @@ export function MyPage() {
     // activeTab이 변경되면 localStorage에 저장
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
+
+  // selectedInquiryId가 변경될 때마다 로컬 스토리지에 저장
+  useEffect(() => {
+    if (selectedInquiryId !== null) {
+      localStorage.setItem(
+        "selectedInquiryId",
+        JSON.stringify(selectedInquiryId),
+      );
+    }
+  }, [selectedInquiryId]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -90,6 +105,13 @@ export function MyPage() {
             문의 내역
           </Button>
           <Button
+            variant={activeTab === "budget" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("budget")}
+          >
+            가계부
+          </Button>
+          <Button
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("review")}
@@ -118,6 +140,7 @@ export function MyPage() {
         {activeTab === "inquiryDetail" && (
           <InquiryView inquiryId={selectedInquiryId} />
         )}
+        {activeTab === "budget" && <Budget />}
         {activeTab === "review" && <Review />}
       </Box>
     </Flex>

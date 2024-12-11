@@ -19,35 +19,35 @@ public class InquiryService {
     @Autowired
     final InquiryMapper mapper;
 
-    // Inquiry 객체의 유효성을 검사하는 메소드
+    // 제목, 내용 있는지 확인
     public boolean validate(Inquiry inquiry) {
         boolean title = inquiry.getTitle().trim().length() > 0;
         boolean content = inquiry.getContent().trim().length() > 0;
         return title && content;
     }
 
-    // Inquiry 객체를 데이터베이스에 저장하여 새로운 게시글을 작성하는 메소드
+    // 문의하기 페이지에서 새로운 문의 등록
     public boolean add(Inquiry inquiry) {
         int cnt = mapper.insert(inquiry);
         return cnt == 1;
     }
 
-    // 특정 회원 ID로 Inquiry 객체를 조회하는 메소드
+    // 특정 memberId로 문의 조회
     public Inquiry get(int memberId) {
         return mapper.viewByMemberId(memberId);
     }
 
-    // 모든 문의 목록을 반환하는 메소드
+    // 모든 문의 목록을 반환 (관리자용)
     public List<Inquiry> list() {
         return mapper.InquiryAll();
     }
 
-    // 특정 ID의 문의를 반환하는 메소드
+    // 특정 문의를 조회
     public Inquiry getInquiry(int inquiryId) {
         return mapper.findById(inquiryId);
     }
 
-    // 댓글을 추가하는 메소드
+    // 문의에 댓글 추가
     public List<InquiryComment> addComment(InquiryComment inquirycomment, Authentication auth) {
         inquirycomment.setMemberId(auth.getName());
         System.out.println(inquirycomment);
@@ -55,18 +55,18 @@ public class InquiryService {
         return mapper.findCommentsByInquiryId(inquirycomment.getInquiryId());
     }
 
-    // 특정 문의 ID에 대한 댓글 목록을 반환하는 메소드
+    // 특정 문의의 모든 댓글을 조회
     public List<InquiryComment> getCommentByInquiryId(int inquiryId) {
         return mapper.findCommentsByInquiryId(inquiryId);
     }
 
-    // 댓글을 수정하는 메소드
+    // 댓글을 수정
     public boolean update(InquiryComment inquirycomment) {
         int cnt = mapper.update(inquirycomment);
         return cnt == 1;
     }
 
-    // 특정 댓글을 삭제하는 메소드
+    // 댓글을 삭제
     public boolean deleteComment(int commentId) {
         int cnt = mapper.deleteComment(commentId);
         return cnt == 1;

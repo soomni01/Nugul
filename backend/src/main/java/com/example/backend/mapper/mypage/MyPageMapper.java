@@ -1,11 +1,13 @@
 package com.example.backend.mapper.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MyPageMapper {
@@ -73,6 +75,7 @@ public interface MyPageMapper {
             </script>
             """)
     List<Review> getReviews(String id, String role);
+
     @Select("""
             SELECT i.inquiry_id,
                    i.title,
@@ -104,4 +107,49 @@ public interface MyPageMapper {
             WHERE i.inquiry_id = #{inquiryId}
             """)
     Inquiry inquiryListview(String memberId, int inquiryId);
+
+    @Select("""
+            SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
+            FROM inquiry_comment
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    List<InquiryComment> findCommentsByInquiryId(int inquiryId);
+
+    @Update("""
+            UPDATE inquiry
+            SET category = #{category},
+                title = #{title},
+                content = #{content}
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    int inquiryEdit(Inquiry inquiry);
+
+    @Delete("""
+            DELETE FROM inquiry
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    int deleteInquiry(int inquiryId);
+
+    @Select("""
+            SELECT inquiry_id, title, content, member_id, answer, inserted
+            FROM inquiry
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    Inquiry selectByInquiryId(int inquiryId);
+
+    @Select("""
+            SELECT DATE_FORMAT(date, '%Y-%m') AS month,
+            SUM(CASE WHEN buyer_id = #{memberId} THEN price ELSE 0 END) AS total_purchases
+            FROM purchased_record
+            GROUP BY DATE_FORMAT(date, '%Y-%m')
+            """)
+    List<Map<String, Object>> getMonthlyPurchases(String memberId);
+
+    @Select("""
+            SELECT DATE_FORMAT(created_at, '%Y-%m') AS month,
+                   SUM(CASE WHEN writer = #{memberId} THEN price ELSE 0 END) AS total_sales
+            FROM product
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+            """)
+    List<Map<String, Object>> getMonthlySales(String memberId);
 }

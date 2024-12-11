@@ -112,7 +112,7 @@ export function AdminInquiryList() {
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-        1:1 문의
+        문의 내역
       </Text>
       <Box mb={3}>
         <Flex justify="center" align="center" gap={4}>
