@@ -29,6 +29,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "../../components/ui/menu.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MyPage() {
   const { id, nickname } = useContext(AuthenticationContext);
@@ -56,7 +57,7 @@ export function MyPage() {
       .catch((error) => {
         console.log("평점 정보를 가져오는 데 실패했습니다.", error);
       });
-  }, [id, profileImage]);
+  }, [id]);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -157,7 +158,7 @@ export function MyPage() {
                 src={profileImage}
               />
             )}
-            <Float placement="bottom-end" mr={10} mb={3}>
+            <Float placement="bottom-center" mb={2}>
               <Box position="relative">
                 <MenuRoot>
                   <MenuTrigger asChild>
