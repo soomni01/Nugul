@@ -1,8 +1,8 @@
 package com.example.backend.service.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
-import com.example.backend.dto.member.Member;
 import com.example.backend.dto.inquiry.InquiryComment;
+import com.example.backend.dto.member.Member;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
@@ -204,6 +204,7 @@ public class MyPageService {
 
         int cnt = mapper.deleteProfileImage(memberId);
         return cnt == 1;
+    }
 
     // 특정 문의의 모든 댓글을 조회
     public List<InquiryComment> getCommentByInquiryId(int inquiryId) {

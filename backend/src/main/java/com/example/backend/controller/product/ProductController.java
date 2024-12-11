@@ -101,12 +101,12 @@ public class ProductController {
         }
     }
 
-  
-  //  프론트에서  admin 추가 
-  //관리자 삭제
+
+    //  프론트에서  admin 추가
+    //관리자 삭제  >> 확인
     @DeleteMapping("admin/delete/{productId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int id, Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> adminDeleteProduct(@PathVariable int id, Authentication authentication) {
         String successMessage;
         if (service.hasAccess(id, authentication)) {
             if (service.deleteProduct(id)) {
@@ -119,15 +119,20 @@ public class ProductController {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                 "text", successMessage)));
-             } else {
+            } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
                                 "text", "상품 삭제 중 문제가 발생하였습니다.")));
             }
-        } 
-      }
-              
-              
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "삭제 권한이 없습니다.")));
+        }
+
+    }
+
+
     // 상품 삭제하기
     @DeleteMapping("delete/{productId}")
     @PreAuthorize("isAuthenticated()")

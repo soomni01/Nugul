@@ -1,8 +1,8 @@
 package com.example.backend.controller.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
-import com.example.backend.dto.member.Member;
 import com.example.backend.dto.inquiry.InquiryComment;
+import com.example.backend.dto.member.Member;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.service.mypage.MyPageService;
@@ -86,7 +86,7 @@ public class MyPageController {
             @RequestBody Review review) {
         System.out.println(review);
 
-        if (service.validate(review)) {
+        if (service.validateReview(review)) {
             if (service.checkSeller(review.getSellerId())) {
                 if (service.addReview(review)) {
                     return ResponseEntity.ok()

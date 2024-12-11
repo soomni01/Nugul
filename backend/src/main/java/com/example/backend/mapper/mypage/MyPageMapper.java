@@ -95,10 +95,7 @@ public interface MyPageMapper {
                 </where>
             </script>
             """)
-
     List<Review> getReviews(String memberId, String role);
-
-
 
 
     @Select("""
@@ -134,7 +131,7 @@ public interface MyPageMapper {
     Inquiry inquiryListview(String memberId, int inquiryId);
 
     @Select("""
-
+            
             SELECT AVG(rating) AS average_rating
             FROM review
             WHERE seller_id = #{id};
@@ -169,6 +166,7 @@ public interface MyPageMapper {
             """)
     int deleteProfileImage(String memberId);
 
+    @Select("""
             SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
             FROM inquiry_comment
             WHERE inquiry_id = #{inquiryId}
