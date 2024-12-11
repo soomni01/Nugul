@@ -1,22 +1,24 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Box } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 import { CommentItem } from "./CommentItem.jsx";
+import { PaginationRoot, PaginationPrevTrigger, PaginationNextTrigger, PaginationItems } from "../ui/pagination.jsx";
 
-export function CommentList({ boardId }) {
-  const [commentList, setCommentList] = useState([]);
+export function CommentList({
+                                boardId,
+                                commentList,
+                                onDeleteClick,
+                                onEditClick,
+                            }) {
 
-  useEffect(() => {
-    axios(`/api/comment/commentList/${boardId}`)
-      .then((res) => res.data)
-      .then((data) => setCommentList(data));
-  }, []);
-
-  return (
-    <Box>
-      {commentList.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} />
-      ))}
-    </Box>
-  );
+    return (
+        <Box>
+            {commentList.map((comment) => (
+                <CommentItem
+                    key={comment.commentId}
+                    comment={comment}
+                    onDeleteClick={onDeleteClick}
+                    onEditClick={onEditClick}
+                />
+            ))}
+        </Box>
+    );
 }

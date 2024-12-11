@@ -26,3 +26,18 @@ show CREATE TABLE board;
   AUTO_INCREMENT = 52
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_uca1400_ai_ci*/
+
+SELECT
+    b.board_id,
+    b.title,
+    b.content,
+    b.writer AS memberId,  -- 실제 DB에서 memberId를 나타내는 writer
+    m.nickname AS writer,  -- 실제 작성자의 nickname
+    b.category,
+    b.created_at
+FROM
+    board b
+        JOIN
+    member m ON b.writer = m.nickname  -- board 테이블의 writer와 member 테이블의 nickname 연결
+WHERE
+    m.nickname = '이대로';

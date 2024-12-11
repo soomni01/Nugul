@@ -2,6 +2,7 @@ package com.example.backend.service.board;
 
 import com.example.backend.dto.board.Board;
 import com.example.backend.mapper.board.BoardMapper;
+import com.example.backend.mapper.comment.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
     final BoardMapper mapper;
+    final CommentMapper commentMapper;
 
-    public Map<String, Object> list(Integer page, String searchType, String searchKeyword) {
-
+    public Map<String, Object> list(Integer page, String searchType, String searchKeyword, String category) {
         Integer offset = (page - 1) * 10;
 
-        List<Board> list = mapper.selectPage(offset, searchType, searchKeyword);
+        List<Board> list = mapper.selectPage(offset, searchType, searchKeyword, category);
 
-        Integer count = mapper.countAll(searchType, searchKeyword);
-        return Map.of("list", list,
-                "count", count);
-
+        Integer count = mapper.countAll(searchType, searchKeyword, category);
+        return Map.of("list", list, "count", count);
     }
 
     public boolean boardAdd(Board board, Authentication authentication) {
@@ -47,6 +46,9 @@ public class BoardService {
     }
 
     public boolean remove(int boardId) {
+        // 댓글 지우기
+        commentMapper.deleteByBoardId(boardId);
+
         int cnt = mapper.deleteById(boardId);
         return cnt == 1;
     }
@@ -58,6 +60,15 @@ public class BoardService {
 
     public boolean hasAccess(int boardId, Authentication authentication) {
         Board board = mapper.selectById(boardId);
-        return board.getWriterId().equals(authentication.getName());
+        return board.getMemberId().equals(authentication.getName());
+    }
+
+    public List<Board> selectByMemberId(String memberId, Integer page) {
+        Integer offset = (page - 1) * 10;
+        return mapper.selectByMemberId(memberId,offset);
+    }
+
+    public int getBoardCountByMemberId(String memberId) {
+        return mapper.countBoardsByMemberId(memberId);
     }
 }

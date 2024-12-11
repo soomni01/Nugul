@@ -1,3 +1,4 @@
+
 import { useContext, useEffect, useRef, useState } from "react";
 import {
   Box,
@@ -24,6 +25,7 @@ import axios from "axios";
 import { Avatar } from "../../components/ui/avatar.jsx";
 import { TbMoodEdit } from "react-icons/tb";
 import { SkeletonCircle } from "../../components/ui/skeleton.jsx";
+import {BoardsAndComments} from "./BoardsAndComments.jsx";
 import {
   MenuContent,
   MenuItem,
@@ -31,6 +33,7 @@ import {
   MenuTrigger,
 } from "../../components/ui/menu.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+
 
 export function MyPage() {
   const { id, nickname } = useContext(AuthenticationContext);
@@ -264,6 +267,13 @@ export function MyPage() {
           >
             후기
           </Button>
+          <Button
+              variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
+              colorScheme="teal"
+              onClick={() => handleTabClick("boardsAndComments")}
+          >
+            내 게시물과 댓글
+          </Button>
         </VStack>
       </Box>
 
@@ -288,6 +298,7 @@ export function MyPage() {
         )}
         {activeTab === "budget" && <Budget />}
         {activeTab === "review" && <Review />}
+        {activeTab === "boardsAndComments" && <BoardsAndComments/>}
       </Box>
     </Flex>
   );

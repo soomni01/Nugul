@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -20,7 +21,32 @@ public class CommentService {
         mapper.insert(comment);
     }
 
-    public List<Comment> commentList(Integer boardId) {
-        return mapper.selectByBoardId(boardId);
+    public Map<String, Object> commentList(Integer boardId, Integer page) {
+        return Map.of("list", mapper.selectCommentPage(boardId,(page - 1) * 10),
+                "count", mapper.countByBoardId(boardId));
+    }
+
+    public boolean hashCode(Integer commentId, Authentication authentication) {
+        Comment comment = mapper.selectById(commentId);
+        return comment.getMemberId().equals(authentication.getName());
+    }
+
+    public boolean remove(Integer commentId) {
+        int cnt = mapper.deleteById(commentId);
+        return cnt == 1;
+    }
+
+    public boolean update(Comment comment) {
+        int cnt = mapper.update(comment);
+        return cnt == 1;
+    }
+
+    public List<Comment> getCommentsByMemberId(String memberId, Integer page) {
+        Integer offset = (page - 1) * 10;
+        return mapper.findCommentsByMemberId(memberId,offset);
+    }
+
+    public int getCommentCountByMemberId(String memberId) {
+        return mapper.countCommentsByMemberId(memberId);
     }
 }

@@ -1,20 +1,44 @@
 package com.example.backend.controller.board;
 
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.comment.Comment;
 import com.example.backend.service.board.BoardService;
+import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
 public class BoardController {
     final BoardService service;
+    final CommentService commentService;
+
+    @GetMapping("/boardsAndComments/{memberId}")
+    public Map<String, Object> getBoardsAndComments(@PathVariable String memberId,
+                                                    @RequestParam(value = "page", defaultValue = "1") Integer page) {
+
+        List<Board> boards = service.selectByMemberId(memberId,page); // 작성자의 게시물 가져오기
+        List<Comment> comments = commentService.getCommentsByMemberId(memberId,page); // 사용자가 작성한 댓글
+
+        int totalBoards = service.getBoardCountByMemberId(memberId);
+        int totalComments = commentService.getCommentCountByMemberId(memberId);
+        return Map.of(
+                "boards", boards,
+                "comments", comments,
+                "totalBoardCount", totalBoards,
+                "totalCommentCount", totalComments
+        );
+    }
 
     @PutMapping("boardUpdate")
     @PreAuthorize("isAuthenticated()")
@@ -75,28 +99,30 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> boardAdd(@RequestBody Board board,
                                                         Authentication authentication) {
-        if (service.validate(board)) {
-            if (service.boardAdd(board, authentication)) {
-                return ResponseEntity.ok()
-                        .body(Map.of("message", Map.of("type", "success",
-                                        "text", STR."\{board.getBoardId()}번 게시물이 등록되었습니다"),
-                                "data", board));
+            if (service.validate(board)) {
+                if (service.boardAdd(board, authentication)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                            "text", STR."\{board.getBoardId()}번 게시물이 등록되었습니다"),
+                                    "data", board));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "warning",
+                                    "text", "게시물 등록이 실패하였습니다.")));
+                }
             } else {
-                return ResponseEntity.internalServerError()
-                        .body(Map.of("message", Map.of("type", "warning",
-                                "text", "게시물 등록이 실패하였습니다.")));
+                return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
+                        "text", "제목이나 본문이 비어있을 수 없습니다.")));
             }
-        } else {
-            return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
-                    "text", "제목이나 본문이 비어있을 수 없습니다.")));
-        }
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                    @RequestParam(value = "searchType", defaultValue = "all") String searchType,
-                                    @RequestParam(value = "searchKeyword", defaultValue = "") String searchKeyword) {
+    public Map<String, Object> list(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "searchType", defaultValue = "all") String searchType,
+            @RequestParam(value = "searchKeyword", defaultValue = "") String searchKeyword,
+            @RequestParam(value = "category", defaultValue = "all") String category) {
 
-        return service.list(page, searchType, searchKeyword);
+        return service.list(page, searchType, searchKeyword, category);
     }
 }
