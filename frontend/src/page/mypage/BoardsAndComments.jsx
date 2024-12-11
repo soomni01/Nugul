@@ -21,6 +21,8 @@ export function BoardsAndComments() {
     const [loading, setLoading] = useState(true); // 로딩 상태
     const navigate = useNavigate();  // navigate 훅 사용
     const [searchParams, setSearchParams] = useSearchParams();
+    const [totalBoards, setTotalBoards] = useState(0);
+    const [totalComments, setTotalComments] = useState(0)
 
     // category 값에 해당하는 label을 반환하는 함수
     const getCategoryLabel = (value) => {
@@ -41,6 +43,8 @@ export function BoardsAndComments() {
             .then((response) => {
                 setBoards(response.data.boards); // 게시물 데이터 설정
                 setComments(response.data.comments); // 댓글 데이터 설정
+                setTotalBoards(response.data.totalBoardCount); // 총 게시물 수
+                setTotalComments(response.data.totalCommentCount); // 총 댓글 수
             })
             .catch((error) => {
                 console.error("데이터를 불러오는 중 오류가 발생했습니다:", error);
@@ -135,7 +139,7 @@ export function BoardsAndComments() {
                             </Text>
                         )}
                     </VStack>
-                    <PaginationRoot onPageChange={handlePageChange} count={1500} pageSize={10} page={page}>
+                    <PaginationRoot onPageChange={handlePageChange} count={totalBoards} pageSize={10} page={page}>
                         <HStack>
                             <PaginationPrevTrigger />
                             <PaginationItems />
@@ -196,7 +200,7 @@ export function BoardsAndComments() {
                     ) : (
                         <Text color="gray.500">작성한 댓글이 없습니다.</Text>
                     )}
-                    <PaginationRoot onPageChange={handlePageChange} count={1500} pageSize={10} page={page}>
+                    <PaginationRoot onPageChange={handlePageChange} count={totalComments} pageSize={10} page={page}>
                         <HStack>
                             <PaginationPrevTrigger />
                             <PaginationItems />
