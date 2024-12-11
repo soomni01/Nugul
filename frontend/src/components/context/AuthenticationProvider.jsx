@@ -37,7 +37,7 @@ function AuthenticationProvider({ children }) {
     axios
       .get("/api/myPage/image", { params: { memberId: decoded.sub } })
       .then((res) => {
-        console.log("서버 응답 데이터:", res.data); // 서버에서 받은 응답 확인
+        console.log("프로필 이미지 요청 성공"); // 서버에서 받은 응답 확인
         setProfileImage(res.data);
       })
       .catch((error) => {
