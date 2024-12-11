@@ -146,6 +146,7 @@ export function ProductView() {
     axios
       .post("/api/chat/create", {
         productName: productName,
+        productId: productId,
         writer: writer,
         nickname: nickname,
         buyer: buyer,

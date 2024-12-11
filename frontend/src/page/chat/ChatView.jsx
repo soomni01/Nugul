@@ -236,7 +236,7 @@ export function ChatView({ chatRoomId, onDelete }) {
           </Box>
           <Flex>
             <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
-            <Payment />
+            <Payment chatRoom={chatRoom} />
           </Flex>
         </Box>
         <Box

@@ -4,7 +4,7 @@ import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { Button } from "@chakra-ui/react";
 
-const Payment = () => {
+const Payment = ({ chatRoom }) => {
   const [product, setProduct] = useState({});
   const { member_id, nickname } = useContext(AuthenticationContext);
 
@@ -22,7 +22,12 @@ const Payment = () => {
     };
   }, []);
 
-  const requestPay = () => {
+  const requestPay = async () => {
+    // 상품 정보 가져오기
+    const productId = chatRoom.productId;
+    const res = await axios.get(`/api/product/view/${productId}`);
+    const product = res.data;
+
     const { IMP } = window;
     IMP.init("imp27532056");
 
@@ -32,7 +37,7 @@ const Payment = () => {
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
         merchant_uid: new Date().getTime(), // 고유 거래 ID
-        name: product.product_name, // 서버에서 가져온 상품명
+        name: product.productName, // 서버에서 가져온 상품명
         amount: product.price, // 서버에서 가져온 가격
         buyer_email: member_id, // 로그인된 사용자 이메일
         buyer_name: nickname, // 로그인된 사용자 닉네임
