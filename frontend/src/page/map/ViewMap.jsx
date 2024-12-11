@@ -42,8 +42,10 @@ function ViewMap() {
       const ps = new kakao.maps.services.Places(map);
       // 커스텀 오버레이를 숨깁니다
 
-      // customOverlay.setMap(null);
-
+      if (isoverlayOpen === true) {
+        setIsOverlayOpen(false);
+        customOverlay.setMap(null);
+      }
       // removeMarker();
 
       ps.categorySearch(
@@ -315,7 +317,13 @@ function ViewMap() {
 
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
   function displayPlaceInfo(place) {
-    if (isoverlayOpen === true) {
+    var open = !isoverlayOpen;
+    setIsOverlayOpen(open);
+
+    console.log(isoverlayOpen);
+    console.log(open);
+
+    if (open) {
       var content =
         '<div class="placeinfo">' +
         '   <a class="title" href="' +
@@ -408,7 +416,6 @@ function ViewMap() {
           style={{ width: "100%", height: "800px" }}
           onCreate={setMap}
           onClick={handleMapClick}
-          // onIdle={searchCategoryPlaces}
         >
           {categorySearchResultList.map((item, index) => {
             return (
@@ -426,8 +433,6 @@ function ViewMap() {
                     },
                   }}
                   onClick={() => {
-                    var open = isoverlayOpen === true ? false : true;
-                    setIsOverlayOpen(open);
                     displayPlaceInfo(item);
                   }}
                 ></MapMarker>
@@ -438,29 +443,6 @@ function ViewMap() {
             onCreate={setCustomOverlay}
             position={{ lat: 33.450701, lng: 126.570667 }}
           ></CustomOverlayMap>
-          ;{/*{markers.map((marker) => (*/}
-          {/*  <MapMarker*/}
-          {/*    key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}*/}
-          {/*    position={marker.position}*/}
-          {/*    // onClick={() => setInfo(marker)}*/}
-          {/*    onMouseOver={*/}
-          {/*      // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다*/}
-          {/*      () => {*/}
-          {/*        setInfo(marker);*/}
-          {/*        setMarkerOpen(true);*/}
-          {/*      }*/}
-          {/*    }*/}
-          {/*    // 마커에 마우스아웃 이벤트를 등록합니다*/}
-          {/*    onMouseOut={*/}
-          {/*      // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다*/}
-          {/*      () => setMarkerOpen(false)*/}
-          {/*    }*/}
-          {/*  >*/}
-          {/*    {markerOpen && info && info.content === marker.content && (*/}
-          {/*      <div style={{ color: "#5e5959" }}>{marker.content}</div>*/}
-          {/*    )}*/}
-          {/*  </MapMarker>*/}
-          {/*))}*/}
           <ZoomControl />
         </Map>
         <ul id="category">
@@ -520,7 +502,6 @@ function ViewMap() {
           </li>
         </ul>
       </Stack>
-      {currCategory}
     </Box>
   );
 }
