@@ -234,45 +234,55 @@ function ViewMap() {
   function displayPlaceInfo(place) {
     var open = !isoverlayOpen;
     setIsOverlayOpen(open);
+    console.log(place);
 
     console.log("isoverlayOpen", isoverlayOpen);
     console.log("open", open);
 
+    var PlaceInfo;
     if (open) {
-      var content =
-        '<div class="placeinfo">' +
-        '   <a class="title" href="' +
-        place.place_url +
-        '" target="_blank" title="' +
-        place.place_name +
-        '">' +
-        place.place_name +
-        "</a>";
+      PlaceInfo = makePlaceInfo(place);
 
-      content +=
-        '    <span title="' +
-        place.address_name +
-        '">' +
-        place.address_name +
-        "</span>";
+      <CustomOverlayMap
+        onCreate={setCustomOverlay}
+        position={{ lat: place.y, lng: place.x }}
+      >
+        {PlaceInfo}
+      </CustomOverlayMap>;
 
-      content +=
-        '    <span class="tel">' +
-        place.phone +
-        "</span>" +
-        "</div>" +
-        '<div class="after"></div>';
-
-      contentNode.innerHTML = content;
-
-      // customovelay  위치 및,  map 설정
-      customOverlay.setContent(contentNode);
-      customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
       customOverlay.setMap(map);
+      // customovelay  위치 및,  map 설정
+      // customOverlay.setContent();
+      // customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+      // customOverlay.setMap(map);
     } else {
-      customOverlay.setMap(null);
+      // customOverlay.setMap(null);
     }
     console.log(isoverlayOpen);
+  }
+
+  function makePlaceInfo(place) {
+    console.log("makePlaceInfo", place);
+    return (
+      <Box className={"placeinfo_wrap"}>
+        <Box className="placeinfo">
+          <a
+            className="title"
+            href={place.place_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={place.place_name}
+          >
+            {place.place_name}
+          </a>
+
+          <span title={place.address_name}>{place.address_name}</span>
+
+          <span className="tel">{place.phone}</span>
+          <div className="after"></div>
+        </Box>
+      </Box>
+    );
   }
 
   // ㄴㄴ 그냥 마커
@@ -354,10 +364,10 @@ function ViewMap() {
               </Box>
             );
           })}
-          <CustomOverlayMap
-            onCreate={setCustomOverlay}
-            position={{ lat: 33.450701, lng: 126.570667 }}
-          ></CustomOverlayMap>
+          {/*<CustomOverlayMap*/}
+          {/*  onCreate={setCustomOverlay}*/}
+          {/*  position={{ lat: 33.450701, lng: 126.570667 }}*/}
+          {/*></CustomOverlayMap>*/}
 
           {/*  검색 클릭시 */}
           {markers.map((item, index) => {
