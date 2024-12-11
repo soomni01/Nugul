@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Flex } from "@chakra-ui/react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { useContext } from "react";
+import { Avatar } from "../ui/avatar.jsx";
 
 function NavbarItem({ children, ...rest }) {
   return (
@@ -24,8 +25,7 @@ function NavbarItem({ children, ...rest }) {
 export function Navbar() {
   const navigate = useNavigate();
 
-  const { id, nickname } = useContext(AuthenticationContext);
-  const name = nickname;
+  const { id, nickname, profileImage } = useContext(AuthenticationContext);
 
   const handleNavigation = (path) => {
     // activeTab을 삭제하여 초기화
@@ -51,10 +51,17 @@ export function Navbar() {
       <NavbarItem onClick={() => handleNavigation("/inquiry")}>
         문의하기
       </NavbarItem>
-      <NavbarItem>{name}</NavbarItem>
-      <NavbarItem onClick={() => handleNavigation(`/myPage`)}>
-        마이페이지
+      <NavbarItem onClick={() => handleNavigation("/myPage")} p={0} mt="10px">
+        <Avatar
+          size="2xl"
+          src={profileImage}
+          name={nickname}
+          variant="outline"
+        />
       </NavbarItem>
+      {/*<NavbarItem onClick={() => handleNavigation(`/myPage`)}>*/}
+      {/*  마이페이지*/}
+      {/*</NavbarItem>*/}
 
       <NavbarItem
         onClick={() => {

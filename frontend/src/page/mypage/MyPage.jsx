@@ -34,7 +34,7 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MyPage() {
-  const { id, nickname, updateProfileImage } = useContext(
+  const { id, nickname, profileImage, updateProfileImage } = useContext(
     AuthenticationContext,
   );
   const [rating, setRating] = useState(0.0);
@@ -120,7 +120,7 @@ export function MyPage() {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-          updateProfileImage(profileImageUrl);
+          updateProfileImage(previewUrl);
           toaster.create({
             description: res.data.message.text,
             type: res.data.message.type,
