@@ -5,7 +5,7 @@ import {Spinner, Box, Heading, VStack, Text, Flex, Badge, Tabs, HStack} from "@c
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { FaCommentDots } from "react-icons/fa";
-import { BoardCategories } from "../../components/board/BoardCategories.jsx";
+import { BoardCategories } from "../../components/board/BoardCategoryContainer.jsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {
     PaginationItems,

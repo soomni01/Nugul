@@ -6,7 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { BoardCategories } from "../../components/board/BoardCategories.jsx";
+import {BoardCategories} from "../../components/board/BoardCategoryContainer.jsx";
 
 export function BoardAdd() {
   const { isAuthenticated, logout } = useContext(AuthenticationContext);

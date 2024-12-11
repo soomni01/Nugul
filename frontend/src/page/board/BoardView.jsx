@@ -17,7 +17,7 @@ import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
-import { BoardCategories } from "../../components/board/BoardCategories.jsx";
+import { BoardCategories } from "../../components/board/BoardCategoryContainer.jsx";
 import { BoardCategoryContainer } from "../../components/board/BoardCategoryContainer.jsx";
 
 export function BoardView() {

@@ -12,7 +12,7 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { FaCommentDots } from "react-icons/fa";
-import { BoardCategories } from "../../components/board/BoardCategories.jsx";
+import { BoardCategories } from "../../components/board/BoardCategoryContainer.jsx";
 import { BoardCategoryContainer } from "../../components/board/BoardCategoryContainer.jsx";
 
 export function BoardList() {
