@@ -148,7 +148,7 @@ public class MyPageService {
 
         // 삭제할 상품 서버 경로 설정
         String deleteProfileImage = mapper.selectProfileImage(memberId);
-        String deleteObjectKey = STR."prj1114/profile/\{memberId}/\{deleteProfileImage}";
+        String deleteObjectKey = STR."prj1126/profile/\{memberId}/\{deleteProfileImage}";
 
         // 기존 이미지가 있다면 삭제
         if (deleteProfileImage != null) {
@@ -166,7 +166,7 @@ public class MyPageService {
         }
 
         // 추가할 상품 서버 경로 설정
-        String objectKey = STR."prj1114/profile/\{memberId}/\{profileImage.getOriginalFilename()}";
+        String objectKey = STR."prj1126/profile/\{memberId}/\{profileImage.getOriginalFilename()}";
 
         // S3에 업로드할 경로 생성
         PutObjectRequest por = PutObjectRequest.builder()
@@ -193,7 +193,7 @@ public class MyPageService {
     public boolean deleteProfileImage(String memberId, String profileImage) {
         String fileName = mapper.selectProfileImage(memberId);
 
-        String deleteObjectKey = STR."prj1114/profile/\{memberId}/\{fileName}";
+        String deleteObjectKey = STR."prj1126/profile/\{memberId}/\{fileName}";
         DeleteObjectRequest dor = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(deleteObjectKey)
