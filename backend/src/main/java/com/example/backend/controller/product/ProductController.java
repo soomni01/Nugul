@@ -78,14 +78,19 @@ public class ProductController {
     // 상품 삭제하기
     @DeleteMapping("delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> deleteProduct(
-            @PathVariable int id,
-            Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int id, Authentication authentication) {
+        String successMessage;
         if (service.hasAccess(id, authentication)) {
             if (service.deleteProduct(id)) {
+                // 관리자 권한일 때 메시지 설정
+                if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                    successMessage = "관리자 권한으로 상품이 삭제되었습니다.";
+                } else {
+                    successMessage = String.format("%d번 상품이 삭제되었습니다.", id);
+                }
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
-                                "text", STR."\{id}번 상품이 삭제되었습니다.")));
+                                "text", successMessage)));
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",

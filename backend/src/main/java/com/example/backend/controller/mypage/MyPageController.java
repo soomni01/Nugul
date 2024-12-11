@@ -1,6 +1,7 @@
 package com.example.backend.controller.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.service.mypage.MyPageService;
@@ -33,7 +34,7 @@ public class MyPageController {
     public ResponseEntity<Map<String, Object>> addReview(
             @RequestBody Review review) {
         System.out.println(review);
-        if (service.validate(review)) {
+        if (service.validateReview(review)) {
             if (service.addReview(review)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
@@ -87,5 +88,77 @@ public class MyPageController {
     public Inquiry view(@RequestParam int inquiryId, Authentication auth) {
         String memberId = auth.getName();
         return service.getview(memberId, inquiryId);
+    }
+
+    // 특정 문의의 모든 댓글을 조회
+    @GetMapping("/comments/{inquiryId}")
+    public List<InquiryComment> getComments(@PathVariable int inquiryId) {
+        return service.getCommentByInquiryId(inquiryId);
+    }
+
+    // 상세 문의 보기에서 수정
+    @PutMapping("edit")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> editInquiry(@RequestBody Inquiry inquiry, Authentication auth) {
+        if (service.hasAccess(inquiry.getInquiryId(), auth)) {
+            if (service.validateInquiry(inquiry)) {
+                if (service.editInquiry(inquiry)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                    "text", inquiry.getInquiryId() + "번 문의글이 수정되었습니다.")));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "error",
+                                    "text", inquiry.getInquiryId() + "번 문의글이 수정되지 않았습니다.")));
+                }
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", Map.of("type", "warning",
+                                "text", "제목이나 본문이 비어있을 수 없습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "수정 권한이 없습니다.")));
+        }
+    }
+
+    // 상세 문의 보기에서 삭제
+    @DeleteMapping("delete/{inquiryId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteInquiry(@PathVariable int inquiryId, Authentication auth) {
+        if (service.hasAccess(inquiryId, auth)) {
+            if (service.deleteInquiry(inquiryId)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", STR."\{inquiryId}번 문의글이 삭제되었습니다.")));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "문의글 삭제 중 문제가 발생하였습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "삭제 권한이 없습니다.")));
+        }
+    }
+
+    // 월별 구매 내역 합계 가져오기
+    @GetMapping("monthly-purchases")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlyPurchases(Authentication auth) {
+        String memberId = auth.getName();
+        List<Map<String, Object>> monthlyPurchases = service.getMonthlyPurchases(memberId);
+        return ResponseEntity.ok(monthlyPurchases);
+    }
+
+    // 월별 판매 내역 합계 가져오기
+    @GetMapping("monthly-sales")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlySales(Authentication auth) {
+        String memberId = auth.getName();
+        List<Map<String, Object>> monthlySales = service.getMonthlySales(memberId);
+        return ResponseEntity.ok(monthlySales);
     }
 }

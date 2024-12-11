@@ -101,7 +101,10 @@ public class ProductService {
     // 상품 판매자와 로그인한 사용자가 같은지 확인
     public boolean hasAccess(int id, Authentication authentication) {
         Product product = mapper.selectById(id);
-
+        // 관리자인 경우 권한을 허용 (SCOPE_admin을 확인)
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("SCOPE_admin"))) {
+            return true;
+        }
         return product.getWriter().equals(authentication.getName());
     }
 

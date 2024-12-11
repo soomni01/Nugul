@@ -57,6 +57,23 @@ export default function AdminLayout() {
         </Text>
         <VStack align="start" spacing={6}>
           <Button
+            onClick={() => navigate("/main")}
+            variant={location.pathname === "/main" ? "solid" : "ghost"}
+            color={location.pathname === "/main" ? "white" : "black"} // 선택된 버튼 색상 변경
+            bg={location.pathname === "/main" ? "#A6A6A6" : "transparent"}
+            _hover={{
+              bg: location.pathname === "/main" ? "#A6A6A6" : "#A6A6A6",
+            }}
+            justifyContent="flex-start"
+            w="100%"
+            fontSize="17px"
+          >
+            <Flex align="center" gap={2}>
+              <Image src="/image/Home.png" alt="Home Icon" boxSize="20px" />
+              <Text>홈페이지</Text>
+            </Flex>
+          </Button>
+          <Button
             onClick={() => navigate("/admin/dashboard")}
             variant={
               location.pathname === "/admin/dashboard" ? "solid" : "ghost"
@@ -107,26 +124,6 @@ export default function AdminLayout() {
             </Flex>
           </Button>
           <Button
-            onClick={() => navigate("/admin/reports")}
-            variant={location.pathname === "/admin/reports" ? "solid" : "ghost"}
-            color={location.pathname === "/admin/reports" ? "white" : "black"}
-            bg={
-              location.pathname === "/admin/reports" ? "#A6A6A6" : "transparent"
-            }
-            _hover={{
-              bg:
-                location.pathname === "/admin/reports" ? "#A6A6A6" : "#A6A6A6",
-            }}
-            justifyContent="flex-start"
-            w="100%"
-            fontSize="17px"
-          >
-            <Flex align="center" gap={2}>
-              <Image src="/image/Report.png" alt="Report Icon" boxSize="20px" />
-              <Text>신고 관리</Text>
-            </Flex>
-          </Button>
-          <Button
             onClick={() => navigate("/admin/inquiries")}
             variant={
               location.pathname === "/admin/inquiries" ? "solid" : "ghost"
@@ -153,7 +150,7 @@ export default function AdminLayout() {
                 alt="Report Icon"
                 boxSize="20px"
               />
-              <Text>1:1 문의</Text>
+              <Text>문의 내역</Text>
             </Flex>
           </Button>
         </VStack>

@@ -22,7 +22,6 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.member_id,
                    i.nickname,
                    i.inserted,
                    EXISTS (
@@ -39,9 +38,8 @@ public interface InquiryMapper {
             SELECT i.inquiry_id,
                    i.title,
                    i.category,
-                   i.member_id,
-                   i.inserted,
                    i.nickname,
+                   i.inserted,
                    EXISTS (
                        SELECT 1
                        FROM inquiry_comment ic
@@ -57,7 +55,6 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.member_id,
                    i.nickname,
                    i.inserted
             FROM inquiry i
