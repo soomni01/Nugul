@@ -89,28 +89,28 @@ function ViewMap() {
         // 검색 버튼 클릭시 , 기존창 지워야 함
         removeAllChildNods(listEl);
 
-        var addmarker = [];
-        for (var i = 0; i < data.length; i++) {
-          // @ts-ignore
+        useEffect(() => {
+          for (var i = 0; i < data.length; i++) {
+            // @ts-ignore
 
-          var newMarker = (
-            <MapMarker key={i} position={{ lat: data[i].y, lng: data[i].x }}>
-              {data[i].place_name}
-            </MapMarker>
-          );
-          addmarker.push(newMarker);
-          //Todo  > 마커 부분 다 고쳐야 돌아갈듯 ?
-          setMarkers((prev) => [...addmarker, newMarker]);
-          console.log(newMarker);
+            var newMarker = (
+              <MapMarker key={i} position={{ lat: data[i].y, lng: data[i].x }}>
+                {data[i].place_name}
+              </MapMarker>
+            );
 
-          //데이터 리스트에 집어 넣는 함수
-          var itemEl = getItem(i, data[i]);
+            //Todo  > 마커 부분 다 고쳐야 돌아갈듯 ?
+            setMarkers((prev) => [...prev, ...newMarker]);
 
-          // @ts-ignore
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+            //데이터 리스트에 집어 넣는 함수
+            var itemEl = getItem(i, data[i]);
 
-          fragment.appendChild(itemEl);
-        }
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+
+            fragment.appendChild(itemEl);
+          }
+        }, [data]);
 
         listEl.appendChild(fragment);
 
