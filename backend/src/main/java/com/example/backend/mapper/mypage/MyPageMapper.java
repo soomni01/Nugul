@@ -131,7 +131,6 @@ public interface MyPageMapper {
     Inquiry inquiryListview(String memberId, int inquiryId);
 
     @Select("""
-            
             SELECT AVG(rating) AS average_rating
             FROM review
             WHERE seller_id = #{id};
@@ -140,7 +139,7 @@ public interface MyPageMapper {
 
     @Select("""
             SELECT profile_image
-            FROM member 
+            FROM member
             WHERE member_id = #{id}
             """)
     String getProfileImage(String memberId);
