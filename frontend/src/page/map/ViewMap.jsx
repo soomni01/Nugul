@@ -88,9 +88,8 @@ function ViewMap() {
             <MapMarker
               key={item.id || i}
               position={{ lat: item.y, lng: item.x }}
-            >
-              {item.place_name}
-            </MapMarker>
+              onClick={() => displayPlaceInfo(item)}
+            ></MapMarker>
           );
         });
 
