@@ -185,9 +185,9 @@ public interface ProductMapper {
     @Insert("""
             Insert purchased_record
             (buyer_id, product_id, seller_id, product_name, location_name, price)
-            VALUES (#{buyerId}, #{id}, #{writer}, #{productName}, #{locationName}, #{price})
+            VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price})
             """)
-    int insertTranscation(int id, String buyerId, String writer, String productName, String locationName, Integer price);
+    int insertTranscation(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
 
     @Select("""
             SELECT name

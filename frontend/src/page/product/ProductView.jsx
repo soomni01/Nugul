@@ -140,6 +140,7 @@ export function ProductView() {
     // 추가
   };
 
+  // 성공적으로 거래할 경우(채팅방에서 거래완료 버튼 누르면 실행)
   const handleSuccessTransaction = () => {
     axios
       .post(`/api/product/transaction/${productId}`, {})

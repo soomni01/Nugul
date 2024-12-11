@@ -20,15 +20,15 @@ public class ProductController {
     final ProductService service;
 
     // 거래 완료
-    @PostMapping("transaction/{id}")
+    @PostMapping("transaction/{productId}")
     public ResponseEntity<Map<String, Object>> transaction(
-            @PathVariable int id,
+            @PathVariable int productId,
             Authentication authentication) {
-        if (service.hasAccess(id, authentication)) {
-            if (service.transaction(id)) {
+        if (service.hasAccess(productId, authentication)) {
+            if (service.transaction(productId)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
-                                "text", STR."\{id}번 상품 거래가 완료되었습니다.")));
+                                "text", STR."\{productId}번 상품 거래가 완료되었습니다.")));
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
