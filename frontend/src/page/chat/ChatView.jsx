@@ -17,6 +17,7 @@ import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
+import Payment from "../../components/chat/Payment.jsx";
 
 export function ChatView({ chatRoomId, onDelete }) {
   const scrollRef = useRef(null);
@@ -233,9 +234,11 @@ export function ChatView({ chatRoomId, onDelete }) {
             <Heading> 판매자 닉네임: {chatRoom.nickname} </Heading>
             상품명: {chatRoom.productName}
           </Box>
-          <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
+          <Flex>
+            <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
+            <Payment chatRoom={chatRoom} />
+          </Flex>
         </Box>
-
         <Box
           h={"85%"}
           overflowY={"auto"}

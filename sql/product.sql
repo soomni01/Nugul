@@ -60,12 +60,19 @@ ALTER TABLE product
 DESC product;
 
 SELECT *
-FROM product
-WHERE writer = 'sm@naver.com';
-
-SELECT *
 FROM product;
 
-SELECT *
-FROM product
-WHERE product_id IN (SELECT product_id FROM purchased_record WHERE buyer_id = 'sm@naver.com');
+INSERT INTO product (product_name, price, description, writer, category, status, created_at, pay, latitude, longitude,
+                     location_name)
+VALUES ('상품5', 5000, 'This is an example product description.', 'coogie@naver.com', 'food', 'For Sale',
+        '2024-10-01', 'sell', 37.555186410465275, 126.93689475840084, '신촌');
+
+INSERT INTO product (product_name, price, description, writer, category, status, created_at, pay, latitude, longitude,
+                     location_name)
+VALUES ('상품6', 6000, 'This is an example product description.', 'coogie@naver.com', 'beauty', 'For Sale',
+        '2024-10-02', 'sell', 37.555186410465275, 126.93689475840084, '신촌');
+
+INSERT INTO product (product_name, price, description, writer, category, status, created_at, pay, latitude, longitude,
+                     location_name)
+VALUES ('상품7', 7000, 'This is an example product description.', 'coogie@naver.com', 'coupon', 'For Sale',
+        '2024-12-08', 'sell', 37.555186410465275, 126.93689475840084, '신촌');

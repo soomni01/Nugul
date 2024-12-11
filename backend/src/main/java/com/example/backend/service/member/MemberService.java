@@ -65,25 +65,13 @@ public class MemberService {
 
         int cnt = 0;
 
-        // 관리자 권한 확인 후 회원 삭제
-//        if (isAdmin(auth)) {
-//            // 외래 키 체크 비활성화 (데이터 삭제 시 제약조건 무시)
-//            jdbcTemplate.update("SET foreign_key_checks = 0");
-
-        // 관련된 상품 및 파일 삭제 로직 (주석처리됨)
-//            System.out.println("Deleting products for member ID: " + member.getMemberId());
-//            List<Integer> productIds = productMapper.selectProductIdsByMemberId(member.getMemberId());
-//            for (int productId : productIds) {
-//                productMapper.deleteFileByProductId(productId);
-//                productMapper.deleteById(productId);
-//            }
-
         // 회원 정보 삭제
         Member db = mapper.selectById(member.getMemberId());
         if (db != null) {
 
             // 쓴 상품 목록 얻기
             List<Integer> products = productMapper.getProductId(member.getMemberId());
+
             // 각 상품 지우기
             for (Integer productId : products) {
                 productMapper.deleteById(productId);
@@ -101,13 +89,7 @@ public class MemberService {
 //                mypageMapper.deletePurchased(productId);
 //            }
             cnt = mapper.deleteById(member.getMemberId());
-
         }
-
-//            // 외래 키 체크 활성화
-//            jdbcTemplate.update("SET foreign_key_checks = 1");
-//        }
-
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
         return cnt == 1;
     }
@@ -146,14 +128,6 @@ public class MemberService {
             }
         }
         return null;
-    }
-
-    // 관리자 권한 확인 메소드
-    public boolean isAdmin(Authentication auth) {
-        return auth.getAuthorities()
-                .stream()
-                .map(a -> a.toString())
-                .anyMatch(s -> s.equals("SCOPE_admin"));
     }
 
     // 입력된 비밀번호가 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Flex, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { Checkbox } from "../../components/ui/checkbox.jsx";
 
-function AdminDashBoard() {
+export function AdminDashBoard() {
   const boxWidth = useBreakpointValue({
     base: "100%",
     sm: "80%",
@@ -113,5 +113,3 @@ function AdminDashBoard() {
     </Flex>
   );
 }
-
-export default AdminDashBoard;

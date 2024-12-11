@@ -43,7 +43,18 @@ export function ProductView() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { hasAccess, isAdmin, id } = useContext(AuthenticationContext);
+
+  const { hasAccess, isAuthenticated, isAdmin, id } = useContext(
+    AuthenticationContext,
+  );
+
+  useEffect(() => {
+    // id >productId
+    axios
+      .get(`/api/product/view/${productId}`)
+      .then((res) => setProduct(res.data));
+  }, []);
+
 
   useEffect(() => {
     if (product && product.latitude && product.longitude) {
@@ -95,7 +106,14 @@ export function ProductView() {
           type: data.message.type,
           description: data.message.text,
         });
-        navigate("/product/list");
+
+        // 관리자가 상품을 삭제한 경우, 해당 회원 상세 페이지로 이동
+        if (isAdmin) {
+          navigate(`/admin/members/${product.writer}/detail`);
+        } else {
+          // 일반 사용자일 경우 상품 목록 페이지로 이동
+          navigate("/product/list");
+        }
       })
       .catch((e) => {
         const data = e.response.data;
@@ -128,6 +146,7 @@ export function ProductView() {
     axios
       .post("/api/chat/create", {
         productName: productName,
+        productId: productId,
         writer: writer,
         nickname: nickname,
         buyer: buyer,
@@ -271,7 +290,18 @@ export function ProductView() {
                     <DialogTitle>삭제 확인</DialogTitle>
                   </DialogHeader>
                   <DialogBody>
-                    <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
+                    {/* 관리자일 때만 표시되는 메시지 */}
+                    {isAdmin && (
+                      <Box color="red.500" fontSize="sm" mb={2}>
+                        관리자 권한으로 삭제하시겠습니까?
+                      </Box>
+                    )}
+                    {/* 관리자일 때는 일반 메시지를 표시하지 않도록 조건 추가 */}
+                    {!isAdmin && (
+                      <p>
+                        등록한 {product.productId}번 상품을 삭제하시겠습니까?
+                      </p>
+                    )}
                   </DialogBody>
                   <DialogFooter>
                     <DialogActionTrigger>

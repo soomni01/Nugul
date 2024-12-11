@@ -2,6 +2,7 @@ package com.example.backend.service.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.member.Member;
+import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.mapper.mypage.MyPageMapper;
@@ -82,7 +83,7 @@ public class MyPageService {
     }
 
     // 후기 내용과 별점이 있는지 확인
-    public boolean validate(Review review) {
+    public boolean validateReview(Review review) {
         boolean reviewText = review.getReviewText().trim().length() > 0;
         return reviewText;
     }
@@ -203,5 +204,44 @@ public class MyPageService {
 
         int cnt = mapper.deleteProfileImage(memberId);
         return cnt == 1;
+
+    // 특정 문의의 모든 댓글을 조회
+    public List<InquiryComment> getCommentByInquiryId(int inquiryId) {
+        return mapper.findCommentsByInquiryId(inquiryId);
+    }
+
+    // 상세 문의 보기에서 수정
+    public boolean editInquiry(Inquiry inquiry) {
+        int cnt = mapper.inquiryEdit(inquiry);
+        return cnt == 1;
+    }
+
+    // 상세 문의 보기에서 삭제
+    public boolean deleteInquiry(int inquiryId) {
+        int cnt = mapper.deleteInquiry(inquiryId);
+        return cnt == 1;
+    }
+
+    // 주어진 inquiryId에 해당하는 문의가 존재하고, 해당 문의의 작성자 ID가 현재 인증된 사용자와 일치하는지 확인
+    public boolean hasAccess(int inquiryId, Authentication auth) {
+        Inquiry inquiry = mapper.selectByInquiryId(inquiryId);
+        return inquiry != null && inquiry.getMemberId().equals(auth.getName());
+    }
+
+    // 제목과 내용이 있는지 확인
+    public boolean validateInquiry(Inquiry inquiry) {
+        boolean title = inquiry.getTitle().trim().length() > 0;
+        boolean content = inquiry.getContent().trim().length() > 0;
+        return title && content;
+    }
+
+    // 월별 구매 내역 합계 가져오기
+    public List<Map<String, Object>> getMonthlyPurchases(String memberId) {
+        return mapper.getMonthlyPurchases(memberId);
+    }
+
+    // 월별 판매 내역 합계 가져오기
+    public List<Map<String, Object>> getMonthlySales(String memberId) {
+        return mapper.getMonthlySales(memberId);
     }
 }

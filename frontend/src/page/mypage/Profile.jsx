@@ -21,7 +21,7 @@ export function Profile({ onEditClick }) {
   const [member, setMember] = useState(null);
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 

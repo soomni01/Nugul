@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class ChatRoom {
     private int roomId;
+    private int productId;
     private String writer;
     private String productName;
     private String nickname;

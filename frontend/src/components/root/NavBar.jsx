@@ -46,7 +46,7 @@ export function Navbar() {
       <NavbarItem onClick={() => handleNavigation("/board/list")}>
         게시판
       </NavbarItem>
-      <NavbarItem>지도</NavbarItem>
+      <NavbarItem onClick={() => handleNavigation("/map")}>지도</NavbarItem>
       <NavbarItem onClick={() => handleNavigation("/chat")}>채팅</NavbarItem>
       <NavbarItem onClick={() => handleNavigation("/inquiry")}>
         문의하기

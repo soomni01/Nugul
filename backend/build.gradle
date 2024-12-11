@@ -21,13 +21,14 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' } // JitPack 저장소 추가
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//websocket
+    //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.webjars:sockjs-client:1.1.2'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
@@ -39,8 +40,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     implementation 'software.amazon.awssdk:s3:2.29.17'
+    // 결제 검증 로직
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 }
 
 tasks.named('test') {
