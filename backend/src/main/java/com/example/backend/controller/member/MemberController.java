@@ -127,4 +127,7 @@ public class MemberController {
                     Map.of("type", "error", "text", "회원 가입 중 문제가 발생하였습니다.")));
         }
     }
+
+    // 카카오 로그인 API
+    
 }
