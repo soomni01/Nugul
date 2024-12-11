@@ -12,7 +12,6 @@ import { Button } from "../../components/ui/button.jsx";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
-  const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [markerPosition, setMarkerPosition] = useState({});
   const [locationName, setLocationName] = useState("");
@@ -22,6 +21,7 @@ function ViewMap() {
   const [currCategory, setCurrCategory] = useState("");
   const [categorySearchResultList, setCategorySearchResultList] = useState([]);
   const [categoryImageNumber, setCategoryImageNumber] = useState(0);
+  const [isoverlayOpen, setIsOverlayOpen] = useState(false);
 
   var contentNode = document.createElement("div");
 
@@ -315,49 +315,40 @@ function ViewMap() {
 
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
   function displayPlaceInfo(place) {
-    var content =
-      '<div class="placeinfo">' +
-      '   <a class="title" href="' +
-      place.place_url +
-      '" target="_blank" title="' +
-      place.place_name +
-      '">' +
-      place.place_name +
-      "</a>";
-
-    if (place.road_address_name) {
-      content +=
-        '    <span title="' +
-        place.road_address_name +
+    if (isoverlayOpen === true) {
+      var content =
+        '<div class="placeinfo">' +
+        '   <a class="title" href="' +
+        place.place_url +
+        '" target="_blank" title="' +
+        place.place_name +
         '">' +
-        place.road_address_name +
-        "</span>" +
-        '  <span class="jibun" title="' +
-        place.address_name +
-        '">(지번 : ' +
-        place.address_name +
-        ")</span>";
-    } else {
+        place.place_name +
+        "</a>";
+
       content +=
         '    <span title="' +
         place.address_name +
         '">' +
         place.address_name +
         "</span>";
+
+      content +=
+        '    <span class="tel">' +
+        place.phone +
+        "</span>" +
+        "</div>" +
+        '<div class="after"></div>';
+
+      contentNode.innerHTML = content;
+
+      // customovelay  위치 및,  map 설정
+      customOverlay.setContent(contentNode);
+      customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+      customOverlay.setMap(map);
+    } else {
+      customOverlay.setMap(null);
     }
-
-    content +=
-      '    <span class="tel">' +
-      place.phone +
-      "</span>" +
-      "</div>" +
-      '<div class="after"></div>';
-
-    contentNode.innerHTML = content;
-    // customovelay  위치 및,  map 설정
-    customOverlay.setContent(contentNode);
-    customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-    customOverlay.setMap(map);
   }
 
   // ㄴㄴ 그냥 마커
@@ -421,24 +412,33 @@ function ViewMap() {
         >
           {categorySearchResultList.map((item, index) => {
             return (
-              <MapMarker
-                key={index}
-                position={{ lat: item.y, lng: item.x }}
-                image={{
-                  src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
-                  size: { width: 27, height: 28 },
-                  options: {
-                    spriteSize: { width: 72, height: 208 },
-                    spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
-                    offset: { x: 11, y: 28 },
-                  },
-                }}
-              >
-                {console.log(getItem(index, item))}
-              </MapMarker>
+              <Box>
+                <MapMarker
+                  key={index}
+                  position={{ lat: item.y, lng: item.x }}
+                  image={{
+                    src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
+                    size: { width: 27, height: 28 },
+                    options: {
+                      spriteSize: { width: 72, height: 208 },
+                      spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
+                      offset: { x: 11, y: 28 },
+                    },
+                  }}
+                  onClick={() => {
+                    var open = isoverlayOpen === true ? false : true;
+                    setIsOverlayOpen(open);
+                    displayPlaceInfo(item);
+                  }}
+                ></MapMarker>
+              </Box>
             );
           })}
-          {/*{markers.map((marker) => (*/}
+          <CustomOverlayMap
+            onCreate={setCustomOverlay}
+            position={{ lat: 33.450701, lng: 126.570667 }}
+          ></CustomOverlayMap>
+          ;{/*{markers.map((marker) => (*/}
           {/*  <MapMarker*/}
           {/*    key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}*/}
           {/*    position={marker.position}*/}
@@ -461,12 +461,6 @@ function ViewMap() {
           {/*    )}*/}
           {/*  </MapMarker>*/}
           {/*))}*/}
-
-          <CustomOverlayMap
-            onCreate={setCustomOverlay}
-            position={{ lat: 33.450701, lng: 126.570667 }}
-          ></CustomOverlayMap>
-
           <ZoomControl />
         </Map>
         <ul id="category">
