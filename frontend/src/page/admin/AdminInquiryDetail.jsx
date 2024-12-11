@@ -36,7 +36,7 @@ export function AdminInquiryDetail({
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [savedData, setSavedData] = useState(null);
-  const { id } = useContext(AuthenticationContext);
+  const { id, nickname } = useContext(AuthenticationContext);
 
   function DeleteButton({ onClick, id: memberId }) {
     const [open, setOpen] = useState(false);
@@ -220,7 +220,7 @@ export function AdminInquiryDetail({
             <Input value={inquiry.title} readOnly />
           </Field>
           <Field label={"작성자"} readOnly>
-            <Input value={inquiry.nickname} readOnly />
+            <Input value={inquiry.memberId} readOnly />
           </Field>
           <Field label={"작성일자"} readOnly>
             <Input
@@ -262,7 +262,7 @@ export function AdminInquiryDetail({
                 mt={4}
                 mb={1}
               >
-                <Text fontWeight="bold">{c.memberId}</Text>
+                <Text fontWeight="bold">{nickname}</Text>
                 {editingCommentId === c.id ? (
                   <Textarea
                     value={comment}

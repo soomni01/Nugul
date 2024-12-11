@@ -156,7 +156,7 @@ export function AdminInquiryList() {
                 <Table.Cell>{inquiry.inquiryId}</Table.Cell>
                 <Table.Cell>{inquiry.category}</Table.Cell>
                 <Table.Cell>{inquiry.title}</Table.Cell>
-                <Table.Cell>{inquiry.nickname}</Table.Cell>
+                <Table.Cell>{inquiry.memberId}</Table.Cell>
                 <Table.Cell>
                   {new Date(inquiry.inserted).toLocaleDateString()}{" "}
                 </Table.Cell>

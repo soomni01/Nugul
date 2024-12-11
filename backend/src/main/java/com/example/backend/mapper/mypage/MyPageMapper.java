@@ -30,7 +30,8 @@ public interface MyPageMapper {
                 p.pay,
                 p.price,
                 p.status,
-                p.created_at, 
+                p.created_at,
+                p.writer,
                 pr.date AS purchasedAt, 
                 m.nickname AS buyer_nickname,
                 pf.name AS main_image_name
