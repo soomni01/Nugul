@@ -47,7 +47,7 @@ public class ProductService {
                     isMain = true; // 해당 파일을 메인 이미지로 설정
                 }
 
-                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1114/product/\{product.getProductId()}/\{file.getOriginalFilename()}";
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -80,7 +80,7 @@ public class ProductService {
         for (Product product : list) {
             if (product.getMainImageName() != null) {
                 // S3 URL을 기반으로 메인 이미지 경로 설정
-                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                String mainImageUrl = STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}";
                 product.setMainImageName(mainImageUrl);
             }
         }
@@ -116,7 +116,7 @@ public class ProductService {
                     }
                     return 0;
                 })
-                .map(name -> new ProductFile(name, String.format("%s/%s/%s", imageSrcPrefix, productId, name)))
+                .map(name -> new ProductFile(name, String.format("%s/product/%s/%s", imageSrcPrefix, productId, name)))
                 .toList();
 
         product.setFileList(fileSrcList);
@@ -129,7 +129,7 @@ public class ProductService {
         List<String> fileName = mapper.selectFilesByProductId(productId);
 
         for (String file : fileName) {
-            String key = STR."prj1114/\{productId}/\{file}";
+            String key = STR."prj1114/product/\{productId}/\{file}";
             DeleteObjectRequest dor = DeleteObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
@@ -157,7 +157,7 @@ public class ProductService {
 
         if (removeFiles != null) {
             for (String file : removeFiles) {
-                String key = STR."prj1114/\{product.getProductId()}/\{file}";
+                String key = STR."prj1114/product/\{product.getProductId()}/\{file}";
                 DeleteObjectRequest dor = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -186,7 +186,7 @@ public class ProductService {
                     isMain = true; // 해당 파일을 메인 이미지로 설정
                 }
 
-                String objectKey = STR."prj1114/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1114/product/\{product.getProductId()}/\{file.getOriginalFilename()}";
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -260,7 +260,7 @@ public class ProductService {
             for (Product product : products) {
                 if (product.getMainImageName() != null) {
                     // S3 URL을 기반으로 메인 이미지 경로 설정
-                    String mainImageUrl = String.format(STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}");
+                    String mainImageUrl = String.format(STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}");
                     product.setMainImageName(mainImageUrl); // 메인 이미지 URL 설정
                 } else {
                     // 메인 이미지가 없으면 기본 이미지 사용
