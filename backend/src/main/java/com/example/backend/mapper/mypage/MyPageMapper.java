@@ -155,4 +155,10 @@ public interface MyPageMapper {
             """)
     String selectProfileImage(String memberId);
 
+    @Update("""
+             UPDATE member
+            SET profile_image = NULL
+            WHERE member_id = #{memberId}
+            """)
+    int deleteProfileImage(String memberId);
 }

@@ -148,11 +148,10 @@ public class MyPageService {
 
         // 삭제할 상품 서버 경로 설정
         String deleteProfileImage = mapper.selectProfileImage(memberId);
-        String deleteObjectKey = STR."prj1126/profile/\{memberId}/\{deleteProfileImage}";
+        String deleteObjectKey = STR."prj1114/profile/\{memberId}/\{deleteProfileImage}";
 
         // 기존 이미지가 있다면 삭제
         if (deleteProfileImage != null) {
-            System.out.println("삭제할 객체 경로: " + deleteObjectKey);
             try {
                 // 기존 이미지 삭제 요청
                 DeleteObjectRequest dor = DeleteObjectRequest.builder()
@@ -163,12 +162,11 @@ public class MyPageService {
                 System.out.println("기존 이미지 삭제 성공: " + deleteObjectKey);
             } catch (Exception e) {
                 System.err.println("기존 이미지 삭제 실패: " + deleteObjectKey + " - " + e.getMessage());
-                // 예외를 던지지 않고 계속 진행할 수 있도록 할 수 있음
             }
         }
 
         // 추가할 상품 서버 경로 설정
-        String objectKey = STR."prj1126/profile/\{memberId}/\{profileImage.getOriginalFilename()}";
+        String objectKey = STR."prj1114/profile/\{memberId}/\{profileImage.getOriginalFilename()}";
 
         // S3에 업로드할 경로 생성
         PutObjectRequest por = PutObjectRequest.builder()
@@ -190,5 +188,20 @@ public class MyPageService {
         } catch (IOException e) {
             throw new RuntimeException("S3 업로드 실패: " + objectKey, e);
         }
+    }
+
+    public boolean deleteProfileImage(String memberId, String profileImage) {
+        String fileName = mapper.selectProfileImage(memberId);
+
+        String deleteObjectKey = STR."prj1114/profile/\{memberId}/\{fileName}";
+        DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(deleteObjectKey)
+                .build();
+
+        s3.deleteObject(dor);
+
+        int cnt = mapper.deleteProfileImage(memberId);
+        return cnt == 1;
     }
 }

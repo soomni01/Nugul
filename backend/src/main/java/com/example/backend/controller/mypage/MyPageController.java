@@ -24,6 +24,23 @@ public class MyPageController {
 
     final MyPageService service;
 
+    // 사용자 프로필 삭제하기
+    @DeleteMapping("/image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteProfileImage(
+            @RequestParam String memberId,
+            @RequestParam String profileImage) {
+        if (service.deleteProfileImage(memberId, profileImage)) {
+            return ResponseEntity.ok()
+                    .body(Map.of("message", Map.of("type", "success",
+                            "text", "프로필 이미지가 삭제되었습니다.")));
+        } else {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "프로필 이미지 삭제가 실패하였습니다.")));
+        }
+    }
+
     // 사용자 프로필 저장하기
     @PostMapping("image")
     @PreAuthorize("isAuthenticated()")

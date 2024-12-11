@@ -22,14 +22,19 @@ import { Rating } from "../../components/ui/rating.jsx";
 import axios from "axios";
 import { Avatar } from "../../components/ui/avatar.jsx";
 import { TbMoodEdit } from "react-icons/tb";
-import { toaster } from "../../components/ui/toaster.jsx";
 import { SkeletonCircle } from "../../components/ui/skeleton.jsx";
+import {
+  MenuContent,
+  MenuItem,
+  MenuRoot,
+  MenuTrigger,
+} from "../../components/ui/menu.jsx";
 
 export function MyPage() {
   const { id, nickname } = useContext(AuthenticationContext);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
   const [rating, setRating] = useState(0.0);
-  const [profileImage, setProfileImage] = useState("/image/testImage.png");
+  const [profileImage, setProfileImage] = useState(null);
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -51,7 +56,7 @@ export function MyPage() {
       .catch((error) => {
         console.log("평점 정보를 가져오는 데 실패했습니다.", error);
       });
-  }, [id, rating, profileImage]);
+  }, [id, profileImage]);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -95,7 +100,6 @@ export function MyPage() {
             description: res.data.message.text,
             type: res.data.message.type,
           });
-          setProfileImage(res.data.profileImage);
         })
         .catch((e) => {
           const message = e.response?.data?.message;
@@ -109,6 +113,18 @@ export function MyPage() {
           setProgress(false);
         });
     }
+  };
+
+  // 이미지 삭제 핸들러
+  const handleImageDelete = () => {
+    axios
+      .delete("/api/myPage/image", { params: { memberId: id, profileImage } })
+      .then((res) => {
+        setProfileImage(null);
+      })
+      .catch((e) => {
+        console.error("이미지 삭제에 실패했습니다.", e);
+      });
   };
 
   return (
@@ -143,22 +159,31 @@ export function MyPage() {
             )}
             <Float placement="bottom-end" mr={10} mb={3}>
               <Box position="relative">
-                <Button
-                  size="xs"
-                  rounded="full"
-                  colorPalette="orange"
-                  variant="solid"
-                  onClick={() => fileInputRef.current.click()}
-                >
-                  <TbMoodEdit />
-                </Button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleImageUpload}
-                />
+                <MenuRoot>
+                  <MenuTrigger asChild>
+                    <Button
+                      size="xs"
+                      rounded="full"
+                      colorPalette="orange"
+                      variant="solid"
+                    >
+                      <TbMoodEdit />
+                    </Button>
+                  </MenuTrigger>
+                  <MenuContent>
+                    <MenuItem onClick={() => fileInputRef.current.click()}>
+                      변경하기
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={handleImageUpload}
+                      />
+                    </MenuItem>
+                    <MenuItem onClick={handleImageDelete}>삭제하기</MenuItem>
+                  </MenuContent>
+                </MenuRoot>
               </Box>
             </Float>
           </Box>
