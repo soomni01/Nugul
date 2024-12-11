@@ -41,8 +41,8 @@ public class CommentService {
         return cnt == 1;
     }
 
-    public List<Comment> getCommentsByMemberId(String memberId, Integer page) {
-        Integer offset = (page - 1) * 6;
+    public List<Comment> getCommentsByMemberId(String memberId, Integer commentPages) {
+        Integer offset = (commentPages - 1) * 6;
         return mapper.findCommentsByMemberId(memberId,offset);
     }
 

@@ -25,12 +25,13 @@ public class BoardController {
 
     @GetMapping("/boardsAndComments/{memberId}")
     public Map<String, Object> getBoardsAndComments(@PathVariable String memberId,
-                                                    @RequestParam(value = "page", defaultValue = "1") Integer page) {
+                                                    @RequestParam(value = "boardPages", defaultValue = "1") Integer boardPages,
+                                                    @RequestParam(value = "commentPages", defaultValue = "1") Integer commentPages) {
 
         int itemsPerPage = 6;
 
-        List<Board> boards = service.selectByMemberId(memberId,page); // 작성자의 게시물 가져오기
-        List<Comment> comments = commentService.getCommentsByMemberId(memberId,page); // 사용자가 작성한 댓글
+        List<Board> boards = service.selectByMemberId(memberId,boardPages); // 작성자의 게시물 가져오기
+        List<Comment> comments = commentService.getCommentsByMemberId(memberId,commentPages); // 사용자가 작성한 댓글
 
         int totalBoards = service.getBoardCountByMemberId(memberId);
         int totalComments = commentService.getCommentCountByMemberId(memberId);

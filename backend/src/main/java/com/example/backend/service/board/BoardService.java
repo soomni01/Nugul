@@ -63,8 +63,8 @@ public class BoardService {
         return board.getMemberId().equals(authentication.getName());
     }
 
-    public List<Board> selectByMemberId(String memberId, Integer page) {
-        Integer offset = (page - 1) * 6;
+    public List<Board> selectByMemberId(String memberId, Integer boardPages) {
+        Integer offset = (boardPages - 1) * 6;
         return mapper.selectByMemberId(memberId,offset);
     }
 
