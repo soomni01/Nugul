@@ -104,7 +104,6 @@ public interface MyPageMapper {
                    i.content,
                    i.category,
                    i.member_id,
-                   i.nickname,
                    i.inserted,
                    EXISTS (
                        SELECT 1
@@ -123,7 +122,6 @@ public interface MyPageMapper {
                    i.content,
                    i.category,
                    i.member_id,
-                   i.nickname,
                    i.inserted
             FROM inquiry i
             WHERE i.inquiry_id = #{inquiryId}

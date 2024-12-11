@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -22,11 +22,13 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export const InquiryView = () => {
   const [inquiryView, setInquiryView] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { nickname } = useContext(AuthenticationContext);
   const { inquiryId } = useParams();
   const navigate = useNavigate();
 
@@ -109,7 +111,7 @@ export const InquiryView = () => {
               <Input value={inquiryView.title} readOnly />
             </Field>
             <Field label="작성자" mb={2}>
-              <Input value={inquiryView.memberId} readOnly />
+              <Input value={nickname} readOnly />
             </Field>
             <Field label="작성 일자" mb={2}>
               <Input

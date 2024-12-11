@@ -23,3 +23,6 @@ DESC inquiry;
 
 ALTER TABLE inquiry
     ADD COLUMN category ENUM ('신고', '이용 안내', '계정 문의', '기타 문의') NOT NULL AFTER member_id;
+
+ALTER TABLE inquiry
+    DROP COLUMN nickname;

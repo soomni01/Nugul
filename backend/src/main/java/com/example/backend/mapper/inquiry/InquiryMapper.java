@@ -22,7 +22,6 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.nickname,
                    i.inserted,
                    EXISTS (
                        SELECT 1
@@ -38,7 +37,6 @@ public interface InquiryMapper {
             SELECT i.inquiry_id,
                    i.title,
                    i.category,
-                   i.nickname,
                    i.inserted,
                    EXISTS (
                        SELECT 1
@@ -55,7 +53,6 @@ public interface InquiryMapper {
                    i.title,
                    i.content,
                    i.category,
-                   i.nickname,
                    i.inserted
             FROM inquiry i
             WHERE i.inquiry_id = #{inquiryId}
