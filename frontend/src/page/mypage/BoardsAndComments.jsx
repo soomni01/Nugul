@@ -1,121 +1,150 @@
-import React, { useEffect, useState, useContext } from "react";
-import { TfiWrite } from "react-icons/tfi"; // 작성한 게시물 아이콘
-import { LuFolder } from "react-icons/lu"; // 작성한 댓글 아이콘
-import {Spinner, Tabs, Box, Heading, VStack, Text, Flex, Badge} from "@chakra-ui/react";
-import axios from "axios";
-import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import {FaCommentDots} from "react-icons/fa";
+        import React, { useEffect, useState, useContext } from "react";
+        import { TfiWrite } from "react-icons/tfi"; // 작성한 게시물 아이콘
+        import { LuFolder } from "react-icons/lu"; // 작성한 댓글 아이콘
+        import {Spinner, Box, Heading, VStack, Text, Flex, Badge, Tabs} from "@chakra-ui/react";
+        import axios from "axios";
+        import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+        import { FaCommentDots } from "react-icons/fa";
 
-export function BoardsAndComments() {
-    const { id } = useContext(AuthenticationContext); // 로그인한 사용자 ID
-    const [boards, setBoards] = useState([]); // 작성한 게시물 상태
-    const [comments, setComments] = useState([]); // 작성한 댓글 상태
-    const [loading, setLoading] = useState(true); // 로딩 상태
+        export function BoardsAndComments() {
+            const { id } = useContext(AuthenticationContext); // 로그인한 사용자 ID
+            const [boards, setBoards] = useState([]); // 작성한 게시물 상태
+            const [comments, setComments] = useState([]); // 작성한 댓글 상태
+            const [loading, setLoading] = useState(true); // 로딩 상태
 
-    useEffect(() => {
-        if (!id) return; // 로그인하지 않은 경우 데이터 요청 생략
+            useEffect(() => {
+                if (!id) return; // 로그인하지 않은 경우 데이터 요청 생략
 
-        setLoading(true);
+                setLoading(true);
 
-        axios
-            .get(`/api/board/boardsAndComments/${id}`)
-            .then((response) => {
-                setBoards(response.data.boards); // 게시물 데이터 설정
-                setComments(response.data.comments); // 댓글 데이터 설정
-            })
-            .catch((error) => {
-                console.error("데이터를 불러오는 중 오류가 발생했습니다:", error);
-                alert("데이터를 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-            })
-            .finally(() => {
-                setLoading(false); // 로딩 완료
-            });
-    }, [id]);
+                axios
+                    .get(`/api/board/boardsAndComments/${id}`)
+                    .then((response) => {
+                        setBoards(response.data.boards); // 게시물 데이터 설정
+                        setComments(response.data.comments); // 댓글 데이터 설정
+                    })
+                    .catch((error) => {
+                        console.error("데이터를 불러오는 중 오류가 발생했습니다:", error);
+                        alert("데이터를 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                    })
+                    .finally(() => {
+                        setLoading(false); // 로딩 완료
+                    });
+            }, [id]);
 
-    if (!id) {
-        return <Spinner />;
-    }
+            if (!id || loading) {
+                return <Spinner />;
+            }
 
-    return (
-        <Tabs.Root defaultIndex={0}>
-            {/* 탭 목록 */}
-            <Tabs.List>
-                <Tabs.Trigger value="posts">
-                    <TfiWrite style={{ marginRight: "8px" }} />
-                    작성한 게시물
-                </Tabs.Trigger>
-                <Tabs.Trigger value="comments">
-                    <LuFolder style={{ marginRight: "8px" }} />
-                    작성한 댓글
-                </Tabs.Trigger>
-            </Tabs.List>
+            return (
+                <Tabs.Root defaultValue="posts">
+                    {/* 탭 목록 */}
+                    <Tabs.List>
+                        <Tabs.Trigger value="posts">
+                            <TfiWrite style={{ marginRight: "8px" }} />
+                            작성한 게시물
+                        </Tabs.Trigger>
+                        <Tabs.Trigger value="comments">
+                            <LuFolder style={{ marginRight: "8px" }} />
+                            작성한 댓글
+                        </Tabs.Trigger>
+                    </Tabs.List>
 
-            {/* 게시물 정보와 댓글 수 표시 */}
-            <Tabs.Content value="posts">
-                <Box>
-                    <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
-                        작성한 게시물
-                    </Heading>
-                    <VStack spacing={4} align="start" mb={6}>
-                        {boards.length > 0 ? (
-                            boards.map((board) => (
-                                <Box
-                                    key={board.boardId}
-                                    p={4}
-                                    border="1px"
-                                    borderRadius="md"
-                                    borderColor="gray.200"
-                                    w="100%"
-                                    bg="gray.50"
-                                >
-                                    {/* 게시물 정보 */}
-                                    <Flex justify="space-between" align="center">
-                                        <Box>
-                                            <Text fontWeight="bold">{board.boardId} : {board.title} <Badge variant={"subtle"} colorPalette={"green"}>
-                                                <FaCommentDots />
-                                                {board.countComment}
-                                            </Badge></Text>
-                                            <Text fontSize="sm" color="gray.500">{board.category} | {board.createdAt}</Text>
+                    {/* 게시물 정보 */}
+                    <Tabs.Content value="posts">
+                        <Box>
+                            <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
+                                작성한 게시물
+                            </Heading>
+                            <VStack spacing={4} align="start" mb={6}>
+                                {boards.length > 0 ? (
+                                    boards.map((board) => (
+                                        <Box
+                                            key={board.boardId}
+                                            p={4}
+                                            border="1px"
+                                            borderRadius="md"
+                                            borderColor="gray.200"
+                                            w="100%"
+                                            bg="gray.50"
+                                        >
+                                            {/* 게시물 정보 */}
+                                            <Flex justify="space-between" align="center">
+                                                <Box>
+                                                    <Text fontWeight="bold">
+                                                        {board.boardId} : {board.title}{" "}
+                                                        <Badge variant="subtle" colorScheme="green">
+                                                            <FaCommentDots />
+                                                            {board.countComment}
+                                                        </Badge>
+                                                    </Text>
+                                                    <Text fontSize="sm" color="gray.500">
+                                                                        {board.category} | {board.createdAt}
+                                                    </Text>
+                                                </Box>
+                                            </Flex>
                                         </Box>
-                                    </Flex>
-                                </Box>
-                            ))
-                        ) : (
-                            <Text color="gray.500">
-                                작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
-                            </Text>
-                        )}
-                    </VStack>
-                </Box>
-            </Tabs.Content>
+                                    ))
+                                ) : (
+                                    <Text color="gray.500">
+                                        작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
+                                    </Text>
+                                )}
+                            </VStack>
+                        </Box>
+                    </Tabs.Content>
 
-            {/* 작성한 댓글 탭 */}
-            <Tabs.Content value="comments">
-                <Box>
-                    <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
-                        작성한 댓글
-                    </Heading>
-                    <VStack spacing={4} align="start">
-                        {comments.length > 0 ? (
-                            comments.map((comment) => (
-                                <Box
-                                    key={comment.commentId}
-                                    p={4}
-                                    border="1px"
-                                    borderRadius="md"
-                                    borderColor="gray.200"
-                                    w="100%"
-                                    bg="gray.50"
-                                >
-                                    <Text>{comment.comment}</Text>
+                    <Tabs.Content value="comments">
+                        <Box>
+                            <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
+                                작성한 댓글
+                            </Heading>
+                            {comments.length > 0 ? (
+                                <Box as="ul" pl={0}>
+                                    {comments.map((comment) => {
+                                        // 각 댓글에 해당하는 게시물 찾기
+                                        const relatedBoard = boards.find(board => board.boardId === comment.boardId);
+                                        return (
+                                            <Box
+                                                as="li"
+                                                key={comment.commentId}
+                                                listStyleType="none"
+                                                mb={4}
+                                                p={4} // 댓글 외부 여백
+                                                border="1px" // 테두리 설정
+                                                borderRadius="md" // 둥근 모서리
+                                                borderColor="gray.200" // 테두리 색상
+                                                w="100%" // 너비 100%
+                                                bg="gray.50" // 배경색 설정
+                                            >
+                                                {/* 게시물 제목 한 줄 */}
+                                                {relatedBoard && (
+                                                    <Text fontSize="sm" color="gray.500" mb={1}>
+                                                        <strong>{relatedBoard.title}</strong>
+                                                    </Text>
+                                                )}
+
+                                                {/* 게시물 카테고리와 작성일 두 줄 */}
+                                                {relatedBoard && (
+                                                    <Text fontSize="sm" color="gray.500" mb={1}>
+                                                        {relatedBoard.category} | {relatedBoard.createdAt}
+                                                    </Text>
+                                                )}
+
+                                                {/* 댓글 본문 (하늘색 배경) */}
+                                                <Text bg="skyblue" p={2} borderRadius="md" fontSize="sm">
+                                                    {comment.comment}
+                                                </Text>
+                                            </Box>
+                                        );
+                                    })}
                                 </Box>
-                            ))
-                        ) : (
-                            <Text color="gray.500">작성한 댓글이 없습니다.</Text>
-                        )}
-                    </VStack>
-                </Box>
-            </Tabs.Content>
-        </Tabs.Root>
-    );
-}
+                            ) : (
+                                <Text color="gray.500">작성한 댓글이 없습니다.</Text>
+                            )}
+                        </Box>
+                    </Tabs.Content>
+
+                </Tabs.Root>
+            );
+        }
