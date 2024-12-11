@@ -45,4 +45,8 @@ public class CommentService {
         Integer offset = (page - 1) * 10;
         return mapper.findCommentsByMemberId(memberId,offset);
     }
+
+    public int getCommentCountByMemberId(String memberId) {
+        return mapper.countCommentsByMemberId(memberId);
+    }
 }

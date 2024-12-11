@@ -75,8 +75,15 @@ public interface CommentMapper {
         FROM comment 
         WHERE member_id = #{memberId}
         ORDER BY inserted DESC
-    LIMIT 10 OFFSET #{offset}
+    LIMIT #{offset}, 10
     """)
     List<Comment> findCommentsByMemberId(String memberId, Integer offset);
+
+    @Select("""
+            SELECT COUNT(*) 
+            FROM comment
+            WHERE member_id = #{memberId}
+        """)
+    int countCommentsByMemberId(String memberId);
 }
 

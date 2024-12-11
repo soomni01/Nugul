@@ -67,4 +67,8 @@ public class BoardService {
         Integer offset = (page - 1) * 10;
         return mapper.selectByMemberId(memberId,offset);
     }
+
+    public int getBoardCountByMemberId(String memberId) {
+        return mapper.countBoardsByMemberId(memberId);
+    }
 }
