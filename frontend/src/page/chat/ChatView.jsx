@@ -17,6 +17,7 @@ import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
+import Payment from "../../components/chat/Payment.jsx";
 
 export function ChatView({ chatRoomId, onDelete }) {
   const scrollRef = useRef(null);
@@ -201,12 +202,6 @@ export function ChatView({ chatRoomId, onDelete }) {
     // navigate("chat");
   }
 
-  const handlePayment = () => {
-    // Payment 컴포넌트의 requestPay 호출
-    const payment = new Payment();
-    payment.requestPay();
-  };
-
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -241,10 +236,9 @@ export function ChatView({ chatRoomId, onDelete }) {
           </Box>
           <Flex>
             <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
-            <Button onClick={handlePayment}>결제하기</Button>
+            <Payment />
           </Flex>
         </Box>
-
         <Box
           h={"85%"}
           overflowY={"auto"}
