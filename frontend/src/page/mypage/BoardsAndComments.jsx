@@ -1,12 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import { TfiWrite } from "react-icons/tfi"; // 작성한 게시물 아이콘
 import { LuFolder } from "react-icons/lu"; // 작성한 댓글 아이콘
-import { Spinner, Box, Heading, VStack, Text, Flex, Badge, Tabs } from "@chakra-ui/react";
+import {Spinner, Box, Heading, VStack, Text, Flex, Badge, Tabs, HStack} from "@chakra-ui/react";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { FaCommentDots } from "react-icons/fa";
 import { BoardCategories } from "../../components/board/BoardCategories.jsx";
-import { useNavigate } from "react-router-dom";  // useNavigate 임포트
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {
+    PaginationItems,
+    PaginationNextTrigger,
+    PaginationPrevTrigger,
+    PaginationRoot
+} from "../../components/ui/pagination.jsx";  // useNavigate 임포트
 
 export function BoardsAndComments() {
     const { id } = useContext(AuthenticationContext); // 로그인한 사용자 ID
@@ -14,6 +20,7 @@ export function BoardsAndComments() {
     const [comments, setComments] = useState([]); // 작성한 댓글 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const navigate = useNavigate();  // navigate 훅 사용
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // category 값에 해당하는 label을 반환하는 함수
     const getCategoryLabel = (value) => {
@@ -23,11 +30,14 @@ export function BoardsAndComments() {
 
     useEffect(() => {
         if (!id) return; // 로그인하지 않은 경우 데이터 요청 생략
+        const controller = new AbortController();
 
         setLoading(true);
 
         axios
-            .get(`/api/board/boardsAndComments/${id}`)
+            .get(`/api/board/boardsAndComments/${id}`,{
+                params: searchParams,
+            })
             .then((response) => {
                 setBoards(response.data.boards); // 게시물 데이터 설정
                 setComments(response.data.comments); // 댓글 데이터 설정
@@ -39,7 +49,20 @@ export function BoardsAndComments() {
             .finally(() => {
                 setLoading(false); // 로딩 완료
             });
-    }, [id]);
+        return () => {
+            controller.abort();
+        };
+    }, [id,searchParams]);
+
+    // page 번호
+    const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
+    const page = Number(pageParam);
+
+    function handlePageChange(e) {
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.set("page", e.page);
+        setSearchParams(nextSearchParams);
+    }
 
     if (!id || loading) {
         return <Spinner />;
@@ -112,6 +135,13 @@ export function BoardsAndComments() {
                             </Text>
                         )}
                     </VStack>
+                    <PaginationRoot onPageChange={handlePageChange} count={1500} pageSize={10} page={page}>
+                        <HStack>
+                            <PaginationPrevTrigger />
+                            <PaginationItems />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
                 </Box>
             </Tabs.Content>
 
@@ -166,6 +196,13 @@ export function BoardsAndComments() {
                     ) : (
                         <Text color="gray.500">작성한 댓글이 없습니다.</Text>
                     )}
+                    <PaginationRoot onPageChange={handlePageChange} count={1500} pageSize={10} page={page}>
+                        <HStack>
+                            <PaginationPrevTrigger />
+                            <PaginationItems />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
                 </Box>
             </Tabs.Content>
 
