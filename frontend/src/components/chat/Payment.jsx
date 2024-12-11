@@ -7,6 +7,7 @@ import { Button } from "@chakra-ui/react";
 const Payment = ({ chatRoom }) => {
   const [product, setProduct] = useState({});
   const { member_id, nickname } = useContext(AuthenticationContext);
+  console.log("Authentication Context:", { member_id, nickname });
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
@@ -39,11 +40,8 @@ const Payment = ({ chatRoom }) => {
         merchant_uid: new Date().getTime(), // 고유 거래 ID
         name: product.productName, // 서버에서 가져온 상품명
         amount: product.price, // 서버에서 가져온 가격
-        buyer_email: member_id, // 로그인된 사용자 이메일
+        // buyer_email: member_id, // 로그인된 사용자 이메일
         buyer_name: nickname, // 로그인된 사용자 닉네임
-        buyer_tel: "010-1234-5678", // 전화번호는 예시로 넣음
-        buyer_addr: "서울특별시", // 마찬가지
-        buyer_postcode: "123-456", // 마찬가지
       },
       async (rsp) => {
         try {
@@ -69,12 +67,6 @@ const Payment = ({ chatRoom }) => {
             toaster.create({
               type: "success",
               description: "결제가 성공적으로 처리되었습니다.",
-            });
-          } else {
-            // 결제 금액 불일치 알림
-            toaster.create({
-              type: "error",
-              description: "결제 금액이 일치하지 않습니다. 다시 시도해 주세요.",
             });
           }
         } catch (error) {
