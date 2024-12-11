@@ -80,7 +80,7 @@ function ViewMap() {
         const bounds = new kakao.maps.LatLngBounds();
 
         // 마커에 데이터 넣는 코드
-        let marker = [];
+
         var listEl = document.getElementById("placeList"),
           menuEl = document.getElementById("menu_wrap"),
           fragment = document.createDocumentFragment(),
@@ -89,27 +89,19 @@ function ViewMap() {
         // 검색 버튼 클릭시 , 기존창 지워야 함
         removeAllChildNods(listEl);
 
+        var addmarker = [];
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
 
-          // var addMarker = new kakao.maps.Marker({
-          //   map: map,
-          //   position: { lat: data[i].y, lng: data[i].x },
-          // });
-          var addMarker = (
-            <MapMarker key={index} position={item.position}>
-              {item.content}
+          var newMarker = (
+            <MapMarker key={i} position={{ lat: data[i].y, lng: data[i].x }}>
+              {data[i].place_name}
             </MapMarker>
           );
-
+          addmarker.push(newMarker);
           //Todo  > 마커 부분 다 고쳐야 돌아갈듯 ?
-          marker.push({
-            position: {
-              lat: data[i].y,
-              lng: data[i].x,
-            },
-            content: data[i].place_name,
-          });
+          setMarkers((prev) => [...addmarker, newMarker]);
+          console.log(newMarker);
 
           //데이터 리스트에 집어 넣는 함수
           var itemEl = getItem(i, data[i]);
@@ -119,7 +111,6 @@ function ViewMap() {
 
           fragment.appendChild(itemEl);
         }
-        setMarkers(marker);
 
         listEl.appendChild(fragment);
 
@@ -405,11 +396,10 @@ function ViewMap() {
           ></CustomOverlayMap>
 
           {/*  검색 클릭시 */}
-          {markers.map((item, index) => (
-            <MapMarker key={index} position={item.position}>
-              {item.content}
-            </MapMarker>
-          ))}
+          {markers.map((item, index) => {
+            console.log(item);
+            return <p key={index}>{item} </p>;
+          })}
 
           <ZoomControl />
         </Map>
