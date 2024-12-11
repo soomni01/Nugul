@@ -34,7 +34,6 @@ function ViewMap() {
     addEventHandle(contentNode, "mousedown", kakao.maps.event.preventMap);
     addEventHandle(contentNode, "touchstart", kakao.maps.event.preventMap);
     // 카테고리 이벤트 추가
-    addCategoryClickEvent();
   }, []);
 
   useEffect(() => {
@@ -70,6 +69,7 @@ function ViewMap() {
 
   const handleSearch = () => {
     if (!map) return;
+
     const ps = new kakao.maps.services.Places(map);
 
     ps.keywordSearch(locationName, (data, status, _pagination) => {
@@ -90,6 +90,14 @@ function ViewMap() {
 
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
+
+          var newMarker = (
+            <MapMarker
+              position={{ lat: data[i].y, lng: data[i].x }}
+              onClick={() => displayPlaceInfo(data)}
+            ></MapMarker>
+          );
+
           markers.push({
             position: {
               lat: data[i].y,
@@ -106,7 +114,6 @@ function ViewMap() {
           fragment.appendChild(itemEl);
         }
         setMarkers(markers);
-        // 마커 밑 info  끝
 
         listEl.appendChild(fragment);
 
@@ -197,51 +204,6 @@ function ViewMap() {
     }
   }
 
-  function addCategoryClickEvent() {
-    var category = document.getElementById("category"),
-      children = category.children;
-
-    for (var i = 0; i < children.length; i++) {
-      children[i].onclick = onClickCategory;
-    }
-  }
-
-  function onClickCategory() {
-    var id = this.id,
-      className = this.className;
-    console.log(id);
-
-    //
-
-    // 켜져있으면  끄고 카테고리 변경
-    if (className === "on") {
-      // setCurrCategory("");
-      // changeCategoryClass();
-      // removeCustomMarker();
-    } else {
-      console.log("실행 전", "id=", id);
-      // setCurrCategory(id);
-      console.log("실행 후", "curr=", currCategory, "id=", id);
-      // changeCategoryClass(this);
-      // searchCategoryPlaces();
-    }
-  }
-
-  // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
-  function changeCategoryClass(el) {
-    var category = document.getElementById("category"),
-      children = category.children,
-      i;
-
-    for (i = 0; i < children.length; i++) {
-      children[i].className = "";
-    }
-    // 자기 자신의 클래스 네임 on > csss 변경
-    if (el) {
-      el.className = "on";
-    }
-  }
-
   // 카테고리 검색을 요청하는 함수입니다
 
   function placesSearchCB(data, status, pagination) {
@@ -303,15 +265,7 @@ function ViewMap() {
     marker.setMap(map); // 지도 위에 마커를 표출합니다
     //  기존꺼
     customOverlayMarker.push(marker); // 배열에 생성된 마커를 추가
-    // 현재 배열을 깊은 복사
-    // const itemMarker = { ...marker };
-    // const newMarker = customOverlayMarker.map((item) => ({ ...item }));
-    // setCustomOverlayMarker([...newMarker, { itemMarker }]);
 
-    // console.log(itemMarker);
-    // customOverlayMarker[customOverlayMarker.length - 1].setMap(map);
-    // setCustomOverlayMarker((prev) => [...prev, marker]);
-    // console.log(marker);
     return marker;
   }
 
@@ -443,6 +397,12 @@ function ViewMap() {
             onCreate={setCustomOverlay}
             position={{ lat: 33.450701, lng: 126.570667 }}
           ></CustomOverlayMap>
+
+          {/*  검색 클릭시 */}
+          {markers.map((item, index) => (
+            <MapMarker key={index} position={item.position}></MapMarker>
+          ))}
+
           <ZoomControl />
         </Map>
         <ul id="category">
