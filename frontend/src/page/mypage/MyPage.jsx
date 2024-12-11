@@ -1,5 +1,14 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
+import { useContext, useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  Float,
+  Heading,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { Profile } from "./Profile.jsx";
 import { ProfileEdit } from "./ProfileEdit.jsx";
@@ -11,27 +20,38 @@ import { InquiryView } from "./InquiryView.jsx";
 import { Review } from "./Review.jsx";
 import { Rating } from "../../components/ui/rating.jsx";
 import axios from "axios";
+import { Avatar } from "../../components/ui/avatar.jsx";
+import { TbMoodEdit } from "react-icons/tb";
+import { toaster } from "../../components/ui/toaster.jsx";
+import { SkeletonCircle } from "../../components/ui/skeleton.jsx";
 
 export function MyPage() {
-  const { id } = useContext(AuthenticationContext);
+  const { id, nickname } = useContext(AuthenticationContext);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
   const [rating, setRating] = useState(0.0);
+  const [profileImage, setProfileImage] = useState("/image/testImage.png");
+  const [progress, setProgress] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!id) {
       return;
     }
     axios
-      .get("/api/myPage/rating", { params: { memberId: id } })
+      .get("/api/myPage/ImageAndRating", { params: { memberId: id } })
       .then((res) => {
+        const { rating, profileImage } = res.data;
+
         // 평점을 반올림한 값으로 설정
-        const roundedRating = Math.round(res.data * 2) / 2; // 소수점 한자리 반올림
+        const roundedRating = Math.round(rating * 2) / 2; // 소수점 한자리 반올림
         setRating(roundedRating);
+
+        setProfileImage(profileImage);
       })
       .catch((error) => {
         console.log("평점 정보를 가져오는 데 실패했습니다.", error);
       });
-  }, [id, rating]);
+  }, [id, rating, profileImage]);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -55,6 +75,42 @@ export function MyPage() {
     setActiveTab("inquiryDetail");
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0]; // 선택한 첫 번째 파일
+    if (file) {
+      const previewUrl = URL.createObjectURL(file); // 미리보기 URL 생성
+      setProfileImage(previewUrl); // 아바타에 반영
+
+      const formData = new FormData();
+      formData.append("memberId", id);
+      formData.append("profileImage", file);
+
+      setProgress(true);
+      axios
+        .post("/api/myPage/image", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => {
+          toaster.create({
+            description: res.data.message.text,
+            type: res.data.message.type,
+          });
+          setProfileImage(res.data.profileImage);
+        })
+        .catch((e) => {
+          const message = e.response?.data?.message;
+          toaster.create({
+            description: message?.text || "이미지 업로드에 실패했습니다.",
+
+            type: "error",
+          });
+        })
+        .finally(() => {
+          setProgress(false);
+        });
+    }
+  };
+
   return (
     <Flex direction="row" mt={5}>
       {/* 왼쪽 메뉴 */}
@@ -66,10 +122,50 @@ export function MyPage() {
         bgColor="gray.100"
       >
         <VStack align="stretch" spacing={4}>
-          <Rating readOnly value={rating} allowHalf size="sm" />
           <Heading m={5} align="center">
             마이페이지
           </Heading>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            pos="relative"
+          >
+            {progress ? (
+              <SkeletonCircle size="130px" />
+            ) : (
+              <Avatar
+                boxSize="130px"
+                borderRadius="full"
+                fit="cover"
+                src={profileImage}
+              />
+            )}
+            <Float placement="bottom-end" mr={10} mb={3}>
+              <Box position="relative">
+                <Button
+                  size="xs"
+                  rounded="full"
+                  colorPalette="orange"
+                  variant="solid"
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  <TbMoodEdit />
+                </Button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleImageUpload}
+                />
+              </Box>
+            </Float>
+          </Box>
+          <Stack display="flex" alignItems="center">
+            <Text ali>{nickname}</Text>
+            <Rating readOnly value={rating} allowHalf size="md" mb={5} />
+          </Stack>
           <Button
             variant={
               activeTab === "profile" || activeTab === "editProfile"

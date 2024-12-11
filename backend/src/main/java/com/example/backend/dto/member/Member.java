@@ -10,4 +10,6 @@ public class Member {
     private String password;
     private String nickname;
     private LocalDateTime inserted;
+
+    private String profileImage;
 }

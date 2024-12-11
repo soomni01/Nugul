@@ -1,18 +1,22 @@
 package com.example.backend.controller.mypage;
 
 import com.example.backend.dto.inquiry.Inquiry;
+import com.example.backend.dto.member.Member;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import com.example.backend.service.mypage.MyPageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/myPage")
@@ -20,12 +24,32 @@ public class MyPageController {
 
     final MyPageService service;
 
-    // 평점 정보 가져오기
-    @GetMapping("rating")
-    public Double getRating(
+    // 사용자 프로필 저장하기
+    @PostMapping("image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> image(
+            @RequestParam("memberId") String memberId,
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+            Authentication authentication) {
+        System.out.println(profileImage);
+        if (service.image(memberId, profileImage, authentication)) {
+            return ResponseEntity.ok()
+                    .body(Map.of("message", Map.of("type", "success",
+                            "text", "프로필 이미지가 등록되었습니다.")));
+        } else {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "프로필 이미지 등록이 실패하였습니다.")));
+        }
+    }
+
+    // 평점과 프로필 이미지 정보 가져오기
+    @GetMapping("ImageAndRating")
+    public Map<String, Object> getImageAndRating(
+            Member member,
             @RequestParam String memberId
     ) {
-        return service.getRating(memberId);
+        return service.getImageAndRating(member, memberId);
     }
 
     // 후기 상태에 따라 가져오기

@@ -133,4 +133,26 @@ public interface MyPageMapper {
             WHERE seller_id = #{id};
             """)
     Double getRating(String id);
+
+    @Select("""
+            SELECT profile_image
+            FROM member 
+            WHERE member_id = #{id}
+            """)
+    String getProfileImage(String memberId);
+
+    @Update("""
+            UPDATE member
+            SET profile_image = #{profileImage}
+            WHERE member_id = #{memberId}
+            """)
+    int updateProfileImage(String memberId, String profileImage);
+
+    @Select("""
+            SELECT profile_image
+            FROM member
+            WHERE member_id = #{memberId}
+            """)
+    String selectProfileImage(String memberId);
+
 }
