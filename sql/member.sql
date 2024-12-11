@@ -29,4 +29,8 @@ DESC member;
 
 UPDATE member
 SET password =1234
-WHERE member_id = 'sm@naver.com'
+WHERE member_id = 'sm@naver.com';
+
+# 프로필 이미지 컬럼 추가
+ALTER TABLE member
+    ADD COLUMN profile_image VARCHAR(300) DEFAULT NULL;

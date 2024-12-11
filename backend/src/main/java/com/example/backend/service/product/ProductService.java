@@ -1,14 +1,20 @@
 package com.example.backend.service.product;
 
 import com.example.backend.dto.product.Product;
+import com.example.backend.dto.product.ProductFile;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -20,35 +26,40 @@ import java.util.Map;
 public class ProductService {
 
     final ProductMapper mapper;
+    final S3Client s3;
+
+    @Value("${image.src.prefix}")
+    String imageSrcPrefix;
+
+    @Value("${bucket.name}")
+    String bucketName;
 
     // 상품 추가하기
-    public boolean add(Product product, MultipartFile[] files, MultipartFile mainImage, Authentication authentication) {
+    public boolean add(Product product, MultipartFile[] files, String mainImageName, Authentication authentication) {
         product.setWriter(authentication.getName());
-
 
         int cnt = mapper.insert(product);
 
         if (files != null && files.length > 0) {
-            // 폴더 만들기
-            String directory = STR."C:/Temp/prj1126/\{product.getProductId()}";
-            File dir = new File(directory);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            // 파일 업로드
             for (MultipartFile file : files) {
                 boolean isMain = false;
-                if (mainImage != null && file.getOriginalFilename().equals(mainImage.getOriginalFilename())) {
+                if (mainImageName != null && file.getOriginalFilename().equals(mainImageName)) {
                     isMain = true; // 해당 파일을 메인 이미지로 설정
                 }
 
-                String filePath = STR."C:/Temp/prj1126/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1126/product/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
                 try {
-                    file.transferTo(new File(filePath));
+                    s3.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("S3 업로드 실패: " + objectKey, e);
                 }
-                // product_file 테이블에 파일명 입력
+
                 mapper.insertFile(product.getProductId(), file.getOriginalFilename(), isMain);
             }
         }
@@ -58,12 +69,25 @@ public class ProductService {
 
     // 페이지, 카테고리, 검색, 지불방법 별 상품 목록 가져오기
     public Map<String, Object> getProductList(Integer page, String category, String keyword, String pay) {
+
         // SQL 의 LIMIT 키워드에서 사용되는 offset
         Integer offset = (page - 1) * 16;
+
         // 조회되는 게시물들
         List<Product> list = mapper.selectPage(offset, category, keyword, pay);
+
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (Product product : list) {
+            if (product.getMainImageName() != null) {
+                // S3 URL을 기반으로 메인 이미지 경로 설정
+                String mainImageUrl = STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}";
+                product.setMainImageName(mainImageUrl);
+            }
+        }
+
         // 전체 게시물 수
         Integer count = mapper.countAll(category, keyword, pay);
+
         return Map.of("list", list,
                 "count", count);
     }
@@ -77,23 +101,110 @@ public class ProductService {
     }
 
     // 상품 1개의 정보 가져오기
-    public Product getProductView(int id) {
-        return mapper.selectById(id);
+    public Product getProductView(Integer productId) {
+        Product product = mapper.selectById(productId);
+        String mainImageName = product.getMainImageName();
+        List<String> fileNameList = mapper.selectFilesByProductId(productId);
+
+        // MainImageName과 일치하는 파일명을 앞에 오도록 정렬
+        List<ProductFile> fileSrcList = fileNameList.stream()
+                .sorted((name1, name2) -> {
+                    if (name1.equals(mainImageName)) {
+                        return -1; // MainImageName을 리스트의 앞에 배치
+                    } else if (name2.equals(mainImageName)) {
+                        return 1;
+                    }
+                    return 0;
+                })
+                .map(name -> new ProductFile(name, String.format("%s/product/%s/%s", imageSrcPrefix, productId, name)))
+                .toList();
+
+        product.setFileList(fileSrcList);
+        return product;
     }
 
     // 상품 삭제하기
-    public boolean deleteProduct(int id) {
-        mapper.deleteLike(id);
-        mapper.deletePurchasedRecord(id);
-        mapper.deleteFileByProductId(id);
+    public boolean deleteProduct(int productId) {
+        // 파일(s3) 지우기
+        List<String> fileName = mapper.selectFilesByProductId(productId);
 
-        int cnt = mapper.deleteById(id);
+        for (String file : fileName) {
+            String key = STR."prj1126/product/\{productId}/\{file}";
+            DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
 
+            s3.deleteObject(dor);
+        }
+
+        // 파일의 db 지우기
+        mapper.deleteFileByProductId(productId);
+
+        // 상품의 좋아요 지우기
+        mapper.deleteLike(productId);
+
+        // 상품의 구매 내역 지우기 (purchased_record 테이블엔 null 값)
+        mapper.deletePurchasedRecord(productId);
+
+
+        int cnt = mapper.deleteById(productId);
         return cnt == 1;
     }
 
     // 상품 정보 수정하기
-    public boolean update(Product product) {
+    public boolean update(Product product, List<String> removeFiles, MultipartFile[] uploadFiles, String mainImageName) {
+
+        if (removeFiles != null) {
+            for (String file : removeFiles) {
+                String key = STR."prj1126/product/\{product.getProductId()}/\{file}";
+                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                // s3 파일 지우기
+                s3.deleteObject(dor);
+                // db 파일 지우기
+                mapper.deleteFile(product.getProductId(), file);
+            }
+        }
+
+        if (uploadFiles != null && uploadFiles.length > 0) {
+            for (MultipartFile file : uploadFiles) {
+
+                // 기존 db에 있는 이미지일 경우 메인이미지로 설정
+                List<String> mainImage = mapper.selectFilesByProductId(product.getProductId());
+                for (String name : mainImage) {
+                    name.equals(mainImageName);
+                    mapper.updateMainUImage(product.getProductId(), name, mainImageName);
+                }
+
+                // 새로 추가된 메인이미지일 경우
+                boolean isMain = false;
+                if (mainImageName != null && file.getOriginalFilename().equals(mainImageName)) {
+                    System.out.println("이름: " + file.getOriginalFilename());
+                    isMain = true; // 해당 파일을 메인 이미지로 설정
+                }
+
+                String objectKey = STR."prj1126/product/\{product.getProductId()}/\{file.getOriginalFilename()}";
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                try {
+                    s3.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException("S3 업로드 실패: " + objectKey, e);
+                }
+
+                // 새로 추가된 파일일 경우 추가
+                mapper.insertFile(product.getProductId(), file.getOriginalFilename(), isMain);
+            }
+        }
+
+        // 상품 정보 수정하기
         int cnt = mapper.update(product);
         return cnt == 1;
     }
@@ -147,7 +258,31 @@ public class ProductService {
         result.put("sellProducts", sellProducts);
         result.put("shareProducts", shareProducts);
 
+        // S3 URL을 기반으로 메인 이미지 경로 설정
+        for (List<Product> products : result.values()) {
+            for (Product product : products) {
+                if (product.getMainImageName() != null) {
+                    // S3 URL을 기반으로 메인 이미지 경로 설정
+                    String mainImageUrl = String.format(STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}");
+                    product.setMainImageName(mainImageUrl); // 메인 이미지 URL 설정
+                } else {
+                    // 메인 이미지가 없으면 기본 이미지 사용
+                    product.setMainImageName("/image/testImage.png"); // 기본 이미지 URL을 설정
+                }
+            }
+        }
+
         return result;
+    }
+
+    public boolean transaction(int productId) {
+        Product product = mapper.selectById(productId);
+        // 거래 완료 시에 Sold로 상태 변경
+        int updateStatus = mapper.updateProductStatus(productId);
+        // 구매 테이블에 추가 (buyer 임의로 설정)
+        String buyer_id = "tt@tt.tt";
+        int insertTrasaction = mapper.insertTranscation(productId, buyer_id, product.getWriter(), product.getProductName(), product.getLocationName(), product.getPrice());
+        return updateStatus == 1 && insertTrasaction == 1;
     }
 }
 

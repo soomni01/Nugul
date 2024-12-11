@@ -99,6 +99,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     };
   }, [searchParams, selectedCategory]);
 
+  console.log(productList);
   // 검색 키워드 유지 또는 초기화
   useEffect(() => {
     const nextSearch = { ...search };
@@ -233,7 +234,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         </Button>
       </Flex>
       {productList.length > 0 ? (
-        <Grid templateColumns="repeat(4, 1fr)" gap="6">
+        <Grid templateColumns="repeat(4, 1fr)" gap="8">
           {sortedList?.map((product) => (
             <ProductItem
               key={product.productId}

@@ -83,11 +83,11 @@ public class MemberService {
                 productMapper.deleteLike(productId);
             }
 
-            // 구매 목록 지우기
-            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());
-            for (Integer productId : purchased) {
-                mypageMapper.deletePurchased(productId);
-            }
+//            // 구매 목록 지우기
+//            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());
+//            for (Integer productId : purchased) {
+//                mypageMapper.deletePurchased(productId);
+//            }
             cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));

@@ -19,6 +19,29 @@ public class ProductController {
 
     final ProductService service;
 
+    // 거래 완료
+    @PostMapping("transaction/{productId}")
+    public ResponseEntity<Map<String, Object>> transaction(
+            @PathVariable int productId,
+            Authentication authentication) {
+        if (service.hasAccess(productId, authentication)) {
+            if (service.transaction(productId)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", STR."\{productId}번 상품 거래가 완료되었습니다.")));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "상품 거래 중 문제가 발생하였습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "거래를 완료할 권한이 없습니다.")));
+        }
+    }
+
+
     // 메인 페이지 상품
     @GetMapping("main")
     public Map<String, List<Product>> mainProduct() {
@@ -51,10 +74,13 @@ public class ProductController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> update(
             Product product,
+            @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
+            @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
+            @RequestParam(value = "mainImageName", required = false) String mainImageName,
             Authentication authentication) {
         if (service.hasAccess(product.getProductId(), authentication)) {
             if (service.validate(product)) {
-                if (service.update(product)) {
+                if (service.update(product, removeFiles, uploadFiles, mainImageName)) {
                     return ResponseEntity.ok()
                             .body(Map.of("message", Map.of("type", "success",
                                     "text", STR."\{product.getProductId()}번 상품 수정되었습니다.")));
@@ -75,8 +101,10 @@ public class ProductController {
         }
     }
 
-    // 상품 삭제하기
-    @DeleteMapping("delete/{id}")
+  
+  //  프론트에서  admin 추가 
+  //관리자 삭제
+    @DeleteMapping("admin/delete/{productId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int id, Authentication authentication) {
         String successMessage;
@@ -91,6 +119,27 @@ public class ProductController {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                 "text", successMessage)));
+             } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "상품 삭제 중 문제가 발생하였습니다.")));
+            }
+        } 
+      }
+              
+              
+    // 상품 삭제하기
+    @DeleteMapping("delete/{productId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteProduct(
+            @PathVariable int productId,
+            Authentication authentication) {
+        if (service.hasAccess(productId, authentication)) {
+            if (service.deleteProduct(productId)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", STR."\{productId}번 상품이 삭제되었습니다.")));
+
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
@@ -104,9 +153,9 @@ public class ProductController {
     }
 
     // 상품 1개의 정보 가져오기
-    @GetMapping("/view/{id}")
-    public Product view(@PathVariable int id) {
-        return service.getProductView(id);
+    @GetMapping("/view/{productId}")
+    public Product view(@PathVariable Integer productId) {
+        return service.getProductView(productId);
     }
 
     // 페이지, 카테고리, 검색, 지불방법 별 상품 목록 가져오기
@@ -125,10 +174,10 @@ public class ProductController {
     public ResponseEntity<Map<String, Object>> add(
             Product product,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-            @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+            @RequestParam(value = "mainImageName", required = false) String mainImageName,
             Authentication authentication) {
         if (service.validate(product)) {
-            if (service.add(product, files, mainImage, authentication)) {
+            if (service.add(product, files, mainImageName, authentication)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                         "text", STR."\{product.getProductId()}번 상품이 등록되었습니다."),

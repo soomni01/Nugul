@@ -162,6 +162,9 @@ export function ProfileEdit({ id, onCancel, onSave }) {
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
+          <Button onClick={onCancel} variant={"outline"}>
+            취소
+          </Button>
         </Box>
       </Stack>
     </Box>

@@ -21,9 +21,11 @@ public class Product {
     private String nickname;
     private LocalDateTime createdAt;
 
+    private String buyerNickname;
     private LocalDateTime purchasedAt;
     private List<ProductFile> fileList;
-    private String mainImage;
+    private String mainImageName;
     private Integer likeCount;
     private String reviewStatus;
+    private Integer expenseId;
 }

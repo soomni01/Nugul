@@ -8,5 +8,5 @@ import lombok.Data;
 public class ProductFile {
     private String name;
     private String src;
-    private Boolean isMain;
+//    private Boolean isMain;
 }
