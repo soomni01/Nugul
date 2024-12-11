@@ -106,19 +106,22 @@ export function CommentContainer({ boardId }) {
                         onDeleteClick={handleDeleteClick}
                         onEditClick={handleEditClick}
                     />
-                <Box display="flex" justifyContent="center">
-                    <PaginationRoot
-                        onPageChange={handlePageChange}
-                        count={count}
-                        pageSize={10}
-                        page={page}>
-                        <HStack>
-                            <PaginationPrevTrigger />
-                            <PaginationItems />
-                            <PaginationNextTrigger />
-                        </HStack>
-                    </PaginationRoot>
-                </Box>
+                {/* 댓글이 있을 때만 페이징을 표시 */}
+                {commentList.length > 0 && (
+                    <Box display="flex" justifyContent="center">
+                        <PaginationRoot
+                            onPageChange={handlePageChange}
+                            count={count}
+                            pageSize={10}
+                            page={page}>
+                            <HStack>
+                                <PaginationPrevTrigger />
+                                <PaginationItems />
+                                <PaginationNextTrigger />
+                            </HStack>
+                        </PaginationRoot>
+                    </Box>
+                )}
             </Stack>
         </Box>
     );
