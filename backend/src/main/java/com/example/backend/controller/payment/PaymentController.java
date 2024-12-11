@@ -1,6 +1,6 @@
 package com.example.backend.controller.payment;
 
-import com.example.backend.dto.payment.PaymentDTO;
+import com.example.backend.dto.payment.PaymentRecord;
 import com.example.backend.service.payment.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -42,7 +42,7 @@ public class PaymentController {
 
     // 결제 내역 저장 API
     @PostMapping("/savePayment")
-    public String savePayment(@RequestBody PaymentDTO payment) {
+    public String savePayment(@RequestBody PaymentRecord payment) {
         try {
             service.savePayment(payment);  // 결제 내역 저장
             return "결제 내역이 성공적으로 저장되었습니다.";

@@ -1,6 +1,6 @@
 package com.example.backend.mapper.payment;
 
-import com.example.backend.dto.payment.PaymentDTO;
+import com.example.backend.dto.payment.PaymentRecord;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,5 +10,5 @@ public interface PaymentMapper {
             INSERT INTO payment_record (imp_uid, buyer_id, product_id, product_name, payment_amount, payment_method, payment_date, status)
             VALUES (#{impUid}, #{buyerId}, #{productId}, #{productName}, #{paymentAmount}, #{paymentMethod}, #{paymentDate}, #{status})
             """)
-    void savePayment(PaymentDTO payment);
+    void savePayment(PaymentRecord payment);
 }

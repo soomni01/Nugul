@@ -1,6 +1,6 @@
 package com.example.backend.service.payment;
 
-import com.example.backend.dto.payment.PaymentDTO;
+import com.example.backend.dto.payment.PaymentRecord;
 import com.example.backend.mapper.payment.PaymentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class PaymentService {
     private PaymentMapper mapper;
 
     // 결제 내역 저장
-    public void savePayment(PaymentDTO payment) {
+    public void savePayment(PaymentRecord payment) {
         mapper.savePayment(payment);
     }
 }

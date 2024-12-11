@@ -3,7 +3,7 @@ package com.example.backend.dto.payment;
 import lombok.Data;
 
 @Data
-public class PaymentDTO {
+public class PaymentRecord {
     private Integer paymentId;
     private String impUid;
     private String buyerId;
