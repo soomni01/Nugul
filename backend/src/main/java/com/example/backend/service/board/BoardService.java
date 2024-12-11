@@ -64,7 +64,7 @@ public class BoardService {
     }
 
     public List<Board> selectByMemberId(String memberId, Integer page) {
-        Integer offset = (page - 1) * 10;
+        Integer offset = (page - 1) * 6;
         return mapper.selectByMemberId(memberId,offset);
     }
 

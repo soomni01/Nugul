@@ -27,16 +27,23 @@ public class BoardController {
     public Map<String, Object> getBoardsAndComments(@PathVariable String memberId,
                                                     @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
+        int itemsPerPage = 6;
+
         List<Board> boards = service.selectByMemberId(memberId,page); // 작성자의 게시물 가져오기
         List<Comment> comments = commentService.getCommentsByMemberId(memberId,page); // 사용자가 작성한 댓글
 
         int totalBoards = service.getBoardCountByMemberId(memberId);
         int totalComments = commentService.getCommentCountByMemberId(memberId);
+
+        int totalBoardPages = (int) Math.ceil((double) totalBoards / itemsPerPage); // 게시물 총 페이지 수
+        int totalCommentPages = (int) Math.ceil((double) totalComments / itemsPerPage); // 댓글 총 페이지 수
         return Map.of(
                 "boards", boards,
                 "comments", comments,
                 "totalBoardCount", totalBoards,
-                "totalCommentCount", totalComments
+                "totalCommentCount", totalComments,
+                "totalBoardPages", totalBoardPages,
+                "totalCommentPages", totalCommentPages
         );
     }
 

@@ -139,7 +139,7 @@ export function BoardsAndComments() {
                             </Text>
                         )}
                     </VStack>
-                    <PaginationRoot onPageChange={handlePageChange} count={totalBoards} pageSize={10} page={page}>
+                    <PaginationRoot onPageChange={handlePageChange} count={totalBoards} pageSize={6} page={page}>
                         <HStack>
                             <PaginationPrevTrigger />
                             <PaginationItems />
@@ -200,7 +200,7 @@ export function BoardsAndComments() {
                     ) : (
                         <Text color="gray.500">작성한 댓글이 없습니다.</Text>
                     )}
-                    <PaginationRoot onPageChange={handlePageChange} count={totalComments} pageSize={10} page={page}>
+                    <PaginationRoot onPageChange={handlePageChange} count={totalComments} pageSize={6} page={page}>
                         <HStack>
                             <PaginationPrevTrigger />
                             <PaginationItems />

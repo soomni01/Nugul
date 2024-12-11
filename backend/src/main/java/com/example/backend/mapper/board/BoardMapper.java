@@ -105,7 +105,7 @@ public interface BoardMapper {
             WHERE b.writer = #{memberId}
             GROUP BY b.board_id
             ORDER BY b.created_at DESC
-            LIMIT #{offset}, 10
+            LIMIT #{offset}, 6
         """)
     List<Board> selectByMemberId(String memberId, Integer offset);
 
