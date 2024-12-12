@@ -199,10 +199,10 @@ export function BoardsAndComments() {
                                         {relatedBoard && (
                                             <Box>
                                                 <Text fontSize="sm" color="gray.500" mb={1}>
-                                                    <strong>{relatedBoard.title}</strong>
+                                                    <strong>{comment.boardTitle}</strong>
                                                 </Text>
                                                 <Text fontSize="sm" color="gray.500" mb={1}>
-                                                    {getCategoryLabel(relatedBoard.category)} | {relatedBoard.createdAt}
+                                                    {getCategoryLabel(comment.boardCategory)} | {relatedBoard.createdAt}
                                                 </Text>
                                             </Box>
                                         )}

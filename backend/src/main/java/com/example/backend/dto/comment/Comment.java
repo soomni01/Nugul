@@ -12,4 +12,7 @@ public class Comment {
     private String comment;
     private LocalDateTime inserted;
     private String nickname;
+    private String boardTitle;
+    private String boardCategory;
+    private LocalDateTime boardInserted;
 }

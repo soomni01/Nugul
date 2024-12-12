@@ -72,7 +72,7 @@ public interface CommentMapper {
 
     @Select("""
     SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
-           m.nickname AS nickname, b.title AS boardTitle, b.created_at AS boardCreatedAt
+           m.nickname AS nickname, b.title AS boardTitle, b.created_at AS boardInserted,b.category AS boardCategory
     FROM comment c
     LEFT JOIN member m ON c.member_id = m.member_id
     LEFT JOIN board b ON c.board_id = b.board_id
