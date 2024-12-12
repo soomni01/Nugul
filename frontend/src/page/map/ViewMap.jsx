@@ -22,13 +22,12 @@ function ViewMap() {
   const [categoryImageNumber, setCategoryImageNumber] = useState(0);
   const [isoverlayOpen, setIsOverlayOpen] = useState(false);
   const [markerOpen, setMarkerOpen] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
   var contentNode = document.createElement("div");
 
   contentNode.className = "placeinfo_wrap";
   useEffect(() => {
-    // 아무것도 안할때의 이벤트 추가해놓기
-
     // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
     // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
     addEventHandle(contentNode, "mousedown", kakao.maps.event.preventMap);
@@ -38,8 +37,8 @@ function ViewMap() {
 
   useEffect(() => {
     if (currCategory) {
+      //  생성 객체
       const ps = new kakao.maps.services.Places(map);
-      // 커스텀 오버레이를 숨깁니다
 
       if (isoverlayOpen === true) {
         setIsOverlayOpen(false);
@@ -120,9 +119,6 @@ function ViewMap() {
   };
 
   function getItem(index, data) {
-    // 호출 되면 ,  docu 하나 만듬 li 태그 가지는
-    //   거기에   li태그 만들어질 str 을 작성하고
-    //    클래스 네임 주고 반환
     var el = document.createElement("li"),
       itemStr =
         '<span class="markerbg marker_' +
@@ -232,37 +228,17 @@ function ViewMap() {
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
   //
   function displayPlaceInfo(place) {
-    var open = !isoverlayOpen;
-    setIsOverlayOpen(open);
-    console.log(place);
-
-    console.log("isoverlayOpen", isoverlayOpen);
-    console.log("open", open);
-
-    var PlaceInfo;
-    if (open) {
-      PlaceInfo = makePlaceInfo(place);
-
-      <CustomOverlayMap
-        onCreate={setCustomOverlay}
-        position={{ lat: place.y, lng: place.x }}
-      >
-        {PlaceInfo}
-      </CustomOverlayMap>;
-
-      customOverlay.setMap(map);
-      // customovelay  위치 및,  map 설정
-      // customOverlay.setContent();
-      // customOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-      // customOverlay.setMap(map);
+    // 같은 장소를 다시 클릭하면 토글
+    if (selectedPlace === place) {
+      setSelectedPlace(null);
+      setIsOverlayOpen(false);
     } else {
-      // customOverlay.setMap(null);
+      setSelectedPlace(place);
+      setIsOverlayOpen(true);
     }
-    console.log(isoverlayOpen);
   }
 
   function makePlaceInfo(place) {
-    console.log("makePlaceInfo", place);
     return (
       <Box className={"placeinfo_wrap"}>
         <Box className="placeinfo">
@@ -364,15 +340,14 @@ function ViewMap() {
               </Box>
             );
           })}
-          {/*<CustomOverlayMap*/}
-          {/*  onCreate={setCustomOverlay}*/}
-          {/*  position={{ lat: 33.450701, lng: 126.570667 }}*/}
-          {/*></CustomOverlayMap>*/}
-
-          {/*  검색 클릭시 */}
-          {markers.map((item, index) => {
-            return <p key={index}>{item} </p>;
-          })}
+          {/* 마커들 */}
+          {isoverlayOpen && selectedPlace && (
+            <CustomOverlayMap
+              position={{ lat: selectedPlace.y, lng: selectedPlace.x }}
+            >
+              {makePlaceInfo(selectedPlace)}
+            </CustomOverlayMap>
+          )}
 
           <ZoomControl />
         </Map>
