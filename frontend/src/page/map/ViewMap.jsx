@@ -6,9 +6,16 @@ import {
   ZoomControl,
 } from "react-kakao-maps-sdk";
 import "./ViewMap.css";
-import { Box, Input, ListItem, ListRoot, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  Input,
+  ListItem,
+  ListRoot,
+  Stack,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
-import { Button } from "../../components/ui/button.jsx";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -178,9 +185,14 @@ function ViewMap() {
   }
 
   return (
-    <Box display={"flex"} w={"100%"} className={"map_wrap"}>
-      <Stack w={"20%"} className={"menu_wrap"}>
-        <Field>
+    <Box
+      display={"flex"}
+      w={"100%"}
+      className={"map_wrap"}
+      postion={"relative"}
+    >
+      <HStack postion={"absolute"}>
+        <Field w={"80%"}>
           <Input
             value={locationName}
             onChange={(e) => {
@@ -190,7 +202,9 @@ function ViewMap() {
         </Field>
 
         <Button onClick={() => handleSearch(locationName)}> 검색하기</Button>
+      </HStack>
 
+      <Stack w={"20%"} className={"menu_wrap"}>
         <ListRoot>
           {listItem.map((item, index) => (
             <ListItem className={"item"} key={index}>
@@ -203,6 +217,7 @@ function ViewMap() {
           {pagination && displayPagination(pagination)}
         </div>
       </Stack>
+
       <Stack w={"80%"}>
         <Map
           className="map"
