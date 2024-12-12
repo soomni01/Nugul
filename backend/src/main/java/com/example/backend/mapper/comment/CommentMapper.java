@@ -71,12 +71,15 @@ public interface CommentMapper {
     int deleteByBoardId(int boardId);
 
     @Select("""
-        SELECT * 
-        FROM comment 
-        WHERE member_id = #{memberId}
-        ORDER BY inserted DESC
+    SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
+           m.nickname AS nickname, b.title AS boardTitle, b.created_at AS boardCreatedAt
+    FROM comment c
+    LEFT JOIN member m ON c.member_id = m.member_id
+    LEFT JOIN board b ON c.board_id = b.board_id
+    WHERE c.member_id = #{memberId}
+    ORDER BY c.inserted DESC
     LIMIT #{offset}, 6
-    """)
+""")
     List<Comment> findCommentsByMemberId(String memberId, Integer offset);
 
     @Select("""
