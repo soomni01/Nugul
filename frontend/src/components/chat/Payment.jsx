@@ -6,8 +6,8 @@ import { Button } from "@chakra-ui/react";
 
 const Payment = ({ chatRoom }) => {
   const [product, setProduct] = useState({});
-  const { member_id, nickname } = useContext(AuthenticationContext);
-  console.log("Authentication Context:", { member_id, nickname });
+  const { id, nickname } = useContext(AuthenticationContext);
+  console.log("Authentication Context:", { id, nickname });
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
@@ -40,7 +40,7 @@ const Payment = ({ chatRoom }) => {
         merchant_uid: new Date().getTime(), // 고유 거래 ID
         name: product.productName, // 서버에서 가져온 상품명
         amount: product.price, // 서버에서 가져온 가격
-        // buyer_email: member_id, // 로그인된 사용자 이메일
+        buyer_email: id, // 로그인된 사용자 이메일
         buyer_name: nickname, // 로그인된 사용자 닉네임
       },
       async (rsp) => {
@@ -54,7 +54,7 @@ const Payment = ({ chatRoom }) => {
             // 결제 내역을 payment_record 테이블에 저장
             await axios.post("/api/savePayment", {
               imp_uid: rsp.imp_uid,
-              buyer_id: member_id,
+              buyer_id: id,
               product_id: product.id,
               product_name: product.product_name,
               payment_amount: rsp.payment_amount,
