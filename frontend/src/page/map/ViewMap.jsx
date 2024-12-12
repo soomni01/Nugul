@@ -186,6 +186,7 @@ function ViewMap() {
     setCategoryImageNumber(categoryImageNumber);
     if (categoryId === currCategory) {
       setCurrCategory("");
+      setIsOverlayOpen(false);
     } else {
       setCurrCategory(categoryId);
     }
@@ -239,17 +240,7 @@ function ViewMap() {
               </Heading>
             )}
             {listItem.map((item, index) => (
-              <ListItem
-                bg={"white"}
-                m={1}
-                p={3}
-                key={index}
-                style={{
-                  boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)", // 부드러운 음영
-                }}
-              >
-                {item}
-              </ListItem>
+              <ListItem className={"hover-item"}>{item}</ListItem>
             ))}
           </ListRoot>
           <div id={"pagination"}>
