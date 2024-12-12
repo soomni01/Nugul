@@ -160,11 +160,16 @@ function ViewMap() {
   }
 
   function makePlaceInfo(place) {
+    console.log(place);
+
+    // 카테고리 그룹 코드에 따라서  className 변경
+    const chageClassName =
+      currCategory === place.category_group_code ? "title" : "bluetitle";
     return (
       <Box className={"placeinfo_wrap"}>
         <Box className="placeinfo">
           <a
-            className="title"
+            className={chageClassName}
             href={place.place_url}
             target="_blank"
             rel="noopener noreferrer"
