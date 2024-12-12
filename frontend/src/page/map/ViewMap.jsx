@@ -8,14 +8,14 @@ import {
 import "./ViewMap.css";
 import {
   Box,
-  Button,
-  HStack,
+  Group,
+  Heading,
   Input,
   ListItem,
   ListRoot,
-  Stack,
 } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
+import { Button } from "../../components/ui/button.jsx";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -66,7 +66,6 @@ function ViewMap() {
       const ps = new kakao.maps.services.Places(map);
 
       ps.keywordSearch(placeKeyword, (result, _pagination) => {
-        console.log(result);
         // placekeyword로 검색하고 >  검색결과의 위치가 다 보일수 있도록 맵의 크기를 화장후  위치 변경
         setPlaceSearchResultList(result);
         const bounds = new kakao.maps.LatLngBounds();
@@ -88,23 +87,21 @@ function ViewMap() {
     }
   }, [placeKeyword, sameKeyword]);
 
+  // 같은 이름 다시 검색해도  >  맵 이동하도록 변경
   function handleSearch(locationname) {
-    setPlaceKeyword(locationname);
     if (locationname === placeKeyword) {
-      setSameKeyword(true);
-    }
+      setSameKeyword(!sameKeyword);
+    } else setPlaceKeyword(locationname);
   }
 
   function getItem(index, data) {
-    console.log(data);
     return (
       <>
-        <span className={`markerbg marker_${index + 1}`}></span>
-        <div className="info">
+        <div>
           <h5>{data.place_name}</h5>
           <span>{data.address_name}</span>
           <hr />
-          <span className={"tel"}>{data.phone}</span>
+          <span>{data.phone}</span>
         </div>
       </>
     );
@@ -116,7 +113,7 @@ function ViewMap() {
 
     // 페이지 버튼 클릭 핸들러
     const handlePageClick = (pageNumber) => {
-      pagination.gotoPage(pageNumber);
+      // pagination.gotoPage(pageNumber);
       setCurrentPage(pageNumber);
     };
 
@@ -189,144 +186,152 @@ function ViewMap() {
       display={"flex"}
       w={"100%"}
       className={"map_wrap"}
-      postion={"relative"}
+      style={{ position: "relative" }}
     >
-      <HStack postion={"absolute"}>
-        <Field w={"80%"}>
-          <Input
-            value={locationName}
-            onChange={(e) => {
-              setLocationName(e.target.value);
-            }}
-          />
-        </Field>
-
-        <Button onClick={() => handleSearch(locationName)}> 검색하기</Button>
-      </HStack>
-
-      <Stack w={"20%"} className={"menu_wrap"}>
-        <ListRoot>
-          {listItem.map((item, index) => (
-            <ListItem className={"item"} key={index}>
-              {" "}
-              {item}
-            </ListItem>
-          ))}
-        </ListRoot>
-        <div id={"pagination"}>
-          {pagination && displayPagination(pagination)}
-        </div>
-      </Stack>
-
-      <Stack w={"80%"}>
-        <Map
-          className="map"
-          center={{ lat: 33.450701, lng: 126.570667 }}
-          level={3}
-          style={{ width: "100%", height: "800px" }}
-          onCreate={setMap}
+      <Map
+        className="map"
+        center={{ lat: 33.450701, lng: 126.570667 }}
+        level={3}
+        style={{ width: "100%", height: "100vh" }}
+        onCreate={setMap}
+      >
+        <Box
+          bg={"white"}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 3,
+            width: "auto",
+            height: "auto",
+          }}
+          p={3}
         >
-          {/* 카테고리 마커 */}
-          {categorySearchResultList.map((item, index) => {
-            return (
-              <MapMarker
-                key={index}
-                position={{ lat: item.y, lng: item.x }}
-                image={{
-                  src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
-                  size: { width: 27, height: 28 },
-                  options: {
-                    spriteSize: { width: 72, height: 208 },
-                    spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
-                    offset: { x: 11, y: 28 },
-                  },
+          <Group attached>
+            <Field>
+              <Input
+                w={"100%"}
+                bg={"white"}
+                value={locationName}
+                onChange={(e) => {
+                  setLocationName(e.target.value);
                 }}
-                onClick={() => {
-                  displayPlaceInfo(item);
-                }}
-              ></MapMarker>
-            );
-          })}
-          {/* 오버레이  */}
-          {isoverlayOpen && selectedPlace && (
-            <CustomOverlayMap
-              onCreate={setCustomOverlay}
-              position={{ lat: selectedPlace.y, lng: selectedPlace.x }}
-            >
-              {makePlaceInfo(selectedPlace)}
-            </CustomOverlayMap>
-          )}
-          {/* 검색 마커  */}
-          {placeSearchResultList.map((item, index) => {
-            // 좌표 객체 생성
-            return (
-              <MapMarker
-                key={item.id || i}
-                position={{ lat: item.y, lng: item.x }}
-                onClick={() => displayPlaceInfo(item)}
-              ></MapMarker>
-            );
-          })}
+              />
+            </Field>
 
-          <ZoomControl />
-        </Map>
-        <ul id="category">
-          <li
-            id="BK9"
-            data-order="0"
-            className={currCategory === "BK9" ? "on" : ""}
-            onClick={() => handleCategoryListClick("BK9", 0)}
+            <Button onClick={() => handleSearch(locationName)}>검색하기</Button>
+          </Group>
+          {listItem || <Heading>검색결과</Heading>}
+          <ListRoot listStyle={"none"}>
+            {listItem.map((item, index) => (
+              <ListItem bg={"white"} p={3} key={index}>
+                {item}
+              </ListItem>
+            ))}
+          </ListRoot>
+          <div id={"pagination"}>
+            {pagination && displayPagination(pagination)}
+          </div>
+        </Box>
+        {/* 카테고리 마커 */}
+        {categorySearchResultList.map((item, index) => {
+          return (
+            <MapMarker
+              key={index}
+              position={{ lat: item.y, lng: item.x }}
+              image={{
+                src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
+                size: { width: 27, height: 28 },
+                options: {
+                  spriteSize: { width: 72, height: 208 },
+                  spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
+                  offset: { x: 11, y: 28 },
+                },
+              }}
+              onClick={() => {
+                displayPlaceInfo(item);
+              }}
+            ></MapMarker>
+          );
+        })}
+        {/* 오버레이  */}
+        {isoverlayOpen && selectedPlace && (
+          <CustomOverlayMap
+            onCreate={setCustomOverlay}
+            position={{ lat: selectedPlace.y, lng: selectedPlace.x }}
           >
-            <span className="category_bg bank"></span>
-            은행
-          </li>
-          <li
-            id="MT1"
-            data-order="1"
-            className={currCategory === "MT1" ? "on" : ""}
-            onClick={() => handleCategoryListClick("MT1", 1)}
-          >
-            <span className="category_bg mart"></span>
-            마트
-          </li>
-          <li
-            id="PM9"
-            data-order="2"
-            className={currCategory === "PM9" ? "on" : ""}
-            onClick={() => handleCategoryListClick("PM9", 2)}
-          >
-            <span className="category_bg pharmacy"></span>
-            약국
-          </li>
-          <li
-            id="OL7"
-            data-order="3"
-            className={currCategory === "OL7" ? "on" : ""}
-            onClick={() => handleCategoryListClick("OL7", 3)}
-          >
-            <span className="category_bg oil"></span>
-            주유소
-          </li>
-          <li
-            id="CE7"
-            data-order="4"
-            className={currCategory === "CE7" ? "on" : ""}
-            onClick={() => handleCategoryListClick("CE7", 4)}
-          >
-            <span className="category_bg cafe"></span>
-            카페
-          </li>
-          <li
-            id="CS2"
-            data-order="5"
-            className={currCategory === "CS2" ? "on" : ""}
-            onClick={() => handleCategoryListClick("CS2", 5)}
-          >
-            <span className="category_bg store"></span>
-            편의점
-          </li>
-        </ul>
-      </Stack>
+            {makePlaceInfo(selectedPlace)}
+          </CustomOverlayMap>
+        )}
+        {/* 검색 마커  */}
+        {placeSearchResultList.map((item, index) => {
+          // 좌표 객체 생성
+          return (
+            <MapMarker
+              key={item.id || i}
+              position={{ lat: item.y, lng: item.x }}
+              onClick={() => displayPlaceInfo(item)}
+            ></MapMarker>
+          );
+        })}
+        <ZoomControl />
+      </Map>
+      <ul id="category">
+        <li
+          id="BK9"
+          data-order="0"
+          className={currCategory === "BK9" ? "on" : ""}
+          onClick={() => handleCategoryListClick("BK9", 0)}
+        >
+          <span className="category_bg bank"></span>
+          은행
+        </li>
+        <li
+          id="MT1"
+          data-order="1"
+          className={currCategory === "MT1" ? "on" : ""}
+          onClick={() => handleCategoryListClick("MT1", 1)}
+        >
+          <span className="category_bg mart"></span>
+          마트
+        </li>
+        <li
+          id="PM9"
+          data-order="2"
+          className={currCategory === "PM9" ? "on" : ""}
+          onClick={() => handleCategoryListClick("PM9", 2)}
+        >
+          <span className="category_bg pharmacy"></span>
+          약국
+        </li>
+        <li
+          id="OL7"
+          data-order="3"
+          className={currCategory === "OL7" ? "on" : ""}
+          onClick={() => handleCategoryListClick("OL7", 3)}
+        >
+          <span className="category_bg oil"></span>
+          주유소
+        </li>
+        <li
+          id="CE7"
+          data-order="4"
+          className={currCategory === "CE7" ? "on" : ""}
+          onClick={() => handleCategoryListClick("CE7", 4)}
+        >
+          <span className="category_bg cafe"></span>
+          카페
+        </li>
+        <li
+          id="CS2"
+          data-order="5"
+          className={currCategory === "CS2" ? "on" : ""}
+          onClick={() => handleCategoryListClick("CS2", 5)}
+        >
+          <span className="category_bg store"></span>
+          편의점
+        </li>
+      </ul>
     </Box>
   );
 }

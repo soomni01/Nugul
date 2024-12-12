@@ -27,10 +27,9 @@ import { MyPage } from "./page/mypage/MyPage.jsx";
 
 import { Inquiry } from "./page/inquiry/Inquiry.jsx";
 
-import ViewMap from "./page/map/ViewMap.jsx";
-
 import { InquiryView } from "./page/mypage/InquiryView.jsx";
 import InquiryEdit from "./page/mypage/InquiryEdit.jsx";
+import ViewMap from "./page/map/ViewMap.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
