@@ -6,7 +6,7 @@ import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { FaCommentDots } from "react-icons/fa";
 import { BoardCategories } from "../../components/board/BoardCategoryContainer.jsx";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
     PaginationItems,
     PaginationNextTrigger,
@@ -20,20 +20,16 @@ export function BoardsAndComments() {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
     const [totalBoards, setTotalBoards] = useState(0);
     const [totalComments, setTotalComments] = useState(0);
     const [boardPage, setBoardPage] = useState(1); // 초기값은 1
     const [commentPage, setCommentPage] = useState(1); // 초기값은 1
+    const [activeTab, setActiveTab] = useState("posts"); // 기본값은 'posts'
 
-    useEffect(() => {
-        // URL에서 상태 동기화
-        const boardPageFromURL = parseInt(searchParams.get("boardPages")) || 1;
-        const commentPageFromURL = parseInt(searchParams.get("commentPages")) || 1;
-
-        setBoardPage(boardPageFromURL);
-        setCommentPage(commentPageFromURL);
-    }, [searchParams]);
+    const getCategoryLabel = (value) => {
+        const category = BoardCategories.find((cat) => cat.value === value);
+        return category ? category.label : value;
+    };
 
     useEffect(() => {
         if (!id) return;
@@ -46,6 +42,7 @@ export function BoardsAndComments() {
                 params: {
                     boardPages: boardPage,
                     commentPages: commentPage,
+                    tab: activeTab,
                 },
             })
             .then((response) => {
@@ -65,16 +62,18 @@ export function BoardsAndComments() {
         return () => {
             controller.abort();
         };
-    }, [id, boardPage, commentPage]);
+    }, [id, boardPage, commentPage, activeTab]);
 
     const handlePageChange = (e, tab) => {
-        const newParams = new URLSearchParams(searchParams);
         if (tab === "posts") {
-            newParams.set("boardPages", e.page);
+            setBoardPage(e.page);
         } else if (tab === "comments") {
-            newParams.set("commentPages", e.page);
+            setCommentPage(e.page);
         }
-        setSearchParams(newParams); // URL 갱신
+    };
+
+    const handleTabChange = (newTab) => {
+        setActiveTab(newTab);
     };
 
     const handlePostClick = (boardId) => {
@@ -85,82 +84,47 @@ export function BoardsAndComments() {
         navigate(`/board/boardView/${boardId}`);
     };
 
-    if (!id || loading) {
+    if (loading || !boards.length || !comments.length) {
         return <Spinner />;
     }
 
     return (
         <Box>
-            {/* 게시물 정보 */}
-            <Box>
-                <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
-                    작성한 게시물
-                </Heading>
-                <VStack spacing={4} align="start" mb={6}>
-                    {boards.length > 0 ? (
-                        boards.map((board) => (
-                            <Box
-                                key={board.boardId}
-                                p={4}
-                                border="1px"
-                                borderRadius="md"
-                                borderColor="gray.200"
-                                w="100%"
-                                bg="gray.50"
-                                cursor="pointer"
-                                onClick={() => handlePostClick(board.boardId)}
-                            >
-                                <Flex justify="space-between" align="center">
-                                    <Box>
-                                        <Text fontWeight="bold">
-                                            {board.title}
-                                            <Badge variant="subtle" colorScheme="green">
-                                                <FaCommentDots />
-                                                {board.countComment}
-                                            </Badge>
-                                        </Text>
-                                        <Text fontSize="sm" color="gray.500">
-                                            {getCategoryLabel(board.category)} | {board.createdAt}
-                                        </Text>
-                                    </Box>
-                                </Flex>
-                            </Box>
-                        ))
-                    ) : (
-                        <Text color="gray.500">
-                            작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
-                        </Text>
-                    )}
-                </VStack>
-                <PaginationRoot
-                    onPageChange={(e) => handlePageChange(e, "posts")}
-                    count={totalBoards}
-                    pageSize={6}
-                    page={boardPage}
+            {/* 탭 버튼들 */}
+            <HStack spacing={6} mb={6}>
+                <Box
+                    as="button"
+                    onClick={() => handleTabChange("posts")}
+                    p={4}
+                    borderBottom={activeTab === "posts" ? "2px solid teal" : "none"}
+                    _hover={{ cursor: "pointer", color: "teal.500" }}
                 >
-                    <HStack>
-                        <PaginationPrevTrigger />
-                        <PaginationItems />
-                        <PaginationNextTrigger />
-                    </HStack>
-                </PaginationRoot>
-            </Box>
-
-            {/* 댓글 정보 */}
-            <Box>
-                <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
+                    <TfiWrite style={{ marginRight: "8px" }} />
+                    작성한 게시물
+                </Box>
+                <Box
+                    as="button"
+                    onClick={() => handleTabChange("comments")}
+                    p={4}
+                    borderBottom={activeTab === "comments" ? "2px solid teal" : "none"}
+                    _hover={{ cursor: "pointer", color: "teal.500" }}
+                >
+                    <LuFolder style={{ marginRight: "8px" }} />
                     작성한 댓글
-                </Heading>
-                {comments.length > 0 ? (
-                    <Box as="ul" pl={0}>
-                        {comments.map((comment) => {
-                            const relatedBoard = boards.find(board => board.boardId === comment.boardId);
-                            return (
+                </Box>
+            </HStack>
+
+            {/* 게시물 정보 */}
+            {activeTab === "posts" && (
+                <Box>
+                    <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
+                        작성한 게시물
+                    </Heading>
+                    <VStack spacing={4} align="start" mb={6}>
+                        {boards.length > 0 ? (
+                            boards.map((board) => (
                                 <Box
-                                    as="li"
-                                    key={comment.commentId}
-                                    listStyleType="none"
-                                    mb={4}
+                                    key={board.boardId}
                                     p={4}
                                     border="1px"
                                     borderRadius="md"
@@ -168,41 +132,104 @@ export function BoardsAndComments() {
                                     w="100%"
                                     bg="gray.50"
                                     cursor="pointer"
-                                    onClick={() => handleCommentClick(comment.boardId)}
+                                    onClick={() => handlePostClick(board.boardId)}
                                 >
-                                    {relatedBoard && (
+                                    <Flex justify="space-between" align="center">
                                         <Box>
-                                            <Text fontSize="sm" color="gray.500" mb={1}>
-                                                <strong>{relatedBoard.title}</strong>
+                                            <Text fontWeight="bold">
+                                                {board.title}
+                                                <Badge variant="subtle" colorScheme="green">
+                                                    <FaCommentDots />
+                                                    {board.countComment}
+                                                </Badge>
                                             </Text>
-                                            <Text fontSize="sm" color="gray.500" mb={1}>
-                                                {getCategoryLabel(relatedBoard.category)} | {relatedBoard.createdAt}
+                                            <Text fontSize="sm" color="gray.500">
+                                                {getCategoryLabel(board.category)} | {board.createdAt}
                                             </Text>
                                         </Box>
-                                    )}
-                                    <Text bg="skyblue" p={2} borderRadius="md" fontSize="sm">
-                                        {comment.comment}
-                                    </Text>
+                                    </Flex>
                                 </Box>
-                            );
-                        })}
-                    </Box>
-                ) : (
-                    <Text color="gray.500">작성한 댓글이 없습니다.</Text>
-                )}
-                <PaginationRoot
-                    onPageChange={(e) => handlePageChange(e, "comments")}
-                    count={totalComments}
-                    pageSize={6}
-                    page={commentPage}
-                >
-                    <HStack>
-                        <PaginationPrevTrigger />
-                        <PaginationItems />
-                        <PaginationNextTrigger />
-                    </HStack>
-                </PaginationRoot>
-            </Box>
+                            ))
+                        ) : (
+                            <Text color="gray.500">
+                                작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
+                            </Text>
+                        )}
+                    </VStack>
+                    <PaginationRoot
+                        onPageChange={(e) => handlePageChange(e, "posts")}
+                        count={totalBoards}
+                        pageSize={6}
+                        page={boardPage}
+                    >
+                        <HStack>
+                            <PaginationPrevTrigger />
+                            <PaginationItems />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
+                </Box>
+            )}
+
+            {/* 댓글 정보 */}
+            {activeTab === "comments" && (
+                <Box>
+                    <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
+                        작성한 댓글
+                    </Heading>
+                    {comments.length > 0 ? (
+                        <Box as="ul" pl={0}>
+                            {comments.map((comment) => {
+                                const relatedBoard = boards.find(board => board.boardId === comment.boardId);
+                                return (
+                                    <Box
+                                        as="li"
+                                        key={comment.commentId}
+                                        listStyleType="none"
+                                        mb={4}
+                                        p={4}
+                                        border="1px"
+                                        borderRadius="md"
+                                        borderColor="gray.200"
+                                        w="100%"
+                                        bg="gray.50"
+                                        cursor="pointer"
+                                        onClick={() => handleCommentClick(comment.boardId)}
+                                    >
+                                        {relatedBoard && (
+                                            <Box>
+                                                <Text fontSize="sm" color="gray.500" mb={1}>
+                                                    <strong>{relatedBoard.title}</strong>
+                                                </Text>
+                                                <Text fontSize="sm" color="gray.500" mb={1}>
+                                                    {getCategoryLabel(relatedBoard.category)} | {relatedBoard.createdAt}
+                                                </Text>
+                                            </Box>
+                                        )}
+                                        <Text bg="skyblue" p={2} borderRadius="md" fontSize="sm">
+                                            {comment.comment}
+                                        </Text>
+                                    </Box>
+                                );
+                            })}
+                        </Box>
+                    ) : (
+                        <Text color="gray.500">작성한 댓글이 없습니다.</Text>
+                    )}
+                    <PaginationRoot
+                        onPageChange={(e) => handlePageChange(e, "comments")}
+                        count={totalComments}
+                        pageSize={6}
+                        page={commentPage}
+                    >
+                        <HStack>
+                            <PaginationPrevTrigger />
+                            <PaginationItems />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
+                </Box>
+            )}
         </Box>
     );
 }
