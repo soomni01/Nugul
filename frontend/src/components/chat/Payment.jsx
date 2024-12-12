@@ -46,20 +46,19 @@ const Payment = ({ chatRoom }) => {
       async (rsp) => {
         try {
           const { data } = await axios.post(
-            "http://localhost:8080/verifyIamport/" + rsp.imp_uid,
+            "/api/verifyIamport/" + rsp.imp_uid,
           );
 
           // 결제 금액이 일치하는지 확인
           if (rsp.paid_amount === data.response.amount) {
             // 결제 내역을 payment_record 테이블에 저장
             await axios.post("/api/savePayment", {
-              imp_uid: rsp.imp_uid,
-              buyer_id: id,
-              product_id: product.id,
-              product_name: product.product_name,
-              payment_amount: rsp.payment_amount,
-              payment_method: rsp.pay_method,
-              payment_date: new Date(),
+              impUid: rsp.imp_uid,
+              buyerId: id,
+              productName: product.productName, // 서버에서 가져온 상품명
+              paymentAmount: product.price, // 서버에서 가져온 가격
+              paymentMethod: rsp.pay_method,
+              paymentDate: new Date(),
               status: "paid", // 결제 완료 상태
             });
 

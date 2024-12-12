@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PaymentMapper {
     @Insert("""
-            INSERT INTO payment_record (imp_uid, buyer_id, product_id, product_name, payment_amount, payment_method, payment_date, status)
-            VALUES (#{impUid}, #{buyerId}, #{productId}, #{productName}, #{paymentAmount}, #{paymentMethod}, #{paymentDate}, #{status})
+            INSERT INTO payment_record (imp_uid, buyer_id, product_name, payment_amount, payment_method, payment_date, status)
+            VALUES (#{impUid}, #{buyerId}, #{productName}, #{paymentAmount}, #{paymentMethod}, #{paymentDate}, #{status})
             """)
-    void savePayment(PaymentRecord payment);
+    int savePayment(PaymentRecord paymentrecord);
 }
