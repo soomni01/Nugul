@@ -24,17 +24,6 @@ function ViewMap() {
   const [markerOpen, setMarkerOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
 
-  var contentNode = document.createElement("div");
-
-  contentNode.className = "placeinfo_wrap";
-  useEffect(() => {
-    // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
-    // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
-    addEventHandle(contentNode, "mousedown", kakao.maps.event.preventMap);
-    addEventHandle(contentNode, "touchstart", kakao.maps.event.preventMap);
-    // 카테고리 이벤트 추가
-  }, []);
-
   useEffect(() => {
     if (currCategory) {
       //  생성 객체
@@ -57,13 +46,7 @@ function ViewMap() {
     }
   }, [currCategory]);
 
-  function addEventHandle(target, type, callback) {
-    if (target.addEventListener) {
-      target.addEventListener(type, callback);
-    } else {
-      target.attachEvent("on" + type, callback);
-    }
-  }
+  useEffect(() => {}, []);
 
   const handleSearch = () => {
     if (!map) return;
@@ -203,30 +186,8 @@ function ViewMap() {
     console.log("끝");
   }
 
-  // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
-  function addMarker(position, order) {
-    var imageSrc =
-        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png", // 마커 이미지 url, 스프라이트 이미지를 씁니다
-      imageSize = new kakao.maps.Size(27, 28), // 마커 이미지의 크기
-      imgOptions = {
-        spriteSize: new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
-        spriteOrigin: new kakao.maps.Point(46, order * 36), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-        offset: new kakao.maps.Point(11, 28), // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-      },
-      markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-      marker = new kakao.maps.Marker({
-        position: position, // 마커의 위치
-        image: markerImage,
-      });
-
-    marker.setMap(map); // 지도 위에 마커를 표출합니다
-    //  기존꺼
-    customOverlayMarker.push(marker); // 배열에 생성된 마커를 추가
-    return marker;
-  }
-
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
-  //
+
   function displayPlaceInfo(place) {
     // 같은 장소를 다시 클릭하면 토글
     if (selectedPlace === place) {
@@ -259,29 +220,6 @@ function ViewMap() {
         </Box>
       </Box>
     );
-  }
-
-  // ㄴㄴ 그냥 마커
-  function removeMarker() {
-    for (var i = 0; i < markers.length; i++) {
-      // markers[i].getVisible() === true && markers[i].setVisible(false);
-      markers[i].setMap(null);
-    }
-    setMarkers([]);
-  }
-
-  function removeCustomMarker() {
-    console.log("커스텀 마커 삭제 실행확인");
-    console.log(customOverlayMarker);
-
-    // 지도에서 모든 마커 제거
-    customOverlayMarker.forEach((marker) => marker.setMap(null));
-
-    // 상태 배열 초기화
-    const a = [];
-    setCustomOverlayMarker(a);
-
-    console.log(customOverlayMarker);
   }
 
   function handleCategoryListClick(categoryId, categoryImageNumber) {
@@ -341,6 +279,7 @@ function ViewMap() {
             );
           })}
           {/* 마커들 */}
+
           {isoverlayOpen && selectedPlace && (
             <CustomOverlayMap
               position={{ lat: selectedPlace.y, lng: selectedPlace.x }}
@@ -348,6 +287,11 @@ function ViewMap() {
               {makePlaceInfo(selectedPlace)}
             </CustomOverlayMap>
           )}
+          {markers.map((item) => {
+            // <MapMarker position={{ lat: item, lng }}></MapMarker>;
+
+            return item;
+          })}
 
           <ZoomControl />
         </Map>
