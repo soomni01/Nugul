@@ -96,6 +96,7 @@ function ViewMap() {
     } else setPlaceKeyword(locationname);
   }
 
+  //리스트 정보 출력부
   function getItem(index, data) {
     return (
       <>
@@ -160,8 +161,6 @@ function ViewMap() {
   }
 
   function makePlaceInfo(place) {
-    console.log(place);
-
     // 카테고리 그룹 코드에 따라서  className 변경
     const chageClassName =
       currCategory === place.category_group_code ? "title" : "bluetitle";
@@ -197,6 +196,8 @@ function ViewMap() {
     }
   }
 
+  console.log(selectedPlace);
+  console.log(listItem[0]);
   return (
     <Box
       display={"flex"}
