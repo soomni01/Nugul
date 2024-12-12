@@ -14,16 +14,14 @@ function ViewMap() {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [locationName, setLocationName] = useState("");
-
   const [customOverlay, setCustomOverlay] = useState(null);
-  const [customOverlayMarker, setCustomOverlayMarker] = useState([]);
   const [currCategory, setCurrCategory] = useState("");
   const [categorySearchResultList, setCategorySearchResultList] = useState([]);
   const [categoryImageNumber, setCategoryImageNumber] = useState(0);
   const [isoverlayOpen, setIsOverlayOpen] = useState(false);
-  const [markerOpen, setMarkerOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
-
+  const [placeKeyword, setPlaceKeyword] = useState("");
+  const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
   useEffect(() => {
     if (currCategory) {
       //  생성 객체
@@ -46,60 +44,61 @@ function ViewMap() {
     }
   }, [currCategory]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (placeKeyword) {
+      if (!map) return;
 
-  const handleSearch = () => {
-    if (!map) return;
+      // 검색
+      const ps = new kakao.maps.services.Places(map);
 
-    const ps = new kakao.maps.services.Places(map);
-
-    ps.keywordSearch(locationName, (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
+      // placekeyword로 검색하고 >  검색결과의 위치가 다 보일수 있도록 맵의 크기를 화장후  위치 변경
+      ps.keywordSearch(placeKeyword, (result) => {
+        setPlaceSearchResultList(result);
         const bounds = new kakao.maps.LatLngBounds();
-
-        // 마커 배열 초기화
-        const newMarkers = data.map((item, i) => {
-          // 경계 확장
+        result.forEach((item) => {
           bounds.extend(new kakao.maps.LatLng(item.y, item.x));
-
-          return (
-            <MapMarker
-              key={item.id || i}
-              position={{ lat: item.y, lng: item.x }}
-              onClick={() => displayPlaceInfo(item)}
-            ></MapMarker>
-          );
         });
-
-        // 마커 상태 업데이트
-        setMarkers(newMarkers);
-
-        // DOM 조작 부분
-        const listEl = document.getElementById("placeList");
-        const fragment = document.createDocumentFragment();
-
-        // 기존 리스트 초기화
-        removeAllChildNods(listEl);
-
-        // 리스트 아이템 생성
-        data.forEach((item, i) => {
-          const itemEl = getItem(i, item);
-          fragment.appendChild(itemEl);
-        });
-
-        // 프래그먼트를 리스트에 추가
-        listEl.appendChild(fragment);
-
-        // 지도 범위 재설정
         map.setBounds(bounds);
+      });
+    } else {
+      setPlaceSearchResultList([]);
+    }
+  }, [placeKeyword]);
 
-        // 페이지네이션 표시
-        displayPagination(_pagination);
-      }
-    });
-  };
+  function handleSearch(locationname) {
+    setPlaceKeyword(locationname);
+    // if (!map) return;
+    //
+    // const ps = new kakao.maps.services.Places(map);
+
+    // ps.keywordSearch(locationName, (data, status, _pagination) => {
+    //   if (status === kakao.maps.services.Status.OK) {
+    //
+    //
+    //     // DOM 조작 부분
+    //     const listEl = document.getElementById("placeList");
+    //     const fragment = document.createDocumentFragment();
+    //
+    //     // 기존 리스트 초기화
+    //     removeAllChildNods(listEl);
+    //
+    //     // 리스트 아이템 생성
+    //     data.forEach((item, i) => {
+    //       const itemEl = getItem(i, item);
+    //       fragment.appendChild(itemEl);
+    //     });
+    //
+    //     // 프래그먼트를 리스트에 추가
+    //     listEl.appendChild(fragment);
+    //
+    //     // 지도 범위 재설정
+    //     map.setBounds(bounds);
+    //
+    //     // 페이지네이션 표시
+    //     displayPagination(_pagination);
+    //   }
+    // });
+  }
 
   function getItem(index, data) {
     var el = document.createElement("li"),
@@ -170,22 +169,6 @@ function ViewMap() {
 
   // 카테고리 검색을 요청하는 함수입니다
 
-  function placesSearchCB(data, status, pagination) {
-    console.log("실행 확인");
-    if (status === kakao.maps.services.Status.OK) {
-      // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
-      console.log(" displayPlaces 실행 전");
-      displayPlaces(data);
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-      // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
-      // alert("검색 결과 x");
-    } else if (status === kakao.maps.services.Status.ERROR) {
-      // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
-      // alert("에러 발생");
-    }
-    console.log("끝");
-  }
-
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
 
   function displayPlaceInfo(place) {
@@ -243,7 +226,7 @@ function ViewMap() {
           />
         </Field>
 
-        <Button onClick={handleSearch}> 검색하기</Button>
+        <Button onClick={() => handleSearch(locationName)}> 검색하기</Button>
 
         <ListRoot id={"placeList"} as={"ol"}></ListRoot>
         <div id={"pagination"}></div>
@@ -258,39 +241,44 @@ function ViewMap() {
         >
           {categorySearchResultList.map((item, index) => {
             return (
-              <Box>
-                <MapMarker
-                  key={index}
-                  position={{ lat: item.y, lng: item.x }}
-                  image={{
-                    src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
-                    size: { width: 27, height: 28 },
-                    options: {
-                      spriteSize: { width: 72, height: 208 },
-                      spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
-                      offset: { x: 11, y: 28 },
-                    },
-                  }}
-                  onClick={() => {
-                    displayPlaceInfo(item);
-                  }}
-                ></MapMarker>
-              </Box>
+              <MapMarker
+                key={index}
+                position={{ lat: item.y, lng: item.x }}
+                image={{
+                  src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
+                  size: { width: 27, height: 28 },
+                  options: {
+                    spriteSize: { width: 72, height: 208 },
+                    spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
+                    offset: { x: 11, y: 28 },
+                  },
+                }}
+                onClick={() => {
+                  displayPlaceInfo(item);
+                }}
+              ></MapMarker>
             );
           })}
           {/* 마커들 */}
 
           {isoverlayOpen && selectedPlace && (
             <CustomOverlayMap
+              onCreate={setCustomOverlay}
               position={{ lat: selectedPlace.y, lng: selectedPlace.x }}
             >
               {makePlaceInfo(selectedPlace)}
             </CustomOverlayMap>
           )}
-          {markers.map((item) => {
-            // <MapMarker position={{ lat: item, lng }}></MapMarker>;
 
-            return item;
+          {placeSearchResultList.map((item, index) => {
+            // 좌표 객체 생성
+            return (
+              <MapMarker
+                key={item.id || i}
+                position={{ lat: item.y, lng: item.x }}
+                onClick={() => displayPlaceInfo(item)}
+              ></MapMarker>
+            );
           })}
 
           <ZoomControl />
