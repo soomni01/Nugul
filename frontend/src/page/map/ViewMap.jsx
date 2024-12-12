@@ -6,10 +6,18 @@ import {
   ZoomControl,
 } from "react-kakao-maps-sdk";
 import "./ViewMap.css";
-import { Box, Group, Input, ListItem, ListRoot } from "@chakra-ui/react";
+import {
+  Box,
+  Group,
+  Heading,
+  Input,
+  ListItem,
+  ListRoot,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { IoSearchOutline } from "react-icons/io5";
+import { MdLocalPhone } from "react-icons/md";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -91,10 +99,20 @@ function ViewMap() {
   function getItem(index, data) {
     return (
       <>
-        <h5>{data.place_name}</h5>
-        <span>{data.address_name}</span>
-        <hr />
-        <span>{data.phone}</span>
+        <div className={"listItem"}>
+          <Heading>{data.place_name}</Heading>
+          <span>{data.address_name}</span>
+          <hr />
+          <MdLocalPhone
+            size={"16px"}
+            style={{
+              display: "inline-block",
+              marginRight: "5px",
+              color: "green",
+            }}
+          />
+          <span>{data.phone}</span>
+        </div>
       </>
     );
   }
@@ -201,7 +219,6 @@ function ViewMap() {
             <Field>
               <Input
                 w={"100%"}
-                bg={"white"}
                 value={locationName}
                 onChange={(e) => {
                   setLocationName(e.target.value);
@@ -214,9 +231,23 @@ function ViewMap() {
             </Button>
           </Group>
 
-          <ListRoot listStyle={"ol"}>
+          <ListRoot listStyle={"none"} overFlowY={"scroll"}>
+            {listItem.length === 0 || (
+              <Heading style={{ borderBottom: "1px solid gray" }}>
+                {" "}
+                검색결과
+              </Heading>
+            )}
             {listItem.map((item, index) => (
-              <ListItem bg={"white"} p={3} m={3} key={index}>
+              <ListItem
+                bg={"white"}
+                m={1}
+                p={3}
+                key={index}
+                style={{
+                  boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)", // 부드러운 음영
+                }}
+              >
                 {item}
               </ListItem>
             ))}
