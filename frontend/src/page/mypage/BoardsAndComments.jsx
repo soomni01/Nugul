@@ -84,7 +84,7 @@ export function BoardsAndComments() {
         navigate(`/board/boardView/${boardId}`);
     };
 
-    if (loading || !boards.length || !comments.length) {
+    if (loading) {
         return <Spinner />;
     }
 
@@ -120,9 +120,9 @@ export function BoardsAndComments() {
                     <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
                         작성한 게시물
                     </Heading>
-                    <VStack spacing={4} align="start" mb={6}>
-                        {boards.length > 0 ? (
-                            boards.map((board) => (
+                    {boards.length > 0 ? (
+                        <VStack spacing={4} align="start" mb={6}>
+                            {boards.map((board) => (
                                 <Box
                                     key={board.boardId}
                                     p={4}
@@ -149,25 +149,27 @@ export function BoardsAndComments() {
                                         </Box>
                                     </Flex>
                                 </Box>
-                            ))
-                        ) : (
-                            <Text color="gray.500">
-                                작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
-                            </Text>
-                        )}
-                    </VStack>
-                    <PaginationRoot
-                        onPageChange={(e) => handlePageChange(e, "posts")}
-                        count={totalBoards}
-                        pageSize={6}
-                        page={boardPage}
-                    >
-                        <HStack>
-                            <PaginationPrevTrigger />
-                            <PaginationItems />
-                            <PaginationNextTrigger />
-                        </HStack>
-                    </PaginationRoot>
+                            ))}
+                        </VStack>
+                    ) : (
+                        <Text color="gray.500">
+                            작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
+                        </Text>
+                    )}
+                    {boards.length > 0 && (
+                        <PaginationRoot
+                            onPageChange={(e) => handlePageChange(e, "posts")}
+                            count={totalBoards}
+                            pageSize={6}
+                            page={boardPage}
+                        >
+                            <HStack>
+                                <PaginationPrevTrigger />
+                                <PaginationItems />
+                                <PaginationNextTrigger />
+                            </HStack>
+                        </PaginationRoot>
+                    )}
                 </Box>
             )}
 
@@ -216,18 +218,20 @@ export function BoardsAndComments() {
                     ) : (
                         <Text color="gray.500">작성한 댓글이 없습니다.</Text>
                     )}
-                    <PaginationRoot
-                        onPageChange={(e) => handlePageChange(e, "comments")}
-                        count={totalComments}
-                        pageSize={6}
-                        page={commentPage}
-                    >
-                        <HStack>
-                            <PaginationPrevTrigger />
-                            <PaginationItems />
-                            <PaginationNextTrigger />
-                        </HStack>
-                    </PaginationRoot>
+                    {comments.length > 0 && (
+                        <PaginationRoot
+                            onPageChange={(e) => handlePageChange(e, "comments")}
+                            count={totalComments}
+                            pageSize={6}
+                            page={commentPage}
+                        >
+                            <HStack>
+                                <PaginationPrevTrigger />
+                                <PaginationItems />
+                                <PaginationNextTrigger />
+                            </HStack>
+                        </PaginationRoot>
+                    )}
                 </Box>
             )}
         </Box>
