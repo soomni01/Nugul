@@ -204,7 +204,7 @@ export function BoardsAndComments() {
                                                     <strong>{comment.boardTitle}</strong>
                                                 </Text>
                                                 <Text fontSize="sm" color="gray.500" mb={1}>
-                                                    {getCategoryLabel(comment.boardCategory)} | {relatedBoard.createdAt}
+                                                    {getCategoryLabel(comment.boardCategory)} | {comment.boardInserted}
                                                 </Text>
                                             </Box>
                                         )}

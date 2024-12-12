@@ -2,6 +2,7 @@ package com.example.backend.dto.comment;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,4 +16,5 @@ public class Comment {
     private String boardTitle;
     private String boardCategory;
     private LocalDateTime boardInserted;
+    private LocalDate boardCreatedAt;
 }
