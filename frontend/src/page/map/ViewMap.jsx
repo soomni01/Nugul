@@ -6,13 +6,12 @@ import {
   ZoomControl,
 } from "react-kakao-maps-sdk";
 import "./ViewMap.css";
-import { Box, Input, ListRoot, Stack } from "@chakra-ui/react";
+import { Box, Input, ListItem, ListRoot, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([]);
   const [locationName, setLocationName] = useState("");
   const [customOverlay, setCustomOverlay] = useState(null);
   const [currCategory, setCurrCategory] = useState("");
@@ -21,7 +20,13 @@ function ViewMap() {
   const [isoverlayOpen, setIsOverlayOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [placeKeyword, setPlaceKeyword] = useState("");
+  const [listItem, setListItem] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
+  const [sameKeyword, setSameKeyword] = useState(false);
+
   const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
+
   useEffect(() => {
     if (currCategory) {
       //  생성 객체
@@ -32,8 +37,10 @@ function ViewMap() {
         customOverlay.setMap(null);
       }
       // 마커 켜져있으면 지워야하는데 ,
-      // removeMarker();
-
+      if (placeSearchResultList) {
+        setPlaceSearchResultList([]);
+        setPlaceKeyword("");
+      }
       ps.categorySearch(
         currCategory,
         (result) => setCategorySearchResultList(result),
@@ -51,126 +58,82 @@ function ViewMap() {
       // 검색
       const ps = new kakao.maps.services.Places(map);
 
-      // placekeyword로 검색하고 >  검색결과의 위치가 다 보일수 있도록 맵의 크기를 화장후  위치 변경
-      ps.keywordSearch(placeKeyword, (result) => {
+      ps.keywordSearch(placeKeyword, (result, _pagination) => {
+        console.log(result);
+        // placekeyword로 검색하고 >  검색결과의 위치가 다 보일수 있도록 맵의 크기를 화장후  위치 변경
         setPlaceSearchResultList(result);
         const bounds = new kakao.maps.LatLngBounds();
-        result.forEach((item) => {
+
+        // 바로 setListItem에 넣으면 비동기방식이라 > 참조값이  re-render 될때  마지막 item 을 참조해 모든값이 item으로 들어갈수도 있음
+        var newList = [];
+        result.forEach((item, i) => {
           bounds.extend(new kakao.maps.LatLng(item.y, item.x));
+          const itemEl = getItem(i, item);
+          newList.push(itemEl);
         });
+        setListItem(newList);
+
         map.setBounds(bounds);
+        setPagination(_pagination);
       });
     } else {
       setPlaceSearchResultList([]);
     }
-  }, [placeKeyword]);
+  }, [placeKeyword, sameKeyword]);
 
   function handleSearch(locationname) {
     setPlaceKeyword(locationname);
-    // if (!map) return;
-    //
-    // const ps = new kakao.maps.services.Places(map);
-
-    // ps.keywordSearch(locationName, (data, status, _pagination) => {
-    //   if (status === kakao.maps.services.Status.OK) {
-    //
-    //
-    //     // DOM 조작 부분
-    //     const listEl = document.getElementById("placeList");
-    //     const fragment = document.createDocumentFragment();
-    //
-    //     // 기존 리스트 초기화
-    //     removeAllChildNods(listEl);
-    //
-    //     // 리스트 아이템 생성
-    //     data.forEach((item, i) => {
-    //       const itemEl = getItem(i, item);
-    //       fragment.appendChild(itemEl);
-    //     });
-    //
-    //     // 프래그먼트를 리스트에 추가
-    //     listEl.appendChild(fragment);
-    //
-    //     // 지도 범위 재설정
-    //     map.setBounds(bounds);
-    //
-    //     // 페이지네이션 표시
-    //     displayPagination(_pagination);
-    //   }
-    // });
+    if (locationname === placeKeyword) {
+      setSameKeyword(true);
+    }
   }
 
   function getItem(index, data) {
-    var el = document.createElement("li"),
-      itemStr =
-        '<span class="markerbg marker_' +
-        (index + 1) +
-        '"></span>' +
-        '<div class="info">' +
-        "   <h5>" +
-        data.place_name +
-        "</h5>";
-
-    if (data.road_address_name) {
-      itemStr +=
-        "    <span>" +
-        data.road_address_name +
-        "</span>" +
-        '   <span class="jibun gray">' +
-        data.address_name +
-        "</span>";
-    } else {
-      itemStr += "    <span>" + data.address_name + "</span>";
-    }
-
-    itemStr += '  <span class="tel">' + data.phone + "</span>" + "</div>";
-
-    el.innerHTML = itemStr;
-
-    return el;
+    console.log(data);
+    return (
+      <>
+        <span className={`markerbg marker_${index + 1}`}></span>
+        <div className="info">
+          <h5>{data.place_name}</h5>
+          <span>{data.address_name}</span>
+          <hr />
+          <span className={"tel"}>{data.phone}</span>
+        </div>
+      </>
+    );
   }
 
   function displayPagination(pagination) {
-    var paginationEl = document.getElementById("pagination"),
-      fragment = document.createDocumentFragment(),
-      i;
+    // pagination 객체에서 필요한 정보 추출
+    const totalPages = pagination.last;
 
-    // 기존에 추가된 페이지번호를 삭제합니다
-    while (paginationEl.hasChildNodes()) {
-      paginationEl.removeChild(paginationEl.lastChild);
-    }
+    // 페이지 버튼 클릭 핸들러
+    const handlePageClick = (pageNumber) => {
+      pagination.gotoPage(pageNumber);
+      setCurrentPage(pageNumber);
+    };
 
-    for (i = 1; i <= pagination.last; i++) {
-      var el = document.createElement("a");
-      el.href = "#";
-      el.innerHTML = i;
-
-      if (i === pagination.current) {
-        el.className = "on";
-      } else {
-        el.onclick = (function (i) {
-          return function () {
-            pagination.gotoPage(i);
-          };
-        })(i);
-      }
-
-      fragment.appendChild(el);
-    }
-    paginationEl.appendChild(fragment);
-  }
-
-  // 검색시 리스트 초기화 후 붙이기
-  function removeAllChildNods(el) {
-    while (el.hasChildNodes()) {
-      el.removeChild(el.lastChild);
-    }
+    return (
+      <div id="pagination">
+        {[...Array(totalPages)].map((_, index) => {
+          const pageNumber = index + 1;
+          return (
+            <a
+              key={pageNumber}
+              href="#"
+              className={pageNumber === currentPage ? "on" : ""}
+              onClick={() => handlePageClick(pageNumber)}
+            >
+              {pageNumber}
+            </a>
+          );
+        })}
+      </div>
+    );
   }
 
   // 카테고리 검색을 요청하는 함수입니다
-
   // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수
-
   function displayPlaceInfo(place) {
     // 같은 장소를 다시 클릭하면 토글
     if (selectedPlace === place) {
@@ -228,8 +191,17 @@ function ViewMap() {
 
         <Button onClick={() => handleSearch(locationName)}> 검색하기</Button>
 
-        <ListRoot id={"placeList"} as={"ol"}></ListRoot>
-        <div id={"pagination"}></div>
+        <ListRoot>
+          {listItem.map((item, index) => (
+            <ListItem className={"item"} key={index}>
+              {" "}
+              {item}
+            </ListItem>
+          ))}
+        </ListRoot>
+        <div id={"pagination"}>
+          {pagination && displayPagination(pagination)}
+        </div>
       </Stack>
       <Stack w={"80%"}>
         <Map
@@ -239,6 +211,7 @@ function ViewMap() {
           style={{ width: "100%", height: "800px" }}
           onCreate={setMap}
         >
+          {/* 카테고리 마커 */}
           {categorySearchResultList.map((item, index) => {
             return (
               <MapMarker
@@ -259,8 +232,7 @@ function ViewMap() {
               ></MapMarker>
             );
           })}
-          {/* 마커들 */}
-
+          {/* 오버레이  */}
           {isoverlayOpen && selectedPlace && (
             <CustomOverlayMap
               onCreate={setCustomOverlay}
@@ -269,7 +241,7 @@ function ViewMap() {
               {makePlaceInfo(selectedPlace)}
             </CustomOverlayMap>
           )}
-
+          {/* 검색 마커  */}
           {placeSearchResultList.map((item, index) => {
             // 좌표 객체 생성
             return (

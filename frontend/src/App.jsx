@@ -25,15 +25,12 @@ import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
 
-import { useEffect } from "react";
-
 import { Inquiry } from "./page/inquiry/Inquiry.jsx";
 
 import ViewMap from "./page/map/ViewMap.jsx";
 
 import { InquiryView } from "./page/mypage/InquiryView.jsx";
 import InquiryEdit from "./page/mypage/InquiryEdit.jsx";
-
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -161,18 +158,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  // 카카오 api
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_APP_KEY}&libraries=services,clusterer`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
   return (
     <AuthenticationProvider>
       <RouterProvider router={router} />
