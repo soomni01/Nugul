@@ -6,16 +6,10 @@ import {
   ZoomControl,
 } from "react-kakao-maps-sdk";
 import "./ViewMap.css";
-import {
-  Box,
-  Group,
-  Heading,
-  Input,
-  ListItem,
-  ListRoot,
-} from "@chakra-ui/react";
+import { Box, Group, Input, ListItem, ListRoot } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
+import { IoSearchOutline } from "react-icons/io5";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -97,12 +91,10 @@ function ViewMap() {
   function getItem(index, data) {
     return (
       <>
-        <div>
-          <h5>{data.place_name}</h5>
-          <span>{data.address_name}</span>
-          <hr />
-          <span>{data.phone}</span>
-        </div>
+        <h5>{data.place_name}</h5>
+        <span>{data.address_name}</span>
+        <hr />
+        <span>{data.phone}</span>
       </>
     );
   }
@@ -202,12 +194,10 @@ function ViewMap() {
             top: "10px",
             left: "10px",
             zIndex: 3,
-            width: "auto",
-            height: "auto",
           }}
           p={3}
         >
-          <Group attached>
+          <Group attached w={"90%"} mx={"auto"}>
             <Field>
               <Input
                 w={"100%"}
@@ -219,12 +209,14 @@ function ViewMap() {
               />
             </Field>
 
-            <Button onClick={() => handleSearch(locationName)}>검색하기</Button>
+            <Button onClick={() => handleSearch(locationName)}>
+              <IoSearchOutline />
+            </Button>
           </Group>
-          {listItem || <Heading>검색결과</Heading>}
-          <ListRoot listStyle={"none"}>
+
+          <ListRoot listStyle={"ol"}>
             {listItem.map((item, index) => (
-              <ListItem bg={"white"} p={3} key={index}>
+              <ListItem bg={"white"} p={3} m={3} key={index}>
                 {item}
               </ListItem>
             ))}
