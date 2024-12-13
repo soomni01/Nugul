@@ -124,7 +124,7 @@ public interface ChatMapper {
                 WHERE roomId = #{roomId}
                 AND (writer = #{memberId} OR buyer = #{memberId})
             """)
-    int updateDeleted(boolean messageRemoved, String memberId);
+    int updateDeleted(boolean messageRemoved, String memberId, String roomId);
 
     @Select("""
                 SELECT 
@@ -135,5 +135,16 @@ public interface ChatMapper {
                 FROM chatroom
                 WHERE roomId = #{roomId}
             """)
-    boolean checkAllDelted(String roomId);
+    boolean checkAllDeleted(String roomId);
+
+    @Select("""
+                SELECT 
+                    CASE
+                        WHEN iswriter_deleted = FALSE AND isbuyer_deleted = FALSE THEN TRUE
+                        ELSE FALSE
+                    END AS both_true
+                FROM chatroom
+                WHERE roomId = #{roomId}
+            """)
+    boolean checkNoOneDeleted(String roomId);
 }

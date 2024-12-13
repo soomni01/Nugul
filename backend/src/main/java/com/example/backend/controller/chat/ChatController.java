@@ -92,36 +92,47 @@ public class ChatController {
     public ResponseEntity<Map<String, Object>> deleteChatRoom(@PathVariable String roomId,
                                                               @RequestParam String memberId) {
 
-        System.out.println("memberId = " + memberId);
 
+        boolean noOneDeleted = chatService.noOneDeleted(roomId);
+        //  메시지를 보낸적 있거나 ,  메시지 보내고  삭제를 안했던가 ,  메시지 보내고 삭제했던가,
+        if (!noOneDeleted) {
 
-        // 메시지 삭제 ,  구매자, 혹은 판매자의 삭제상태 반영 
-        boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
-        boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId);
-        boolean chatRemoved;
+            // 메시지 삭제 ,  구매자, 혹은 판매자의 삭제상태 반영
+            boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
+            boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId, roomId);
 
-        // 끝나고나면 일단 메시지를 보내긴 해야하고 , 진짜 삭제할건지는 한번 더 안에서 결정해야지
+            boolean chatRemoved;
 
-        if (messageRemoved && updateDeleted) {
-            boolean allDeleted = chatService.checkAllDeleted(roomId);
+            // 끝나고나면 일단 메시지를 보내긴 해야하고 , 진짜 삭제할건지는 한번 더 안에서 결정해야지
 
-            // 전체 삭제 되었으면  > 메시지 이렇게
-            if (allDeleted) {
-                // 채팅방 삭제시 전송
-                chatRemoved = chatService.deleteChatRoom(roomId);
-                if (chatRemoved) {
-                    return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "채팅방 삭제 완료되었습니다.")));
+            if (messageRemoved && updateDeleted) {
+                // 둘다   삭제 한적 있는지 확인  >
+                boolean allDeleted = chatService.checkAllDeleted(roomId);
+                // 둘다 삭제 >
+                if (allDeleted) {
+                    // 채팅방 삭제시 전송
+                    chatRemoved = chatService.deleteChatRoom(roomId);
+                    if (chatRemoved) {
+                        return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "입력 한기록이 있는 채팅방 삭제 완료되었습니다.")));
+                    } else {
+                        return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning", "content", "존재하지 않는 채팅방 입니다.")));
+                    }
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning", "content", "존재하지 않는 채팅방 입니다.")));
+                    return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "메시지 삭제가  완료되었습니다.")));
+
                 }
+            } else
+                return ResponseEntity.ok().body(Map.of("message", Map.of("type", "warning", "content", "뭘 삭제하려는 겁니까")));
+        }
+        // 메시지도 갯수 0  , 아무도 삭제 안함 > , 입력한적이 없을떄 > 그냥 바로 채팅방 삭제
+        else {
+            boolean chatRemoved = chatService.deleteChatRoom(roomId);
+            if (chatRemoved) {
+                return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "한번도 입력하지 않은 채팅방 삭제 완료되었습니다.")));
             } else {
-                return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "메시지 삭제가  완료되었습니다.")));
-
+                return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning", "content", "존재하지 않는 채팅방 입니다.")));
             }
-        } else
-            return ResponseEntity.ok().body(Map.of("message", Map.of("type", "warning", "content", "뭘 삭제하려는 겁니까")));
-
-
+        }
     }
 
     @PutMapping("updatetime")

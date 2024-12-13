@@ -64,10 +64,7 @@ public class ChatService {
     // 메시지 로딩
     public List<ChatMessage> getMessageById(String roomId, Integer page) {
         Integer offset = (page - 1) * 8;
-
         return mapper.chatMessagePageByRoomId(roomId, offset);
-
-
     }
 
 
@@ -83,17 +80,25 @@ public class ChatService {
         } else {
             return true;
         }
-
-
     }
 
-    public boolean updateDeleted(boolean messageRemoved, String memberId) {
-        int cnt = mapper.updateDeleted(messageRemoved, memberId);
+    public boolean updateDeleted(boolean messageRemoved, String memberId, String roomId) {
+        int cnt = mapper.updateDeleted(messageRemoved, memberId, roomId);
         return cnt == 1;
     }
 
     public boolean checkAllDeleted(String roomId) {
 
-        return mapper.checkAllDelted(roomId);
+        return mapper.checkAllDeleted(roomId);
+    }
+
+    public boolean noOneDeleted(String roomId) {
+        boolean noOneDeleted = mapper.checkNoOneDeleted(roomId);
+        int cnt = mapper.countMessageByRoomId(roomId);
+
+
+        //메시지 갯수도 0이고 ,삭제도 안했음 > 즉 메시지를 작성한적이없음
+        return cnt == 0 && noOneDeleted;
+
     }
 }
