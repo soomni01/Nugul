@@ -48,7 +48,6 @@ public class BoardService {
 
         if (files != null && files.length > 0) {
             // 파일 업로드
-            // TODO : local -> aws
             for (MultipartFile file : files) {
 
                 String objectKey = STR."prj1126/boardFile/\{board.getBoardId()}/\{file.getOriginalFilename()}";
