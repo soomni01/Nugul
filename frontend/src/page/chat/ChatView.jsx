@@ -203,6 +203,7 @@ export function ChatView({ chatRoomId, onDelete }) {
     // navigate("chat");
   }
 
+  // 이거 내가 판매자 일때만 있어야 하는거 아닌가 ?
   const handleSuccessTransaction = () => {
     axios
       .post(`/api/product/transaction/${chatRoom.productId}`, {})
@@ -222,6 +223,9 @@ export function ChatView({ chatRoomId, onDelete }) {
       });
   };
 
+  //  판매자 인지 확인
+  const isSeller = chatRoom.writer === id;
+
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -236,7 +240,6 @@ export function ChatView({ chatRoomId, onDelete }) {
         w={600}
         h={700}
         overflow={"hidden"}
-        borderRadius={"lg"}
         bg={"blue.300/50"}
         border={"1px solid"}
         borderColor={"gray.300"}
@@ -257,9 +260,12 @@ export function ChatView({ chatRoomId, onDelete }) {
           <Flex>
             <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
             <Payment chatRoom={chatRoom} />
-            <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
-              거래완료
-            </Button>
+            {/* 판매자 일때만 거래완료 버튼이 보이게*/}
+            {isSeller && (
+              <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
+                거래완료
+              </Button>
+            )}
           </Flex>
         </Box>
         <Box
@@ -279,7 +285,6 @@ export function ChatView({ chatRoomId, onDelete }) {
                   <Stack h={"10%"}>
                     <Badge
                       p={1}
-                      size={"lg"}
                       key={index}
                       colorPalette={message.sender === id ? "gray" : "yellow"}
                     >
