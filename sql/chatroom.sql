@@ -40,13 +40,13 @@ ALTER TABLE chatroom
     ADD COLUMN product_id INT AFTER roomId;
 
 SELECT c.*,
-       p.status AS product_status
+       p.status AS status
 FROM chatroom c
          LEFT JOIN
      product p
      ON
-         c.product_id = p.product_id;
-
+         c.product_id = p.product_id
+order by roomId desc;
 delete
 from chat_message
 where roomId = 50;

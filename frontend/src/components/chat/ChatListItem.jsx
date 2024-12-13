@@ -8,6 +8,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
   return (
     <Box variant={"outline"} p={3} onClick={onClick}>
       <Card.Root
+        className={chat.status === "Sold" ? "overlay" : ""}
         flex
         Direction="row"
         maxW="xl"

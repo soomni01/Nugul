@@ -14,8 +14,8 @@ public class ChatRoom {
     private String nickname;
     private String buyer;
     private LocalDateTime leaveAt;
-    private String status;
     // dto용
     private List<ChatMessage> messages;
+    private String status;
 
 }

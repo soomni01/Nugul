@@ -35,7 +35,7 @@ public interface ChatMapper {
 
     @Select("""
                 <script>
-                    select c.* , p.status status
+                    select c.* , p.status as product_status
                     from chatroom  c left join product p on p.product_id = c.product_id
                     <choose>                   
                         <when test="type == 'buy'">
@@ -51,6 +51,7 @@ public interface ChatMapper {
                     order by roomId desc
                 </script>
             """)
+    @Result(column = "product_status", property = "status")
     List<ChatRoom> chatRoomListByMemberId(String memberId, String type);
 
     @Delete("""

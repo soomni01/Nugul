@@ -220,7 +220,8 @@ export function ChatView({ chatRoomId, onDelete }) {
           type: data.message.type,
           description: data.message.text,
         });
-      });
+      })
+      .finally();
   };
 
   //  판매자 인지 확인
@@ -243,7 +244,9 @@ export function ChatView({ chatRoomId, onDelete }) {
       .catch((e) => {
         console.log(e);
       })
-      .finally(() => {});
+      .finally(() => {
+        navigate("/chat");
+      });
   };
 
   return (
