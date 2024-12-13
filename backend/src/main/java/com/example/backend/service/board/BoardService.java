@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
@@ -91,6 +92,22 @@ public class BoardService {
     }
 
     public boolean remove(int boardId) {
+        //첨부파일 지우기
+        // 실제파일(s3) 지우기
+        List<String> fileName = mapper.selectFilesByBoardId(boardId);
+
+        for (String file : fileName) {
+            String key = STR."prj1126/boardFile/\{boardId}/\{file}";
+            DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            s3.deleteObject(dor);
+        }
+
+        // db 지우기
+        mapper.deleteFileByBoardId(boardId);
+
         // 댓글 지우기
         commentMapper.deleteByBoardId(boardId);
 

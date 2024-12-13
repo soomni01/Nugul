@@ -130,4 +130,10 @@ public interface BoardMapper {
             WHERE board_id = #{boardId}
             """)
     List<String> selectFilesByBoardId(int boardId);
+
+    @Delete("""
+            DELETE FROM board_file
+            WHERE board_id = #{boardId}
+            """)
+    int deleteFileByBoardId(int boardId);
 }
