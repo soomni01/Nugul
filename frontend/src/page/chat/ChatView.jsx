@@ -226,6 +226,26 @@ export function ChatView({ chatRoomId, onDelete }) {
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
 
+  const removeChatRoom = (roomId, id) => {
+    axios
+      .delete("/api/chat/delete/" + roomId, {
+        params: {
+          memberId: id,
+        },
+      })
+      .then((res) => {
+        const message = res.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.content,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {});
+  };
+
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -258,7 +278,10 @@ export function ChatView({ chatRoomId, onDelete }) {
             상품명: {chatRoom.productName}
           </Box>
           <Flex>
-            <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
+            <DialogCompo
+              roomId={realChatRoomId}
+              onDelete={onDelete || (() => removeChatRoom(roomId, id))}
+            />
             <Payment chatRoom={chatRoom} />
             {/* 판매자 일때만 거래완료 버튼이 보이게*/}
             {isSeller && (

@@ -38,6 +38,7 @@ export function ChatList() {
   }
 
   const removeChatRoom = (roomId, id) => {
+    console.log("버튼 눌리는지 체크");
     axios
       .delete("/api/chat/delete/" + roomId, {
         params: {
@@ -54,7 +55,9 @@ export function ChatList() {
           description: message.content,
         });
       })
-      .catch()
+      .catch((e) => {
+        console.log(e);
+      })
       .finally(() => {
         setChatRoomId(-1);
       });
