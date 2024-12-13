@@ -16,8 +16,6 @@ ALTER TABLE chatroom
 alter table chatroom
     change column buyerId buyer varchar(50) not null default 'buyer';
 
-alter table chatroom
-    add  column writerDelete
 
 select *
 from chatroom;
@@ -28,7 +26,7 @@ desc chatroom;
 #  삭제 여부 확인
 ALTER TABLE chatroom
     ADD COLUMN iswriter_deleted BOOLEAN DEFAULT FALSE,
-    ADD COLUMN isbuyer_deleted BOOLEAN DEFAULT FALSE;
+    ADD COLUMN isbuyer_deleted  BOOLEAN DEFAULT FALSE;
 
 ALTER TABLE chatroom
     ADD COLUMN writer_leave_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
@@ -40,3 +38,15 @@ ALTER TABLE chatroom
 # 나중에 product_name이 필요 없다면 지우기... (혹시 몰라서 남겨둠)
 ALTER TABLE chatroom
     ADD COLUMN product_id INT AFTER roomId;
+
+SELECT c.*,
+       p.status AS product_status
+FROM chatroom c
+         LEFT JOIN
+     product p
+     ON
+         c.product_id = p.product_id;
+
+delete
+from chat_message
+where roomId = 50;

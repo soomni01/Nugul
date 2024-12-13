@@ -88,6 +88,7 @@ public class ChatController {
     }
 
 
+    //    Todo>  확인하기 쉽게  content 작성해놓았는데  기능 테스트 해보고 바꿔야함
     @DeleteMapping("delete/{roomId}")
     public ResponseEntity<Map<String, Object>> deleteChatRoom(@PathVariable String roomId,
                                                               @RequestParam String memberId) {

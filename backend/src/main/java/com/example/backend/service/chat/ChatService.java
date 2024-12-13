@@ -3,6 +3,7 @@ package com.example.backend.service.chat;
 import com.example.backend.dto.chat.ChatMessage;
 import com.example.backend.dto.chat.ChatRoom;
 import com.example.backend.mapper.chat.ChatMapper;
+import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ChatService {
 
     private final ChatMapper mapper;
+    private final ProductMapper productMapper;
 
 
     public boolean creatChatRoom(ChatRoom chatRoom) {
@@ -29,8 +31,10 @@ public class ChatService {
 
 
     public List<ChatRoom> chatRoomList(String memberId, String type) {
-        //db 수정해야함
-        return mapper.chatRoomListByMemberId(memberId, type);
+        //db 수정해야함??
+        // 상태 가져오기
+        List<ChatRoom> chatRoomList = mapper.chatRoomListByMemberId(memberId, type);
+        return chatRoomList;
     }
 
     public boolean deleteChatRoom(String roomId) {

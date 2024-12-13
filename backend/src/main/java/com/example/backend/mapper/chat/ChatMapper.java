@@ -35,17 +35,17 @@ public interface ChatMapper {
 
     @Select("""
                 <script>
-                    select *
-                    from chatroom
+                    select c.* , p.status status
+                    from chatroom  c left join product p on p.product_id = c.product_id
                     <choose>                   
                         <when test="type == 'buy'">
                             where buyer = #{memberId}
                         </when>
                         <when test="type == 'sell'">
-                            where writer = #{memberId}
+                            where c.writer = #{memberId}
                         </when>
                         <otherwise>
-                              where writer = #{memberId} or buyer = #{memberId}
+                              where c.writer = #{memberId} or buyer = #{memberId}
                         </otherwise>
                     </choose>
                     order by roomId desc
