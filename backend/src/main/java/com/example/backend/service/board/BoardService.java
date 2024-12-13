@@ -51,7 +51,7 @@ public class BoardService {
             // TODO : local -> aws
             for (MultipartFile file : files) {
 
-                String objectKey = STR."prj1114/\{board.getBoardId()}/\{file.getOriginalFilename()}";
+                String objectKey = STR."prj1126/boardFile/\{board.getBoardId()}/\{file.getOriginalFilename()}";
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
