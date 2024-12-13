@@ -3,6 +3,7 @@ package com.example.backend.dto.board;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class Board {
@@ -15,4 +16,6 @@ public class Board {
     private LocalDate createdAt;
 
     private Integer countComment;
+
+    private List<String> fileSrc;
 }

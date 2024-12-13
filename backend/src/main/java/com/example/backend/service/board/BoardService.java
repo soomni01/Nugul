@@ -62,7 +62,9 @@ public class BoardService {
     }
 
     public Board get(int boardId) {
-        return mapper.selectById(boardId);
+        Board board = mapper.selectById(boardId);
+        board.setFileSrc(mapper.selectFilesByBoardId(boardId));
+        return board;
     }
 
     public boolean validate(Board board) {
