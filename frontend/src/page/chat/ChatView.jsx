@@ -18,6 +18,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import Payment from "../../components/chat/Payment.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function ChatView({ chatRoomId, onDelete }) {
   const scrollRef = useRef(null);
@@ -202,6 +203,25 @@ export function ChatView({ chatRoomId, onDelete }) {
     // navigate("chat");
   }
 
+  const handleSuccessTransaction = () => {
+    axios
+      .post(`/api/product/transaction/${chatRoom.productId}`, {})
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      });
+  };
+
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -237,6 +257,9 @@ export function ChatView({ chatRoomId, onDelete }) {
           <Flex>
             <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
             <Payment chatRoom={chatRoom} />
+            <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
+              거래완료
+            </Button>
           </Flex>
         </Box>
         <Box
