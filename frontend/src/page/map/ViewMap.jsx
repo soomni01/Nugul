@@ -23,7 +23,7 @@ function ViewMap() {
   const [map, setMap] = useState(null);
   const [locationName, setLocationName] = useState("");
   const [customOverlay, setCustomOverlay] = useState(null);
-  const [currCategory, setCurrCategory] = useState("");
+  const [currCategory, setCurrCategory] = useState("-1"); // classname 지정할때   지정하지 않은 초기상태에서  그룹코드가 없으면 빨간색 되는거 막을려고
   const [categorySearchResultList, setCategorySearchResultList] = useState([]);
   const [categoryImageNumber, setCategoryImageNumber] = useState(0);
   const [isoverlayOpen, setIsOverlayOpen] = useState(false);
@@ -162,6 +162,7 @@ function ViewMap() {
 
   function makePlaceInfo(place) {
     // 카테고리 그룹 코드에 따라서  className 변경
+
     const chageClassName =
       currCategory === place.category_group_code ? "title" : "bluetitle";
     return (
@@ -196,8 +197,6 @@ function ViewMap() {
     }
   }
 
-  console.log("select", selectedPlace);
-  console.log("리스트 아이템", listItem[0]);
   return (
     <Box
       display={"flex"}
@@ -213,14 +212,17 @@ function ViewMap() {
         onCreate={setMap}
       >
         <Box
+          overflowY={"auto"}
           style={{
             position: "absolute",
             top: "10px",
             left: "10px",
             zIndex: 3,
+            height: "calc(100vh - 20px)",
             background: listItem.length > 0 ? "white" : "transparent", // 검색 결과 없으면 투명 배경
             padding: listItem.length > 0 ? "10px" : "0", // 검색 결과 없으면 패딩 제거
             borderRadius: "8px", // 둥근 모서리
+
             boxShadow:
               listItem.length > 0 ? "0 4px 6px rgba(0, 0, 0, 0.1)" : "none", // 검색 결과 없으면 그림자 제거
           }}
@@ -253,7 +255,7 @@ function ViewMap() {
               >
                 검색결과
               </Heading>
-              <ListRoot listStyle={"none"} style={{ overflow: "auto" }}>
+              <ListRoot listStyle={"none"} style={{ overflowY: "auto" }}>
                 {listItem.map((item, index) => (
                   <ListItem
                     key={index}
@@ -271,9 +273,6 @@ function ViewMap() {
               )}
             </>
           )}
-          <div id={"pagination"}>
-            {pagination && displayPagination(pagination)}
-          </div>
         </Box>
         {/* 카테고리 마커 */}
         {categorySearchResultList.map((item, index) => {
