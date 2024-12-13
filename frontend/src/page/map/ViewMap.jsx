@@ -196,8 +196,8 @@ function ViewMap() {
     }
   }
 
-  console.log(selectedPlace);
-  console.log(listItem[0]);
+  console.log("select", selectedPlace);
+  console.log("리스트 아이템", listItem[0]);
   return (
     <Box
       display={"flex"}
@@ -213,16 +213,24 @@ function ViewMap() {
         onCreate={setMap}
       >
         <Box
-          bg={"white"}
           style={{
             position: "absolute",
             top: "10px",
             left: "10px",
             zIndex: 3,
+            background: listItem.length > 0 ? "white" : "transparent", // 검색 결과 없으면 투명 배경
+            padding: listItem.length > 0 ? "10px" : "0", // 검색 결과 없으면 패딩 제거
+            borderRadius: "8px", // 둥근 모서리
+            boxShadow:
+              listItem.length > 0 ? "0 4px 6px rgba(0, 0, 0, 0.1)" : "none", // 검색 결과 없으면 그림자 제거
           }}
-          p={3}
         >
-          <Group attached w={"90%"} mx={"auto"}>
+          <Group
+            attached
+            w={"90%"}
+            mx={"auto"}
+            bg={listItem.length > 0 ? "" : "white"}
+          >
             <Field>
               <Input
                 w={"100%"}
@@ -238,17 +246,31 @@ function ViewMap() {
             </Button>
           </Group>
 
-          <ListRoot listStyle={"none"} overFlowY={"scroll"}>
-            {listItem.length === 0 || (
-              <Heading style={{ borderBottom: "1px solid gray" }}>
-                {" "}
+          {listItem.length > 0 && (
+            <>
+              <Heading
+                style={{ borderBottom: "1px solid gray", marginTop: "10px" }}
+              >
                 검색결과
               </Heading>
-            )}
-            {listItem.map((item, index) => (
-              <ListItem className={"hover-item"}>{item}</ListItem>
-            ))}
-          </ListRoot>
+              <ListRoot listStyle={"none"} style={{ overflow: "auto" }}>
+                {listItem.map((item, index) => (
+                  <ListItem
+                    key={index}
+                    className={"hover-item"}
+                    onClick={() =>
+                      displayPlaceInfo(placeSearchResultList[index])
+                    }
+                  >
+                    {item}
+                  </ListItem>
+                ))}
+              </ListRoot>
+              {pagination && (
+                <div id={"pagination"}>{displayPagination(pagination)}</div>
+              )}
+            </>
+          )}
           <div id={"pagination"}>
             {pagination && displayPagination(pagination)}
           </div>
