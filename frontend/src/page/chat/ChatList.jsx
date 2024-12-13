@@ -37,9 +37,13 @@ export function ChatList() {
       });
   }
 
-  const removeChatRoom = (roomId) => {
+  const removeChatRoom = (roomId, id) => {
     axios
-      .delete("/api/chat/delete/" + roomId)
+      .delete("/api/chat/delete/" + roomId, {
+        params: {
+          memberId: id,
+        },
+      })
       .then(
         setChatList((prev) => prev.filter((chat) => chat.roomId !== roomId)),
       )
@@ -97,7 +101,7 @@ export function ChatList() {
             <ChatListItem
               key={chat.roomId}
               chat={chat}
-              onDelete={() => removeChatRoom(chat.roomId)}
+              onDelete={() => removeChatRoom(chat.roomId, id)}
               onClick={() => {
                 setChatRoomId(chat.roomId);
               }}
@@ -109,7 +113,7 @@ export function ChatList() {
             z-index={1}
             key={chatRoomId}
             chatRoomId={chatRoomId}
-            onDelete={() => removeChatRoom(chatRoomId)}
+            onDelete={() => removeChatRoom(chatRoomId, id)}
           />
         )}
         <Box>상품 정보</Box>
