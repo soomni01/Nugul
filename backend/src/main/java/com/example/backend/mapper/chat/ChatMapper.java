@@ -100,9 +100,9 @@ public interface ChatMapper {
 
     @Delete("""
                     delete from chat_message
-                    where roomId=#{roomId}
+                    where roomId=#{roomId} and sender=#{memberId}
             """)
-    int deleteChatRoomMessageByRoomId(String roomId);
+    int deleteChatRoomMessageByRoomId(String roomId, String memberId);
 
     @Select("""
                         select  count(*) from chat_message

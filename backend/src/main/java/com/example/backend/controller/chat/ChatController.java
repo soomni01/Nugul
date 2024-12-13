@@ -96,11 +96,12 @@ public class ChatController {
 
         //채팅 전에 메세지를 먼저 삭제하고 > 채팅방을 삭제
         // 채팅방 삭제전 , 미리  채팅 메시지삭제 하는 코드
-        boolean messageRemoved = chatService.deleteMessageAll(roomId);
+        boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
         boolean chatRemoved;
         // 실행 여분데
-       
+
         if (false) {
+            // 채팅방 삭제시 전송
             chatRemoved = chatService.deleteChatRoom(roomId);
             if (chatRemoved) {
                 return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "채팅방 삭제 완료되었습니다.")));
