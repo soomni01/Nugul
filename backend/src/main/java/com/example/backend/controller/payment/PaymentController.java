@@ -9,12 +9,13 @@ import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,15 +43,23 @@ public class PaymentController {
 
     // 결제 내역 저장
     @PostMapping("/api/savePayment")
-    public String savePayment(@RequestBody PaymentRecord paymentrecord) {
-        try {
-            System.out.println("결제 요청 데이터: " + paymentrecord);
-            service.savePayment(paymentrecord);  // 결제 내역 저장
-            System.out.println("결제 내역 저장 완료");
-            return "결제 내역이 성공적으로 저장되었습니다.";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "결제 내역 저장 중 오류가 발생했습니다.";
+    public ResponseEntity<PaymentRecord> savePayment(@RequestBody PaymentRecord paymentrecord) {
+        if (service.validate(paymentrecord)) {
+            if (service.savePayment(paymentrecord)) {
+                return ResponseEntity.ok(paymentrecord); // 결제 내역만 반환
+            } else {
+                return ResponseEntity.internalServerError().build(); // 실패 시 메시지 없이 500 상태 반환
+            }
+        } else {
+            return ResponseEntity.badRequest().build(); // 유효하지 않은 데이터일 경우 400 상태 반환
         }
+    }
+
+    // 결제 내역 조회
+    @GetMapping("/api/getPayment")
+    @PreAuthorize("isAuthenticated()")
+    public List<PaymentRecord> getPayment(Authentication auth) {
+        String buyerId = auth.getName();
+        return service.getPayment(buyerId);
     }
 }

@@ -38,10 +38,10 @@ const Payment = ({ chatRoom }) => {
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
         merchant_uid: new Date().getTime(), // 고유 거래 ID
-        name: product.productName, // 서버에서 가져온 상품명
-        amount: product.price, // 서버에서 가져온 가격
-        buyer_email: id, // 로그인된 사용자 이메일
-        buyer_name: nickname, // 로그인된 사용자 닉네임
+        name: product.productName,
+        amount: product.price,
+        buyer_email: id,
+        buyer_name: nickname,
       },
       async (rsp) => {
         try {
@@ -55,17 +55,17 @@ const Payment = ({ chatRoom }) => {
             await axios.post("/api/savePayment", {
               impUid: rsp.imp_uid,
               buyerId: id,
-              productName: product.productName, // 서버에서 가져온 상품명
-              paymentAmount: product.price, // 서버에서 가져온 가격
+              productName: product.productName,
+              paymentAmount: product.price,
               paymentMethod: rsp.pay_method,
               paymentDate: new Date(),
-              status: "paid", // 결제 완료 상태
+              status: "paid",
             });
 
             // 결제 성공 알림
             toaster.create({
               type: "success",
-              description: "결제가 성공적으로 처리되었습니다.",
+              description: "결제가 정상적으로 완료되었습니다.",
             });
           }
         } catch (error) {
