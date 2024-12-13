@@ -198,7 +198,6 @@ export function BoardsAndComments() {
                                         cursor="pointer"
                                         onClick={() => handleCommentClick(comment.boardId)}
                                     >
-                                        {relatedBoard && (
                                             <Box>
                                                 <Text fontSize="sm" color="gray.500" mb={1}>
                                                     <strong>{comment.boardTitle}</strong>
@@ -207,7 +206,6 @@ export function BoardsAndComments() {
                                                     {getCategoryLabel(comment.boardCategory)} | {comment.boardInserted}
                                                 </Text>
                                             </Box>
-                                        )}
                                         <Text bg="skyblue" p={2} borderRadius="md" fontSize="sm">
                                             {comment.comment}
                                         </Text>
