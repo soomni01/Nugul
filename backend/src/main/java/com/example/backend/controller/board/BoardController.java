@@ -5,17 +5,17 @@ import com.example.backend.dto.comment.Comment;
 import com.example.backend.service.board.BoardService;
 import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
@@ -30,8 +30,8 @@ public class BoardController {
 
         int itemsPerPage = 6;
 
-        List<Board> boards = service.selectByMemberId(memberId,boardPages); // 작성자의 게시물 가져오기
-        List<Comment> comments = commentService.getCommentsByMemberId(memberId,commentPages); // 사용자가 작성한 댓글
+        List<Board> boards = service.selectByMemberId(memberId, boardPages); // 작성자의 게시물 가져오기
+        List<Comment> comments = commentService.getCommentsByMemberId(memberId, commentPages); // 사용자가 작성한 댓글
 
         int totalBoards = service.getBoardCountByMemberId(memberId);
         int totalComments = commentService.getCommentCountByMemberId(memberId);
@@ -105,23 +105,25 @@ public class BoardController {
 
     @PostMapping("boardAdd")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> boardAdd(@RequestBody Board board,
+    public ResponseEntity<Map<String, Object>> boardAdd(Board board,
+                                                        @RequestParam(value = "files[]", required = false) MultipartFile[] files,
                                                         Authentication authentication) {
-            if (service.validate(board)) {
-                if (service.boardAdd(board, authentication)) {
-                    return ResponseEntity.ok()
-                            .body(Map.of("message", Map.of("type", "success",
-                                            "text", STR."\{board.getBoardId()}번 게시물이 등록되었습니다"),
-                                    "data", board));
-                } else {
-                    return ResponseEntity.internalServerError()
-                            .body(Map.of("message", Map.of("type", "warning",
-                                    "text", "게시물 등록이 실패하였습니다.")));
-                }
+        if (service.validate(board)) {
+            if (service.boardAdd(board, files, authentication)) {
+                System.out.println("files = " + files);
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                        "text", STR."\{board.getBoardId()}번 게시물이 등록되었습니다"),
+                                "data", board));
             } else {
-                return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
-                        "text", "제목이나 본문이 비어있을 수 없습니다.")));
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "warning",
+                                "text", "게시물 등록이 실패하였습니다.")));
             }
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
+                    "text", "제목이나 본문이 비어있을 수 없습니다.")));
+        }
     }
 
     @GetMapping("list")

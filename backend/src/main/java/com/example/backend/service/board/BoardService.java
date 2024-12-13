@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +30,33 @@ public class BoardService {
         return Map.of("list", list, "count", count);
     }
 
-    public boolean boardAdd(Board board, Authentication authentication) {
+    public boolean boardAdd(Board board, MultipartFile[] files, Authentication authentication) {
         board.setWriter(authentication.getName());
         int cnt = mapper.insert(board);
+
+        if (files != null && files.length > 0) {
+            //폴더 만들기
+            String directory = STR."C:/Temp/prj1126/boardFiles/\{board.getBoardId()}";
+            File dir = new File(directory);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            // 파일 업로드
+            // TODO : local -> aws
+            for (MultipartFile file : files) {
+
+                String filePath = STR."C:/Temp/prj1126/boardFiles/\{board.getBoardId()}/\{file.getOriginalFilename()}";
+                try {
+                    file.transferTo(new File(filePath));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // board_file 테이블에 파일명 입력
+                mapper.insertFile(board.getBoardId(), file.getOriginalFilename());
+
+            }
+
+        }
 
         return cnt == 1;
     }
@@ -65,7 +92,7 @@ public class BoardService {
 
     public List<Board> selectByMemberId(String memberId, Integer boardPages) {
         Integer offset = (boardPages - 1) * 6;
-        return mapper.selectByMemberId(memberId,offset);
+        return mapper.selectByMemberId(memberId, offset);
     }
 
     public int getBoardCountByMemberId(String memberId) {
