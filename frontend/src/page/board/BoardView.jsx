@@ -27,6 +27,8 @@ export function ImageFileView({ files }) {
     <Box>
       {files.map((file) => (
         <Image
+          // key={file.name}
+          // src={file.src}
           key={file}
           src={file}
           w={"100%"}
@@ -100,6 +102,7 @@ export function BoardView() {
           <Textarea value={board.content} />
         </Field>
         <ImageFileView files={board.fileSrc} />
+        {/*<ImageFileView files={board.fileList} />*/}
         <Field label="작성자" readOnly>
           <Input value={board.writer} />
         </Field>

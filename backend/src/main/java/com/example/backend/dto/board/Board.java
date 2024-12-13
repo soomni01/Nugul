@@ -18,4 +18,5 @@ public class Board {
     private Integer countComment;
 
     private List<String> fileSrc;
+    /*private List<BoardFile> fileList;*/
 }

@@ -64,6 +64,11 @@ public class BoardService {
     public Board get(int boardId) {
         Board board = mapper.selectById(boardId);
         board.setFileSrc(mapper.selectFilesByBoardId(boardId));
+        /*List<BoardFile> fileSrcList = fileNameList.stream()
+                .map(name -> new BoardFile(name, STR."http://172.30.1.2:8080/\{boardId}/\{name}"))
+                .toList();
+
+        board.setFileList(fileSrcList);*/
         return board;
     }
 
