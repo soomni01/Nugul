@@ -10,8 +10,6 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [locationName, setLocationName] = useState(null);
   const [map, setMap] = useState(null);
-  const [listItem, setListItem] = useState([]);
-  const [currCategory, setCurrCategory] = useState("");
 
   if (!isOpen) return null; // 모달이 닫혀 있으면 렌더링하지 않음
 

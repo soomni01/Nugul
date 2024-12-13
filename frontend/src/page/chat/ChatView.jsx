@@ -20,7 +20,7 @@ import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import Payment from "../../components/chat/Payment.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
-export function ChatView({ chatRoomId, onDelete }) {
+export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
   const chatBoxRef = useRef(null);
   const [message, setMessage] = useState([]);
@@ -221,7 +221,7 @@ export function ChatView({ chatRoomId, onDelete }) {
           description: data.message.text,
         });
       })
-      .finally();
+      .finally(statusControl);
   };
 
   //  판매자 인지 확인

@@ -13,6 +13,7 @@ export function ChatList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useContext(AuthenticationContext);
   const [chatRoomId, setChatRoomId] = useState(-1);
+  const [status, setStatus] = useState("For Sale");
 
   useEffect(() => {
     if (id) {
@@ -113,6 +114,9 @@ export function ChatList() {
         {chatRoomId === -1 ? null : (
           <ChatView
             z-index={1}
+            statusControl={() => {
+              setStatus(status);
+            }}
             key={chatRoomId}
             chatRoomId={chatRoomId}
             onDelete={() => removeChatRoom(chatRoomId, id)}
