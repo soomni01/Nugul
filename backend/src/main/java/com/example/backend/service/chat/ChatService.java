@@ -70,9 +70,7 @@ public class ChatService {
 
     }
 
-    // 0인데 , 그럼 select 을 먼저 해보고 해야하나
-//         아 근데 문제가 , 댓글을 나만 작성하고 나만 하는건데,  >chat은 서로나누는거잖아 ,근데 상대가 입력한 정보까지 삭제하면,
-    // 안되는거 아닌가 ?
+
     public boolean deleteMessageAll(String roomId, String memberId) {
 
         // 삭제전 메시지  갯수 확인 >  없으면 default 뭐시기 오류 뜸
@@ -84,10 +82,18 @@ public class ChatService {
             return cnt == 1;
         } else {
             return true;
-
-
         }
 
 
+    }
+
+    public boolean updateDeleted(boolean messageRemoved, String memberId) {
+        int cnt = mapper.updateDeleted(messageRemoved, memberId);
+        return cnt == 1;
+    }
+
+    public boolean checkAllDeleted(String roomId) {
+
+        return mapper.checkAllDelted(roomId);
     }
 }

@@ -16,10 +16,19 @@ ALTER TABLE chatroom
 alter table chatroom
     change column buyerId buyer varchar(50) not null default 'buyer';
 
+alter table chatroom
+    add  column writerDelete
+
 select *
 from chatroom;
 
 desc chatroom;
+
+
+#  삭제 여부 확인
+ALTER TABLE chatroom
+    ADD COLUMN iswriter_deleted BOOLEAN DEFAULT FALSE,
+    ADD COLUMN isbuyer_deleted BOOLEAN DEFAULT FALSE;
 
 ALTER TABLE chatroom
     ADD COLUMN writer_leave_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

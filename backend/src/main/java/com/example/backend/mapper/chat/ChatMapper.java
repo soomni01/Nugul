@@ -109,4 +109,31 @@ public interface ChatMapper {
                         where roomId=#{roomId}
             """)
     int countMessageByRoomId(String roomId);
+
+    @Update("""
+                UPDATE chatroom
+                SET 
+                    iswriter_deleted = CASE 
+                        WHEN writer = #{memberId} THEN #{messageRemoved}
+                        ELSE iswriter_deleted
+                    END,
+                    isbuyer_deleted = CASE
+                        WHEN buyer = #{memberId} THEN #{messageRemoved}
+                        ELSE isbuyer_deleted
+                    END
+                WHERE roomId = #{roomId}
+                AND (writer = #{memberId} OR buyer = #{memberId})
+            """)
+    int updateDeleted(boolean messageRemoved, String memberId);
+
+    @Select("""
+                SELECT 
+                    CASE
+                        WHEN iswriter_deleted = TRUE AND isbuyer_deleted = TRUE THEN TRUE
+                        ELSE FALSE
+                    END AS both_true
+                FROM chatroom
+                WHERE roomId = #{roomId}
+            """)
+    boolean checkAllDelted(String roomId);
 }

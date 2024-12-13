@@ -94,22 +94,32 @@ public class ChatController {
 
         System.out.println("memberId = " + memberId);
 
-        //채팅 전에 메세지를 먼저 삭제하고 > 채팅방을 삭제
-        // 채팅방 삭제전 , 미리  채팅 메시지삭제 하는 코드
-        boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
-        boolean chatRemoved;
-        // 실행 여분데
 
-        if (false) {
-            // 채팅방 삭제시 전송
-            chatRemoved = chatService.deleteChatRoom(roomId);
-            if (chatRemoved) {
-                return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "채팅방 삭제 완료되었습니다.")));
+        // 메시지 삭제 ,  구매자, 혹은 판매자의 삭제상태 반영 
+        boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
+        boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId);
+        boolean chatRemoved;
+
+        // 끝나고나면 일단 메시지를 보내긴 해야하고 , 진짜 삭제할건지는 한번 더 안에서 결정해야지
+
+        if (messageRemoved && updateDeleted) {
+            boolean allDeleted = chatService.checkAllDeleted(roomId);
+
+            // 전체 삭제 되었으면  > 메시지 이렇게
+            if (allDeleted) {
+                // 채팅방 삭제시 전송
+                chatRemoved = chatService.deleteChatRoom(roomId);
+                if (chatRemoved) {
+                    return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "채팅방 삭제 완료되었습니다.")));
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning", "content", "존재하지 않는 채팅방 입니다.")));
+                }
             } else {
-                return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning", "content", "존재하지 않는 채팅방 입니다.")));
+                return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "메시지 삭제가  완료되었습니다.")));
+
             }
         } else
-            return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "success", "content", "뭘 삭제하려는 겁니까")));
+            return ResponseEntity.ok().body(Map.of("message", Map.of("type", "warning", "content", "뭘 삭제하려는 겁니까")));
 
 
     }
