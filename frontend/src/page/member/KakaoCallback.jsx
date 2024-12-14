@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Group, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
@@ -8,109 +8,23 @@ import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 
 export function KakaoCallback() {
-  const [email, setEmail] = useState("");
-  const [nickname, setNickName] = useState("");
+  const location = useLocation(); // state 정보 받기
+  const [email, setEmail] = useState(location.state?.email); // 초기값 설정
+  const [nickname, setNickName] = useState(location.state?.nickname);
+  const [profileImage, setProfileImage] = useState(
+    location.state?.profileImage || "",
+  );
   const [nicknameCheckMessage, setNickNameCheckMessage] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
-  const [profileImage, setProfileImage] = useState("");
   const [useProfileImage, setUseProfileImage] = useState(false);
   const navigate = useNavigate();
 
-  // URL에서 인가 코드 추출
   useEffect(() => {
-    const code = new URL(window.location.href).searchParams.get("code");
-
-    // 카카오 서버로 토큰 요청
-    if (code) {
-      requestKakaoToken(code);
+    // 자동 닉네임 중복 체크 (콜백 데이터로)
+    if (nickname) {
+      handleNickNameCheckClick(nickname);
     }
   }, []);
-
-  // 토큰 받고 callback 페이지로 redirect
-  const requestKakaoToken = async (code) => {
-    try {
-      const response = await fetch("https://kauth.kakao.com/oauth/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          client_id: import.meta.env.VITE_KAKAO_REST_KEY,
-          redirect_uri: "http://localhost:5173/kakao/callback",
-          code: code,
-        }),
-      });
-
-      const data = await response.json();
-      console.log("카카오 토큰 응답:", data);
-
-      // 액세스 토큰으로 사용자 정보 가져오기
-      if (data.access_token) {
-        fetchKakaoUserInfo(data.access_token);
-      }
-    } catch (error) {
-      console.error("토큰 요청 중 에러:", error);
-    }
-  };
-
-  const fetchKakaoUserInfo = async (accessToken) => {
-    try {
-      const response = await fetch("https://kapi.kakao.com/v2/user/me", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
-
-      const userData = await response.json();
-      // 토큰 정보 출력
-      console.log("액세스 토큰:", accessToken);
-
-      // 이메일 정보 추출
-      const kakaoEmail = userData.kakao_account?.email || "이메일 없음";
-      setEmail(kakaoEmail);
-      if (kakaoEmail) {
-        // 3. 서버에 이메일 존재 여부 확인
-        const checkEmailResponse = await axios.get("/api/member/check-email", {
-          params: { email: kakaoEmail },
-        });
-
-        console.log(checkEmailResponse.data);
-        if (checkEmailResponse.data) {
-          console.log("메인");
-          // 기존 회원 → main 페이지로 이동
-          navigate("/main");
-        } else {
-          // 신규 회원 → 추가 정보 입력 페이지로 이동
-          console.log("콜백");
-          navigate("/kakao/callback");
-        }
-      }
-      console.log("이메일:", kakaoEmail);
-
-      // 닉네임 정보 추출
-      const kakaoNickname =
-        userData.kakao_account?.profile?.nickname || "닉네임 없음";
-      setNickName(kakaoNickname);
-      console.log("닉네임:", kakaoNickname);
-
-      // 프로필 이미지 정보 추출
-      const kakaoProfileImage =
-        userData.kakao_account?.profile?.profile_image_url ||
-        "프로필 이미지 없음";
-      setProfileImage(kakaoProfileImage);
-      console.log("프로필 이미지 URL:", kakaoProfileImage);
-
-      // 자동으로 닉네임 중복 체크 수행
-      if (kakaoNickname !== "닉네임 없음") {
-        handleNickNameCheckClick(kakaoNickname);
-      }
-    } catch (error) {
-      console.error("사용자 정보 요청 중 에러:", error);
-    }
-  };
 
   const handleNickNameCheckClick = (checkNickname) => {
     axios
@@ -161,66 +75,8 @@ export function KakaoCallback() {
       });
   }
 
-  const handleKakaoCallback = async (code) => {
-    try {
-      // 1. 카카오 액세스 토큰 요청
-      const tokenResponse = await fetch("https://kauth.kakao.com/oauth/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          client_id: import.meta.env.VITE_KAKAO_REST_KEY,
-          redirect_uri: "http://localhost:5173/kakao/callback",
-          code: code,
-        }),
-      });
-
-      const tokenData = await tokenResponse.json();
-
-      if (tokenData.access_token) {
-        // 2. 카카오 사용자 정보 조회
-        const userInfoResponse = await fetch(
-          "https://kapi.kakao.com/v2/user/me",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${tokenData.access_token}`,
-            },
-          },
-        );
-
-        const userData = await userInfoResponse.json();
-        const kakaoEmail = userData.kakao_account?.email;
-        if (kakaoEmail) {
-          // 3. 서버에 이메일 존재 여부 확인
-          const checkEmailResponse = await axios.get(
-            "/api/member/check-email",
-            {
-              params: { email: kakaoEmail },
-            },
-          );
-
-          if (checkEmailResponse.data.exists) {
-            // 기존 회원 → main 페이지로 이동
-            navigate("/main");
-          } else {
-            // 신규 회원 → 추가 정보 입력 페이지로 이동
-
-            navigate("/kakao/callback");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("카카오 로그인 처리 중 오류 발생:", error);
-    }
-  };
-
-  let disabled = true;
-  if (nicknameCheck) {
-    disabled = false;
-  }
-
-  let nicknameCheckButtonDisabled = nickname.length === 0;
+  const disabled = !nicknameCheck;
+  const nicknameCheckButtonDisabled = nickname.length === 0;
 
   return (
     <Box>
@@ -261,8 +117,7 @@ export function KakaoCallback() {
             />
 
             <Button
-              display={"none"}
-              onClick={handleNickNameCheckClick(nickname)}
+              onClick={() => handleNickNameCheckClick(nickname)}
               variant={"outline"}
               disabled={nicknameCheckButtonDisabled}
             >
@@ -272,8 +127,8 @@ export function KakaoCallback() {
         </Field>
         {profileImage !== "프로필 이미지 없음" && (
           <Checkbox
-            isChecked={useProfileImage}
-            onChange={(e) => setUseProfileImage(e.target.checked)}
+            checked={useProfileImage}
+            onChange={(e) => setUseProfileImage(!useProfileImage)}
           >
             카카오 프로필 이미지 사용
           </Checkbox>
