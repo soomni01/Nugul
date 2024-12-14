@@ -54,4 +54,11 @@ public interface MemberMapper {
             WHERE member_id = #{memberId}
             """)
     List<String> selectAuthByMemberId(String id);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM member
+            WHERE member_id=#{email}
+            """)
+    int emailCheck(String email);
 }

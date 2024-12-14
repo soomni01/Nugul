@@ -71,6 +71,23 @@ export function KakaoCallback() {
       // 이메일 정보 추출
       const kakaoEmail = userData.kakao_account?.email || "이메일 없음";
       setEmail(kakaoEmail);
+      if (kakaoEmail) {
+        // 3. 서버에 이메일 존재 여부 확인
+        const checkEmailResponse = await axios.get("/api/member/check-email", {
+          params: { email: kakaoEmail },
+        });
+
+        console.log(checkEmailResponse.data);
+        if (checkEmailResponse.data) {
+          console.log("메인");
+          // 기존 회원 → main 페이지로 이동
+          navigate("/main");
+        } else {
+          // 신규 회원 → 추가 정보 입력 페이지로 이동
+          console.log("콜백");
+          navigate("/kakao/callback");
+        }
+      }
       console.log("이메일:", kakaoEmail);
 
       // 닉네임 정보 추출
@@ -143,6 +160,60 @@ export function KakaoCallback() {
         });
       });
   }
+
+  const handleKakaoCallback = async (code) => {
+    try {
+      // 1. 카카오 액세스 토큰 요청
+      const tokenResponse = await fetch("https://kauth.kakao.com/oauth/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          grant_type: "authorization_code",
+          client_id: import.meta.env.VITE_KAKAO_REST_KEY,
+          redirect_uri: "http://localhost:5173/kakao/callback",
+          code: code,
+        }),
+      });
+
+      const tokenData = await tokenResponse.json();
+
+      if (tokenData.access_token) {
+        // 2. 카카오 사용자 정보 조회
+        const userInfoResponse = await fetch(
+          "https://kapi.kakao.com/v2/user/me",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${tokenData.access_token}`,
+            },
+          },
+        );
+
+        const userData = await userInfoResponse.json();
+        const kakaoEmail = userData.kakao_account?.email;
+        if (kakaoEmail) {
+          // 3. 서버에 이메일 존재 여부 확인
+          const checkEmailResponse = await axios.get(
+            "/api/member/check-email",
+            {
+              params: { email: kakaoEmail },
+            },
+          );
+
+          if (checkEmailResponse.data.exists) {
+            // 기존 회원 → main 페이지로 이동
+            navigate("/main");
+          } else {
+            // 신규 회원 → 추가 정보 입력 페이지로 이동
+
+            navigate("/kakao/callback");
+          }
+        }
+      }
+    } catch (error) {
+      console.error("카카오 로그인 처리 중 오류 발생:", error);
+    }
+  };
 
   let disabled = true;
   if (nicknameCheck) {

@@ -128,6 +128,9 @@ public class MemberController {
         }
     }
 
-    // 카카오 로그인 API
-    
+    // 이메일 체크
+    @GetMapping("/check-email")
+    public boolean emailCheck(@RequestParam String email) {
+        return service.emailCheck(email);
+    }
 }

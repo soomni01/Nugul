@@ -140,4 +140,10 @@ public class MemberService {
         }
         return false;
     }
+
+    public boolean emailCheck(String email) {
+        int cnt = mapper.emailCheck(email);
+
+        return cnt == 1;
+    }
 }
