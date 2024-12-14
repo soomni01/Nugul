@@ -1,10 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box } from "@chakra-ui/react";
+import { toaster } from "../ui/toaster.jsx";
+import { jwtDecode } from "jwt-decode";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function KakaoOauth() {
   const navigate = useNavigate();
+  const authentication = useContext(AuthenticationContext);
 
   // URL에서 인가 코드 추출
   useEffect(() => {
@@ -71,8 +75,38 @@ export function KakaoOauth() {
 
         console.log(checkEmailResponse.data);
         if (checkEmailResponse.data) {
+          console.log("토큰");
           // 기존 회원 → main 페이지로 이동
-          navigate("/main");
+          axios
+            .post("/api/member/login", { memberId: kakaoEmail, password: null })
+            .then((res) => res.data)
+            .then((data) => {
+              console.log(data);
+              toaster.create({
+                type: data.message.type,
+                description: data.message.text,
+              });
+              const decodedToken = jwtDecode(data.token);
+              const userScope = decodedToken.scope || "";
+
+              if (userScope === "admin") {
+                navigate("/admin/dashboard");
+              } else {
+                navigate("/main");
+              }
+              authentication.login(data.token);
+            })
+            .catch((e) => {
+              const message = e.response?.data?.message || {
+                type: "error",
+                text: "알 수 없는 오류가 발생했습니다.",
+              };
+
+              toaster.create({
+                type: message.type,
+                description: message.text,
+              });
+            });
         } else {
           // 신규 회원 → 추가 정보 입력 페이지로 이동
           console.log(kakaoEmail, kakaoNickname, kakaoProfileImage);

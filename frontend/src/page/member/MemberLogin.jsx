@@ -61,7 +61,7 @@ export function MemberLogin() {
         if (userScope === "admin") {
           navigate("/admin/dashboard");
         } else {
-          navigate("main");
+          navigate("/main");
         }
         authentication.login(data.token);
         // localStorage.setItem("token", data.token);
