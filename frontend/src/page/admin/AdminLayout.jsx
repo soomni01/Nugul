@@ -8,14 +8,29 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { useContext } from "react";
 
-export default function AdminLayout() {
+export function AdminLayout() {
+  const { isAdmin } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   // 로그아웃 처리: 토큰을 제거하고 홈 화면으로 이동함
   function logout() {
     localStorage.removeItem("token");
     navigate("/");
+  }
+
+  // // 관리자가 아니면 리디렉션 처리
+  // useEffect(() => {
+  //   if (!isAdmin) {
+  //     navigate("/"); // 관리자가 아니면 홈페이지로 리디렉션
+  //   }
+  // }, [isAdmin, navigate]);
+
+  // 관리자가 아니면 아무것도 렌더링하지 않음
+  if (!isAdmin) {
+    return null; // 페이지를 렌더링하지 않음
   }
 
   return (

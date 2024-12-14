@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 import { RootLayout } from "./page/root/RootLayout.jsx";
-import AdminLayout from "./page/admin/AdminLayout.jsx";
+import { AdminLayout } from "./page/admin/AdminLayout.jsx";
 import { AdminDashBoard } from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
