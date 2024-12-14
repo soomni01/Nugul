@@ -51,11 +51,12 @@ public class BoardController {
     @PutMapping("boardUpdate")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> boardUpdate(
-            @RequestBody Board board,
+            Board board,
+            @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
             Authentication authentication) {
         if (service.hasAccess(board.getBoardId(), authentication)) {
             if (service.validate(board)) {
-                if (service.update(board)) {
+                if (service.update(board, removeFiles)) {
                     return ResponseEntity.ok().body(Map.of("message",
                             Map.of("type", "success",
                                     "text", STR."\{board.getBoardId()}번 게시물이 수정되었습니다.")));
