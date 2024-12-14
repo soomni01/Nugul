@@ -23,13 +23,13 @@ import {
 } from "../../components/board/BoardCategoryContainer.jsx";
 
 export function ImageFileView({ files }) {
+  console.log("ImageFileView files:", files);
   return (
     <Box>
       {files.map((file) => (
         <Image
           key={file.name}
           src={file.src}
-          w={"100%"}
           border={"1px solid black"}
           m={3}
         />

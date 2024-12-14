@@ -77,7 +77,7 @@ public class BoardService {
         Board board = mapper.selectById(boardId);
         List<String> fileNameList = mapper.selectFilesByBoardId(boardId);
         List<BoardFile> fileSrcList = fileNameList.stream()
-                .map(name -> new BoardFile(name, STR."\{imageSrcPrefix}/\{boardId}/\{name}"))
+                .map(name -> new BoardFile(name, STR."\{imageSrcPrefix}/boardFile/\{boardId}/\{name}"))
                 .toList();
 
         board.setFileList(fileSrcList);
@@ -116,6 +116,22 @@ public class BoardService {
     }
 
     public boolean update(Board board, List<String> removeFiles, MultipartFile[] uploadFiles) {
+        if (removeFiles != null) {
+            for (String file : removeFiles) {
+                String key = STR."prj1126/boardFile/\{board.getBoardId()}/\{file}";
+                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+
+                // s3 파일 지우기
+                s3.deleteObject(dor);
+
+                // db 파일 지우기
+                mapper.deleteFileByBoardIdAndName(board.getBoardId(), file);
+            }
+        }
+
         if (uploadFiles != null && uploadFiles.length > 0) {
             for (MultipartFile file : uploadFiles) {
                 String objectKey = STR."prj1126/boardFile/\{board.getBoardId()}/\{file.getOriginalFilename()}";
