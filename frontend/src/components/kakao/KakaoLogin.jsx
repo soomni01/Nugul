@@ -7,13 +7,18 @@ export function KakaoLogin() {
 
   useEffect(() => {
     const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_KEY;
-    if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(kakaoRestKey);
+    // Kakao SDK가 로드되었는지 확인
+    if (typeof window.Kakao !== "undefined") {
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(kakaoRestKey);
+      }
+    } else {
+      console.error("Kakao SDK가 로드되지 않았습니다.");
     }
   }, []);
 
   const handleKakaoLogin = () => {
-    const redirectUri = "http://localhost:5173/kakao/callback";
+    const redirectUri = "http://localhost:5173/oauth";
     const loginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_REST_KEY}&redirect_uri=${redirectUri}&response_type=code&prompt=login&scope=profile_nickname,profile_image,account_email`;
     window.location.href = loginUrl;
   };
@@ -37,7 +42,11 @@ export function KakaoLogin() {
 
   return (
     <>
-      <Button onClick={handleKakaoLogin} colorScheme="yellow" variant="outline">
+      <Button
+        onClick={handleKakaoLogin}
+        colorPalette={"yellow"}
+        variant="outline"
+      >
         카카오로 로그인
       </Button>
       <Button onClick={handleKakaoLogout}>카카오 로그아웃</Button>
