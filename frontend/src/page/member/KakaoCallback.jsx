@@ -13,6 +13,7 @@ export function KakaoCallback() {
   const [nicknameCheckMessage, setNickNameCheckMessage] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
   const [profileImage, setProfileImage] = useState("");
+  const [useProfileImage, setUseProfileImage] = useState(false);
   const navigate = useNavigate();
 
   // URL에서 인가 코드 추출
@@ -118,6 +119,36 @@ export function KakaoCallback() {
       });
   };
 
+  function handleSaveClick() {
+    axios
+      .post("/api/member/signup", {
+        memberId: email,
+        nickname: nickname,
+        profileImage: useProfileImage ? profileImage : "",
+      })
+      .then((res) => {
+        const message = res.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        navigate("/");
+      })
+      .catch((e) => {
+        const message = e.response.data.message;
+
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      });
+  }
+
+  let disabled = true;
+  if (nicknameCheck) {
+    disabled = false;
+  }
+
   let nicknameCheckButtonDisabled = nickname.length === 0;
 
   return (
@@ -170,14 +201,16 @@ export function KakaoCallback() {
         </Field>
         {profileImage !== "프로필 이미지 없음" && (
           <Checkbox
-          // isChecked={useProfileImage}
-          // onChange={(e) => setUseProfileImage(e.target.checked)}
+            isChecked={useProfileImage}
+            onChange={(e) => setUseProfileImage(e.target.checked)}
           >
             카카오 프로필 이미지 사용
           </Checkbox>
         )}
 
-        <Button w={"100%"}>회원 가입</Button>
+        <Button w={"100%"} onClick={handleSaveClick} disabled={disabled}>
+          회원 가입
+        </Button>
       </Stack>
     </Box>
   );
