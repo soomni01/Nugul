@@ -120,7 +120,8 @@ public class MyPageService {
 
     // 평점 가져오기
     public Double getRating(String memberId) {
-        return mapper.getRating(memberId);
+        Double rating = mapper.getRating(memberId);
+        return rating != null ? rating : 0.0;
     }
 
     // 프로필 이미지 가져오기
