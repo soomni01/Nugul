@@ -153,13 +153,13 @@ export const InquiryView = () => {
                 <VStack spacing={3}>
                   {comments.map((comment) => (
                     <Box
-                      key={comment.id}
+                      key={comment.nickname}
                       borderWidth="1px"
                       p={3}
                       borderRadius="md"
                     >
                       <Text fontWeight="bold" fontSize="lg">
-                        {comment.memberId}{" "}
+                        {comment.nickname}{" "}
                         <Text
                           as="span"
                           color="gray.500"

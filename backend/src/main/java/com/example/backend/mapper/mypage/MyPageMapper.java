@@ -166,12 +166,22 @@ public interface MyPageMapper {
     int deleteProfileImage(String memberId);
 
     @Select("""
-            SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
-            FROM inquiry_comment
-            WHERE inquiry_id = #{inquiryId}
+                SELECT
+                    c.id,
+                    c.inquiry_id,
+                    c.admin_id AS member_id,
+                    c.comment,
+                    c.inserted,
+                    m.nickname
+                FROM
+                    inquiry_comment c
+                JOIN
+                    member m ON c.admin_id = m.member_id
+                WHERE
+                    c.inquiry_id = #{inquiryId}
             """)
     List<InquiryComment> findCommentsByInquiryId(int inquiryId);
-
+    
     @Update("""
             UPDATE inquiry
             SET category = #{category},
