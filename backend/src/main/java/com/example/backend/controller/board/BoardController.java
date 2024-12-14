@@ -53,10 +53,11 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>> boardUpdate(
             Board board,
             @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
+            @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
             Authentication authentication) {
         if (service.hasAccess(board.getBoardId(), authentication)) {
             if (service.validate(board)) {
-                if (service.update(board, removeFiles)) {
+                if (service.update(board, removeFiles, uploadFiles)) {
                     return ResponseEntity.ok().body(Map.of("message",
                             Map.of("type", "success",
                                     "text", STR."\{board.getBoardId()}번 게시물이 수정되었습니다.")));

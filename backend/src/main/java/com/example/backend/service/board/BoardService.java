@@ -115,18 +115,22 @@ public class BoardService {
         return cnt == 1;
     }
 
-    public boolean update(Board board, List<String> removeFiles) {
-        if (removeFiles != null) {
-            for (String file : removeFiles) {
-                String key = STR."prj1114/boardFile\{board.getBoardId()}/\{file}";
-                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+    public boolean update(Board board, List<String> removeFiles, MultipartFile[] uploadFiles) {
+        if (uploadFiles != null && uploadFiles.length > 0) {
+            for (MultipartFile file : uploadFiles) {
+                String objectKey = STR."prj1126/boardFile/\{board.getBoardId()}/\{file.getOriginalFilename()}";
+                PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
-                        .key(key)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
                         .build();
-                // s3 파일 지우기
-                s3.deleteObject(dor);
-                // db 파일 지우기
-                mapper.deleteFileByBoardIdAndName(board.getBoardId(), file);
+                try {
+                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // board_file 테이블에 파일명 입력
+                mapper.insertFile(board.getBoardId(), file.getOriginalFilename());
             }
         }
 
