@@ -128,7 +128,7 @@ public class MemberController {
         }
     }
 
-    // 이메일 체크
+    // 카카오 로그인 시 이메일 확인
     @GetMapping("/check-email")
     public boolean emailCheck(@RequestParam String email) {
         return service.emailCheck(email);
