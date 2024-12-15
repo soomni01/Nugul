@@ -41,6 +41,9 @@ export function KakaoOauth() {
 
       // 액세스 토큰으로 사용자 정보 가져오기
       if (data.access_token) {
+        // 세션 스토리지에 카카오 액세스 토큰 저장
+        sessionStorage.setItem("kakaoAccessToken", data.access_token);
+
         fetchKakaoUserInfo(data.access_token);
       }
     } catch (error) {

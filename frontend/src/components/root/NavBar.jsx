@@ -3,6 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { useContext } from "react";
 import { Avatar } from "../ui/avatar.jsx";
+import { kakaoLogout } from "../kakao/KakaoLogin.jsx";
 
 function NavbarItem({ children, ...rest }) {
   return (
@@ -34,6 +35,18 @@ export function Navbar() {
     navigate(path);
   };
 
+  const handleLogout = async () => {
+    try {
+      // 사용자 토큰 삭제
+      localStorage.removeItem("token");
+      localStorage.removeItem("nickname");
+      // 카카오 로그인 사용자는 카카오 액세스 토큰 삭제
+      await kakaoLogout();
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃에 실패했습니다.", error);
+    }
+  };
   return (
     <Flex gap={3}>
       <NavbarItem onClick={() => handleNavigation("/main")}>HOME</NavbarItem>
@@ -59,18 +72,8 @@ export function Navbar() {
           variant="outline"
         />
       </NavbarItem>
-      {/*<NavbarItem onClick={() => handleNavigation(`/myPage`)}>*/}
-      {/*  마이페이지*/}
-      {/*</NavbarItem>*/}
 
-      <NavbarItem
-        onClick={() => {
-          localStorage.removeItem("token");
-          navigate("/");
-        }}
-      >
-        로그아웃
-      </NavbarItem>
+      <NavbarItem onClick={handleLogout}>로그아웃</NavbarItem>
     </Flex>
   );
 }

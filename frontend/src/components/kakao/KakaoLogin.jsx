@@ -1,20 +1,35 @@
 import React, { useEffect } from "react";
-import { Button } from "../ui/button.jsx";
-import { useNavigate } from "react-router-dom"; // 추가
+import { Image } from "@chakra-ui/react";
 
-export function KakaoLogin() {
-  const navigate = useNavigate(); // 추가
-
-  useEffect(() => {
-    const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_KEY;
-    // Kakao SDK가 로드되었는지 확인
-    if (typeof window.Kakao !== "undefined") {
+// Kakao SDK 동적 로드 함수 추가
+function loadKakaoSDK(kakaoRestKey) {
+  return new Promise((resolve, reject) => {
+    if (window.Kakao) {
       if (!window.Kakao.isInitialized()) {
         window.Kakao.init(kakaoRestKey);
       }
-    } else {
-      console.error("Kakao SDK가 로드되지 않았습니다.");
+      resolve(true);
+      return;
     }
+
+    const script = document.createElement("script");
+    script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js";
+    script.async = true;
+    script.onload = () => {
+      window.Kakao.init(kakaoRestKey);
+      resolve(true);
+    };
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+export function KakaoLogin() {
+  useEffect(() => {
+    const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_KEY;
+    loadKakaoSDK(kakaoRestKey).catch((error) => {
+      console.error("Kakao SDK 로드 실패:", error);
+    });
   }, []);
 
   const handleKakaoLogin = () => {
@@ -23,33 +38,60 @@ export function KakaoLogin() {
     window.location.href = loginUrl;
   };
 
-  const handleKakaoLogout = () => {
-    // Kakao SDK가 초기화되었는지 먼저 확인
-    if (window.Kakao.isInitialized()) {
-      window.Kakao.Auth.logout((response) => {
-        if (response) {
-          console.log("카카오 로그아웃 성공");
-          // 로그아웃 후 홈 화면이나 로그인 페이지로 리디렉션
-          navigate("/");
-        } else {
-          console.log("카카오 로그아웃 실패");
-        }
-      });
-    } else {
-      console.log("Kakao SDK가 초기화되지 않았습니다.");
-    }
-  };
-
   return (
     <>
-      <Button
+      <Image
         onClick={handleKakaoLogin}
-        colorPalette={"yellow"}
-        variant="outline"
-      >
-        카카오로 로그인
-      </Button>
-      <Button onClick={handleKakaoLogout}>카카오 로그아웃</Button>
+        src="../../../public/image/kakao_login_button.png"
+        cursor="pointer"
+      />
     </>
   );
+}
+
+export function kakaoLogout() {
+  return new Promise((resolve, reject) => {
+    const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_KEY;
+
+    // SDK 로드 및 초기화 확인
+    loadKakaoSDK(kakaoRestKey)
+      .then(() => {
+        const accessToken = sessionStorage.getItem("kakaoAccessToken"); // sessionStorage에서 액세스 토큰 가져오기
+        if (!accessToken) {
+          reject("카카오 액세스 토큰이 없습니다.");
+          return;
+        }
+
+        // 로그아웃 요청
+        fetch("https://kapi.kakao.com/v1/user/logout", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // 유효한 액세스 토큰을 Authorization 헤더에 포함
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("카카오 로그아웃 요청 실패");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("카카오 로그아웃 성공:", data);
+
+            // 로그아웃 후 액세스 토큰 삭제
+            sessionStorage.removeItem("kakaoAccessToken");
+
+            resolve(true); // 로그아웃 성공
+          })
+          .catch((error) => {
+            console.error("카카오 로그아웃 실패:", error);
+            reject(error);
+          });
+      })
+      .catch((error) => {
+        console.error("Kakao SDK 초기화 실패:", error);
+        reject(error);
+      });
+  });
 }
