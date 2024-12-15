@@ -41,7 +41,9 @@ export function Navbar() {
       localStorage.removeItem("token");
       localStorage.removeItem("nickname");
       // 카카오 로그인 사용자는 카카오 액세스 토큰 삭제
-      await kakaoLogout();
+      if (sessionStorage.getItem("kakaoAccessToken")) {
+        await kakaoLogout();
+      }
       navigate("/");
     } catch (error) {
       console.error("로그아웃에 실패했습니다.", error);
