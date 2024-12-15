@@ -115,6 +115,20 @@ export function AdminMemberDetail() {
     }
   }
 
+  const headerStyle = {
+    padding: "10px",
+    height: "50px",
+    textAlign: "center",
+    backgroundColor: "#f4f4f4",
+    fontWeight: "bold",
+  };
+
+  const cellStyle = {
+    padding: "10px",
+    height: "50px",
+    textAlign: "center",
+  };
+
   return (
     <Box p={4} pt={20}>
       <Stack spacing={8}>
@@ -130,17 +144,45 @@ export function AdminMemberDetail() {
 
           {/* 판매 내역 탭 */}
           <Tabs.Content value="SoldProducts">
-            <Box mt={-3}>
+            <Box mt={-4}>
               <Table.Root interactive>
                 <TableHeader>
                   <TableRow>
-                    <TableColumnHeader>ID</TableColumnHeader>
-                    <TableColumnHeader>상품명</TableColumnHeader>
-                    <TableColumnHeader>가격</TableColumnHeader>
-                    <TableColumnHeader>작성자</TableColumnHeader>
-                    <TableColumnHeader>카테고리</TableColumnHeader>
-                    <TableColumnHeader>상태</TableColumnHeader>
-                    <TableColumnHeader>작성 일자</TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      ID
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "300px" }}
+                    >
+                      상품명
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      가격
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "250px" }}
+                    >
+                      작성자
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      카테고리
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      상태
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "250px" }}
+                    >
+                      작성 일자
+                    </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
                 <Table.Body>
@@ -154,19 +196,25 @@ export function AdminMemberDetail() {
                         }}
                         style={{ cursor: "pointer" }}
                       >
-                        <Table.Cell style={{ padding: "22px" }}>
+                        <Table.Cell style={cellStyle}>
                           {product.productId}
                         </Table.Cell>
-                        <Table.Cell>{product.productName}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {product.productName}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {product.price ? `${product.price}원` : "무료 나눔"}
                         </Table.Cell>
-                        <Table.Cell>{product.writer}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {product.writer}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {getCategoryLabel(product.category)}
                         </Table.Cell>
-                        <Table.Cell>{product.status}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {product.status}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {new Date(product.createdAt).toLocaleDateString()}
                         </Table.Cell>
                       </Table.Row>
@@ -207,17 +255,45 @@ export function AdminMemberDetail() {
 
           {/* 구매 내역 탭 */}
           <Tabs.Content value="PurchasedProducts">
-            <Box mt={-3}>
+            <Box mt={-4}>
               <Table.Root interactive>
                 <TableHeader>
                   <TableRow>
-                    <TableColumnHeader>ID</TableColumnHeader>
-                    <TableColumnHeader>상품명</TableColumnHeader>
-                    <TableColumnHeader>가격</TableColumnHeader>
-                    <TableColumnHeader>작성자</TableColumnHeader>
-                    <TableColumnHeader>카테고리</TableColumnHeader>
-                    <TableColumnHeader>상태</TableColumnHeader>
-                    <TableColumnHeader>작성 일자</TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      ID
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "300px" }}
+                    >
+                      상품명
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      가격
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "250px" }}
+                    >
+                      작성자
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      카테고리
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      상태
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "250px" }}
+                    >
+                      작성 일자
+                    </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
                 <Table.Body>
@@ -231,19 +307,25 @@ export function AdminMemberDetail() {
                         }}
                         style={{ cursor: "pointer" }}
                       >
-                        <Table.Cell style={{ padding: "22px" }}>
+                        <Table.Cell style={cellStyle}>
                           {product.productId}
                         </Table.Cell>
-                        <Table.Cell>{product.productName}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {product.productName}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {product.price ? `${product.price}원` : "무료 나눔"}
                         </Table.Cell>
-                        <Table.Cell>{product.writer}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {product.writer}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {getCategoryLabel(product.category)}
                         </Table.Cell>
-                        <Table.Cell>{product.status}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {product.status}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {new Date(product.createdAt).toLocaleDateString()}
                         </Table.Cell>
                       </Table.Row>
@@ -285,36 +367,72 @@ export function AdminMemberDetail() {
 
           {/* 결제 내역 탭 */}
           <Tabs.Content value="PaymentRecord">
-            <Box mt={-3}>
+            <Box mt={-4}>
               <Table.Root interactive>
                 <TableHeader>
                   <TableRow>
-                    <TableColumnHeader>결제 ID</TableColumnHeader>
-                    <TableColumnHeader>구매자 ID</TableColumnHeader>
-                    <TableColumnHeader>상품명</TableColumnHeader>
-                    <TableColumnHeader>결제 금액</TableColumnHeader>
-                    <TableColumnHeader>결제 방법</TableColumnHeader>
-                    <TableColumnHeader>결제 날짜</TableColumnHeader>
-                    <TableColumnHeader>결제 상태</TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      결제 ID
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      구매자 ID
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "300px" }}
+                    >
+                      상품명
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      결제 금액
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      결제 방법
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      결제 날짜
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      결제 상태
+                    </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
                 <Table.Body>
                   {currentPaymentRecords.length > 0 ? (
                     currentPaymentRecords.map((record) => (
                       <Table.Row key={record.impUid}>
-                        <Table.Cell style={{ padding: "22px" }}>
+                        <Table.Cell style={cellStyle}>
                           {record.impUid}
                         </Table.Cell>
-                        <Table.Cell>{record.buyerId}</Table.Cell>
-                        <Table.Cell>{record.productName}</Table.Cell>
-                        <Table.Cell>{record.paymentAmount}원</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {record.buyerId}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {record.productName}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {record.paymentAmount}원
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {record.paymentMethod === "point"
                             ? "카카오페이"
                             : record.paymentMethod}
                         </Table.Cell>
-                        <Table.Cell>{record.paymentDate}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {record.paymentDate}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {record.status === "paid"
                             ? "결제 완료"
                             : record.status}

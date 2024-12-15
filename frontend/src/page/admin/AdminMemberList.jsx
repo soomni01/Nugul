@@ -205,6 +205,21 @@ export function AdminMemberList() {
       });
   }
 
+  const headerStyle = {
+    padding: "10px",
+    height: "50px",
+    textAlign: "center",
+    backgroundColor: "#f4f4f4",
+    fontWeight: "bold",
+    width: "200px",
+  };
+
+  const cellStyle = {
+    padding: "10px",
+    height: "50px",
+    textAlign: "center",
+  };
+
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
@@ -233,11 +248,17 @@ export function AdminMemberList() {
         <Table.Root interactive>
           <TableHeader>
             <TableRow>
-              <TableColumnHeader>ID</TableColumnHeader>
-              <TableColumnHeader>닉네임</TableColumnHeader>
-              <TableColumnHeader>비밀번호</TableColumnHeader>
-              <TableColumnHeader>가입 일자</TableColumnHeader>
-              <TableColumnHeader>회원 탈퇴</TableColumnHeader>
+              <TableColumnHeader style={headerStyle}>ID</TableColumnHeader>
+              <TableColumnHeader style={headerStyle}>닉네임</TableColumnHeader>
+              <TableColumnHeader style={headerStyle}>
+                비밀번호
+              </TableColumnHeader>
+              <TableColumnHeader style={headerStyle}>
+                가입 일자
+              </TableColumnHeader>
+              <TableColumnHeader style={headerStyle}>
+                회원 탈퇴
+              </TableColumnHeader>
             </TableRow>
           </TableHeader>
           <Table.Body>
@@ -249,13 +270,13 @@ export function AdminMemberList() {
                 }
                 style={{ cursor: "pointer" }}
               >
-                <Table.Cell>{member.memberId}</Table.Cell>
-                <Table.Cell>{member.nickname}</Table.Cell>
-                <Table.Cell>{member.password}</Table.Cell>
-                <Table.Cell>
+                <Table.Cell style={cellStyle}>{member.memberId}</Table.Cell>
+                <Table.Cell style={cellStyle}>{member.nickname}</Table.Cell>
+                <Table.Cell style={cellStyle}>{member.password}</Table.Cell>
+                <Table.Cell style={cellStyle}>
                   {new Date(member.inserted).toLocaleDateString()}
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell style={cellStyle}>
                   <DeleteButton
                     onDelete={handleDeleteClick}
                     memberId={member.memberId}
