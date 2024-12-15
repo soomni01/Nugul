@@ -143,32 +143,23 @@ public class MemberService {
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
-//        List<String> auths = mapper.selectAuthByMemberId(member.getMemberId());
-//        String authsString = auths.stream()
-//                .collect(Collectors.joining(" "));
-//        if (db != null) {
-//            // 비밀번호 검증 후 JWT 생성
-//            if (db.getPassword().equals(member.getPassword())) {
-//                JwtClaimsSet claims = JwtClaimsSet.builder()
-//                        .issuer("self")
-//                        .subject(member.getMemberId())
-//                        .issuedAt(Instant.now())
-//                        .expiresAt(Instant.now().plusSeconds(3600))
-//                        .claim("nickname", db.getNickname())
-//                        .claim("scope", authsString)
-//                        .build();
-//
-//                return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-//            }
-//        }
-//        return null;
-
 
     // 입력된 비밀번호가 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드
     public boolean isPasswordCorrect(String memberId, String password) {
         Member dbMember = mapper.selectById(memberId);
         if (dbMember != null) {
             if (dbMember.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 입력된 카카오 이메일이 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드
+    public boolean isEmailCorrect(String memberId, String email) {
+        Member dbMember = mapper.selectById(memberId);
+        if (dbMember != null) {
+            if (dbMember.getMemberId().equals(email)) {
                 return true;
             }
         }

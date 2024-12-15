@@ -20,6 +20,7 @@ import { toaster } from "../../components/ui/toaster.jsx";
 export function Profile({ onEditClick }) {
   const [member, setMember] = useState(null);
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(""); // 이메일 상태 추가
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
@@ -38,6 +39,11 @@ export function Profile({ onEditClick }) {
   }, [id]);
 
   function handleDeleteClick() {
+    // 카카오 사용자의 경우 이메일로 탈퇴 처리
+    const data = member.password
+      ? { memberId: id, password }
+      : { memberId: id, email };
+
     axios
       .delete("/api/member/remove", {
         data: { memberId: id, password },
@@ -62,6 +68,7 @@ export function Profile({ onEditClick }) {
       .finally(() => {
         setOpen(false);
         setPassword("");
+        setEmail("");
       });
   }
 
@@ -99,13 +106,23 @@ export function Profile({ onEditClick }) {
               </DialogHeader>
               <DialogBody>
                 <Stack gap={5}>
-                  <Field label={"암호"}>
-                    <Input
-                      placeholder={"암호를 입력해주세요."}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </Field>
+                  {member.password ? (
+                    <Field label={"암호"}>
+                      <Input
+                        placeholder={"암호를 입력해주세요."}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </Field>
+                  ) : (
+                    <Field label={"이메일"}>
+                      <Input
+                        placeholder={"카카오 이메일을 입력해주세요."}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </Field>
+                  )}
                 </Stack>
               </DialogBody>
               <DialogFooter>

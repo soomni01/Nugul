@@ -56,17 +56,32 @@ public class MemberController {
     @PreAuthorize("isAuthenticated() or hasAuthority('SCOPE_admin')")
     public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member, Authentication auth) {
 
-        // 현재 인증된 사용자의 비밀번호 확인
-        if (!service.isPasswordCorrect(auth.getName(), member.getPassword())) {
-            return ResponseEntity.status(403).body(Map.of("message",
-                    Map.of("type", "error", "text", "비밀번호가 일치하지 않습니다.")));
+        // 인증된 사용자의 이름 (사용자 ID) 가져오기
+        String username = auth.getName();
+
+        // 회원이 비밀번호를 제공했을 때, 비밀번호 검증
+        if (member.getPassword() != null && !member.getPassword().isEmpty()) {
+            if (!service.isPasswordCorrect(username, member.getPassword())) {
+                return ResponseEntity.status(403).body(Map.of("message",
+                        Map.of("type", "error", "text", "비밀번호가 일치하지 않습니다.")));
+            }
+        } else {
+            // 카카오 로그인 사용자일 경우 이메일로 검증
+            if (member.getMemberId() != null && !member.getMemberId().isEmpty()) {
+                if (!service.isEmailCorrect(username, member.getMemberId())) {
+                    return ResponseEntity.status(403).body(Map.of("message",
+                            Map.of("type", "error", "text", "이메일이 일치하지 않습니다.")));
+                }
+            }
         }
+
         if (service.remove(member, auth)) {
             return ResponseEntity.ok(Map.of("message",
                     Map.of("type", "success", "text", "회원정보를 삭제하였습니다.")));
         } else {
             return ResponseEntity.badRequest().body(Map.of("message",
                     Map.of("type", "warning", "text", "정확한 정보를 입력해주세요.")));
+
         }
     }
 
