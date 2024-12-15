@@ -21,7 +21,9 @@ export function AdminMemberDetail() {
   const [soldList, setSoldList] = useState([]);
   const [purchasedList, setPurchasedList] = useState([]);
   const [paymentRecords, setPaymentRecords] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageSold, setCurrentPageSold] = useState(1);
+  const [currentPagePurchased, setCurrentPagePurchased] = useState(1);
+  const [currentPagePayment, setCurrentPagePayment] = useState(1);
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
 
@@ -78,24 +80,39 @@ export function AdminMemberDetail() {
     return <Spinner />;
   }
 
-  // 페이지네이션 로직
-  const indexOfLastSold = currentPage * itemsPerPage;
+  // 판매 내역 페이지네이션 로직
+  const indexOfLastSold = currentPageSold * itemsPerPage;
   const indexOfFirstSold = indexOfLastSold - itemsPerPage;
   const currentSoldList = soldList.slice(indexOfFirstSold, indexOfLastSold);
+  const totalSoldPages = Math.ceil(soldList.length / itemsPerPage);
 
-  const indexOfLastPurchased = currentPage * itemsPerPage;
+  // 구매 내역 페이지네이션 로직
+  const indexOfLastPurchased = currentPagePurchased * itemsPerPage;
   const indexOfFirstPurchased = indexOfLastPurchased - itemsPerPage;
   const currentPurchasedList = purchasedList.slice(
     indexOfFirstPurchased,
     indexOfLastPurchased,
   );
-
-  const totalSoldPages = Math.ceil(soldList.length / itemsPerPage);
   const totalPurchasedPages = Math.ceil(purchasedList.length / itemsPerPage);
 
+  // 결제 내역 페이지네이션 로직
+  const indexOfLastPayment = currentPagePayment * itemsPerPage;
+  const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
+  const currentPaymentRecords = paymentRecords.slice(
+    indexOfFirstPayment,
+    indexOfLastPayment,
+  );
+  const totalPaymentPages = Math.ceil(paymentRecords.length / itemsPerPage);
+
   // 페이지 변경 시 현재 페이지를 업데이트
-  function handlePageChange(newPage) {
-    setCurrentPage(newPage);
+  function handlePageChange(tab, newPage) {
+    if (tab === "sold") {
+      setCurrentPageSold(newPage);
+    } else if (tab === "purchased") {
+      setCurrentPagePurchased(newPage);
+    } else if (tab === "payment") {
+      setCurrentPagePayment(newPage);
+    }
   }
 
   return (
@@ -137,7 +154,9 @@ export function AdminMemberDetail() {
                         }}
                         style={{ cursor: "pointer" }}
                       >
-                        <Table.Cell>{product.productId}</Table.Cell>
+                        <Table.Cell style={{ padding: "22px" }}>
+                          {product.productId}
+                        </Table.Cell>
                         <Table.Cell>{product.productName}</Table.Cell>
                         <Table.Cell>
                           {product.price ? `${product.price}원` : "무료 나눔"}
@@ -154,7 +173,10 @@ export function AdminMemberDetail() {
                     ))
                   ) : (
                     <Table.Row>
-                      <Table.Cell colSpan={7} style={{ textAlign: "center" }}>
+                      <Table.Cell
+                        colSpan={7}
+                        style={{ textAlign: "center", padding: "22px" }}
+                      >
                         판매 내역이 없습니다.
                       </Table.Cell>
                     </Table.Row>
@@ -166,12 +188,12 @@ export function AdminMemberDetail() {
               {[...Array(totalSoldPages).keys()].map((page) => (
                 <Button
                   key={page + 1}
-                  onClick={() => handlePageChange(page + 1)}
+                  onClick={() => handlePageChange("sold", page + 1)}
                   style={{
                     padding: "5px 10px",
                     backgroundColor:
-                      currentPage === page + 1 ? "#D2D2D2" : "#E4E4E4",
-                    color: currentPage === page + 1 ? "white" : "black",
+                      currentPageSold === page + 1 ? "#D2D2D2" : "#E4E4E4",
+                    color: currentPageSold === page + 1 ? "white" : "black",
                     border: "none",
                     borderRadius: "3px",
                     cursor: "pointer",
@@ -209,7 +231,9 @@ export function AdminMemberDetail() {
                         }}
                         style={{ cursor: "pointer" }}
                       >
-                        <Table.Cell>{product.productId}</Table.Cell>
+                        <Table.Cell style={{ padding: "22px" }}>
+                          {product.productId}
+                        </Table.Cell>
                         <Table.Cell>{product.productName}</Table.Cell>
                         <Table.Cell>
                           {product.price ? `${product.price}원` : "무료 나눔"}
@@ -226,7 +250,10 @@ export function AdminMemberDetail() {
                     ))
                   ) : (
                     <Table.Row>
-                      <Table.Cell colSpan={7} style={{ textAlign: "center" }}>
+                      <Table.Cell
+                        colSpan={7}
+                        style={{ textAlign: "center", padding: "22px" }}
+                      >
                         구매 내역이 없습니다.
                       </Table.Cell>
                     </Table.Row>
@@ -238,12 +265,13 @@ export function AdminMemberDetail() {
               {[...Array(totalPurchasedPages).keys()].map((page) => (
                 <Button
                   key={page + 1}
-                  onClick={() => handlePageChange(page + 1)}
+                  onClick={() => handlePageChange("purchased", page + 1)}
                   style={{
                     padding: "5px 10px",
                     backgroundColor:
-                      currentPage === page + 1 ? "#D2D2D2" : "#E4E4E4",
-                    color: currentPage === page + 1 ? "white" : "black",
+                      currentPagePurchased === page + 1 ? "#D2D2D2" : "#E4E4E4",
+                    color:
+                      currentPagePurchased === page + 1 ? "white" : "black",
                     border: "none",
                     borderRadius: "3px",
                     cursor: "pointer",
@@ -271,10 +299,12 @@ export function AdminMemberDetail() {
                   </TableRow>
                 </TableHeader>
                 <Table.Body>
-                  {paymentRecords.length > 0 ? (
-                    paymentRecords.map((record) => (
+                  {currentPaymentRecords.length > 0 ? (
+                    currentPaymentRecords.map((record) => (
                       <Table.Row key={record.impUid}>
-                        <Table.Cell>{record.impUid}</Table.Cell>
+                        <Table.Cell style={{ padding: "22px" }}>
+                          {record.impUid}
+                        </Table.Cell>
                         <Table.Cell>{record.buyerId}</Table.Cell>
                         <Table.Cell>{record.productName}</Table.Cell>
                         <Table.Cell>{record.paymentAmount}원</Table.Cell>
@@ -293,7 +323,10 @@ export function AdminMemberDetail() {
                     ))
                   ) : (
                     <Table.Row>
-                      <Table.Cell colSpan={7} style={{ textAlign: "center" }}>
+                      <Table.Cell
+                        colSpan={7}
+                        style={{ textAlign: "center", padding: "22px" }}
+                      >
                         결제 내역이 없습니다.
                       </Table.Cell>
                     </Table.Row>
@@ -301,6 +334,25 @@ export function AdminMemberDetail() {
                 </Table.Body>
               </Table.Root>
             </Box>
+            <Flex justify="center" mt={4} gap={2}>
+              {[...Array(totalPaymentPages).keys()].map((page) => (
+                <Button
+                  key={page + 1}
+                  onClick={() => handlePageChange("payment", page + 1)}
+                  style={{
+                    padding: "5px 10px",
+                    backgroundColor:
+                      currentPagePayment === page + 1 ? "#D2D2D2" : "#E4E4E4",
+                    color: currentPagePayment === page + 1 ? "white" : "black",
+                    border: "none",
+                    borderRadius: "3px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {page + 1}
+                </Button>
+              ))}
+            </Flex>
           </Tabs.Content>
         </Tabs.Root>
       </Stack>
