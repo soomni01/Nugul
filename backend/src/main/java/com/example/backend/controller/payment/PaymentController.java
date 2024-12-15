@@ -62,4 +62,11 @@ public class PaymentController {
         String buyerId = auth.getName();
         return service.getPayment(buyerId);
     }
+
+    // 특정 사용자 결제 내역 조회 (관리자용)
+    @GetMapping("/api/getPaymentByMember")
+    @PreAuthorize("isAuthenticated()")
+    public List<PaymentRecord> getPaymentByMember(@RequestParam String memberId) {
+        return service.getPayment(memberId);
+    }
 }

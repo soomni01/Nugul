@@ -20,6 +20,7 @@ export function AdminMemberDetail() {
   const navigate = useNavigate();
   const [soldList, setSoldList] = useState([]);
   const [purchasedList, setPurchasedList] = useState([]);
+  const [paymentRecords, setPaymentRecords] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
@@ -38,27 +39,36 @@ export function AdminMemberDetail() {
     const fetchPurchasedProducts = axios.get("/api/myPage/purchased", {
       params: { id: memberId },
     });
+    const fetchPaymentRecords = axios.get("/api/getPaymentByMember", {
+      params: { memberId },
+    });
 
-    // 회원의 판매 및 구매 내역 데이터를 가져와 상태 업데이트
-    Promise.all([fetchSoldProducts, fetchPurchasedProducts])
-      .then(([soldRes, purchasedRes]) => {
+    // 회원의 판매, 구매, 결제 내역 데이터를 가져와 상태 업데이트
+    Promise.all([
+      fetchSoldProducts,
+      fetchPurchasedProducts,
+      fetchPaymentRecords,
+    ])
+      .then(([soldRes, purchasedRes, paymentRes]) => {
         console.log("판매 내역 데이터:", soldRes.data);
         console.log("구매 내역 데이터:", purchasedRes.data);
-        setSoldList(soldRes.data);
+        console.log("결제 내역 데이터:", paymentRes.data);
 
-        // 구매 내역을 오름차순으로 정렬
+        setSoldList(soldRes.data);
         const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
           return dateA - dateB;
         });
         setPurchasedList(sortedPurchasedList);
+        setPaymentRecords(paymentRes.data);
         setLoading(false);
       })
       .catch((error) => {
         console.error("데이터를 가져오는 중 오류 발생:", error);
         setSoldList([]);
         setPurchasedList([]);
+        setPaymentRecords([]);
         setLoading(false);
       });
   }, [memberId]);
@@ -98,6 +108,7 @@ export function AdminMemberDetail() {
             <span>{memberId} 님의</span>
             <Tabs.Trigger value="SoldProducts">판매 내역</Tabs.Trigger>
             <Tabs.Trigger value="PurchasedProducts">구매 내역</Tabs.Trigger>
+            <Tabs.Trigger value="PaymentRecord">결제 내역</Tabs.Trigger>
           </Tabs.List>
 
           {/* 판매 내역 탭 */}
@@ -242,6 +253,54 @@ export function AdminMemberDetail() {
                 </Button>
               ))}
             </Flex>
+          </Tabs.Content>
+
+          {/* 결제 내역 탭 */}
+          <Tabs.Content value="PaymentRecord">
+            <Box mt={-3}>
+              <Table.Root interactive>
+                <TableHeader>
+                  <TableRow>
+                    <TableColumnHeader>결제 ID</TableColumnHeader>
+                    <TableColumnHeader>구매자 ID</TableColumnHeader>
+                    <TableColumnHeader>상품명</TableColumnHeader>
+                    <TableColumnHeader>결제 금액</TableColumnHeader>
+                    <TableColumnHeader>결제 방법</TableColumnHeader>
+                    <TableColumnHeader>결제 날짜</TableColumnHeader>
+                    <TableColumnHeader>결제 상태</TableColumnHeader>
+                  </TableRow>
+                </TableHeader>
+                <Table.Body>
+                  {paymentRecords.length > 0 ? (
+                    paymentRecords.map((record) => (
+                      <Table.Row key={record.impUid}>
+                        <Table.Cell>{record.impUid}</Table.Cell>
+                        <Table.Cell>{record.buyerId}</Table.Cell>
+                        <Table.Cell>{record.productName}</Table.Cell>
+                        <Table.Cell>{record.paymentAmount}원</Table.Cell>
+                        <Table.Cell>
+                          {record.paymentMethod === "point"
+                            ? "카카오페이"
+                            : record.paymentMethod}
+                        </Table.Cell>
+                        <Table.Cell>{record.paymentDate}</Table.Cell>
+                        <Table.Cell>
+                          {record.status === "paid"
+                            ? "결제 완료"
+                            : record.status}
+                        </Table.Cell>
+                      </Table.Row>
+                    ))
+                  ) : (
+                    <Table.Row>
+                      <Table.Cell colSpan={7} style={{ textAlign: "center" }}>
+                        결제 내역이 없습니다.
+                      </Table.Cell>
+                    </Table.Row>
+                  )}
+                </Table.Body>
+              </Table.Root>
+            </Box>
           </Tabs.Content>
         </Tabs.Root>
       </Stack>
