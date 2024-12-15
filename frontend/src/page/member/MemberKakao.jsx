@@ -7,7 +7,7 @@ import { Checkbox } from "../../components/ui/checkbox.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 
-export function KakaoCallback() {
+export function MemberKakao() {
   const location = useLocation(); // state 정보 받기
   const [email, setEmail] = useState(location.state?.email); // 초기값 설정
   const [nickname, setNickName] = useState(location.state?.nickname);

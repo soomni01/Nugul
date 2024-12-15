@@ -33,7 +33,7 @@ import ViewMap from "./page/map/ViewMap.jsx";
 
 import { InquiryView } from "./page/mypage/InquiryView.jsx";
 import InquiryEdit from "./page/mypage/InquiryEdit.jsx";
-import { KakaoCallback } from "./page/member/KakaoCallback.jsx";
+import { MemberKakao } from "./page/member/MemberKakao.jsx";
 import { KakaoOauth } from "./components/kakao/KakaoOauth.jsx";
 
 // Axios 인터셉터 설정
@@ -136,8 +136,8 @@ const router = createBrowserRouter([
         element: <KakaoOauth />,
       },
       {
-        path: "kakao/callback",
-        element: <KakaoCallback />,
+        path: "member/kakao",
+        element: <MemberKakao />,
       },
     ],
   },
