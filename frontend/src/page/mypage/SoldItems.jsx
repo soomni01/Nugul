@@ -1,4 +1,4 @@
-import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Spinner, Text } from "@chakra-ui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
@@ -39,9 +39,10 @@ export function SoldItems() {
   }
   return (
     <Box>
-      <Heading size="lg" mb={4}>
-        내가 판매한 상품
-      </Heading>
+      <HStack alignItems="center" mb={3}>
+        <Heading size="lg">내가 판매한 상품</Heading>
+        <Text>총 {soldList.length}건</Text>
+      </HStack>
       <Box height="70vh" overflow="hidden">
         <Swiper
           direction={"vertical"}
