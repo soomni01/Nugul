@@ -1,13 +1,4 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  Input,
-  Spinner,
-  Stack,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Flex, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
@@ -154,26 +145,10 @@ export function ProductView() {
         const roomId = res.data;
         navigate("/chat/room/" + roomId);
       });
-    // 추가
   };
 
-  // 성공적으로 거래할 경우(채팅방에서 거래완료 버튼 누르면 실행 > chatview 로 옮김 )
-
   return (
-    <Box>
-      <HStack>
-        <Heading>{productId}번 상품 이름</Heading>
-        {/* 테스트용 거래 완료 시 버튼  >  chatview 로 옮김 */}
-
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <ProductLike
-            productId={product.productId}
-            initialLike={userLikes.has(product.productId)}
-            initialCount={likeData[product.productId] || 0}
-            isHorizontal={true} // 수평으로 하트와 숫자 배치
-          />
-        </Box>
-      </HStack>
+    <Box border={"1px solid black"}>
       <Swiper
         slidesPerView={1}
         spaceBetween={30}
@@ -183,31 +158,31 @@ export function ProductView() {
         }}
         navigation={true}
         modules={[Pagination, Navigation]}
-        className="mySwiper"
+        className="product-page-swiper"
       >
         {product.fileList.map((file) => (
-          <SwiperSlide>
-            <Box w="300px" h="auto">
+          <SwiperSlide className="product-page-swiper-slide">
+            <Box>
               <img src={file.src} alt={file.name} />
             </Box>
           </SwiperSlide>
         ))}
       </Swiper>
-      <Stack gap={5}>
-        <Box>판매자: {product.nickname}</Box>
+      <Stack gap={5} border={"1px solid black"}>
+        <Box border={"1px solid black"}>판매자: {product.nickname}</Box>
         <Flex gap={3}>
-          <Box minWidth="100px">
+          <Box minWidth="100px" border={"1px solid black"}>
             <Field label={"카테고리"} readOnly>
               <Input value={categoryLabel} />
             </Field>
           </Box>
-          <Box flex={8}>
+          <Box flex={8} border={"1px solid black"}>
             <Field label={"상품명"} readOnly>
               <Input value={product.productName} />
             </Field>
           </Box>
         </Flex>
-        <Field label={"거래방식"} readOnly>
+        <Field border={"1px solid black"} label={"거래방식"} readOnly>
           <Flex gap={4}>
             <Button borderRadius="10px">
               {product.pay == "sell" ? "판매하기" : "나눔하기"}
@@ -215,19 +190,25 @@ export function ProductView() {
           </Flex>
         </Field>
         {product.pay === "sell" && (
-          <Field label={"가격"} readOnly>
+          <Field label={"가격"} readOnly border={"1px solid black"}>
             <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
               <Input value={product.price} />
             </InputGroup>
           </Field>
         )}
-        <Field label={"상품 설명"} readOnly>
+        <Field border={"1px solid black"} label={"상품 설명"} readOnly>
           <Textarea h={200} value={product.description} />
         </Field>
-        <Field label={"거래 희망 장소"} readOnly>
+        <Field border={"1px solid black"} label={"거래 희망 장소"} readOnly>
           <Input value={product.locationName} readOnly />
         </Field>
-        <Box>
+        <ProductLike
+          productId={product.productId}
+          initialLike={userLikes.has(product.productId)}
+          initialCount={likeData[product.productId] || 0}
+          isHorizontal={true} // 수평으로 하트와 숫자 배치
+        />
+        <Box border={"1px solid black"}>
           <Map
             className="map"
             center={
@@ -243,7 +224,6 @@ export function ProductView() {
             <ZoomControl />
           </Map>
         </Box>
-
         <Button onClick={createChatRoom} disabled={id === product.writer}>
           거래하기
         </Button>
