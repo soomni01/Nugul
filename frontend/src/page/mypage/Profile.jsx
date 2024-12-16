@@ -16,6 +16,9 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { kakaoUnlink } from "../../components/kakao/KakaoLogin.jsx";
+
+// 카카오 계정 연결 해제 함수 추가
 
 export function Profile({ onEditClick }) {
   const [member, setMember] = useState(null);
@@ -50,6 +53,15 @@ export function Profile({ onEditClick }) {
       })
       .then((res) => {
         const message = res.data.message;
+
+        // 카카오 계정 연결 해제
+        kakaoUnlink()
+          .then(() => {
+            console.log("카카오 계정 연결 해제 성공");
+          })
+          .catch((error) => {
+            console.error("카카오 계정 연결 해제 실패:", error);
+          });
 
         toaster.create({
           type: message.type,

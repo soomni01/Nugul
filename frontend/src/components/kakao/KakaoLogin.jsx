@@ -49,7 +49,8 @@ export function KakaoLogin() {
   );
 }
 
-export function kakaoLogout() {
+// 카카오 회원 로그아웃 & 회원탈퇴
+function kakaoApiRequest(endpoint) {
   return new Promise((resolve, reject) => {
     const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_KEY;
 
@@ -62,30 +63,30 @@ export function kakaoLogout() {
           return;
         }
 
-        // 로그아웃 요청
-        fetch("https://kapi.kakao.com/v1/user/logout", {
+        // 카카오 API 호출
+        fetch(`https://kapi.kakao.com/v1/user/${endpoint}`, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${accessToken}`, // 유효한 액세스 토큰을 Authorization 헤더에 포함
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/x-www-form-urlencoded",
           },
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error("카카오 로그아웃 요청 실패");
+              throw new Error(`${endpoint} 요청 실패`);
             }
             return response.json();
           })
           .then((data) => {
-            console.log("카카오 로그아웃 성공:", data);
+            console.log(`${endpoint} 성공:`, data);
 
-            // 로그아웃 후 액세스 토큰 삭제
+            // 성공적으로 처리된 후 액세스 토큰 삭제
             sessionStorage.removeItem("kakaoAccessToken");
 
-            resolve(true); // 로그아웃 성공
+            resolve(true); // 성공 처리
           })
           .catch((error) => {
-            console.error("카카오 로그아웃 실패:", error);
+            console.error(`${endpoint} 실패:`, error);
             reject(error);
           });
       })
@@ -94,4 +95,14 @@ export function kakaoLogout() {
         reject(error);
       });
   });
+}
+
+// 일반 로그아웃 처리 함수
+export function kakaoLogout() {
+  return kakaoApiRequest("logout");
+}
+
+// 회원 탈퇴 처리 함수 (카카오 계정 연결 해제)
+export function kakaoUnlink() {
+  return kakaoApiRequest("unlink");
 }
