@@ -1,4 +1,4 @@
-import { Box, HStack, Input, Stack, Textarea } from "@chakra-ui/react";
+import { Box, HStack, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { BoardCategories } from "../../components/board/BoardCategoryContainer.jsx";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export function BoardAdd() {
   const { isAuthenticated, logout } = useContext(AuthenticationContext);
@@ -15,6 +17,20 @@ export function BoardAdd() {
   const [category, setCategory] = useState("");
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState(false);
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline"],
+      [{ align: [] }],
+      ["link"],
+      ["image"],
+      ["blockquote"],
+      [{ color: [] }, { background: [] }],
+      ["clean"],
+    ],
+  };
 
   const navigate = useNavigate();
 
@@ -99,11 +115,12 @@ export function BoardAdd() {
           />
         </Field>
         <Field label={"본문"}>
-          <Textarea
+          <ReactQuill
             value={content}
-            onChange={(e) => {
-              setContent(e.target.value);
+            onChange={(content) => {
+              setContent(content);
             }}
+            modules={modules}
           />
         </Field>
         <Box>

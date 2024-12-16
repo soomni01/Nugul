@@ -1,4 +1,4 @@
-import { Box, Image, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
+import { Box, Image, Input, Spinner, Stack } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -21,6 +21,8 @@ import {
   BoardCategories,
   BoardCategoryContainer,
 } from "../../components/board/BoardCategoryContainer.jsx";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Quill 스타일 추가
 
 export function ImageFileView({ files }) {
   console.log("ImageFileView files:", files);
@@ -97,7 +99,15 @@ export function BoardView() {
           <Input value={board.title} />
         </Field>
         <Field label="본문" readOnly>
-          <Textarea value={board.content} />
+          <ReactQuill
+            value={board.content || ""} // 값이 null 또는 undefined일 때 빈 문자열로 처리
+            readOnly={true} // 읽기 전용 설정
+            modules={{ toolbar: false }} // 툴바 비활성화
+            style={{
+              width: "100%",
+              height: "400px",
+            }}
+          />
         </Field>
         <ImageFileView files={board.fileList} />
         <Field label="작성자" readOnly>

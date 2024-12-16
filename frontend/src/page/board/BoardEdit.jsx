@@ -1,12 +1,4 @@
-import {
-  Box,
-  HStack,
-  Image,
-  Input,
-  Spinner,
-  Stack,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, HStack, Image, Input, Spinner, Stack } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -25,6 +17,8 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { Switch } from "../../components/ui/switch.jsx";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
@@ -48,6 +42,20 @@ export function BoardEdit() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline"],
+      [{ align: [] }],
+      ["link"],
+      ["image"],
+      ["blockquote"],
+      [{ color: [] }, { background: [] }],
+      ["clean"],
+    ],
+  };
 
   const { id, isAuthenticated, hasAccess, nickname } = useContext(
     AuthenticationContext,
@@ -160,9 +168,10 @@ export function BoardEdit() {
           />
         </Field>
         <Field label={"본문"}>
-          <Textarea
-            value={board.content}
-            onChange={(e) => setBoard({ ...board, content: e.target.value })}
+          <ReactQuill
+            value={board.content} // 수정된 내용을 반영
+            onChange={(content) => setBoard({ ...board, content })}
+            modules={modules} // 툴바 설정
           />
         </Field>
         <ImageView
