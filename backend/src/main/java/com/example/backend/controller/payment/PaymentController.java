@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class PaymentController {
 
     @Value("${iamport.key}")
@@ -36,13 +38,13 @@ public class PaymentController {
     }
 
     // 결제 확인 API
-    @PostMapping("/api/verifyIamport/{imp_uid}")
+    @PostMapping("/verifyIamport/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid) throws IamportResponseException, IOException {
         return iamportClient.paymentByImpUid(imp_uid);
     }
 
     // 결제 내역 저장
-    @PostMapping("/api/savePayment")
+    @PostMapping("/savePayment")
     public ResponseEntity<PaymentRecord> savePayment(@RequestBody PaymentRecord paymentrecord) {
         if (service.validate(paymentrecord)) {
             if (service.savePayment(paymentrecord)) {
@@ -56,7 +58,7 @@ public class PaymentController {
     }
 
     // 결제 내역 조회
-    @GetMapping("/api/getPayment")
+    @GetMapping("/getPayment")
     @PreAuthorize("isAuthenticated()")
     public List<PaymentRecord> getPayment(Authentication auth) {
         String buyerId = auth.getName();
@@ -64,9 +66,27 @@ public class PaymentController {
     }
 
     // 특정 사용자 결제 내역 조회 (관리자용)
-    @GetMapping("/api/getPaymentByMember")
+    @GetMapping("/getPaymentByMember")
     @PreAuthorize("isAuthenticated()")
     public List<PaymentRecord> getPaymentByMember(@RequestParam String memberId) {
         return service.getPayment(memberId);
+    }
+
+    // 거래 완료
+    @PostMapping("/product/transaction/{productId}")
+    public ResponseEntity<Map<String, Object>> transaction(@PathVariable int productId, @RequestBody Map<String, Integer> requestBody, Authentication auth) {
+        Integer roomId = requestBody.get("roomId"); // 요청 body에서 roomId 추출
+        if (service.hasPayAccess(roomId, auth)) {
+            if (service.transaction(productId, auth)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success", "text", STR."\{productId}번 상품 거래가 완료되었습니다.")));
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error", "text", "상품 거래 중 문제가 발생하였습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error", "text", "거래를 완료할 권한이 없습니다.")));
+        }
     }
 }
