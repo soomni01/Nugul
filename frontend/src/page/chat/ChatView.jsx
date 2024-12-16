@@ -278,7 +278,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           variant={"outline"}
           borderBottom={"1px solid gray"}
         >
-          {/*판매자 닉네임이 항상 */}
           <Box>
             <Heading> 닉네임: {chatRoom.nickname} </Heading>
             상품명: {chatRoom.productName}
@@ -288,9 +287,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
             />
-            <Payment chatRoom={chatRoom} />
             {/* 판매자 일때만 거래완료 버튼이 보이게*/}
-            {isSeller && (
+
+            {isSeller === true ? (
               <Button
                 disabled={chatRoom.status === "Sold"}
                 colorPalette={"cyan"}
@@ -298,6 +297,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               >
                 거래완료
               </Button>
+            ) : (
+              <Payment chatRoom={chatRoom} />
             )}
           </Flex>
         </Box>

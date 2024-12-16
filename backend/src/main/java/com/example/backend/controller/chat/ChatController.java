@@ -100,13 +100,10 @@ public class ChatController {
         boolean noOneDeleted = chatService.noOneDeleted(roomId);
         //  메시지를 보낸적 있거나 ,  메시지 보내고  삭제를 안했던가 ,  메시지 보내고 삭제했던가,
         if (!noOneDeleted) {
-
             // 메시지 삭제 ,  구매자, 혹은 판매자의 삭제상태 반영
             boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
             boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId, roomId);
-
             boolean chatRemoved;
-
             // 끝나고나면 일단 메시지를 보내긴 해야하고 , 진짜 삭제할건지는 한번 더 안에서 결정해야지
 
             if (messageRemoved && updateDeleted) {
