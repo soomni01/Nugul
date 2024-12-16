@@ -46,8 +46,17 @@ public interface ChatMapper {
 
     @Select("""
                 <script>
-                    select c.* , p.status as product_status
-                    from chatroom  c left join product p on p.product_id = c.product_id
+                    select 
+                        c.*, 
+                        p.status as product_status,
+                        CASE 
+                            WHEN c.writer = #{memberId} THEN 
+                                (SELECT nickname FROM member WHERE member_id = c.buyer)
+                            WHEN c.buyer = #{memberId} THEN 
+                                (SELECT nickname FROM member WHERE member_id = c.writer)
+                        END AS counterpartNickname
+                    from chatroom c 
+                    left join product p on p.product_id = c.product_id
                     <choose>                   
                         <when test="type == 'buy'">
                             where buyer = #{memberId}
@@ -56,13 +65,16 @@ public interface ChatMapper {
                             where c.writer = #{memberId}
                         </when>
                         <otherwise>
-                              where c.writer = #{memberId} or buyer = #{memberId}
+                            where c.writer = #{memberId} or buyer = #{memberId}
                         </otherwise>
                     </choose>
                     order by roomId desc
                 </script>
             """)
-    @Result(column = "product_status", property = "status")
+    @Results({
+            @Result(column = "product_status", property = "status"),
+            @Result(column = "counterpartNickname", property = "nickname")
+    })
     List<ChatRoom> chatRoomListByMemberId(String memberId, String type);
 
     @Delete("""

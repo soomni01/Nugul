@@ -30,7 +30,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
               {/*  제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.*/}
               {/*</Card.Description>*/}
               <HStack mt="4">
-                <Badge> 제품등록자명 : {chat.nickname}</Badge>
+                <Badge> 닉네임 : {chat.nickname}</Badge>
               </HStack>
             </Card.Body>
             <Card.Footer>
@@ -42,13 +42,6 @@ export function ChatListItem({ chat, onDelete, onClick }) {
               >
                 대화하러 가기
               </Button>
-              {/*<Button*/}
-              {/*  variant={"outline"}*/}
-              {/*  colorPalette={"red"}*/}
-              {/*  onClick={onDelete}*/}
-              {/*>*/}
-              {/*  삭제 버튼*/}
-              {/*</Button>*/}
             </Card.Footer>
           </Box>
         </HStack>
