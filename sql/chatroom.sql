@@ -50,3 +50,10 @@ order by roomId desc;
 delete
 from chat_message
 where roomId = 50;
+
+
+select c.*, p.status as product_status
+from chatroom c
+         left join product p on c.product_id = p.product_id
+         join member m
+where roomId = 93;

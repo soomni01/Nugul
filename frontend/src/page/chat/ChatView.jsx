@@ -95,7 +95,11 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   function handleSetData() {
     // 전체 데이터 가져오는 코드
     axios
-      .get(`/api/chat/view/${realChatRoomId}`)
+      .get(`/api/chat/view/${realChatRoomId}`, {
+        params: {
+          memberId: id,
+        },
+      })
       .then((res) => {
         setChatRoom(res.data);
       })

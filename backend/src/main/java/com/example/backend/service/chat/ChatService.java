@@ -25,11 +25,11 @@ public class ChatService {
         return cnt == 1;
     }
 
-    public ChatRoom chatRoomView(String roomId) {
+    public ChatRoom chatRoomView(String roomId, String memberId) {
 
 
-        ChatRoom chatRoom = mapper.chatRoomViewById(roomId);
-        
+        ChatRoom chatRoom = mapper.chatRoomViewById(roomId, memberId);
+
         return chatRoom;
     }
 
@@ -39,9 +39,7 @@ public class ChatService {
         // 상태 가져오기
         List<ChatRoom> chatRoomList = mapper.chatRoomListByMemberId(memberId, type);
 
-        chatRoomList.forEach(chatRoom -> {
-//            String nickName = mapper.findNickname(memberId);
-        });
+    
         return chatRoomList;
     }
 

@@ -7,7 +7,6 @@ import { Button } from "@chakra-ui/react";
 const Payment = ({ chatRoom }) => {
   const [product, setProduct] = useState({});
   const { id, nickname } = useContext(AuthenticationContext);
-  console.log("Authentication Context:", { id, nickname });
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {

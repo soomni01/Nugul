@@ -25,13 +25,23 @@ public interface ChatMapper {
 
 
     @Select("""
-                        select c.*  ,p.status as product_status
-                        from chatroom c left join product p on c.product_id=p.product_id
-                        where roomId =#{roomId}
+                      SELECT\s
+                                                   c.*,
+                                                   p.status AS productStatus,
+                                                   CASE\s
+                                                       WHEN c.writer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.buyer)
+                                                       WHEN c.buyer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.writer)
+                                                   END AS memberNickname
+                                               FROM\s
+                                                   chatroom c
+                                               LEFT JOIN\s
+                                                   product p ON c.product_id = p.product_id
+                                               WHERE\s
+                                                   c.roomId = #{roomId}
             
             """)
     @Result(column = "product_status", property = "status")
-    ChatRoom chatRoomViewById(String roomId);
+    ChatRoom chatRoomViewById(String roomId, String memberId);
 
 
     @Select("""
@@ -151,4 +161,5 @@ public interface ChatMapper {
     boolean checkNoOneDeleted(String roomId);
 
 
+    String findNickname(String memberId);
 }

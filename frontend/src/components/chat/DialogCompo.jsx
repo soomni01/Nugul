@@ -24,10 +24,10 @@ export function DialogCompo({ roomId, onDelete }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> 채팅방을 나가기</DialogTitle>
+          <DialogTitle> 채팅방 나가기</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <p> 채팅 방을 나가실 경우 , 보낸 메시지기록이 전부 사라집니다.</p>
+          <p> 채팅방을 나가실 경우 , 보낸 메시지기록이 전부 사라집니다.</p>
         </DialogBody>
         <DialogFooter>
           <DialogActionTrigger asChild>

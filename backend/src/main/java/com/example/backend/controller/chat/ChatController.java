@@ -43,6 +43,8 @@ public class ChatController {
         // 방이 있는지 먼저 확인   없으면 만들기
         Integer roomId = chatService.findChatRoomId(chatRoom);
 
+        System.out.println("chatRoom = " + chatRoom);
+
         if (roomId == null) {
             chatService.creatChatRoom(chatRoom);
 
@@ -57,11 +59,12 @@ public class ChatController {
 
     @GetMapping("view/{roomId}")
     public ChatRoom chatRoomView(@PathVariable String roomId,
+                                 @RequestParam String memberId,
                                  @RequestParam(value = "page", defaultValue = "1") String page
     ) {
 
         //  chatroom 정보 조회
-        ChatRoom chatRoom = chatService.chatRoomView(roomId);
+        ChatRoom chatRoom = chatService.chatRoomView(roomId, memberId);
         // 해당 채팅방의 메시지 정보 조회  , page
 //        List<ChatMessage> message = chatService.chatMessageView(roomId);
 //        chatRoom.setMessages(message);

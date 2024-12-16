@@ -30,7 +30,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
               {/*  제품 설명 ~~~~~~ Lorem ipsum dolor sit amet.*/}
               {/*</Card.Description>*/}
               <HStack mt="4">
-                <Badge> 제품등록자명 : {chat.writer}</Badge>
+                <Badge> 제품등록자명 : {chat.nickname}</Badge>
               </HStack>
             </Card.Body>
             <Card.Footer>
