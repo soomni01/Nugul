@@ -8,6 +8,7 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { jwtDecode } from "jwt-decode";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { KakaoLogin } from "../../components/kakao/KakaoLogin.jsx";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -60,7 +61,7 @@ export function MemberLogin() {
         if (userScope === "admin") {
           navigate("/admin/dashboard");
         } else {
-          navigate("main");
+          navigate("/main");
         }
         authentication.login(data.token);
         // localStorage.setItem("token", data.token);
@@ -111,6 +112,10 @@ export function MemberLogin() {
 
         <Box display="flex" gap={2}>
           <Button onClick={handleLoginClick}>로그인</Button>
+        </Box>
+
+        <Box display="flex" justifyContent="center" mt={4}>
+          <KakaoLogin />
         </Box>
 
         <Box textAlign="center" mt={4}>

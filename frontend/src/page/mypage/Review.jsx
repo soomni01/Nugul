@@ -121,38 +121,42 @@ export function Review(props) {
       return <Heading size="sm">후기가 없습니다.</Heading>;
 
     return (
-      <Swiper
-        direction="vertical"
-        slidesPerView="auto"
-        freeMode={true}
-        scrollbar={{ draggable: true }}
-        mousewheel={true}
-        modules={[FreeMode, Scrollbar, Mousewheel]}
-        style={{
-          height: "80vh",
-          width: "100%",
-          overflow: "hidden",
-        }}
-      >
-        {reviewList.map((review) => (
-          <SwiperSlide
-            key={review.id}
-            style={{
-              height: "auto",
-              width: "100%",
-              justifyContent: "left",
-            }}
-          >
-            <ReviewCard
-              review={review}
-              value={value}
-              productNameClick={(e) =>
-                productNameClick(navigate, review.productId)
-              }
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <Box>
+        <Text>총 {reviewList.length}건</Text>
+
+        <Swiper
+          direction="vertical"
+          slidesPerView="auto"
+          freeMode={true}
+          scrollbar={{ draggable: true }}
+          mousewheel={true}
+          modules={[FreeMode, Scrollbar, Mousewheel]}
+          style={{
+            height: "80vh",
+            width: "100%",
+            overflow: "hidden",
+          }}
+        >
+          {reviewList.map((review) => (
+            <SwiperSlide
+              key={review.id}
+              style={{
+                height: "auto",
+                width: "100%",
+                justifyContent: "left",
+              }}
+            >
+              <ReviewCard
+                review={review}
+                value={value}
+                productNameClick={(e) =>
+                  productNameClick(navigate, review.productId)
+                }
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Box>
     );
   };
 

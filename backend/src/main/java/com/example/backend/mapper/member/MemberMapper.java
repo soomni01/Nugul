@@ -10,8 +10,8 @@ import java.util.List;
 public interface MemberMapper {
     @Insert("""
             INSERT INTO member
-            (member_id,password,nickname)
-            VALUES (#{memberId}, #{password},#{nickname})
+            (member_id,password,nickname, profile_image)
+            VALUES (#{memberId}, #{password},#{nickname}, #{profileImage})
             """)
     int insert(Member member);
 
@@ -54,4 +54,11 @@ public interface MemberMapper {
             WHERE member_id = #{memberId}
             """)
     List<String> selectAuthByMemberId(String id);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM member
+            WHERE member_id=#{email}
+            """)
+    int emailCheck(String email);
 }

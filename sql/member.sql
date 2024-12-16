@@ -34,3 +34,7 @@ WHERE member_id = 'sm@naver.com';
 # 프로필 이미지 컬럼 추가
 ALTER TABLE member
     ADD COLUMN profile_image VARCHAR(300) DEFAULT NULL;
+
+# 카카오 로그인 시 비밀번호 미사용
+ALTER TABLE member
+    MODIFY COLUMN password VARCHAR(50) NULL;
