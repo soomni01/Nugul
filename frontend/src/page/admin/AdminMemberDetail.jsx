@@ -154,6 +154,11 @@ export function AdminMemberDetail() {
                       ID
                     </TableColumnHeader>
                     <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      카테고리
+                    </TableColumnHeader>
+                    <TableColumnHeader
                       style={{ ...headerStyle, width: "300px" }}
                     >
                       상품명
@@ -167,11 +172,6 @@ export function AdminMemberDetail() {
                       style={{ ...headerStyle, width: "250px" }}
                     >
                       작성자
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      카테고리
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "200px" }}
@@ -200,6 +200,9 @@ export function AdminMemberDetail() {
                           {product.productId}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
+                          {getCategoryLabel(product.category)}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {product.productName}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
@@ -207,9 +210,6 @@ export function AdminMemberDetail() {
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.writer}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {getCategoryLabel(product.category)}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.status}
@@ -265,6 +265,11 @@ export function AdminMemberDetail() {
                       ID
                     </TableColumnHeader>
                     <TableColumnHeader
+                      style={{ ...headerStyle, width: "150px" }}
+                    >
+                      카테고리
+                    </TableColumnHeader>
+                    <TableColumnHeader
                       style={{ ...headerStyle, width: "300px" }}
                     >
                       상품명
@@ -278,16 +283,6 @@ export function AdminMemberDetail() {
                       style={{ ...headerStyle, width: "250px" }}
                     >
                       작성자
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      카테고리
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      상태
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
@@ -308,7 +303,12 @@ export function AdminMemberDetail() {
                         style={{ cursor: "pointer" }}
                       >
                         <Table.Cell style={cellStyle}>
-                          {product.productId}
+                          {product.productId
+                            ? `${product.productId}`
+                            : "상품 정보 없음"}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {getCategoryLabel(product.category)}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.productName}
@@ -320,13 +320,11 @@ export function AdminMemberDetail() {
                           {product.writer}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {getCategoryLabel(product.category)}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {product.status}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {new Date(product.createdAt).toLocaleDateString()}
+                          {product.createdAt &&
+                          !isNaN(new Date(product.createdAt))
+                            ? new Date(product.createdAt).toLocaleDateString()
+                            : ""}{" "}
+                          {/* 날짜가 없으면 빈 문자열 반환 */}
                         </Table.Cell>
                       </Table.Row>
                     ))
