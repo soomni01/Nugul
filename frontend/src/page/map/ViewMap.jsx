@@ -215,13 +215,10 @@ function ViewMap() {
           overflowY={"auto"}
           style={{
             position: "absolute",
-            top: "10px",
-            left: "10px",
             zIndex: 3,
             height: "calc(100vh - 20px)",
             background: listItem.length > 0 ? "white" : "transparent", // 검색 결과 없으면 투명 배경
             padding: listItem.length > 0 ? "10px" : "0", // 검색 결과 없으면 패딩 제거
-            borderRadius: "8px", // 둥근 모서리
 
             boxShadow:
               listItem.length > 0 ? "0 4px 6px rgba(0, 0, 0, 0.1)" : "none", // 검색 결과 없으면 그림자 제거
@@ -235,7 +232,9 @@ function ViewMap() {
           >
             <Field>
               <Input
-                w={"100%"}
+                style={{
+                  minWidth: "200px",
+                }}
                 value={locationName}
                 onChange={(e) => {
                   setLocationName(e.target.value);
