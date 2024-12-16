@@ -284,5 +284,10 @@ public class ProductService {
         int insertTrasaction = mapper.insertTranscation(productId, buyer_id, product.getWriter(), product.getProductName(), product.getLocationName(), product.getPrice());
         return updateStatus == 1 && insertTrasaction == 1;
     }
+
+    public boolean hasPayAccess(Integer roomId, Authentication authentication) {
+        String buyerId = mapper.getBuyerId(roomId);
+        return buyerId.equals(authentication.getName());
+    }
 }
 

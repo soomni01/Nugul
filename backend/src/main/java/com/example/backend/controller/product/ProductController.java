@@ -23,8 +23,10 @@ public class ProductController {
     @PostMapping("transaction/{productId}")
     public ResponseEntity<Map<String, Object>> transaction(
             @PathVariable int productId,
+            @RequestParam(value = "roomId") Integer roomId,
             Authentication authentication) {
-        if (service.hasAccess(productId, authentication)) {
+        System.out.println(roomId);
+        if (service.hasPayAccess(roomId, authentication)) {
             if (service.transaction(productId)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",

@@ -62,6 +62,16 @@ const Payment = ({ chatRoom }) => {
               status: "paid",
             });
 
+            await axios.post(
+              `/api/product/transaction/${productId}`,
+              { params: { roomId: chatRoom.roomId } },
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // 인증 토큰 추가
+                },
+              },
+            );
+
             // 결제 성공 알림
             toaster.create({
               type: "success",
