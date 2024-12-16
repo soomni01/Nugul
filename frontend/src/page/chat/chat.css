@@ -7,6 +7,14 @@
 
 }
 
+.overlay {
+
+    opacity: 0.5;
+    background-color: rgb(240, 240, 240);
+    cursor: default;
+    /*background: url("C:\Users\admin\IdeaProjects\prj1126\frontend\public\image\soldout.png") no-repeat center center/cover;*/
+}
+
 /*::-webkit-scrollbar {*/
 /*    width: 12px; !* 수평 스크롤바의 경우 height로 설정 *!*/
 /*}*/

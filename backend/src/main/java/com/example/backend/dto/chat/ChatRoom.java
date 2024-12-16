@@ -16,4 +16,6 @@ public class ChatRoom {
     private LocalDateTime leaveAt;
     // dto용
     private List<ChatMessage> messages;
+    private String status;
+
 }

@@ -14,23 +14,9 @@
 .map_wrap {
     position: relative;
     width: 100%;
-    height: 900px;
+
 }
 
-#menu_wrap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 250px;
-    margin: 10px 0 30px 10px;
-    padding: 5px;
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.7);
-    z-index: 1;
-    font-size: 12px;
-    border-radius: 10px;
-}
 
 .bg_white {
     background: #fff;
@@ -318,6 +304,17 @@
     background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;
 }
 
+.placeinfo .bluetitle {
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 6px 6px 0 0;
+    margin: -1px -1px 0 -1px;
+    padding: 10px;
+    color: #fff;
+    background: #3396ff;
+    background: #3396ff url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;
+}
+
 .placeinfo .tel {
     color: #0f7833;
 }
@@ -365,4 +362,26 @@
     display: flex;
     justify-content: flex-end; /* 오른쪽 정렬 */
     margin-top: 16px;
+}
+
+.listItem {
+
+}
+
+
+/* <ListItem> 컴포넌트 속성*/
+.hover-item {
+    background-color: white;
+    margin: 4px;
+    padding: 12px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.hover-item:hover {
+    background-color: #f0f0f0; /* hover 시 배경색 변경 */
+}
+
+.searchBox {
+
 }

@@ -31,7 +31,6 @@ import AuthenticationProvider from "./components/context/AuthenticationProvider.
 import { MemberKakao } from "./page/member/MemberKakao.jsx";
 import { KakaoOauth } from "./components/kakao/KakaoOauth.jsx";
 
-
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -166,18 +165,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  // 카카오 api
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_APP_KEY}&libraries=services,clusterer`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
   return (
     <AuthenticationProvider>
       <RouterProvider router={router} />

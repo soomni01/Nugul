@@ -18,8 +18,9 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import Payment from "../../components/chat/Payment.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
-export function ChatView({ chatRoomId, onDelete }) {
+export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
   const chatBoxRef = useRef(null);
   const [message, setMessage] = useState([]);
@@ -132,7 +133,6 @@ export function ChatView({ chatRoomId, onDelete }) {
           params: { page },
         },
       );
-
       const initialMessages = response.data || [];
       setMessage(initialMessages.reverse());
 
@@ -202,6 +202,51 @@ export function ChatView({ chatRoomId, onDelete }) {
     // navigate("chat");
   }
 
+  const handleSuccessTransaction = () => {
+    axios
+      .post(`/api/product/transaction/${chatRoom.productId}`, {})
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      })
+      .catch((e) => {
+        const data = e.response.data;
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+      })
+      .finally(statusControl);
+  };
+
+  //  판매자 인지 확인
+  const isSeller = chatRoom.writer === id;
+
+  const removeChatRoom = (roomId, id) => {
+    axios
+      .delete("/api/chat/delete/" + roomId, {
+        params: {
+          memberId: id,
+        },
+      })
+      .then((res) => {
+        const message = res.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.content,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {
+        navigate("/chat");
+      });
+  };
+
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -216,7 +261,6 @@ export function ChatView({ chatRoomId, onDelete }) {
         w={600}
         h={700}
         overflow={"hidden"}
-        borderRadius={"lg"}
         bg={"blue.300/50"}
         border={"1px solid"}
         borderColor={"gray.300"}
@@ -235,8 +279,21 @@ export function ChatView({ chatRoomId, onDelete }) {
             상품명: {chatRoom.productName}
           </Box>
           <Flex>
-            <DialogCompo roomId={realChatRoomId} onDelete={onDelete} />
+            <DialogCompo
+              roomId={realChatRoomId}
+              onDelete={onDelete || (() => removeChatRoom(roomId, id))}
+            />
             <Payment chatRoom={chatRoom} />
+            {/* 판매자 일때만 거래완료 버튼이 보이게*/}
+            {isSeller && (
+              <Button
+                disabled={chatRoom.status === "Sold"}
+                colorPalette={"cyan"}
+                onClick={handleSuccessTransaction}
+              >
+                거래완료
+              </Button>
+            )}
           </Flex>
         </Box>
         <Box
@@ -256,7 +313,6 @@ export function ChatView({ chatRoomId, onDelete }) {
                   <Stack h={"10%"}>
                     <Badge
                       p={1}
-                      size={"lg"}
                       key={index}
                       colorPalette={message.sender === id ? "gray" : "yellow"}
                     >

@@ -13,13 +13,14 @@ export function ChatList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useContext(AuthenticationContext);
   const [chatRoomId, setChatRoomId] = useState(-1);
+  const [status, setStatus] = useState("For Sale");
 
   useEffect(() => {
     if (id) {
       fetch(id);
     }
     getChatList();
-  }, [searchParams, id]);
+  }, [searchParams, id, status]);
 
   function getChatList() {
     axios
@@ -37,9 +38,13 @@ export function ChatList() {
       });
   }
 
-  const removeChatRoom = (roomId) => {
+  const removeChatRoom = (roomId, id) => {
     axios
-      .delete("/api/chat/delete/" + roomId)
+      .delete("/api/chat/delete/" + roomId, {
+        params: {
+          memberId: id,
+        },
+      })
       .then(
         setChatList((prev) => prev.filter((chat) => chat.roomId !== roomId)),
       )
@@ -50,7 +55,9 @@ export function ChatList() {
           description: message.content,
         });
       })
-      .catch()
+      .catch((e) => {
+        console.log(e);
+      })
       .finally(() => {
         setChatRoomId(-1);
       });
@@ -97,7 +104,7 @@ export function ChatList() {
             <ChatListItem
               key={chat.roomId}
               chat={chat}
-              onDelete={() => removeChatRoom(chat.roomId)}
+              onDelete={() => removeChatRoom(chat.roomId, id)}
               onClick={() => {
                 setChatRoomId(chat.roomId);
               }}
@@ -107,9 +114,12 @@ export function ChatList() {
         {chatRoomId === -1 ? null : (
           <ChatView
             z-index={1}
+            statusControl={() => {
+              setStatus("Sold");
+            }}
             key={chatRoomId}
             chatRoomId={chatRoomId}
-            onDelete={() => removeChatRoom(chatRoomId)}
+            onDelete={() => removeChatRoom(chatRoomId, id)}
           />
         )}
         <Box>상품 정보</Box>

@@ -43,7 +43,6 @@ export function ProductView() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   const { hasAccess, isAuthenticated, isAdmin, id } = useContext(
     AuthenticationContext,
   );
@@ -54,7 +53,6 @@ export function ProductView() {
       .get(`/api/product/view/${productId}`)
       .then((res) => setProduct(res.data));
   }, []);
-
 
   useEffect(() => {
     if (product && product.latitude && product.longitude) {
@@ -159,34 +157,14 @@ export function ProductView() {
     // 추가
   };
 
-  // 성공적으로 거래할 경우(채팅방에서 거래완료 버튼 누르면 실행)
-  const handleSuccessTransaction = () => {
-    axios
-      .post(`/api/product/transaction/${productId}`, {})
-      .then((res) => res.data)
-      .then((data) => {
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
-      })
-      .catch((e) => {
-        const data = e.response.data;
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
-      });
-  };
+  // 성공적으로 거래할 경우(채팅방에서 거래완료 버튼 누르면 실행 > chatview 로 옮김 )
 
   return (
     <Box>
       <HStack>
         <Heading>{productId}번 상품 이름</Heading>
-        {/* 테스트용 거래 완료 시 버튼 */}
-        <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
-          거래완료
-        </Button>
+        {/* 테스트용 거래 완료 시 버튼  >  chatview 로 옮김 */}
+
         <Box display="flex" justifyContent="center" alignItems="center">
           <ProductLike
             productId={product.productId}

@@ -25,32 +25,34 @@ public interface ChatMapper {
 
 
     @Select("""
-                        select * 
-                        from chatroom
+                        select c.*  ,p.status as product_status
+                        from chatroom c left join product p on c.product_id=p.product_id
                         where roomId =#{roomId}
             
             """)
+    @Result(column = "product_status", property = "status")
     ChatRoom chatRoomViewById(String roomId);
 
 
     @Select("""
                 <script>
-                    select *
-                    from chatroom
+                    select c.* , p.status as product_status
+                    from chatroom  c left join product p on p.product_id = c.product_id
                     <choose>                   
                         <when test="type == 'buy'">
                             where buyer = #{memberId}
                         </when>
                         <when test="type == 'sell'">
-                            where writer = #{memberId}
+                            where c.writer = #{memberId}
                         </when>
                         <otherwise>
-                              where writer = #{memberId} or buyer = #{memberId}
+                              where c.writer = #{memberId} or buyer = #{memberId}
                         </otherwise>
                     </choose>
                     order by roomId desc
                 </script>
             """)
+    @Result(column = "product_status", property = "status")
     List<ChatRoom> chatRoomListByMemberId(String memberId, String type);
 
     @Delete("""
@@ -100,13 +102,53 @@ public interface ChatMapper {
 
     @Delete("""
                     delete from chat_message
-                    where roomId=#{roomId}
+                    where roomId=#{roomId} and sender=#{memberId}
             """)
-    int deleteChatRoomMessageByRoomId(String roomId);
+    int deleteChatRoomMessageByRoomId(String roomId, String memberId);
 
     @Select("""
                         select  count(*) from chat_message
                         where roomId=#{roomId}
             """)
     int countMessageByRoomId(String roomId);
+
+    @Update("""
+                UPDATE chatroom
+                SET 
+                    iswriter_deleted = CASE 
+                        WHEN writer = #{memberId} THEN #{messageRemoved}
+                        ELSE iswriter_deleted
+                    END,
+                    isbuyer_deleted = CASE
+                        WHEN buyer = #{memberId} THEN #{messageRemoved}
+                        ELSE isbuyer_deleted
+                    END
+                WHERE roomId = #{roomId}
+                AND (writer = #{memberId} OR buyer = #{memberId})
+            """)
+    int updateDeleted(boolean messageRemoved, String memberId, String roomId);
+
+    @Select("""
+                SELECT 
+                    CASE
+                        WHEN iswriter_deleted = TRUE AND isbuyer_deleted = TRUE THEN TRUE
+                        ELSE FALSE
+                    END AS both_true
+                FROM chatroom
+                WHERE roomId = #{roomId}
+            """)
+    boolean checkAllDeleted(String roomId);
+
+    @Select("""
+                SELECT 
+                    CASE
+                        WHEN iswriter_deleted = FALSE AND isbuyer_deleted = FALSE THEN TRUE
+                        ELSE FALSE
+                    END AS both_true
+                FROM chatroom
+                WHERE roomId = #{roomId}
+            """)
+    boolean checkNoOneDeleted(String roomId);
+
+
 }
