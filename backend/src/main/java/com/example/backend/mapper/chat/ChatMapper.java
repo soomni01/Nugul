@@ -25,24 +25,25 @@ public interface ChatMapper {
 
 
     @Select("""
-                      SELECT\s
-                                                   c.*,
-                                                   p.status AS productStatus,
-                                                   CASE\s
-                                                       WHEN c.writer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.buyer)
-                                                       WHEN c.buyer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.writer)
-                                                   END AS memberNickname
-                                               FROM\s
-                                                   chatroom c
-                                               LEFT JOIN\s
-                                                   product p ON c.product_id = p.product_id
-                                               WHERE\s
-                                                   c.roomId = #{roomId}
-            
+                SELECT
+                    c.*,
+                    p.status AS productStatus,
+                    CASE
+                        WHEN c.writer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.buyer)
+                        WHEN c.buyer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.writer)
+                    END AS memberNickname
+                FROM
+                    chatroom c
+                LEFT JOIN
+                    product p ON c.product_id = p.product_id
+                WHERE
+                    c.roomId = #{roomId}
             """)
-    @Result(column = "product_status", property = "status")
+    @Results({
+            @Result(column = "productStatus", property = "status"),
+            @Result(column = "memberNickname", property = "nickname")
+    })
     ChatRoom chatRoomViewById(String roomId, String memberId);
-
 
     @Select("""
                 <script>

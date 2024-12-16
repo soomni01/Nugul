@@ -251,6 +251,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       });
   };
 
+  console.log(chatRoom);
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -279,7 +280,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         >
           {/*판매자 닉네임이 항상 */}
           <Box>
-            <Heading> 판매자 닉네임: {chatRoom.nickname} </Heading>
+            <Heading> 닉네임: {chatRoom.nickname} </Heading>
             상품명: {chatRoom.productName}
           </Box>
           <Flex>
