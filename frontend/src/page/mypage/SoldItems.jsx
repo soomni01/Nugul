@@ -5,6 +5,8 @@ import { ProductHorizontalItem } from "../../components/product/ProductHorizonta
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { EmptyState } from "../../components/ui/empty-state.jsx";
+import { BsCartX } from "react-icons/bs";
 
 export function SoldItems() {
   const [soldList, setSoldList] = useState([]);
@@ -43,18 +45,24 @@ export function SoldItems() {
         <Heading size="lg">내가 판매한 상품</Heading>
         <Text>총 {soldList.length}건</Text>
       </HStack>
-      <Box height="70vh" overflow="hidden">
-        <Swiper
-          direction={"vertical"}
-          slidesPerView={"auto"}
-          freeMode={true}
-          scrollbar={{ draggable: true }}
-          mousewheel={true}
-          modules={[FreeMode, Scrollbar, Mousewheel]}
-          style={{ height: "100%", width: "100%" }}
-        >
-          {soldList.length > 0 ? (
-            soldList.map((product) => (
+      <Box
+        height="70vh"
+        overflow="hidden"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {soldList.length > 0 ? (
+          <Swiper
+            direction={"vertical"}
+            slidesPerView={"auto"}
+            freeMode={true}
+            scrollbar={{ draggable: true }}
+            mousewheel={true}
+            modules={[FreeMode, Scrollbar, Mousewheel]}
+            style={{ height: "100%", width: "100%" }}
+          >
+            {soldList.map((product) => (
               <SwiperSlide
                 key={product.productId}
                 style={{
@@ -70,11 +78,11 @@ export function SoldItems() {
                   value={"sell"}
                 />
               </SwiperSlide>
-            ))
-          ) : (
-            <Text>조회된 결과가 없습니다.</Text>
-          )}
-        </Swiper>
+            ))}
+          </Swiper>
+        ) : (
+          <EmptyState icon={<BsCartX />} title="판매 상품이 없습니다." />
+        )}
       </Box>
     </Box>
   );

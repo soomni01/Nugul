@@ -9,7 +9,7 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { LuFolder } from "react-icons/lu";
+import { LuFolder, LuMailX } from "react-icons/lu";
 import { TfiWrite } from "react-icons/tfi";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import axios from "axios";
@@ -18,6 +18,7 @@ import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { Rating } from "../../components/ui/rating.jsx";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { EmptyState } from "../../components/ui/empty-state.jsx";
 
 const productNameClick = (navigate, productId) => {
   if (productId != null) {
@@ -118,7 +119,7 @@ export function Review(props) {
   const renderReviewList = () => {
     if (loading) return <Spinner />;
     if (!reviewList.length)
-      return <Heading size="sm">후기가 없습니다.</Heading>;
+      return <EmptyState icon={<LuMailX />} title="후기가 없습니다." />;
 
     return (
       <Box>

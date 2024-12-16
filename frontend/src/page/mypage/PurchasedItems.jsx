@@ -6,6 +6,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ReviewModal } from "../../components/review/ReviewModal.jsx";
+import { BsCartX } from "react-icons/bs";
+import { EmptyState } from "../../components/ui/empty-state.jsx";
 
 export function PurchasedItems() {
   const [purchasedList, setPurchasedList] = useState([]);
@@ -61,21 +63,27 @@ export function PurchasedItems() {
         <Heading size="lg">내가 구매한 상품</Heading>
         <Text>총 {purchasedList.length}건</Text>
       </HStack>
-      <Box height="70vh" overflow="hidden">
-        <Swiper
-          direction={"vertical"}
-          slidesPerView={"auto"}
-          freeMode={true}
-          scrollbar={{ draggable: true }}
-          mousewheel={true}
-          modules={[FreeMode, Scrollbar, Mousewheel]}
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          {purchasedList.length > 0 ? (
-            purchasedList.map((product) => (
+      <Box
+        height="70vh"
+        overflow="hidden"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {purchasedList.length > 0 ? (
+          <Swiper
+            direction={"vertical"}
+            slidesPerView={"auto"}
+            freeMode={true}
+            scrollbar={{ draggable: true }}
+            mousewheel={true}
+            modules={[FreeMode, Scrollbar, Mousewheel]}
+            style={{
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            {purchasedList.map((product) => (
               <SwiperSlide
                 key={product.productId}
                 style={{
@@ -91,11 +99,11 @@ export function PurchasedItems() {
                   value={"purchased"}
                 />
               </SwiperSlide>
-            ))
-          ) : (
-            <Text>조회된 결과가 없습니다.</Text>
-          )}
-        </Swiper>
+            ))}
+          </Swiper>
+        ) : (
+          <EmptyState icon={<BsCartX />} title="구매 상품이 없습니다." />
+        )}
       </Box>
       <ReviewModal
         isOpen={isModalOpen}
