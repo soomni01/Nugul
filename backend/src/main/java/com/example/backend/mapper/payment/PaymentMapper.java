@@ -28,6 +28,13 @@ public interface PaymentMapper {
     Product selectById(Integer productId);
 
     @Select("""
+            SELECT *
+            FROM payment_record 
+            WHERE buyer_id = #{buyerId}
+            """)
+    List<PaymentRecord> getPayment(String buyerId);
+
+    @Select("""
             SELECT buyer
             FROM chatroom
             WHERE roomId = #{roomId}
@@ -35,11 +42,11 @@ public interface PaymentMapper {
     String getBuyerId(Integer roomId);
 
     @Select("""
-            SELECT *
-            FROM payment_record 
-            WHERE buyer_id = #{buyerId}
+            SELECT writer
+            FROM chatroom
+            WHERE roomId = #{roomId}
             """)
-    List<PaymentRecord> getPayment(String buyerId);
+    String getWriter(Integer roomId);
 
     @Update("""
             UPDATE product

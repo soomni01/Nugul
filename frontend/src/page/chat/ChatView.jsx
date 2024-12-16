@@ -202,24 +202,37 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     // navigate("chat");
   }
 
+  // 거래 완료
   const handleSuccessTransaction = () => {
     axios
-      .post(`/api/product/transaction/${chatRoom.productId}`, {})
+      .post(`/api/product/transaction/${chatRoom.productId}`, {
+        roomId: chatRoom.roomId, // roomId를 요청 본문에 담아서 보내기
+      })
       .then((res) => res.data)
       .then((data) => {
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
+        // 응답 데이터에 'message'가 있을 경우 처리
+        if (data.message) {
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
+        } else {
+          console.error("응답 데이터에 message가 없습니다:", data); // 'message'가 없을 경우 에러 처리
+        }
       })
       .catch((e) => {
-        const data = e.response.data;
-        toaster.create({
-          type: data.message.type,
-          description: data.message.text,
-        });
+        // 오류가 발생했을 경우 처리
+        const data = e.response?.data; // 오류 응답 데이터 가져오기
+        if (data && data.message) {
+          toaster.create({
+            type: data.message.type,
+            description: data.message.text,
+          });
+        } else {
+          console.error("오류 응답에서 message가 없습니다:", e); // 오류 응답에 'message'가 없을 경우 에러 처리
+        }
       })
-      .finally(statusControl);
+      .finally(statusControl); // 상태 변경 (무조건 실행되는 부분)
   };
 
   //  판매자 인지 확인
