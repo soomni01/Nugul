@@ -6,8 +6,8 @@ import { Button } from "@chakra-ui/react";
 
 const Payment = ({ chatRoom }) => {
   const [product, setProduct] = useState({});
-  const { member_id, nickname } = useContext(AuthenticationContext);
-  console.log("Authentication Context:", { member_id, nickname });
+  const { id, nickname } = useContext(AuthenticationContext);
+  console.log("Authentication Context:", { id, nickname });
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
@@ -38,35 +38,44 @@ const Payment = ({ chatRoom }) => {
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
         merchant_uid: new Date().getTime(), // 고유 거래 ID
-        name: product.productName, // 서버에서 가져온 상품명
-        amount: product.price, // 서버에서 가져온 가격
-        // buyer_email: member_id, // 로그인된 사용자 이메일
-        buyer_name: nickname, // 로그인된 사용자 닉네임
+        name: product.productName,
+        amount: product.price,
+        buyer_email: id,
+        buyer_name: nickname,
       },
       async (rsp) => {
         try {
           const { data } = await axios.post(
-            "http://localhost:8080/verifyIamport/" + rsp.imp_uid,
+            "/api/verifyIamport/" + rsp.imp_uid,
           );
 
           // 결제 금액이 일치하는지 확인
           if (rsp.paid_amount === data.response.amount) {
             // 결제 내역을 payment_record 테이블에 저장
             await axios.post("/api/savePayment", {
-              imp_uid: rsp.imp_uid,
-              buyer_id: member_id,
-              product_id: product.id,
-              product_name: product.product_name,
-              payment_amount: rsp.payment_amount,
-              payment_method: rsp.pay_method,
-              payment_date: new Date(),
-              status: "paid", // 결제 완료 상태
+              impUid: rsp.imp_uid,
+              buyerId: id,
+              productName: product.productName,
+              paymentAmount: product.price,
+              paymentMethod: rsp.pay_method,
+              paymentDate: new Date(),
+              status: "paid",
             });
+
+            await axios.post(
+              `/api/product/transaction/${productId}`,
+              { params: { roomId: chatRoom.roomId } },
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`, // 인증 토큰 추가
+                },
+              },
+            );
 
             // 결제 성공 알림
             toaster.create({
               type: "success",
-              description: "결제가 성공적으로 처리되었습니다.",
+              description: "결제가 정상적으로 완료되었습니다.",
             });
           }
         } catch (error) {

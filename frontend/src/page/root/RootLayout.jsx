@@ -9,7 +9,9 @@ export function RootLayout() {
     <Stack mx={{ md: 20, lg: 40 }}>
       <Box>
         {location.pathname === "/" ||
-          location.pathname === "/member/signup" || <Navbar />}
+          location.pathname === "/member/signup" ||
+          location.pathname === "/oauth" ||
+          location.pathname === "/member/kakao" || <Navbar />}
       </Box>
       <Box mx={{ md: 20, lg: 40 }}>
         <Outlet />

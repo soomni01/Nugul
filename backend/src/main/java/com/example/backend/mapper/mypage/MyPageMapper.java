@@ -30,7 +30,8 @@ public interface MyPageMapper {
                 p.pay,
                 p.price,
                 p.status,
-                p.created_at, 
+                p.created_at,
+                p.writer,
                 pr.date AS purchasedAt, 
                 m.nickname AS buyer_nickname,
                 pf.name AS main_image_name
@@ -104,7 +105,6 @@ public interface MyPageMapper {
                    i.content,
                    i.category,
                    i.member_id,
-                   i.nickname,
                    i.inserted,
                    EXISTS (
                        SELECT 1
@@ -123,7 +123,6 @@ public interface MyPageMapper {
                    i.content,
                    i.category,
                    i.member_id,
-                   i.nickname,
                    i.inserted
             FROM inquiry i
             WHERE i.inquiry_id = #{inquiryId}
@@ -131,7 +130,6 @@ public interface MyPageMapper {
     Inquiry inquiryListview(String memberId, int inquiryId);
 
     @Select("""
-            
             SELECT AVG(rating) AS average_rating
             FROM review
             WHERE seller_id = #{id};
@@ -140,7 +138,7 @@ public interface MyPageMapper {
 
     @Select("""
             SELECT profile_image
-            FROM member 
+            FROM member
             WHERE member_id = #{id}
             """)
     String getProfileImage(String memberId);
@@ -167,12 +165,22 @@ public interface MyPageMapper {
     int deleteProfileImage(String memberId);
 
     @Select("""
-            SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
-            FROM inquiry_comment
-            WHERE inquiry_id = #{inquiryId}
+                SELECT
+                    c.id,
+                    c.inquiry_id,
+                    c.admin_id AS member_id,
+                    c.comment,
+                    c.inserted,
+                    m.nickname
+                FROM
+                    inquiry_comment c
+                JOIN
+                    member m ON c.admin_id = m.member_id
+                WHERE
+                    c.inquiry_id = #{inquiryId}
             """)
     List<InquiryComment> findCommentsByInquiryId(int inquiryId);
-
+    
     @Update("""
             UPDATE inquiry
             SET category = #{category},

@@ -4,7 +4,6 @@ import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.mapper.inquiry.InquiryMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InquiryService {
 
-    @Autowired
     final InquiryMapper mapper;
 
     // 제목, 내용 있는지 확인

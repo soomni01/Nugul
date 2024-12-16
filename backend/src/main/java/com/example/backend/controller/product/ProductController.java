@@ -23,8 +23,10 @@ public class ProductController {
     @PostMapping("transaction/{productId}")
     public ResponseEntity<Map<String, Object>> transaction(
             @PathVariable int productId,
+            @RequestParam(value = "roomId") Integer roomId,
             Authentication authentication) {
-        if (service.hasAccess(productId, authentication)) {
+        System.out.println(roomId);
+        if (service.hasPayAccess(roomId, authentication)) {
             if (service.transaction(productId)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
@@ -101,24 +103,22 @@ public class ProductController {
         }
     }
 
-
-    //  프론트에서  admin 추가
-    //관리자 삭제  >> 확인
+    // 관리자 페이지에서 구매, 판매 내역 들어가서 상품 삭제
     @DeleteMapping("admin/delete/{productId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> adminDeleteProduct(@PathVariable int id, Authentication authentication) {
-        String successMessage;
-        if (service.hasAccess(id, authentication)) {
-            if (service.deleteProduct(id)) {
+    public ResponseEntity<Map<String, Object>> adminDeleteProduct(@PathVariable int productId, Authentication authentication) {
+        if (service.hasAccess(productId, authentication)) {
+            if (service.deleteProduct(productId)) {
                 // 관리자 권한일 때 메시지 설정
                 if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                    successMessage = "관리자 권한으로 상품이 삭제되었습니다.";
                 } else {
-                    successMessage = String.format("%d번 상품이 삭제되었습니다.", id);
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                    "text", STR."\{productId}번 상품이 삭제되었습니다.")));
                 }
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
-                                "text", successMessage)));
+                                "text", "관리자 권한으로 상품이 삭제되었습니다.")));
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",
@@ -129,9 +129,7 @@ public class ProductController {
                     .body(Map.of("message", Map.of("type", "error",
                             "text", "삭제 권한이 없습니다.")));
         }
-
     }
-
 
     // 상품 삭제하기
     @DeleteMapping("delete/{productId}")

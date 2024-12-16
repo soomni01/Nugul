@@ -1,4 +1,3 @@
-
 import { useContext, useEffect, useRef, useState } from "react";
 import {
   Box,
@@ -16,6 +15,7 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
+import { PaymentRecord } from "./PaymentRecord.jsx";
 import { InquiryList } from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
 import { Budget } from "./Budget.jsx";
@@ -25,7 +25,7 @@ import axios from "axios";
 import { Avatar } from "../../components/ui/avatar.jsx";
 import { TbMoodEdit } from "react-icons/tb";
 import { SkeletonCircle } from "../../components/ui/skeleton.jsx";
-import {BoardsAndComments} from "./BoardsAndComments.jsx";
+import { BoardsAndComments } from "./BoardsAndComments.jsx";
 import {
   MenuContent,
   MenuItem,
@@ -34,14 +34,15 @@ import {
 } from "../../components/ui/menu.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
-
 export function MyPage() {
-  const { id, nickname } = useContext(AuthenticationContext);
+  const { id, nickname, profileImage, updateProfileImage } = useContext(
+    AuthenticationContext,
+  );
   const [rating, setRating] = useState(0.0);
-  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null);
-   // 이유 찾기
+  // 이유 찾기
   const [selectedInquiryId, setSelectedInquiryId] = useState(() => {
     // 새로고침 시 로컬 스토리지에서 selectedInquiryId 불러오기
     const storedId = localStorage.getItem("selectedInquiryId");
@@ -52,24 +53,26 @@ export function MyPage() {
     if (!id) {
       return;
     }
-    axios
-      .get("/api/myPage/ImageAndRating", { params: { memberId: id } })
-      .then((res) => {
-        const { rating, profileImage } = res.data;
 
-        // 평점을 반올림한 값으로 설정
-        const roundedRating = Math.round(rating * 2) / 2; // 소수점 한자리 반올림
+    // 병렬로 두 개의 요청 처리
+    Promise.all([
+      axios.get("/api/myPage/rating", { params: { memberId: id } }),
+      axios.get("/api/myPage/image", { params: { memberId: id } }),
+    ])
+      .then(([ratingRes, imageRes]) => {
+        // 평점 데이터 처리
+        const roundedRating = Math.round(ratingRes.data * 2) / 2; // 소수점 한자리 반올림
         setRating(roundedRating);
 
-        setProfileImage(profileImage);
+        // 프로필 이미지 데이터 처리
+        const profileImageUrl = imageRes.data;
+        setProfileImageUrl(profileImageUrl);
+        updateProfileImage(profileImageUrl);
       })
       .catch((error) => {
-        console.log("평점 정보를 가져오는 데 실패했습니다.", error);
+        console.log("데이터를 가져오는 데 실패했습니다.", error);
       });
   }, [id]);
-   
-  
-
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -79,7 +82,6 @@ export function MyPage() {
 
   // 탭이 변경될 때마다 상태를 localStorage에 저장
   useEffect(() => {
-    // activeTab이 변경되면 localStorage에 저장
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
 
@@ -107,7 +109,7 @@ export function MyPage() {
     const file = e.target.files[0]; // 선택한 첫 번째 파일
     if (file) {
       const previewUrl = URL.createObjectURL(file); // 미리보기 URL 생성
-      setProfileImage(previewUrl); // 아바타에 반영
+      setProfileImageUrl(previewUrl); // 아바타에 반영
 
       const formData = new FormData();
       formData.append("memberId", id);
@@ -119,6 +121,7 @@ export function MyPage() {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
+          updateProfileImage(previewUrl);
           toaster.create({
             description: res.data.message.text,
             type: res.data.message.type,
@@ -141,9 +144,11 @@ export function MyPage() {
   // 이미지 삭제 핸들러
   const handleImageDelete = () => {
     axios
-      .delete("/api/myPage/image", { params: { memberId: id, profileImage } })
+      .delete("/api/myPage/image", {
+        params: { memberId: id, profileImageUrl },
+      })
       .then((res) => {
-        setProfileImage(null);
+        setProfileImageUrl(null);
       })
       .catch((e) => {
         console.error("이미지 삭제에 실패했습니다.", e);
@@ -177,7 +182,7 @@ export function MyPage() {
                 boxSize="130px"
                 borderRadius="full"
                 fit="cover"
-                src={profileImage}
+                src={profileImageUrl}
               />
             )}
             <Float placement="bottom-center" mb={2}>
@@ -247,6 +252,13 @@ export function MyPage() {
             구매 상품
           </Button>
           <Button
+            variant={activeTab === "paymentrecord" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("paymentrecord")}
+          >
+            결제 내역
+          </Button>
+          <Button
             variant={activeTab === "inquiry" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("inquiry")}
@@ -268,9 +280,9 @@ export function MyPage() {
             후기
           </Button>
           <Button
-              variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
-              colorScheme="teal"
-              onClick={() => handleTabClick("boardsAndComments")}
+            variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("boardsAndComments")}
           >
             내 게시물과 댓글
           </Button>
@@ -292,13 +304,14 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
+        {activeTab === "paymentrecord" && <PaymentRecord />}
         {activeTab === "inquiry" && <InquiryList onRowClick={handleRowClick} />}
         {activeTab === "inquiryDetail" && (
           <InquiryView inquiryId={selectedInquiryId} />
         )}
         {activeTab === "budget" && <Budget />}
         {activeTab === "review" && <Review />}
-        {activeTab === "boardsAndComments" && <BoardsAndComments/>}
+        {activeTab === "boardsAndComments" && <BoardsAndComments />}
       </Box>
     </Flex>
   );

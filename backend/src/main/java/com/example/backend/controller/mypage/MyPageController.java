@@ -61,13 +61,21 @@ public class MyPageController {
         }
     }
 
-    // 평점과 프로필 이미지 정보 가져오기
-    @GetMapping("ImageAndRating")
-    public Map<String, Object> getImageAndRating(
+    // 프로필 이미지 가져오기
+    @GetMapping("image")
+    public String getImage(
             Member member,
             @RequestParam String memberId
     ) {
-        return service.getImageAndRating(member, memberId);
+        return service.getImage(member, memberId);
+    }
+
+    // 평점 정보 가져오기
+    @GetMapping("rating")
+    public double getRating(
+            @RequestParam String memberId
+    ) {
+        return service.getRating(memberId);
     }
 
     // 후기 상태에 따라 가져오기
