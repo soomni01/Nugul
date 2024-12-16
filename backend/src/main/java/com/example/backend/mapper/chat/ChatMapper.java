@@ -25,11 +25,12 @@ public interface ChatMapper {
 
 
     @Select("""
-                        select * 
-                        from chatroom
+                        select c.*  ,p.status as product_status
+                        from chatroom c left join product p on c.product_id=p.product_id
                         where roomId =#{roomId}
             
             """)
+    @Result(column = "product_status", property = "status")
     ChatRoom chatRoomViewById(String roomId);
 
 
@@ -148,4 +149,6 @@ public interface ChatMapper {
                 WHERE roomId = #{roomId}
             """)
     boolean checkNoOneDeleted(String roomId);
+
+
 }

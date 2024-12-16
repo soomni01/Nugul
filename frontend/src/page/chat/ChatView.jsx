@@ -133,7 +133,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           params: { page },
         },
       );
-
       const initialMessages = response.data || [];
       setMessage(initialMessages.reverse());
 
@@ -203,7 +202,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     // navigate("chat");
   }
 
-  // 이거 내가 판매자 일때만 있어야 하는거 아닌가 ?
   const handleSuccessTransaction = () => {
     axios
       .post(`/api/product/transaction/${chatRoom.productId}`, {})
@@ -223,6 +221,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       })
       .finally(statusControl);
   };
+
+  console.log(chatRoom);
 
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
@@ -248,6 +248,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         navigate("/chat");
       });
   };
+
+  console.log(chatRoom);
 
   return (
     <Box>
@@ -288,7 +290,11 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             <Payment chatRoom={chatRoom} />
             {/* 판매자 일때만 거래완료 버튼이 보이게*/}
             {isSeller && (
-              <Button colorPalette={"cyan"} onClick={handleSuccessTransaction}>
+              <Button
+                disabled={chatRoom.status === "Sold"}
+                colorPalette={"cyan"}
+                onClick={handleSuccessTransaction}
+              >
                 거래완료
               </Button>
             )}

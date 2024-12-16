@@ -20,7 +20,7 @@ export function ChatList() {
       fetch(id);
     }
     getChatList();
-  }, [searchParams, id]);
+  }, [searchParams, id, status]);
 
   function getChatList() {
     axios
@@ -62,6 +62,8 @@ export function ChatList() {
         setChatRoomId(-1);
       });
   };
+
+  console.log(chatList[0]);
 
   return (
     <Box>
@@ -115,7 +117,7 @@ export function ChatList() {
           <ChatView
             z-index={1}
             statusControl={() => {
-              setStatus(status);
+              setStatus("Sold");
             }}
             key={chatRoomId}
             chatRoomId={chatRoomId}
