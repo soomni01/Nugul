@@ -8,8 +8,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { useContext } from "react";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function AdminLayout() {
   const { isAdmin } = useContext(AuthenticationContext);
@@ -86,36 +86,6 @@ export function AdminLayout() {
             <Flex align="center" gap={2}>
               <Image src="/image/Home.png" alt="Home Icon" boxSize="20px" />
               <Text>홈페이지</Text>
-            </Flex>
-          </Button>
-          <Button
-            onClick={() => navigate("/admin/dashboard")}
-            variant={
-              location.pathname === "/admin/dashboard" ? "solid" : "ghost"
-            }
-            color={location.pathname === "/admin/dashboard" ? "white" : "black"} // 선택된 버튼 색상 변경
-            bg={
-              location.pathname === "/admin/dashboard"
-                ? "#A6A6A6"
-                : "transparent"
-            }
-            _hover={{
-              bg:
-                location.pathname === "/admin/dashboard"
-                  ? "#A6A6A6"
-                  : "#A6A6A6",
-            }}
-            justifyContent="flex-start"
-            w="100%"
-            fontSize="17px"
-          >
-            <Flex align="center" gap={2}>
-              <Image
-                src="/image/DashBoard.png"
-                alt="Dashboard Icon"
-                boxSize="20px"
-              />
-              <Text>대시보드</Text>
             </Flex>
           </Button>
           <Button

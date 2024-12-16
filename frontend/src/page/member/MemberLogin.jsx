@@ -59,7 +59,7 @@ export function MemberLogin() {
         const userScope = decodedToken.scope || "";
 
         if (userScope === "admin") {
-          navigate("/admin/dashboard");
+          navigate("/admin/members");
         } else {
           navigate("/main");
         }
