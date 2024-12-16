@@ -16,7 +16,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
-export default function InquiryEdit() {
+export function InquiryEdit() {
   const [inquiry, setInquiry] = useState(null);
   const [progress, setProgress] = useState(false);
   const { inquiryId } = useParams();

@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
+import { useEffect } from "react";
 import { RootLayout } from "./page/root/RootLayout.jsx";
-
-import AdminLayout from "./page/admin/AdminLayout.jsx";
+import { AdminLayout } from "./page/admin/AdminLayout.jsx";
 import { AdminDashBoard } from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
@@ -22,19 +22,15 @@ import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
-import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
-
-import { useEffect } from "react";
-
 import { Inquiry } from "./page/inquiry/Inquiry.jsx";
-
-import ViewMap from "./page/map/ViewMap.jsx";
-
 import { InquiryView } from "./page/mypage/InquiryView.jsx";
-import InquiryEdit from "./page/mypage/InquiryEdit.jsx";
+import { InquiryEdit } from "./page/mypage/InquiryEdit.jsx";
+import ViewMap from "./page/map/ViewMap.jsx";
+import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MemberKakao } from "./page/member/MemberKakao.jsx";
 import { KakaoOauth } from "./components/kakao/KakaoOauth.jsx";
+
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {

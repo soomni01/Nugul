@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Badge,
   Box,
@@ -14,11 +14,13 @@ import {
 import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function InquiryList({ onRowClick }) {
   const [inquiryList, setInquiryList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { nickname } = useContext(AuthenticationContext);
   const itemsPerPage = 5;
   const navigate = useNavigate();
 
@@ -100,7 +102,7 @@ export function InquiryList({ onRowClick }) {
                   <Table.Cell>{inquiry.inquiryId}</Table.Cell>
                   <Table.Cell>{inquiry.category}</Table.Cell>
                   <Table.Cell>{inquiry.title}</Table.Cell>
-                  <Table.Cell>{inquiry.memberId}</Table.Cell>
+                  <Table.Cell>{nickname}</Table.Cell>
                   <Table.Cell>
                     {new Date(inquiry.inserted).toLocaleDateString()}
                   </Table.Cell>

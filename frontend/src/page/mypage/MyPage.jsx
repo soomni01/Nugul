@@ -15,6 +15,7 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
+import { PaymentRecord } from "./PaymentRecord.jsx";
 import { InquiryList } from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
 import { Budget } from "./Budget.jsx";
@@ -251,6 +252,13 @@ export function MyPage() {
             구매 상품
           </Button>
           <Button
+            variant={activeTab === "paymentrecord" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("paymentrecord")}
+          >
+            결제 내역
+          </Button>
+          <Button
             variant={activeTab === "inquiry" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("inquiry")}
@@ -296,6 +304,7 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
+        {activeTab === "paymentrecord" && <PaymentRecord />}
         {activeTab === "inquiry" && <InquiryList onRowClick={handleRowClick} />}
         {activeTab === "inquiryDetail" && (
           <InquiryView inquiryId={selectedInquiryId} />

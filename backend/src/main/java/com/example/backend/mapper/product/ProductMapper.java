@@ -225,4 +225,11 @@ public interface ProductMapper {
             WHERE product_id = #{productId} AND name=#{name}
             """)
     int updateMainUImage(Integer productId, String name, String mainImageName);
+
+    @Select("""
+            SELECT buyer
+            FROM chatroom
+            WHERE room_id = #{roomId}
+            """)
+    String getBuyerId(Integer roomId);
 }
