@@ -222,8 +222,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       .finally(statusControl);
   };
 
-  console.log(chatRoom);
-
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
 
@@ -248,8 +246,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         navigate("/chat");
       });
   };
-
-  console.log(chatRoom);
 
   return (
     <Box>

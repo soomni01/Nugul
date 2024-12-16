@@ -63,8 +63,6 @@ export function ChatList() {
       });
   };
 
-  console.log(chatList[0]);
-
   return (
     <Box>
       <Heading> 채팅 목록</Heading>

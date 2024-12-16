@@ -29,7 +29,7 @@ public class ChatService {
 
 
         ChatRoom chatRoom = mapper.chatRoomViewById(roomId);
-        System.out.println("chatRoom = " + chatRoom);
+        
         return chatRoom;
     }
 
