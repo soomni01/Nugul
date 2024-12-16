@@ -210,6 +210,7 @@ export function ProductHorizontalItem({
     ? product.mainImageName
     : "/image/productItem.png";
 
+  console.log(product);
   return (
     <Card.Root
       flexDirection="row"
@@ -270,7 +271,6 @@ export function ProductHorizontalItem({
           )}
           <Card.Title mb={2} fontSize="lg" fontWeight="bold">
             {product.productName}
-            {product.productId}
           </Card.Title>
           <HStack justify="space-between">
             <Text fontSize="sm" color="gray.500">
@@ -329,12 +329,19 @@ export function ProductHorizontalItem({
             )}
           </Box>
         ) : (
-          <DeleteDialog
-            isOpen={dialogOpen}
-            onClose={() => setDialogOpen(false)}
-            productId={product.productId}
-            handleDeleteClick={handleDeleteClick}
-          />
+          <Box display="flex" alignItems="center">
+            {product.purchasedAt && (
+              <Text fontSize="xs" color="gray.500" mr={2}>
+                판매 일자: {product.purchasedAt.split("T")[0]}
+              </Text>
+            )}
+            <DeleteDialog
+              isOpen={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+              productId={product.productId}
+              handleDeleteClick={handleDeleteClick}
+            />
+          </Box>
         )}
       </Button>
 
