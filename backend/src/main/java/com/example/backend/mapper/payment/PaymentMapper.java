@@ -61,4 +61,11 @@ public interface PaymentMapper {
             VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price})
             """)
     int insertTranscation(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
+
+    @Select("""
+            SELECT roomId 
+            FROM chatroom
+            WHERE roomId = #{roomId}
+            """)
+    Integer getProductIdByRoomId(int roomId);
 }

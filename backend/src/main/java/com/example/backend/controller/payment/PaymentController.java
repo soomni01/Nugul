@@ -77,7 +77,7 @@ public class PaymentController {
     public ResponseEntity<Map<String, Object>> transaction(@PathVariable int productId, @RequestBody Map<String, Integer> requestBody, Authentication auth) {
         Integer roomId = requestBody.get("roomId"); // 요청 body에서 roomId 추출
         if (service.hasPayAccess(roomId, auth)) {
-            if (service.transaction(productId, auth)) {
+            if (service.transaction(roomId, auth)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success", "text", STR."\{productId}번 상품 거래가 완료되었습니다.")));
             } else {

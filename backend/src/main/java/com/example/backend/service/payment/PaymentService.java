@@ -46,10 +46,18 @@ public class PaymentService {
     }
 
     // 거래 완료
-    public boolean transaction(int productId, Authentication auth) {
+    public boolean transaction(int roomId, Authentication auth) {
+        Integer productId = mapper.getProductIdByRoomId(roomId);
+
         Product product = mapper.selectById(productId);
-        // 현재 인증된 사용자 아이디 가져오기
-        String buyer_id = auth.getName();
+        System.out.println("Product ID: " + productId);
+
+        String buyer_id = mapper.getBuyerId(roomId);
+        System.out.println("Buyer ID: " + buyer_id);
+
+        String writer = mapper.getWriter(roomId);
+        System.out.println("Writer ID: " + writer);
+
         // 거래 완료 시에 Sold로 상태 변경
         int updateStatus = mapper.updateProductStatus(productId);
         // 구매 테이블에 거래 정보 추가
