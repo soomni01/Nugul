@@ -46,32 +46,33 @@ public interface BoardMapper {
     int update(Board board);
 
     @Select("""
-                 <script>
-                 SELECT b.board_id, b.title, b.writer AS memberId, m.nickname AS writer, b.category, b.created_at,
-            COUNT(c.board_id) AS countComment,COUNT(DISTINCT f.name) countFile
-                 FROM board b 
-                 LEFT JOIN comment c ON b.board_id = c.board_id
-                LEFT JOIN board_file f ON b.board_id = f.board_id
-                 LEFT JOIN member m ON b.writer = m.member_id
-                 WHERE 
-                     <trim prefixOverrides="OR">
-                         <if test="searchType == 'all' or searchType == 'title'">
-                             title LIKE CONCAT('%', #{searchKeyword}, '%')
-                         </if>
-                         <if test="searchType == 'all' or searchType == 'content'">
-                             OR content LIKE CONCAT('%', #{searchKeyword}, '%')
-                         </if>
-                         <if test="searchType == 'all' or searchType == 'category'">
-                             OR category LIKE CONCAT('%', #{searchKeyword}, '%')
-                         </if>
-                         <if test="category != null and category != 'all'">
-                             AND b.category = #{category}
-                         </if>
-                     </trim>
-                 GROUP BY b.board_id
-                 ORDER BY b.board_id DESC
-                 LIMIT #{offset}, 10
-                 </script>
+                    <script>
+                    SELECT b.board_id, b.title, b.writer AS memberId, m.nickname AS writer, b.category, b.created_at,
+               COUNT(c.board_id) AS countComment,COUNT(DISTINCT f.name) countFile
+                    FROM board b 
+                    LEFT JOIN comment c ON b.board_id = c.board_id
+                   LEFT JOIN board_file f ON b.board_id = f.board_id
+                    LEFT JOIN member m ON b.writer = m.member_id
+                    WHERE 
+                        <trim prefixOverrides="OR" prefix="(" suffix=")">
+                            <if test="searchType == 'all' or searchType == 'title'">
+                                title LIKE CONCAT('%', #{searchKeyword}, '%')
+                            </if>
+                            <if test="searchType == 'all' or searchType == 'content'">
+                                OR content LIKE CONCAT('%', #{searchKeyword}, '%')
+                            </if>
+                            <if test="searchType == 'all' or searchType == 'category'">
+                                OR category LIKE CONCAT('%', #{searchKeyword}, '%')
+                            </if>
+            
+                        </trim>
+            <if test="category != null and category != 'all'">
+                                AND b.category = #{category}
+                            </if>
+                    GROUP BY b.board_id
+                    ORDER BY b.board_id DESC
+                    LIMIT #{offset}, 10
+                    </script>
             """)
     List<Board> selectPage(Integer offset, String searchType, String searchKeyword, String category);
 
@@ -80,7 +81,7 @@ public interface BoardMapper {
             SELECT COUNT(*)
             FROM board
             WHERE 
-                <trim prefixOverrides="OR">
+                <trim prefixOverrides="OR" prefix="(" suffix=")">
                     <if test="searchType == 'all' or searchType == 'title'">
                         title LIKE CONCAT('%', #{searchKeyword}, '%')
                     </if>
@@ -90,10 +91,11 @@ public interface BoardMapper {
                     <if test="searchType == 'all' or searchType == 'category'">
                         OR category LIKE CONCAT('%', #{searchKeyword}, '%')
                     </if>
+            
+                </trim>
                     <if test="category != null and category != 'all'">
                         AND category = #{category}
                     </if>
-                </trim>
             </script>
             """)
     Integer countAll(String searchType, String searchKeyword, String category);

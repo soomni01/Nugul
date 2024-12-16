@@ -36,7 +36,10 @@ public class BoardService {
 
     public Map<String, Object> list(Integer page, String searchType, String searchKeyword, String category) {
         Integer offset = (page - 1) * 10;
-
+        System.out.println(page);
+        System.out.println(searchType);
+        System.out.println(searchKeyword);
+        System.out.println(category);
         List<Board> list = mapper.selectPage(offset, searchType, searchKeyword, category);
 
         Integer count = mapper.countAll(searchType, searchKeyword, category);
