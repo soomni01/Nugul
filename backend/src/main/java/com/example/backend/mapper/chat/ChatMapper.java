@@ -60,13 +60,15 @@ public interface ChatMapper {
                     left join product p on p.product_id = c.product_id
                     <choose>                   
                         <when test="type == 'buy'">
-                            where buyer = #{memberId}
+                            where buyer = #{memberId} and c.isbuyer_deleted = 0
                         </when>
                         <when test="type == 'sell'">
-                            where c.writer = #{memberId}
+                            where c.writer = #{memberId} and c.iswriter_deleted = 0
                         </when>
                         <otherwise>
-                            where c.writer = #{memberId} or buyer = #{memberId}
+                            where (c.writer = #{memberId} or buyer = #{memberId}) 
+                            and ((c.writer = #{memberId} and c.iswriter_deleted = 0) 
+                                 or (c.buyer = #{memberId} and c.isbuyer_deleted = 0))
                         </otherwise>
                     </choose>
                     order by roomId desc

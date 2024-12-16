@@ -86,6 +86,7 @@ public class ChatController {
 
 
     @GetMapping("list")
+    @PreAuthorize("isAuthenticated()")
     public List<ChatRoom> chatRoomList(@RequestParam(value = "memberId") String memberId,
                                        @RequestParam(value = "type", defaultValue = "all") String type) {
 
