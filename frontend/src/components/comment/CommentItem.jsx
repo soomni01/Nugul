@@ -43,62 +43,90 @@ function DeleteButton({ onClick }) {
     );
 }
 
-function EditButton({ comment, onEditClick }) {
-    const [open, setOpen] = useState(false);
-    const [newComment, setNewComment] = useState(comment.comment);
+function EditButton({ isEditing, onSaveClick, onCancelClick, onEditClick }) {
     return (
         <>
-            <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
-                <DialogTrigger asChild>
-                    <Button colorPalette={"purple"}>수정</Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>댓글 수정</DialogTitle>
-                    </DialogHeader>
-                    <DialogBody>
-                        <Textarea
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                        />
-                    </DialogBody>
-                    <DialogFooter>
-                        <DialogActionTrigger>
-                            <Button variant={"outline"}>취소</Button>
-                        </DialogActionTrigger>
-                        <Button
-                            colorPalette={"purple"}
-                            onClick={() => {
-                                setOpen(false);
-                                onEditClick(comment.commentId, newComment);
-                            }}
-                        >
-                            수정
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </DialogRoot>
+            {!isEditing ? (
+                <Button colorPalette={"purple"} onClick={onEditClick}>
+                    수정
+                </Button>
+            ) : (
+                <>
+                    <Button colorPalette={"purple"} onClick={onSaveClick}>
+                        저장
+                    </Button>
+                    <Button variant={"outline"} onClick={onCancelClick}>
+                        취소
+                    </Button>
+                </>
+            )}
         </>
     );
 }
 export function CommentItem({ comment, onDeleteClick, onEditClick }) {
-    const {hasAccess} = useContext(AuthenticationContext)
-  return (
-    <HStack border={"1px solid black"} m={5}>
-        <Box flex={1}>
-      <Flex justify={"space-between"}>
-        <h3>{comment.nickname}</h3>
-        <h4>{comment.inserted}</h4>
-      </Flex>
-            <Box css={{whiteSpace:"pre"}}>{comment.comment}</Box>
-        </Box>
-        {hasAccess(comment.memberId) && (
-            <Box>
-                <EditButton comment={comment} onEditClick={onEditClick} />
+    const { hasAccess } = useContext(AuthenticationContext);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedComment, setEditedComment] = useState(comment.comment);
 
-                <DeleteButton onClick={() => onDeleteClick(comment.commentId)} />
+    const handleSaveClick = () => {
+        onEditClick(comment.commentId, editedComment); // 수정된 댓글을 부모로 전달
+        setIsEditing(false); // 저장 후 수정 모드 종료
+    };
+
+    const handleCancelClick = () => {
+        setEditedComment(comment.comment); // 원래 댓글로 되돌리기
+        setIsEditing(false); // 수정 모드 종료
+    };
+
+    const handleEditClick = () => {
+        setIsEditing(true); // 수정 모드로 전환
+    };
+
+    return (
+        <HStack border={"1px solid black"} m={5}>
+            <Box flex={1}>
+                <Flex justify={"space-between"}>
+                    <h3>{comment.nickname}</h3>
+                    <h4>{comment.inserted}</h4>
+                </Flex>
+                {/* 댓글 내용이 수정 중이면 Textarea, 아니면 그냥 텍스트를 표시 */}
+                {isEditing ? (
+                    <Textarea
+                        value={editedComment}
+                        onChange={(e) => setEditedComment(e.target.value)}
+                    />
+                ) : (
+                    <Box css={{ whiteSpace: "pre" }}>{comment.comment}</Box>
+                )}
             </Box>
-        )}
-    </HStack>
-  );
+            {hasAccess(comment.memberId) && (
+                <Box>
+                    {/* 기본 모드에서 수정, 삭제 버튼을 순서대로 표시 */}
+                    {!isEditing && (
+                        <>
+                            <EditButton
+                                isEditing={isEditing}
+                                onSaveClick={handleSaveClick}
+                                onCancelClick={handleCancelClick}
+                                onEditClick={handleEditClick}
+                            />
+                            <DeleteButton onClick={() => onDeleteClick(comment.commentId)} />
+                        </>
+                    )}
+
+                    {/* 수정 모드에서만 저장과 취소 버튼을 표시 */}
+                    {isEditing && (
+                        <>
+                            <Button colorPalette={"purple"} onClick={handleSaveClick}>
+                                저장
+                            </Button>
+                            <Button variant={"outline"} onClick={handleCancelClick}>
+                                취소
+                            </Button>
+                        </>
+                    )}
+                </Box>
+            )}
+        </HStack>
+    );
 }

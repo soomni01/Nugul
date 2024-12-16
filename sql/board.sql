@@ -10,6 +10,8 @@ CREATE TABLE board
 
 DESCRIBE board;
 
+SELECT * FROM board;
+
 show CREATE TABLE board;
 /*CREATE TABLE `board`
 (
