@@ -153,15 +153,21 @@ export function BoardList() {
 
       {/* 게시물 리스트 */}
       {boardList.length > 0 ? (
-        <>
+        <Box>
           <Table.Root interactive>
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>번호</Table.ColumnHeader>
-                <Table.ColumnHeader>제목</Table.ColumnHeader>
-                <Table.ColumnHeader>작성자</Table.ColumnHeader>
-                <Table.ColumnHeader>카테고리</Table.ColumnHeader>
-                <Table.ColumnHeader>작성날짜</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">번호</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">제목</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  작성자
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  카테고리
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  작성날짜
+                </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -170,8 +176,8 @@ export function BoardList() {
                   onClick={() => handleRowClick(board.boardId)}
                   key={board.boardId}
                 >
-                  <Table.Cell>{board.boardId}</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell textAlign="center">{board.boardId}</Table.Cell>
+                  <Table.Cell textAlign="center">
                     {board.title}
                     {board.countComment > 0 && (
                       <Badge variant={"subtle"} colorPalette={"green"}>
@@ -186,12 +192,12 @@ export function BoardList() {
                       </Badge>
                     )}
                   </Table.Cell>
-                  <Table.Cell>{board.writer}</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell textAlign="center">{board.writer}</Table.Cell>
+                  <Table.Cell textAlign="center">
                     {BoardCategories.find((cat) => cat.value === board.category)
                       ?.label || board.category}
                   </Table.Cell>
-                  <Table.Cell>{board.createdAt}</Table.Cell>
+                  <Table.Cell textAlign="center">{board.createdAt}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -214,7 +220,7 @@ export function BoardList() {
               </Flex>
             </PaginationRoot>
           )}
-        </>
+        </Box>
       ) : (
         <p>조회된 결과가 없습니다.</p>
       )}
