@@ -229,7 +229,7 @@ public interface ProductMapper {
     @Select("""
             SELECT buyer
             FROM chatroom
-            WHERE room_id = #{roomId}
+            WHERE roomId = #{roomId}
             """)
     String getBuyerId(Integer roomId);
 }

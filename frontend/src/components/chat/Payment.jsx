@@ -64,10 +64,12 @@ const Payment = ({ chatRoom }) => {
 
             await axios.post(
               `/api/product/transaction/${productId}`,
-              { params: { roomId: chatRoom.roomId } },
+              {
+                roomId: chatRoom.roomId, // body로 roomId를 전달
+              },
               {
                 headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`, // 인증 토큰 추가
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
               },
             );

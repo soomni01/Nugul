@@ -22,24 +22,19 @@ public class ProductController {
     // 거래 완료
     @PostMapping("transaction/{productId}")
     public ResponseEntity<Map<String, Object>> transaction(
-            @PathVariable int productId,
-            @RequestParam(value = "roomId") Integer roomId,
-            Authentication authentication) {
-        System.out.println(roomId);
-        if (service.hasPayAccess(roomId, authentication)) {
-            if (service.transaction(productId)) {
+            @PathVariable int productId, @RequestBody Map<String, Integer> requestBody, Authentication auth) {
+        Integer roomId = requestBody.get("roomId"); // 요청 body에서 roomId 추출
+        if (service.hasPayAccess(roomId, auth)) {
+            if (service.transaction(productId, auth)) {
                 return ResponseEntity.ok()
-                        .body(Map.of("message", Map.of("type", "success",
-                                "text", STR."\{productId}번 상품 거래가 완료되었습니다.")));
+                        .body(Map.of("message", Map.of("type", "success", "text", STR."\{productId}번 상품 거래가 완료되었습니다.")));
             } else {
                 return ResponseEntity.internalServerError()
-                        .body(Map.of("message", Map.of("type", "error",
-                                "text", "상품 거래 중 문제가 발생하였습니다.")));
+                        .body(Map.of("message", Map.of("type", "error", "text", "상품 거래 중 문제가 발생하였습니다.")));
             }
         } else {
             return ResponseEntity.status(403)
-                    .body(Map.of("message", Map.of("type", "error",
-                            "text", "거래를 완료할 권한이 없습니다.")));
+                    .body(Map.of("message", Map.of("type", "error", "text", "거래를 완료할 권한이 없습니다.")));
         }
     }
 
