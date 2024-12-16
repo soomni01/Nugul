@@ -15,7 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /*background-color: #cccccc;*/
+    background-color: #f8f9fa;
 }
 
 .product-page-swiper-slide {
@@ -26,7 +26,7 @@
 .product-page-swiper-slide img {
     width: 100%;
     height: 100%;
-    max-width: 400px;
+    max-width: 300px;
     max-height: 100%;
     object-fit: contain;
 }
