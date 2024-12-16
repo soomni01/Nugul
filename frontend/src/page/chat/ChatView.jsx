@@ -103,7 +103,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       .then((res) => {
         setChatRoom(res.data);
       })
-      .catch((e) => {});
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   function sendMessage(sender, content) {
@@ -211,6 +213,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       .post(`/api/product/transaction/${chatRoom.productId}`, {})
       .then((res) => res.data)
       .then((data) => {
+        console.log(data);
         toaster.create({
           type: data.message.type,
           description: data.message.text,
@@ -228,6 +231,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
+  const isSold = chatRoom.status === "Sold";
+  const viewText = isSold === true ? "후기 작성하기" : "거래완료";
 
   const removeChatRoom = (roomId, id) => {
     axios
@@ -251,7 +256,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       });
   };
 
-  console.log(chatRoom);
+  console.log(chatRoom.status);
   return (
     <Box>
       {/* Todo 없애햐 할것 */}
@@ -295,7 +300,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 colorPalette={"cyan"}
                 onClick={handleSuccessTransaction}
               >
-                거래완료
+                {viewText}
               </Button>
             ) : (
               <Payment chatRoom={chatRoom} />

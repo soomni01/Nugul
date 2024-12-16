@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class ChatController {
 
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
+
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
 
         // 보낸 메시지 저장시킬 방 번호 입력
@@ -38,12 +40,12 @@ public class ChatController {
     }
 
     @PostMapping("create")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Integer> createChatRoom(@RequestBody ChatRoom chatRoom) {
 
         // 방이 있는지 먼저 확인   없으면 만들기
         Integer roomId = chatService.findChatRoomId(chatRoom);
 
-        System.out.println("chatRoom = " + chatRoom);
 
         if (roomId == null) {
             chatService.creatChatRoom(chatRoom);
@@ -58,6 +60,7 @@ public class ChatController {
     }
 
     @GetMapping("view/{roomId}")
+    @PreAuthorize("isAuthenticated()")
     public ChatRoom chatRoomView(@PathVariable String roomId,
                                  @RequestParam String memberId,
                                  @RequestParam(value = "page", defaultValue = "1") String page
@@ -93,6 +96,7 @@ public class ChatController {
 
     //    Todo>  확인하기 쉽게  content 작성해놓았는데  기능 테스트 해보고 바꿔야함
     @DeleteMapping("delete/{roomId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteChatRoom(@PathVariable String roomId,
                                                               @RequestParam String memberId) {
 
@@ -137,6 +141,7 @@ public class ChatController {
     }
 
     @PutMapping("updatetime")
+    @PreAuthorize("isAuthenticated()")
     public void updateChatRoomTime(@RequestBody ChatRoom chatRoom) {
     }
 
