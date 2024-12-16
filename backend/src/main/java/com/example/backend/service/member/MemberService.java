@@ -108,26 +108,40 @@ public class MemberService {
 
     // 로그인 토큰 생성 메소드
     public String token(Member member) {
+        // 1. 일반 사용자 로직
         Member db = mapper.selectById(member.getMemberId());
-        List<String> auths = mapper.selectAuthByMemberId(member.getMemberId());
-        String authsString = auths.stream()
-                .collect(Collectors.joining(" "));
-        if (db != null) {
+        if (db != null && member.getPassword() != null) {
             // 비밀번호 검증 후 JWT 생성
             if (db.getPassword().equals(member.getPassword())) {
-                JwtClaimsSet claims = JwtClaimsSet.builder()
-                        .issuer("self")
-                        .subject(member.getMemberId())
-                        .issuedAt(Instant.now())
-                        .expiresAt(Instant.now().plusSeconds(3600))
-                        .claim("nickname", db.getNickname())
-                        .claim("scope", authsString)
-                        .build();
-
-                return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+                return generateJwtToken(db.getMemberId(), db.getNickname(), mapper.selectAuthByMemberId(db.getMemberId()));
             }
         }
+
+        // 2. 카카오 로그인 사용자 처리
+        if (member.getPassword() == null) { // 비밀번호 없이 로그인 요청한 경우
+            db = mapper.selectById(member.getMemberId());
+            if (db != null) {
+                return generateJwtToken(db.getMemberId(), db.getNickname(), mapper.selectAuthByMemberId(db.getMemberId()));
+            }
+        }
+
+        // 3. 인증 실패 시
         return null;
+    }
+
+    // JWT 토큰 생성 로직 분리
+    private String generateJwtToken(String memberId, String nickname, List<String> auths) {
+        String authsString = auths.stream().collect(Collectors.joining(" "));
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .subject(memberId)
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(3600))
+                .claim("nickname", nickname)
+                .claim("scope", authsString)
+                .build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     // 입력된 비밀번호가 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드
@@ -139,5 +153,23 @@ public class MemberService {
             }
         }
         return false;
+    }
+
+    // 입력된 카카오 이메일이 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드
+    public boolean isEmailCorrect(String memberId, String email) {
+        Member dbMember = mapper.selectById(memberId);
+        if (dbMember != null) {
+            if (dbMember.getMemberId().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 카카오 로그인 시 이메일 확인
+    public boolean emailCheck(String email) {
+        int cnt = mapper.emailCheck(email);
+
+        return cnt == 1;
     }
 }

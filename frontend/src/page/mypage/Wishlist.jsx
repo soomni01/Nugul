@@ -1,4 +1,4 @@
-import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Spinner, Text } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
@@ -41,9 +41,10 @@ export function Wishlist() {
 
   return (
     <Box>
-      <Heading size="lg" mb={4}>
-        관심 목록
-      </Heading>
+      <HStack alignItems="center" mb={3}>
+        <Heading size="lg">관심 목록</Heading>
+        <Text>총 {productList.length}건</Text>
+      </HStack>
       <Box height="70vh" overflow="hidden">
         <Swiper
           direction={"vertical"}

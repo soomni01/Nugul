@@ -19,7 +19,6 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,19 +118,30 @@ public class MyPageService {
         return mapper.inquiryListview(memberId, inquiryId);
     }
 
-    // 평점과 프로필 이미지 가져오기
-    public Map<String, Object> getImageAndRating(Member member, String memberId) {
-        Map<String, Object> result = new HashMap<>();
+    // 평점 가져오기
+    public Double getRating(String memberId) {
         Double rating = mapper.getRating(memberId);
+        return rating != null ? rating : 0.0;
+    }
+
+    // 프로필 이미지 가져오기
+    public String getImage(Member member, String memberId) {
         String profileImage = mapper.getProfileImage(memberId);
 
-        // S3 URL을 기반으로 메인 이미지 경로 설정
-        String mainImageUrl = String.format(STR."\{imageSrcPrefix}/profile/\{memberId}/\{profileImage}");
-        member.setProfileImage(mainImageUrl);
+        String mainImageUrl;
 
-        result.put("rating", rating);
-        result.put("profileImage", mainImageUrl);
-        return result;
+        if (profileImage.startsWith("http://") || profileImage.startsWith("https://")) {
+            // 카카오 로그인 사용자: 외부 URL인 경우
+            mainImageUrl = profileImage;
+        } else {
+            // S3 URL을 기반으로 메인 이미지 경로 설정
+            mainImageUrl = String.format(STR."\{imageSrcPrefix}/profile/\{memberId}/\{profileImage}");
+        }
+
+        // 멤버 객체에 프로필 이미지 경로 설정
+        member.setProfileImage(mainImageUrl);
+        
+        return mainImageUrl;
     }
 
     // 프로필 이미지 추가하기
@@ -191,6 +201,7 @@ public class MyPageService {
         }
     }
 
+    // 프로필 지우기
     public boolean deleteProfileImage(String memberId, String profileImage) {
         String fileName = mapper.selectProfileImage(memberId);
 

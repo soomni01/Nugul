@@ -1,4 +1,4 @@
-import { Box, Heading, Spinner, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Spinner, Text } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ProductHorizontalItem } from "../../components/product/ProductHorizontalItem.jsx";
@@ -57,9 +57,10 @@ export function PurchasedItems() {
 
   return (
     <Box>
-      <Heading size="lg" mb={4}>
-        내가 구매한 상품
-      </Heading>
+      <HStack alignItems="center" mb={3}>
+        <Heading size="lg">내가 구매한 상품</Heading>
+        <Text>총 {purchasedList.length}건</Text>
+      </HStack>
       <Box height="70vh" overflow="hidden">
         <Swiper
           direction={"vertical"}
