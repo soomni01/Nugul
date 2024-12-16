@@ -19,10 +19,10 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 export function InquiryEdit() {
   const [inquiry, setInquiry] = useState(null);
   const [progress, setProgress] = useState(false);
-  const { inquiryId } = useParams();
-  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { inquiryId } = useParams();
   const { hasAccess } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
   // 문의 내역의 상세 문의 보기 데이터 로드
   useEffect(() => {
@@ -77,6 +77,11 @@ export function InquiryEdit() {
       .finally(() => {
         setProgress(false);
       });
+  };
+
+  // 취소 버튼 클릭 시 호출되는 함수
+  const handleCancelClick = () => {
+    navigate(-1);
   };
 
   // 저장 버튼 비활성화 상태 확인
@@ -158,6 +163,9 @@ export function InquiryEdit() {
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
+          <Button variant="outline" onClick={handleCancelClick}>
+            취소
+          </Button>
         </Box>
       )}
     </Box>
