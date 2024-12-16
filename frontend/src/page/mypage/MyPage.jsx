@@ -217,7 +217,14 @@ export function MyPage() {
           </Box>
           <Stack display="flex" alignItems="center">
             <Text ali>{nickname}</Text>
-            <Rating readOnly value={rating} allowHalf size="md" mb={5} />
+            <Rating
+              colorPalette="yellow"
+              readOnly
+              value={rating}
+              allowHalf
+              size="md"
+              mb={5}
+            />
           </Stack>
           <Button
             variant={

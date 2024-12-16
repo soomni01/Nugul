@@ -278,7 +278,14 @@ export function ProductView() {
           />
           <Heading size="md">판매자: {product.nickname}</Heading>
           <Spacer />
-          <Rating readOnly value={rating} allowHalf size="md" mr={5} />
+          <Rating
+            colorPalette="yellow"
+            readOnly
+            value={rating}
+            allowHalf
+            size="md"
+            mr={5}
+          />
         </HStack>
 
         <HStack m={2} justifyContent="space-between" w="full">
