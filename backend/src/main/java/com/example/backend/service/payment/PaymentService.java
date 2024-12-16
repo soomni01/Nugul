@@ -1,7 +1,6 @@
 package com.example.backend.service.payment;
 
 import com.example.backend.dto.payment.PaymentRecord;
-import com.example.backend.dto.product.Product;
 import com.example.backend.mapper.payment.PaymentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -33,11 +33,9 @@ public class PaymentService {
         return mapper.getPayment(buyerId);
     }
 
-    // 사용자가 거래를 완료할 수 있는 권한이 있는지 확인
+    // 사용자가 거래 완료할 수 있는 권한이 있는지 확인
     public boolean hasPayAccess(Integer roomId, Authentication auth) {
-        // 구매자 ID를 가져오는 로직
         String buyerId = mapper.getBuyerId(roomId);
-        // 판매자 ID를 가져오는 로직
         String writerId = mapper.getWriter(roomId);
 
         // 로그인한 사용자가 구매자이거나 (왜냐면 구매자가 결제를 했을 때 거래 완료로 바뀌어야해서) 판매자일 경우 권한을 부여
@@ -47,21 +45,24 @@ public class PaymentService {
 
     // 거래 완료
     public boolean transaction(int roomId, Authentication auth) {
-        Integer productId = mapper.getProductIdByRoomId(roomId);
+        Map<String, Object> transactionInfo = mapper.getTransactionInfoByRoomId(roomId); // Map을 사용하는 이유는 다양한 데이터 타입을 저장하기 위해서
 
-        Product product = mapper.selectById(productId);
-        System.out.println("Product ID: " + productId);
+        Integer productId = (Integer) transactionInfo.get("productId");
+        String buyerId = (String) transactionInfo.get("buyerId");
+        String writer = (String) transactionInfo.get("writer");
+        String productName = (String) transactionInfo.get("productName");
+        String locationName = (String) transactionInfo.get("locationName");
+        Integer price = (Integer) transactionInfo.get("price");
 
-        String buyer_id = mapper.getBuyerId(roomId);
-        System.out.println("Buyer ID: " + buyer_id);
-
-        String writer = mapper.getWriter(roomId);
-        System.out.println("Writer ID: " + writer);
-
-        // 거래 완료 시에 Sold로 상태 변경
+        // 거래 완료 시 상태 변경
         int updateStatus = mapper.updateProductStatus(productId);
+
         // 구매 테이블에 거래 정보 추가
-        int insertTrasaction = mapper.insertTranscation(productId, buyer_id, product.getWriter(), product.getProductName(), product.getLocationName(), product.getPrice());
-        return updateStatus == 1 && insertTrasaction == 1;
+        int insertTransaction = mapper.insertTransaction(
+                productId, buyerId, writer, productName, locationName, price
+        );
+
+        // 성공 여부 반환
+        return updateStatus == 1 && insertTransaction == 1;
     }
 }

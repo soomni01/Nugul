@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PaymentMapper {
@@ -55,17 +56,24 @@ public interface PaymentMapper {
             """)
     int updateProductStatus(int id);
 
+    @Select("""
+            SELECT 
+                cr.product_id AS productId,
+                cr.buyer AS buyerId,
+                p.writer AS writer,
+                p.product_name AS productName,
+                p.location_name AS locationName,
+                p.price AS price
+            FROM chatroom cr
+            JOIN product p ON cr.product_id = p.product_id
+            WHERE cr.roomId = #{roomId}
+            """)
+    Map<String, Object> getTransactionInfoByRoomId(int roomId);
+
     @Insert("""
-            Insert purchased_record
+            INSERT INTO purchased_record
             (buyer_id, product_id, seller_id, product_name, location_name, price)
             VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price})
             """)
-    int insertTranscation(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
-
-    @Select("""
-            SELECT roomId 
-            FROM chatroom
-            WHERE roomId = #{roomId}
-            """)
-    Integer getProductIdByRoomId(int roomId);
+    int insertTransaction(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
 }
