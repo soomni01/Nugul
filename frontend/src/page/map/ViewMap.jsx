@@ -162,9 +162,15 @@ function ViewMap() {
 
   function makePlaceInfo(place) {
     // 카테고리 그룹 코드에 따라서  className 변경
+    var chageClassName;
+    console.log(place.category_group_code);
+    if (currCategory) {
+      chageClassName =
+        currCategory === place.category_group_code ? "title" : "bluetitle";
+    } else {
+      chageClassName = "bluetitle";
+    }
 
-    const chageClassName =
-      currCategory === place.category_group_code ? "title" : "bluetitle";
     return (
       <Box className={"placeinfo_wrap"}>
         <Box className="placeinfo">
@@ -316,7 +322,7 @@ function ViewMap() {
         })}
         <ZoomControl />
       </Map>
-      <ul id="category">
+      <ul id="category" style={{}}>
         <li
           id="BK9"
           data-order="0"

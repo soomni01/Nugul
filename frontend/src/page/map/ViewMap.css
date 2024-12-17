@@ -167,6 +167,14 @@
     color: #777;
 }
 
+/* 화면 크기가 768px 이상일 때 숨김 */
+/*@media (max-width: 1000px) {*/
+/*    #category {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
+
+
 #category {
     position: absolute;
 
@@ -178,6 +186,7 @@
     overflow: hidden;
     z-index: 2;
 }
+
 
 #category li {
     float: left;
