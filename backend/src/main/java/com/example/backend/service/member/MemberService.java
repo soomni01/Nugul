@@ -177,7 +177,7 @@ public class MemberService {
         return false;
     }
 
-    // 카카오 로그인 시 이메일 확인
+    // 소셜 로그인 시 이메일 확인
     public boolean emailCheck(String email) {
         int cnt = mapper.emailCheck(email);
 

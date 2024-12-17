@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Box } from "@chakra-ui/react";
 
 export function NaverOauth() {
   const navigate = useNavigate();
@@ -19,12 +20,14 @@ export function NaverOauth() {
           // 서버에서 받은 정보
           const member = data.member; // member 정보
           const token = data.token; // token 정보
+          console.log(token);
           const redirectUrl = data.redirectUrl; // 리디렉션 URL
           const platform = data.platform;
 
           if (redirectUrl === "/main") {
             // 이미 회원인 경우
             console.log("로그인 성공:", member); // member 정보 사용
+            localStorage.setItem("token", token);
             navigate(redirectUrl, {
               state: {
                 email: member.memberId,
@@ -52,5 +55,5 @@ export function NaverOauth() {
     }
   }, [navigate]);
 
-  return <div>로그인 처리 중...</div>;
+  return <Box>로그인 처리 중...</Box>;
 }
