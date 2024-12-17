@@ -69,10 +69,10 @@ export function Inquiry() {
       borderRadius="md"
       boxShadow="0px 10px 30px rgba(0, 0, 0, 0.2)"
       bg="white"
-      position="absolute"
-      top="53%"
+      top="20px"
       left="50%"
-      transform="translate(-50%, -50%)"
+      position="relative"
+      transform="translateX(-50%)"
     >
       <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={14}>
         문의하기
@@ -100,7 +100,7 @@ export function Inquiry() {
             <option value="계정 문의">계정 문의</option>
             <option value="기타 문의">기타 문의</option>
           </select>
-          <Text fontSize="sm" color="gray.500" ml={-6}>
+          <Text fontSize="sm" color="gray.500" ml={-7}>
             ※ 문의 유형을 선택 후 문의 내용을 작성해 주세요.
           </Text>
         </Flex>
