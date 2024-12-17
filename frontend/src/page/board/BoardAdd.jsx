@@ -24,7 +24,6 @@ export function BoardAdd() {
       ["bold", "italic", "underline"],
       [{ align: [] }],
       ["link"],
-      ["image"],
       ["blockquote"],
       [{ color: [] }, { background: [] }],
       ["clean"],
@@ -171,10 +170,9 @@ export function BoardAdd() {
         <ReactQuill
           style={{
             width: "100%",
-            height: "auto", // 자동 크기 조정
-            maxHeight: "600px", // 최대 높이 설정
-            overflowY: "auto", // 내용이 많으면 세로 스크롤
-            marginBottom: "10px", // 여백 조정
+            height: "400px", // 자동 크기 조정
+            maxHeight: "auto", // 최대 높이 설정
+            marginBottom: "20px", // 여백 조정
           }}
           value={content}
           onChange={(content) => setContent(content)}
