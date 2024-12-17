@@ -79,21 +79,23 @@ export function ProfileEdit({ id, onCancel, onSave }) {
         <Field readOnly label={"아이디"}>
           <Input defaultValue={member?.memberId || ""} />
         </Field>
-        <Field label={"암호"}>
-          <Input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            isInvalid={!isPasswordValid}
-            placeholder={
-              "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
-            }
-          />
-          {password && !isPasswordValid && (
-            <Text fontSize="sm" color="red.500">
-              비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.
-            </Text>
-          )}
-        </Field>
+        {password && (
+          <Field label={"암호"}>
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              isInvalid={!isPasswordValid}
+              placeholder={
+                "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
+              }
+            />
+            {password && !isPasswordValid && (
+              <Text fontSize="sm" color="red.500">
+                비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.
+              </Text>
+            )}
+          </Field>
+        )}
         <Field label={"별명"}>
           <HStack w="100%">
             <Input
@@ -131,7 +133,10 @@ export function ProfileEdit({ id, onCancel, onSave }) {
         <Box>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorPalette={"blue"} disabled={!isPasswordValid}>
+              <Button
+                colorPalette={"blue"}
+                {...(isPasswordValid ? { disabled: true } : {})}
+              >
                 저장
               </Button>
             </DialogTrigger>

@@ -32,7 +32,7 @@ public interface MyPageMapper {
                 p.status,
                 p.created_at,
                 p.writer,
-                pr.date AS purchasedAt, 
+                pr.date AS purchased_at,
                 m.nickname AS buyer_nickname,
                 pf.name AS main_image_name
             FROM 

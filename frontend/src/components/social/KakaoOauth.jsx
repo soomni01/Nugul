@@ -31,7 +31,7 @@ export function KakaoOauth() {
         body: new URLSearchParams({
           grant_type: "authorization_code",
           client_id: import.meta.env.VITE_KAKAO_REST_KEY,
-          redirect_uri: "http://localhost:5173/oauth",
+          redirect_uri: "http://localhost:5173/oauth/kakao",
           code: code,
         }),
       });
@@ -63,12 +63,10 @@ export function KakaoOauth() {
       });
 
       const userData = await response.json();
-      const kakaoEmail = userData.kakao_account?.email || "이메일 없음";
-      const kakaoNickname =
-        userData.kakao_account?.profile?.nickname || "닉네임 없음";
+      const kakaoEmail = userData.kakao_account?.email;
+      const kakaoNickname = userData.kakao_account?.profile?.nickname;
       const kakaoProfileImage =
-        userData.kakao_account?.profile?.profile_image_url ||
-        "프로필 이미지 없음";
+        userData.kakao_account?.profile?.profile_image_url;
 
       // 서버에서 이메일 존재 여부 확인
       if (kakaoEmail) {
@@ -113,11 +111,12 @@ export function KakaoOauth() {
         } else {
           // 신규 회원 → 추가 정보 입력 페이지로 이동
           console.log(kakaoEmail, kakaoNickname, kakaoProfileImage);
-          navigate("/member/kakao", {
+          navigate("/member/social", {
             state: {
               email: kakaoEmail,
               nickname: kakaoNickname,
               profileImage: kakaoProfileImage,
+              platform: "kakao",
             },
           });
         }

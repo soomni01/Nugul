@@ -43,11 +43,11 @@ export function MyPage() {
   const fileInputRef = useRef(null);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
+
   useEffect(() => {
     if (!id) {
       return;
     }
-
     // 병렬로 두 개의 요청 처리
     Promise.all([
       axios.get("/api/myPage/rating", { params: { memberId: id } }),
@@ -66,7 +66,7 @@ export function MyPage() {
       .catch((error) => {
         console.log("데이터를 가져오는 데 실패했습니다.", error);
       });
-  }, [id]);
+  }, [id, updateProfileImage]);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -128,10 +128,11 @@ export function MyPage() {
   const handleImageDelete = () => {
     axios
       .delete("/api/myPage/image", {
-        params: { memberId: id, profileImageUrl },
+        params: { memberId: id },
       })
       .then((res) => {
         setProfileImageUrl(null);
+        updateProfileImage(null);
       })
       .catch((e) => {
         console.error("이미지 삭제에 실패했습니다.", e);
@@ -200,7 +201,14 @@ export function MyPage() {
           </Box>
           <Stack display="flex" alignItems="center">
             <Text ali>{nickname}</Text>
-            <Rating readOnly value={rating} allowHalf size="md" mb={5} />
+            <Rating
+              colorPalette="yellow"
+              readOnly
+              value={rating}
+              allowHalf
+              size="md"
+              mb={5}
+            />
           </Stack>
           <Button
             variant={

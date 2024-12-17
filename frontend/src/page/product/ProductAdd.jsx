@@ -149,31 +149,27 @@ export function ProductAdd(props) {
 
   return (
     <Box>
-      <Heading>상품 등록</Heading>
+      <Heading mb={3}>상품 등록</Heading>
       <Stack gap={5}>
         <Flex alignItems="center">
-          <Box minWidth="150px">
-            <Field label={"이미지"}>
-              <Box
-                p="10"
-                borderWidth="1px"
-                borderColor="lightgray"
-                borderRadius="10px"
-                onClick={handleBoxClick}
-                cursor="pointer"
-                textAlign="center"
-              >
-                <input
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                />
-                <FcAddImage size="30px" />
-              </Box>
-            </Field>
+          <Box
+            p="10"
+            borderWidth="1px"
+            borderColor="lightgray"
+            borderRadius="10px"
+            onClick={handleBoxClick}
+            cursor="pointer"
+            textAlign="center"
+          >
+            <input
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: "none" }}
+            />
+            <FcAddImage size="30px" />
           </Box>
 
           <Box
@@ -246,6 +242,7 @@ export function ProductAdd(props) {
             <Field label={"상품명"}>
               <Input
                 value={productName}
+                placeholder="상품명을 입력하세요"
                 onChange={(e) => setProductName(e.target.value)}
               />
             </Field>
@@ -271,19 +268,18 @@ export function ProductAdd(props) {
           </Flex>
         </Field>
         {pay === "sell" && (
-          <Field label={"가격"}>
-            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-              <Input
-                value={price}
-                onChange={handlePriceChange}
-                placeholder="가격을 입력하세요"
-              />
-            </InputGroup>
-          </Field>
+          <InputGroup w={"20%"} flex="1" startElement={<PiCurrencyKrwBold />}>
+            <Input
+              value={price}
+              onChange={handlePriceChange}
+              placeholder="가격을 입력하세요"
+            />
+          </InputGroup>
         )}
         <Field label={"상품 설명"}>
           <Textarea
-            h={200}
+            placeholder="등록할 상품의 게시글 내용을 작성해주세요."
+            h={150}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -292,7 +288,7 @@ export function ProductAdd(props) {
           <Input
             value={location?.name || ""}
             onClick={() => setIsModalOpen(true)}
-            placeholder="거래 희망 장소를 선택하세요"
+            placeholder="거래 희망 장소를 추가하세요"
             readOnly
           />
         </Field>
@@ -302,7 +298,12 @@ export function ProductAdd(props) {
           onClose={() => setIsModalOpen(false)}
           onSelectLocation={handleLocationSelect}
         />
-        <Button disabled={disabled} loading={progress} onClick={handleSave}>
+        <Button
+          w={"10%"}
+          disabled={disabled}
+          loading={progress}
+          onClick={handleSave}
+        >
           상품 등록
         </Button>
       </Stack>
