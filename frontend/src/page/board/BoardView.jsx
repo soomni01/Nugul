@@ -9,6 +9,7 @@ import { CommentContainer } from "../../components/comment/CommentContainer.jsx"
 import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import styled from "@emotion/styled";
 
 export function BoardView() {
   const { boardId } = useParams();
@@ -17,6 +18,16 @@ export function BoardView() {
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
   const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
+
+  const StyledQuill = styled(ReactQuill)`
+    .ql-container {
+      border: none !important;
+    }
+
+    .ql-editor {
+      border: none !important;
+    }
+  `;
 
   // URL에서 category 쿼리 파라미터를 읽어서 selectedCategory를 설정
   useEffect(() => {
@@ -92,16 +103,15 @@ export function BoardView() {
 
         {/* 본문 */}
         <Stack gap={5}>
-          <ReactQuill
+          <StyledQuill
             value={board.content || ""}
             readOnly
             modules={{ toolbar: false }}
             style={{
               width: "100%",
-              height: "400px",
+              height: "auto",
+              minHeight: "400px",
               maxHeight: "auto",
-              borderRadius: "8px",
-              border: "2px solid #ccc", // 선택적으로 테두리 추가
             }}
           />
 
