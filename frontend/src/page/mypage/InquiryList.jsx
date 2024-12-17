@@ -21,7 +21,7 @@ export function InquiryList({ onRowClick }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const { nickname } = useContext(AuthenticationContext);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
   // 데이터 정렬 함수
@@ -74,6 +74,12 @@ export function InquiryList({ onRowClick }) {
     return <Spinner />;
   }
 
+  const cellStyle = {
+    padding: "10px",
+    height: "50px",
+    textAlign: "center",
+  };
+
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
@@ -83,12 +89,12 @@ export function InquiryList({ onRowClick }) {
         <Table.Root interactive>
           <TableHeader>
             <TableRow>
-              <TableColumnHeader>번호</TableColumnHeader>
-              <TableColumnHeader>문의 유형</TableColumnHeader>
-              <TableColumnHeader>제목</TableColumnHeader>
-              <TableColumnHeader>작성자</TableColumnHeader>
-              <TableColumnHeader>작성 일자</TableColumnHeader>
-              <TableColumnHeader>상태</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>번호</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>문의 유형</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>제목</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>작성자</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>작성 일자</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>상태</TableColumnHeader>
             </TableRow>
           </TableHeader>
           <Table.Body>
@@ -97,16 +103,16 @@ export function InquiryList({ onRowClick }) {
                 <Table.Row
                   key={inquiry.inquiryId}
                   onClick={() => handleRowClick(inquiry.inquiryId)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", ...cellStyle }}
                 >
-                  <Table.Cell>{inquiry.inquiryId}</Table.Cell>
-                  <Table.Cell>{inquiry.category}</Table.Cell>
-                  <Table.Cell>{inquiry.title}</Table.Cell>
-                  <Table.Cell>{nickname}</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell style={cellStyle}>{inquiry.inquiryId}</Table.Cell>
+                  <Table.Cell style={cellStyle}>{inquiry.category}</Table.Cell>
+                  <Table.Cell style={cellStyle}>{inquiry.title}</Table.Cell>
+                  <Table.Cell style={cellStyle}>{nickname}</Table.Cell>
+                  <Table.Cell style={cellStyle}>
                     {new Date(inquiry.inserted).toLocaleDateString()}
                   </Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell style={cellStyle}>
                     <Badge
                       variant={"subtle"}
                       colorPalette={inquiry.hasAnswer ? "green" : "red"}

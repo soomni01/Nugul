@@ -175,20 +175,6 @@ public interface ProductMapper {
             """)
     int deleteLikeByMemberId(Integer productId, String name);
 
-    @Update("""
-            UPDATE product
-            SET status = 'Sold'
-            WHERE product_id = #{id}
-            """)
-    int updateProductStatus(int id);
-
-    @Insert("""
-            Insert purchased_record
-            (buyer_id, product_id, seller_id, product_name, location_name, price)
-            VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price})
-            """)
-    int insertTranscation(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
-
     @Select("""
             SELECT name
             FROM product_file
@@ -229,7 +215,7 @@ public interface ProductMapper {
     @Select("""
             SELECT buyer
             FROM chatroom
-            WHERE room_id = #{roomId}
+            WHERE roomId = #{roomId}
             """)
     String getBuyerId(Integer roomId);
 }

@@ -8,6 +8,8 @@ const Payment = ({ chatRoom }) => {
   const [product, setProduct] = useState({});
   const { id, nickname } = useContext(AuthenticationContext);
   console.log("Authentication Context:", { id, nickname });
+  console.log("Chat Room:", chatRoom);
+  console.log("Room ID:", chatRoom.roomId);
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
@@ -38,6 +40,7 @@ const Payment = ({ chatRoom }) => {
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
         merchant_uid: new Date().getTime(), // 고유 거래 ID
+        id: product.productId,
         name: product.productName,
         amount: product.price,
         buyer_email: id,
@@ -55,6 +58,7 @@ const Payment = ({ chatRoom }) => {
             await axios.post("/api/savePayment", {
               impUid: rsp.imp_uid,
               buyerId: id,
+              productId: product.productId,
               productName: product.productName,
               paymentAmount: product.price,
               paymentMethod: rsp.pay_method,
@@ -62,15 +66,25 @@ const Payment = ({ chatRoom }) => {
               status: "paid",
             });
 
-            await axios.post(
-              `/api/product/transaction/${productId}`,
-              { params: { roomId: chatRoom.roomId } },
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`, // 인증 토큰 추가
+            await axios
+              .post(
+                `/api/product/transaction/${productId}`,
+                {
+                  roomId: chatRoom.roomId, // body로 roomId를 전달
                 },
-              },
-            );
+                {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json",
+                  },
+                },
+              )
+              .catch((error) =>
+                console.error(
+                  "Transaction Error:",
+                  error.response?.data || error,
+                ),
+              );
 
             // 결제 성공 알림
             toaster.create({

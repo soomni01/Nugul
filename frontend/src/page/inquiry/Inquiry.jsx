@@ -62,88 +62,90 @@ export function Inquiry() {
   };
 
   return (
-    <Box>
-      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-        1:1 문의
+    <Box
+      p="5"
+      height="700px"
+      width="900px"
+      borderRadius="md"
+      boxShadow="0px 10px 30px rgba(0, 0, 0, 0.2)"
+      bg="white"
+      position="absolute"
+      top="53%"
+      left="50%"
+      transform="translate(-50%, -50%)"
+    >
+      <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={14}>
+        문의하기
       </Text>
-      <Box
-        maxW="80%"
-        mx="auto"
-        mt="4"
-        p="3"
-        borderWidth="1px"
-        borderRadius="md"
-        boxShadow="lg"
-        bg="white"
-      >
-        {savedData ? (
-          // 저장된 화면 표시
-          <>
-            <Field label="카테고리">
-              <Input value={savedData.category} readOnly />
-            </Field>
-            <Field label="제목" mb={2}>
-              <Input value={savedData.title} readOnly />
-            </Field>
-            <Field label="작성자" mb={2}>
-              <Input value={savedData.nickname} readOnly />
-            </Field>
-            <Field label="작성일자" mb={2}>
-              <Input value={savedData.inserted} readOnly />
-            </Field>
-            <Field label="내용" mb={2}>
-              <Textarea value={savedData.content} readOnly />
-            </Field>
-          </>
-        ) : (
-          // 작성 화면 표시
-          <>
-            <Field>
-              <Flex align="center" gap={4}>
-                <Text fontSize="md" fontWeight="bold">
-                  문의 유형:
-                </Text>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  style={{
-                    padding: "8px",
-                    borderRadius: "4px",
-                    border: "1px solid #CBD5E0",
-                  }}
-                >
-                  <option value="">문의 유형 선택</option>
-                  <option value="신고">신고</option>
-                  <option value="이용 안내">이용 안내</option>
-                  <option value="계정 문의">계정 문의</option>
-                  <option value="기타 문의">기타 문의</option>
-                </select>
-              </Flex>
-            </Field>
-            <Field label="제목" mb={2}>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </Field>
-            <Field label="작성자" mb={2}>
-              <Input value={nickname} readOnly />
-            </Field>
-            <Field label="작성일자" mb={2}>
-              <Input value={currentDate} readOnly />
-            </Field>
-            <Field label="내용">
-              <Textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-            </Field>
-            {/* 저장 버튼이 savedData가 없을 때만 표시 */}
-            {!savedData && (
-              <Button onClick={handleSaveClick} isLoading={progress}>
-                저장
-              </Button>
-            )}
-          </>
-        )}
-      </Box>
+
+      {/* 작성 화면 표시 */}
+      <Field>
+        <Flex align="center" gap={11} mb={7}>
+          <Text fontSize="md" fontWeight="bold">
+            문의 유형
+          </Text>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #CBD5E0",
+            }}
+          >
+            <option value="">문의 유형 선택</option>
+            <option value="신고">신고</option>
+            <option value="이용 안내">이용 안내</option>
+            <option value="계정 문의">계정 문의</option>
+            <option value="기타 문의">기타 문의</option>
+          </select>
+        </Flex>
+      </Field>
+      <Flex justify="space-between" align="center" mb={5}>
+        <Text fontSize="md" fontWeight="bold" mb={2} width="30%">
+          문의 제목
+        </Text>
+        <Input
+          value={savedData ? savedData.title : title}
+          onChange={(e) => setTitle(e.target.value)}
+          mb={3}
+          width="200%"
+          readOnly={savedData !== null}
+        />
+      </Flex>
+      <Flex justify="space-between" align="center" mb={5}>
+        <Text fontSize="md" fontWeight="bold" width="30%">
+          작성자
+        </Text>
+        <Input value={nickname} readOnly width="200%" />
+      </Flex>
+      <Flex justify="space-between" align="center" mb={5}>
+        <Text fontSize="md" fontWeight="bold" width="30%">
+          작성 일자
+        </Text>
+        <Input value={currentDate} readOnly width="200%" />
+      </Flex>
+      <Flex justify="space-between" align="center" mb={5}>
+        <Text fontSize="md" fontWeight="bold" width="30%">
+          문의 내용
+        </Text>
+        <Textarea
+          value={savedData ? savedData.content : content}
+          onChange={(e) => setContent(e.target.value)}
+          width="200%"
+          height="250px"
+          readOnly={savedData !== null}
+        />
+      </Flex>
+
+      {/* 저장 버튼이 savedData가 없을 때만 표시 */}
+      {!savedData && (
+        <Flex justify="flex-end" mb={5}>
+          <Button onClick={handleSaveClick} isLoading={progress}>
+            저장
+          </Button>
+        </Flex>
+      )}
     </Box>
   );
 }

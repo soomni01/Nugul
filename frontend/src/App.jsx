@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import { AdminLayout } from "./page/admin/AdminLayout.jsx";
-import { AdminDashBoard } from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
@@ -144,10 +143,6 @@ const router = createBrowserRouter([
     path: "admin",
     element: <AdminLayout />,
     children: [
-      {
-        path: "dashboard",
-        element: <AdminDashBoard />,
-      },
       {
         path: "members",
         element: <AdminMemberList />,
