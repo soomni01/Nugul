@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Textarea } from "@chakra-ui/react";
+import { Box, Card, Flex, Heading, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
 import { useContext, useState } from "react";
 import {
@@ -98,13 +98,22 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
   };
 
   return (
-    <HStack border={"1px solid black"} m={5}>
-      <Box flex={1}>
+    <Card.Root
+      border={"1px solid black"}
+      mt={5}
+      maxWidth={"600px"} // 최대 너비를 설정
+      width={"100%"} // 부모에 맞추되 최대값까지
+      mx={"auto"} // 중앙 정렬 (가로 마진 auto)
+      height={"auto"}
+    >
+      <Card.Header>
         <Flex justify={"space-between"}>
-          <h3>{comment.nickname}</h3>
-          <h4>{comment.inserted}</h4>
+          <Heading size={"md"}>{comment.nickname}</Heading>
+          <Heading size={"sm"}>{comment.inserted}</Heading>
         </Flex>
-        {/* 댓글 내용이 수정 중이면 Textarea, 아니면 그냥 텍스트를 표시 */}
+      </Card.Header>
+
+      <Card.Body>
         {isEditing ? (
           <Textarea
             value={editedComment}
@@ -113,11 +122,11 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
         ) : (
           <Box css={{ whiteSpace: "pre" }}>{comment.comment}</Box>
         )}
-      </Box>
+      </Card.Body>
+
       {hasAccess(comment.memberId) && (
-        <Box>
-          {/* 기본 모드에서 수정, 삭제 버튼을 순서대로 표시 */}
-          {!isEditing && (
+        <Card.Footer css={{ justifyContent: "flex-end" }}>
+          {!isEditing ? (
             <>
               <EditButton
                 isEditing={isEditing}
@@ -127,10 +136,7 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
               />
               <DeleteButton onClick={() => onDeleteClick(comment.commentId)} />
             </>
-          )}
-
-          {/* 수정 모드에서만 저장과 취소 버튼을 표시 */}
-          {isEditing && (
+          ) : (
             <>
               <Button
                 colorPalette={"purple"}
@@ -150,8 +156,8 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
               </Button>
             </>
           )}
-        </Box>
+        </Card.Footer>
       )}
-    </HStack>
+    </Card.Root>
   );
 }
