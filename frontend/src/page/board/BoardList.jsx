@@ -126,9 +126,26 @@ export function BoardList() {
   }
 
   return (
-    <Box>
+    <Box width="100%">
+      {/* 카테고리 선택 컴포넌트 */}
+      <BoardCategoryContainer
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
+      />
+
       <Box>
-        <h3>
+        <h3
+          style={{
+            textAlign: "center", // 텍스트 중앙 정렬
+            fontSize: "32px", // 글씨 크기 키우기
+            marginBottom: "10px", // 아래쪽 여백 추가
+            marginTop: "10px", // 위쪽 여백
+            borderTop: "2px solid #ccc", // 상단 구분선
+            borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
+            paddingBottom: "10px", // 구분선 아래 여백 추가
+            paddingTop: "10px", // 구분선 위 여백 추가
+          }}
+        >
           {selectedCategory === "all"
             ? "전체"
             : BoardCategories.find((cat) => cat.value === selectedCategory)
@@ -136,12 +153,6 @@ export function BoardList() {
           게시판
         </h3>
       </Box>
-
-      {/* 카테고리 선택 컴포넌트 */}
-      <BoardCategoryContainer
-        selectedCategory={selectedCategory}
-        onCategorySelect={handleCategorySelect}
-      />
 
       {/* 게시물 제목 */}
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -154,6 +165,7 @@ export function BoardList() {
       {/* 게시물 리스트 */}
       {boardList.length > 0 ? (
         <Box>
+          <hr />
           <Table.Root interactive>
             <Table.Header>
               <Table.Row>
@@ -226,7 +238,7 @@ export function BoardList() {
       )}
 
       {/* 검색 UI */}
-      <HStack mt={4}>
+      <HStack justify="center" mt={4} minHeight="50px">
         <Box>
           <select
             value={search.type}
