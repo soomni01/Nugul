@@ -167,10 +167,18 @@
     color: #777;
 }
 
+/* 화면 크기가 768px 이상일 때 숨김 */
+/*@media (max-width: 1000px) {*/
+/*    #category {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
+
+
 #category {
     position: absolute;
     top: 20px;
-    left: 400px;
+    right: 100px;
     border-radius: 5px;
     border: 1px solid #909090;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
@@ -178,6 +186,7 @@
     overflow: hidden;
     z-index: 2;
 }
+
 
 #category li {
     float: left;

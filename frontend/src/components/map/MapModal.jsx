@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { IoClose } from "react-icons/io5";
 import "./MapModal.css";
-import { Button, Group, Input } from "@chakra-ui/react";
+import { Box, Button, Group, Input } from "@chakra-ui/react";
 import { Field } from "../ui/field.jsx";
 import { toaster } from "../ui/toaster.jsx";
 
@@ -67,6 +67,21 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
           <IoClose style={{ zIndex: 3 }} />
         </button>
 
+        <Box className={"search-container"}>
+          <Field mt={5} label={"선택한 곳의 장소명을 입력해주세요"}>
+            <Group w={"100%"}>
+              <Input
+                value={locationName}
+                onChange={(e) => {
+                  setLocationName(e.target.value);
+                }}
+                placeholder="예) 이대역 1번 출구, 롯데타워 앞"
+              />
+              <Button onClick={handleSearch}> 검색하기</Button>
+            </Group>
+          </Field>
+        </Box>
+
         <Map
           className="map"
           center={{ lat: 33.450701, lng: 126.570667 }}
@@ -79,18 +94,6 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
           <ZoomControl position={"LEFT"} />
         </Map>
 
-        <Field mt={5} label={"선택한 곳의 장소명을 입력해주세요"}>
-          <Group w={"100%"}>
-            <Input
-              value={locationName}
-              onChange={(e) => {
-                setLocationName(e.target.value);
-              }}
-              placeholder="예) 이대역 1번 출구, 롯데타워 앞"
-            />
-            <Button onClick={handleSearch}> 검색하기</Button>
-          </Group>
-        </Field>
         <div className="button-container">
           <Button
             className="confirm-button"

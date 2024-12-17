@@ -218,4 +218,12 @@ public interface ProductMapper {
             WHERE roomId = #{roomId}
             """)
     String getBuyerId(Integer roomId);
+
+
+    @Select("""
+                        select buyer_id
+                        from purchased_record
+                        where product_id = #{productId}
+            """)
+    String checkPurchaseByMemberId(String memberId, String productId);
 }

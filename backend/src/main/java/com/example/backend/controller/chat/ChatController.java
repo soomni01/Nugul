@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class ChatController {
 
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
+
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
 
         // 보낸 메시지 저장시킬 방 번호 입력
@@ -38,10 +40,12 @@ public class ChatController {
     }
 
     @PostMapping("create")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Integer> createChatRoom(@RequestBody ChatRoom chatRoom) {
 
         // 방이 있는지 먼저 확인   없으면 만들기
         Integer roomId = chatService.findChatRoomId(chatRoom);
+
 
         if (roomId == null) {
             chatService.creatChatRoom(chatRoom);
@@ -56,12 +60,14 @@ public class ChatController {
     }
 
     @GetMapping("view/{roomId}")
+    @PreAuthorize("isAuthenticated()")
     public ChatRoom chatRoomView(@PathVariable String roomId,
+                                 @RequestParam String memberId,
                                  @RequestParam(value = "page", defaultValue = "1") String page
     ) {
 
         //  chatroom 정보 조회
-        ChatRoom chatRoom = chatService.chatRoomView(roomId);
+        ChatRoom chatRoom = chatService.chatRoomView(roomId, memberId);
         // 해당 채팅방의 메시지 정보 조회  , page
 //        List<ChatMessage> message = chatService.chatMessageView(roomId);
 //        chatRoom.setMessages(message);
@@ -80,6 +86,7 @@ public class ChatController {
 
 
     @GetMapping("list")
+    @PreAuthorize("isAuthenticated()")
     public List<ChatRoom> chatRoomList(@RequestParam(value = "memberId") String memberId,
                                        @RequestParam(value = "type", defaultValue = "all") String type) {
 
@@ -90,6 +97,7 @@ public class ChatController {
 
     //    Todo>  확인하기 쉽게  content 작성해놓았는데  기능 테스트 해보고 바꿔야함
     @DeleteMapping("delete/{roomId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteChatRoom(@PathVariable String roomId,
                                                               @RequestParam String memberId) {
 
@@ -97,13 +105,10 @@ public class ChatController {
         boolean noOneDeleted = chatService.noOneDeleted(roomId);
         //  메시지를 보낸적 있거나 ,  메시지 보내고  삭제를 안했던가 ,  메시지 보내고 삭제했던가,
         if (!noOneDeleted) {
-
             // 메시지 삭제 ,  구매자, 혹은 판매자의 삭제상태 반영
             boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
             boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId, roomId);
-
             boolean chatRemoved;
-
             // 끝나고나면 일단 메시지를 보내긴 해야하고 , 진짜 삭제할건지는 한번 더 안에서 결정해야지
 
             if (messageRemoved && updateDeleted) {
@@ -137,7 +142,14 @@ public class ChatController {
     }
 
     @PutMapping("updatetime")
+    @PreAuthorize("isAuthenticated()")
     public void updateChatRoomTime(@RequestBody ChatRoom chatRoom) {
+    }
+
+    @GetMapping("{roomId}/image")
+    public String getImage(@RequestParam String memberId) {
+        
+        return chatService.getImage(memberId);
     }
 
 }

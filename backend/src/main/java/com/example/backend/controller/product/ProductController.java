@@ -171,4 +171,12 @@ public class ProductController {
                             "text", "상품명, 가격, 거래 장소가 입력되지 않았습니다.")));
         }
     }
+
+    @GetMapping("checkpurchase")
+    @PreAuthorize("isAuthenticated()")
+    public boolean checkPurchase(String memberId, String productId) {
+
+        return service.checkPurchase(memberId, productId);
+
+    }
 }

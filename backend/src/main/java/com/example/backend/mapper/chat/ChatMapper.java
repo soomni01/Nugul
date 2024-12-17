@@ -25,34 +25,59 @@ public interface ChatMapper {
 
 
     @Select("""
-                        select c.*  ,p.status as product_status
-                        from chatroom c left join product p on c.product_id=p.product_id
-                        where roomId =#{roomId}
-            
+                SELECT
+                    c.*,
+                    p.status AS productStatus,
+                    CASE
+                        WHEN c.writer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.buyer)
+                        WHEN c.buyer = #{memberId} THEN (SELECT nickname FROM member WHERE member_id = c.writer)
+                    END AS memberNickname
+                FROM
+                    chatroom c
+                LEFT JOIN
+                    product p ON c.product_id = p.product_id
+                WHERE
+                    c.roomId = #{roomId}
             """)
-    @Result(column = "product_status", property = "status")
-    ChatRoom chatRoomViewById(String roomId);
-
+    @Results({
+            @Result(column = "productStatus", property = "status"),
+            @Result(column = "memberNickname", property = "nickname")
+    })
+    ChatRoom chatRoomViewById(String roomId, String memberId);
 
     @Select("""
                 <script>
-                    select c.* , p.status as product_status
-                    from chatroom  c left join product p on p.product_id = c.product_id
+                    select 
+                        c.*, 
+                        p.status as product_status,
+                        CASE 
+                            WHEN c.writer = #{memberId} THEN 
+                                (SELECT nickname FROM member WHERE member_id = c.buyer)
+                            WHEN c.buyer = #{memberId} THEN 
+                                (SELECT nickname FROM member WHERE member_id = c.writer)
+                        END AS counterpartNickname
+                    from chatroom c 
+                    left join product p on p.product_id = c.product_id
                     <choose>                   
                         <when test="type == 'buy'">
-                            where buyer = #{memberId}
+                            where buyer = #{memberId} and c.isbuyer_deleted = 0
                         </when>
                         <when test="type == 'sell'">
-                            where c.writer = #{memberId}
+                            where c.writer = #{memberId} and c.iswriter_deleted = 0
                         </when>
                         <otherwise>
-                              where c.writer = #{memberId} or buyer = #{memberId}
+                            where (c.writer = #{memberId} or buyer = #{memberId}) 
+                            and ((c.writer = #{memberId} and c.iswriter_deleted = 0) 
+                                 or (c.buyer = #{memberId} and c.isbuyer_deleted = 0))
                         </otherwise>
                     </choose>
                     order by roomId desc
                 </script>
             """)
-    @Result(column = "product_status", property = "status")
+    @Results({
+            @Result(column = "product_status", property = "status"),
+            @Result(column = "counterpartNickname", property = "nickname")
+    })
     List<ChatRoom> chatRoomListByMemberId(String memberId, String type);
 
     @Delete("""
@@ -151,4 +176,12 @@ public interface ChatMapper {
     boolean checkNoOneDeleted(String roomId);
 
 
+    String findNickname(String memberId);
+
+    @Select("""
+            SELECT profile_image
+            FROM member
+            WHERE member_id = #{id}
+            """)
+    String getProfileImage(String memberId);
 }

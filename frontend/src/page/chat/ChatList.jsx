@@ -6,6 +6,7 @@ import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ChatView } from "./ChatView.jsx";
+import { ProductDetail } from "../../components/chat/ProductDetail.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
@@ -14,6 +15,7 @@ export function ChatList() {
   const { id } = useContext(AuthenticationContext);
   const [chatRoomId, setChatRoomId] = useState(-1);
   const [status, setStatus] = useState("For Sale");
+  const [productId, setProductId] = useState(-1);
 
   useEffect(() => {
     if (id) {
@@ -70,6 +72,7 @@ export function ChatList() {
         <Button
           onClick={() => {
             setChatRoomId(-1);
+            setProductId(-1);
             setSearchParams({ type: "all" });
           }}
         >
@@ -78,6 +81,7 @@ export function ChatList() {
         <Button
           onClick={() => {
             setChatRoomId(-1);
+            setProductId(-1);
             setSearchParams({ type: "buy" });
           }}
         >
@@ -86,6 +90,7 @@ export function ChatList() {
         <Button
           onClick={() => {
             setChatRoomId(-1);
+            setProductId(-1);
             setSearchParams({ type: "sell" });
           }}
         >
@@ -96,21 +101,24 @@ export function ChatList() {
         display={"flex"}
         borderRadius={"lg"}
         border={"1px solid"}
+        maxHeight={"800px"}
         borderColor={"gray.300"}
-        bg={"whiteAlpha.300"}
+        // bg={"whiteAlpha.300"}
       >
-        <Box>
+        <Box overflowY={"scroll"}>
           {chatList.map((chat) => (
             <ChatListItem
               key={chat.roomId}
               chat={chat}
               onDelete={() => removeChatRoom(chat.roomId, id)}
               onClick={() => {
+                setProductId(chat.productId);
                 setChatRoomId(chat.roomId);
               }}
             />
           ))}
         </Box>
+
         {chatRoomId === -1 ? null : (
           <ChatView
             z-index={1}
@@ -122,7 +130,9 @@ export function ChatList() {
             onDelete={() => removeChatRoom(chatRoomId, id)}
           />
         )}
-        <Box>상품 정보</Box>
+        {productId === -1 ? null : (
+          <ProductDetail key={productId} productId={productId} />
+        )}
       </Box>
     </Box>
   );

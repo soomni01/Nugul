@@ -37,7 +37,6 @@ import { SlArrowRight } from "react-icons/sl";
 import { getDaysAgo } from "../../components/product/ProductDate.jsx";
 
 export function ProductView() {
-  //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로  , >router도 변경함
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
@@ -350,8 +349,9 @@ export function ProductView() {
                 lng: product.longitude,
               }
             }
-            level={3}
+            level={3}        
             style={{ width: "90%", height: "300px" }}
+
           >
             {markerPosition && <MapMarker position={markerPosition} />}
             <ZoomControl />

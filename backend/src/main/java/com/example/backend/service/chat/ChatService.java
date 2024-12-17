@@ -5,6 +5,7 @@ import com.example.backend.dto.chat.ChatRoom;
 import com.example.backend.mapper.chat.ChatMapper;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,12 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class ChatService {
+
+    @Value("${image.src.prefix}")
+    String imageSrcPrefix;
+
+    @Value("${bucket.name}")
+    String bucketName;
 
     private final ChatMapper mapper;
     private final ProductMapper productMapper;
@@ -25,11 +32,11 @@ public class ChatService {
         return cnt == 1;
     }
 
-    public ChatRoom chatRoomView(String roomId) {
+    public ChatRoom chatRoomView(String roomId, String memberId) {
 
 
-        ChatRoom chatRoom = mapper.chatRoomViewById(roomId);
-        
+        ChatRoom chatRoom = mapper.chatRoomViewById(roomId, memberId);
+
         return chatRoom;
     }
 
@@ -39,9 +46,7 @@ public class ChatService {
         // 상태 가져오기
         List<ChatRoom> chatRoomList = mapper.chatRoomListByMemberId(memberId, type);
 
-        chatRoomList.forEach(chatRoom -> {
-//            String nickName = mapper.findNickname(memberId);
-        });
+
         return chatRoomList;
     }
 
@@ -111,6 +116,13 @@ public class ChatService {
 
         //메시지 갯수도 0이고 ,삭제도 안했음 > 즉 메시지를 작성한적이없음
         return cnt == 0 && noOneDeleted;
+    }
 
+    public String getImage(String memberId) {
+        String profileImage = mapper.getProfileImage(memberId);
+        String mainImageUrl;
+
+        mainImageUrl = String.format(STR."\{imageSrcPrefix}/profile/\{memberId}/\{profileImage}");
+        return mainImageUrl;
     }
 }

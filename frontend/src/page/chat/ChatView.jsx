@@ -19,6 +19,7 @@ import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import Payment from "../../components/chat/Payment.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { Avatar } from "../../components/ui/avatar.jsx";
 
 export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
@@ -31,13 +32,13 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [isloading, setIsloading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [purchased, setPurchased] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   // 경로데 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
-
-  //  상품명, 방 번호 , 작성자를 보여줄
 
   //  stomp 객체 생성 및, 연결
   useEffect(() => {
@@ -92,14 +93,38 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     handleSetData();
   }, []);
 
-  function handleSetData() {
+  async function handleSetData() {
     // 전체 데이터 가져오는 코드
+    var chatPartnerId;
+    const res = await axios.get(`/api/chat/view/${realChatRoomId}`, {
+      params: {
+        memberId: id,
+      },
+    });
+    setChatRoom(res.data);
+    chatPartnerId = id === res.data.writer ? res.data.buyer : res.data.writer;
+
+    // 두 번째 요청 (채팅 상대의 이미지 가져오기)
+    const imageRes = await axios.get(`/api/chat/${realChatRoomId}/image`, {
+      params: {
+        memberId: chatPartnerId,
+      },
+    });
+
+    setImageSrc(imageRes.data);
+    checkPurchase(id, res.data.productId);
+  }
+
+  // 내가 구매자인지 확인하는함수
+  function checkPurchase(id, productId) {
     axios
-      .get(`/api/chat/view/${realChatRoomId}`)
-      .then((res) => {
-        setChatRoom(res.data);
+      .get("/api/product/checkpurchase", {
+        params: {
+          memberId: id,
+          productId: productId,
+        },
       })
-      .catch((e) => {});
+      .then((res) => setPurchased(res.data));
   }
 
   function sendMessage(sender, content) {
@@ -237,6 +262,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
+  const isSold = chatRoom.status === "Sold";
+  const viewText = isSold === true ? "후기 작성하기" : "거래완료";
 
   const removeChatRoom = (roomId, id) => {
     axios
@@ -262,17 +289,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   return (
     <Box>
-      {/* Todo 없애햐 할것 */}
-      {/*<Heading mx={"auto"}>*/}
-      {/*  {" "}*/}
-      {/*  {realChatRoomId} 번 채팅 화면입니다. <hr />*/}
-      {/*</Heading>*/}
-      {/*<Button onClick={leaveRoom()}>뒤로가기</Button>*/}
-
       <Flex
         direction="column"
-        w={600}
-        h={700}
+        w={500}
+        h={800}
         overflow={"hidden"}
         bg={"blue.300/50"}
         border={"1px solid"}
@@ -286,13 +306,14 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           variant={"outline"}
           borderBottom={"1px solid gray"}
         >
-          {/*판매자 닉네임이 항상 */}
           <Box>
-            <Heading> 판매자 닉네임: {chatRoom.nickname} </Heading>
+            <Heading> 닉네임: {chatRoom.nickname} </Heading>
             상품명: {chatRoom.productName}
           </Box>
           <Flex>
-            <Payment chatRoom={chatRoom} />
+
+            {isSeller === true ? (
+       
             {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
             {isSeller && chatRoom.status !== "Sold" && (
               <Button
@@ -302,11 +323,15 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               >
                 거래완료
               </Button>
+            ) : (
+              <Payment chatRoom={chatRoom} />
             )}
+            {!purchased && !isSeller && <Button>후기</Button>}
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
             />
+
           </Flex>
         </Box>
         <Box
@@ -317,27 +342,32 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         >
           <Box h={"100%"}>
             {message.map((message, index) => (
-              <Box mx={2} my={1} key={index}>
+              <Box mx={2} my={3} key={index}>
                 <Flex
                   justifyContent={
                     message.sender === id ? "flex-end" : "flex-start"
                   }
                 >
-                  <Stack h={"10%"}>
-                    <Badge
-                      p={1}
-                      key={index}
-                      colorPalette={message.sender === id ? "gray" : "yellow"}
-                    >
-                      {message.content}
-                    </Badge>
-                    <p style={{ fontSize: "12px" }}>
-                      {message.sentAt === null
-                        ? new Date().toLocaleTimeString()
-                        : new Date(message.sentAt).toLocaleTimeString()}
-                    </p>
+                  <HStack h={"10%"}>
+                    {message.sender !== id && (
+                      <Avatar size={"sm"} src={imageSrc} />
+                    )}
+                    <Stack mx={2}>
+                      <Badge
+                        p={1}
+                        key={index}
+                        colorPalette={message.sender === id ? "gray" : "yellow"}
+                      >
+                        {message.content}
+                      </Badge>
+                      <p style={{ fontSize: "8px" }}>
+                        {message.sentAt === null
+                          ? new Date().toLocaleTimeString()
+                          : new Date(message.sentAt).toLocaleTimeString()}
+                      </p>
+                    </Stack>
                     <div ref={scrollRef}></div>
-                  </Stack>
+                  </HStack>
                 </Flex>
               </Box>
             ))}
