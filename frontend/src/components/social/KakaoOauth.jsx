@@ -31,7 +31,7 @@ export function KakaoOauth() {
         body: new URLSearchParams({
           grant_type: "authorization_code",
           client_id: import.meta.env.VITE_KAKAO_REST_KEY,
-          redirect_uri: "http://localhost:5173/oauth",
+          redirect_uri: "http://localhost:5173/oauth/kakao",
           code: code,
         }),
       });
