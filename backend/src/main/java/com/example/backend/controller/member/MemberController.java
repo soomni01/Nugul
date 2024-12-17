@@ -24,7 +24,7 @@ public class MemberController {
     @PostMapping("login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
         String token = service.token(member);
-      
+
         if (token != null) {
             return ResponseEntity.ok(Map.of("token", token,
                     "message", Map.of("type", "success",
@@ -194,4 +194,24 @@ public class MemberController {
             ));
         }
     }
+
+    // 네이버 연동 해제
+    @PostMapping("/naver/unlink")
+    public ResponseEntity<String> unlinkNaver(@RequestBody Map<String, String> request) {
+        String accessToken = request.get("accessToken");
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            return ResponseEntity.badRequest().body("Access token is required");
+        }
+
+        try {
+            // memberService의 unlinkNaver 메서드를 호출하여 연동 해제 처리
+            String result = service.unlinkNaver(accessToken);
+            return ResponseEntity.ok(result);  // 연동 해제 성공 메시지 반환
+        } catch (Exception e) {
+            // 실패 시 예외 처리
+            return ResponseEntity.status(500).body("네이버 연동 해제 실패");
+        }
+    }
+
 }

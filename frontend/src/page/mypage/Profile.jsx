@@ -50,25 +50,39 @@ export function Profile({ onEditClick }) {
       });
 
       // 카카오 계정 로그아웃 및 연결 해제
+      let kakaoUnlinked = false;
+      let naverUnlinked = false;
+
       if (sessionStorage.getItem("kakaoAccessToken")) {
         await kakaoUnlink(); // 연결 해제
         console.log("카카오 계정 연결 해제 성공");
         sessionStorage.removeItem("kakaoAccessToken");
-      } else if (sessionStorage.getItem("naverAccessToken")) {
+        kakaoUnlinked = true;
+      }
+
+      if (sessionStorage.getItem("naverAccessToken")) {
         // 네이버 계정 로그아웃 처리
-        console.log("네이버");
         await naverUnlink();
+        console.log("네이버 계정 연결 해제 성공");
         sessionStorage.removeItem("naverAccessToken");
+        naverUnlinked = true;
       }
 
       // 성공 메시지
-      const message = response.data.message;
-      toaster.create({
-        type: message.type,
-        description: message.text,
-      });
-
-      navigate("/"); // 회원가입 페이지로 이동
+      if (
+        response.data.message.type === "success" &&
+        (kakaoUnlinked || naverUnlinked)
+      ) {
+        const message = response.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        localStorage.removeItem("token");
+        navigate("/"); // 회원가입 페이지로 이동
+      } else {
+        throw new Error("연동 해제 실패");
+      }
     } catch (error) {
       const message = error.response?.data?.message || {
         type: "error",
