@@ -82,10 +82,10 @@ export function InquiryList({ onRowClick }) {
 
   return (
     <Box mt="60px">
-      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
+      <Text fontSize="2xl" fontWeight="bold" mt={-7} ml={5}>
         문의 내역
       </Text>
-      <Box>
+      <Box pt={4}>
         <Table.Root interactive>
           <TableHeader>
             <TableRow>
