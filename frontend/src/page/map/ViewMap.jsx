@@ -163,7 +163,6 @@ function ViewMap() {
   function makePlaceInfo(place) {
     // 카테고리 그룹 코드에 따라서  className 변경
     var chageClassName;
-    console.log(place.category_group_code);
     if (currCategory) {
       chageClassName =
         currCategory === place.category_group_code ? "title" : "bluetitle";

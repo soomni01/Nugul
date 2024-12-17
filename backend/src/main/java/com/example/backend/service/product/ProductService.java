@@ -289,5 +289,18 @@ public class ProductService {
         String buyerId = mapper.getBuyerId(roomId);
         return buyerId.equals(authentication.getName());
     }
+
+    public boolean checkPurchase(String memberId, String productId) {
+
+        // 구매자 아이디 가져와서
+        String buyerId = mapper.checkPurchaseByMemberId(memberId, productId);
+        // 있는지 없는지확인후 , 같은놈인지
+        if (buyerId == null) {
+            return false;
+        } else {
+            return buyerId.equals(memberId);
+        }
+
+    }
 }
 

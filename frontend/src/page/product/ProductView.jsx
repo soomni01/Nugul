@@ -34,7 +34,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 
 export function ProductView() {
-  //  채팅방 만들때,   토큰에서 id 가져와야 하는데 , id   겹쳐서 > productId로  , >router도 변경함
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
