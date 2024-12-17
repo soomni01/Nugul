@@ -60,8 +60,8 @@ export function AdminMemberDetail() {
 
         // 구매 내역을 오름차순 정렬
         const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
-          const dateA = new Date(a.createdAt);
-          const dateB = new Date(b.createdAt);
+          const dateA = new Date(a.purchasedAt);
+          const dateB = new Date(b.purchasedAt);
           return dateA - dateB;
         });
         setPurchasedList(sortedPurchasedList);
@@ -297,7 +297,7 @@ export function AdminMemberDetail() {
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
                     >
-                      작성 일자
+                      구매 일자
                     </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
@@ -330,11 +330,9 @@ export function AdminMemberDetail() {
                           {product.writer}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.createdAt &&
-                          !isNaN(new Date(product.createdAt))
-                            ? new Date(product.createdAt).toLocaleDateString()
-                            : ""}{" "}
-                          {/* 날짜가 없으면 빈 문자열 반환 */}
+                          {product.purchasedAt
+                            ? new Date(product.purchasedAt).toLocaleDateString()
+                            : ""}
                         </Table.Cell>
                       </Table.Row>
                     ))
