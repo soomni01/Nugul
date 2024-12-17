@@ -91,7 +91,7 @@ export function InquiryList({ onRowClick }) {
             <TableRow>
               <TableColumnHeader style={cellStyle}>번호</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>문의 유형</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>제목</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>문의 제목</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>작성자</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>작성 일자</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>상태</TableColumnHeader>

@@ -157,7 +157,7 @@ export function AdminInquiryList() {
                 문의 유형
               </TableColumnHeader>
               <TableColumnHeader style={{ ...headerStyle, width: "300px" }}>
-                제목
+                문의 제목
               </TableColumnHeader>
               <TableColumnHeader style={{ ...headerStyle, width: "300px" }}>
                 작성자
