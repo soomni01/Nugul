@@ -96,7 +96,13 @@ export function BoardView() {
             value={board.content || ""}
             readOnly
             modules={{ toolbar: false }}
-            style={{ width: "100%", height: "auto" }}
+            style={{
+              width: "100%",
+              height: "400px",
+              maxHeight: "auto",
+              borderRadius: "8px",
+              border: "2px solid #ccc", // 선택적으로 테두리 추가
+            }}
           />
 
           {/* 이미지 표시 */}
