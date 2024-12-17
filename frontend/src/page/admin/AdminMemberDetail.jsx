@@ -234,7 +234,7 @@ export function AdminMemberDetail() {
                           {product.productName}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.price ? `${product.price}원` : "무료 나눔"}
+                          {product.price ? `${product.price}원` : "나눔"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.writer}
@@ -243,14 +243,10 @@ export function AdminMemberDetail() {
                           {product.status}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.price === 0
-                            ? "무료 나눔" // 무료 나눔은 판매중으로 표시
-                            : product.purchasedAt &&
-                                !isNaN(new Date(product.purchasedAt))
-                              ? new Date(
-                                  product.purchasedAt,
-                                ).toLocaleDateString()
-                              : "판매중"}{" "}
+                          {product.purchasedAt &&
+                          !isNaN(new Date(product.purchasedAt))
+                            ? new Date(product.purchasedAt).toLocaleDateString()
+                            : "판매중"}{" "}
                           {/* 판매일자가 없으면 판매중으로 표시 */}
                         </Table.Cell>
                       </Table.Row>
