@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
+  Button,
+  Flex,
   Table,
   TableColumnHeader,
   TableHeader,
@@ -12,6 +14,8 @@ import {
 export function PaymentRecord() {
   const [paymentRecords, setPaymentRecords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // 데이터 가져오기
   useEffect(() => {
@@ -31,6 +35,22 @@ export function PaymentRecord() {
       });
   }, []);
 
+  // 페이지네이션 관련 데이터
+  const totalPages = Math.ceil(paymentRecords.length / itemsPerPage); // 전체 페이지 수
+  const paginatedRecords = paymentRecords.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
   return (
     <Box mt="60px">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
@@ -49,8 +69,8 @@ export function PaymentRecord() {
           </TableRow>
         </TableHeader>
         <Table.Body>
-          {paymentRecords.length > 0 ? (
-            paymentRecords.map((record) => (
+          {paginatedRecords.length > 0 ? (
+            paginatedRecords.map((record) => (
               <Table.Row key={record.impUid}>
                 <Table.Cell>{record.impUid}</Table.Cell>
                 <Table.Cell>{record.buyerId}</Table.Cell>
@@ -76,6 +96,27 @@ export function PaymentRecord() {
           )}
         </Table.Body>
       </Table.Root>
+
+      {/* 페이지네이션 */}
+      <Flex justify="center" mt={4} gap={2}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <Button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            style={{
+              padding: "5px 10px",
+              backgroundColor:
+                currentPage === index + 1 ? "#D2D2D2" : "#E4E4E4",
+              color: currentPage === index + 1 ? "white" : "black",
+              border: "none",
+              borderRadius: "3px",
+              cursor: "pointer",
+            }}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </Flex>
     </Box>
   );
 }
