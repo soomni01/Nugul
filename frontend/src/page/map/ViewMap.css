@@ -177,7 +177,7 @@
 
 #category {
     position: absolute;
-
+    top: 20px;
     right: 100px;
     border-radius: 5px;
     border: 1px solid #909090;

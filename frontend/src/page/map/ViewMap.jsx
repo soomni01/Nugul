@@ -224,7 +224,8 @@ function ViewMap() {
             height: "calc(100vh - 20px)",
             background: listItem.length > 0 ? "white" : "transparent", // 검색 결과 없으면 투명 배경
             padding: listItem.length > 0 ? "10px" : "0", // 검색 결과 없으면 패딩 제거
-
+            top: listItem.length > 0 ? "" : "10px",
+            left: listItem.length > 0 ? "" : "10px",
             boxShadow:
               listItem.length > 0 ? "0 4px 6px rgba(0, 0, 0, 0.1)" : "none", // 검색 결과 없으면 그림자 제거
           }}
