@@ -31,6 +31,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [isloading, setIsloading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [purchased, setPurchased] = useState(false);
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
@@ -90,8 +91,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     handleSetData();
   }, []);
 
-  useEffect(() => {}, []);
-
   function handleSetData() {
     // 전체 데이터 가져오는 코드
     axios
@@ -102,10 +101,22 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       })
       .then((res) => {
         setChatRoom(res.data);
+        checkPurchase(id, res.data.productId);
       })
       .catch((e) => {
         console.log(e);
       });
+  }
+
+  function checkPurchase(id, productId) {
+    axios
+      .get("/api/product/checkpurchase", {
+        params: {
+          memberId: id,
+          productId: productId,
+        },
+      })
+      .then((res) => setPurchased(res.data));
   }
 
   function sendMessage(sender, content) {
@@ -256,6 +267,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       });
   };
 
+  console.log(purchased);
   return (
     <Box>
       <Flex

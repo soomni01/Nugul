@@ -15,7 +15,7 @@ export function ChatList() {
   const { id } = useContext(AuthenticationContext);
   const [chatRoomId, setChatRoomId] = useState(-1);
   const [status, setStatus] = useState("For Sale");
-  const [productId, setProductId] = useState(0);
+  const [productId, setProductId] = useState(-1);
 
   useEffect(() => {
     if (id) {
@@ -65,8 +65,6 @@ export function ChatList() {
       });
   };
 
-  console.log(productId);
-
   return (
     <Box>
       <Heading> 채팅 목록</Heading>
@@ -74,6 +72,7 @@ export function ChatList() {
         <Button
           onClick={() => {
             setChatRoomId(-1);
+            setProductId(-1);
             setSearchParams({ type: "all" });
           }}
         >
@@ -82,6 +81,7 @@ export function ChatList() {
         <Button
           onClick={() => {
             setChatRoomId(-1);
+            setProductId(-1);
             setSearchParams({ type: "buy" });
           }}
         >
@@ -90,6 +90,7 @@ export function ChatList() {
         <Button
           onClick={() => {
             setChatRoomId(-1);
+            setProductId(-1);
             setSearchParams({ type: "sell" });
           }}
         >
@@ -128,7 +129,7 @@ export function ChatList() {
             onDelete={() => removeChatRoom(chatRoomId, id)}
           />
         )}
-        {productId === 0 ? null : (
+        {productId === -1 ? null : (
           <ProductDetail key={productId} productId={productId} />
         )}
       </Box>
