@@ -31,7 +31,7 @@ export function ProductDetail({ productId }) {
   const fileSrc = product.fileList?.[0]?.src;
   console.log(product.lat, product.lng);
   return (
-    <Box mx={"auto"} w={"400px"} h={"auto"} p={6} overflow={"hidden"}>
+    <Box mx={"auto"} w={"400px"} h={"650px"} p={6} overflow={"hidden"}>
       <Box m={5}>
         <Heading> {product.productName}</Heading>
         <Separator></Separator>

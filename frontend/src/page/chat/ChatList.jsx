@@ -101,7 +101,7 @@ export function ChatList() {
         display={"flex"}
         borderRadius={"lg"}
         border={"1px solid"}
-        maxHeight={"800px"}
+        maxHeight={"650px"}
         borderColor={"gray.300"}
         // bg={"whiteAlpha.300"}
       >

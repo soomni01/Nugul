@@ -292,7 +292,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       <Flex
         direction="column"
         w={500}
-        h={800}
+        h={"650px"}
         overflow={"hidden"}
         bg={"blue.300/50"}
         border={"1px solid"}
