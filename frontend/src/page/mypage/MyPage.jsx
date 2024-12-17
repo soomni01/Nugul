@@ -48,6 +48,8 @@ export function MyPage() {
     const storedId = localStorage.getItem("selectedInquiryId");
     return storedId ? JSON.parse(storedId) : null;
   });
+  console.log(id);
+  console.log(nickname);
 
   useEffect(() => {
     if (!id) {

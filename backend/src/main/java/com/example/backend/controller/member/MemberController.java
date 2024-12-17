@@ -167,10 +167,10 @@ public class MemberController {
 
             if (isExistingMember) {
                 // 이미 회원인 경우, 로그인 후 /main으로 리디렉션
-                String token = service.token(member); // 기존 회원의 토큰 생성
+//                String token = service.token(member); // 기존 회원의 토큰 생성
                 return ResponseEntity.ok(Map.of(
                         "message", "로그인 성공",
-                        "token", token, // 실제 토큰을 여기에 넣어야 합니다.
+//                        "token", token, // 실제 토큰을 여기에 넣어야 합니다.
                         "redirectUrl", "/main",  // 리디렉션 URL 추가
                         "member", member, // Member 정보 포함
                         "platform", "naver"

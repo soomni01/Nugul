@@ -65,7 +65,6 @@ export function MemberLogin() {
           navigate("/main");
         }
         authentication.login(data.token);
-        // localStorage.setItem("token", data.token);
       })
       .catch((e) => {
         const message = e.response?.data?.message || {

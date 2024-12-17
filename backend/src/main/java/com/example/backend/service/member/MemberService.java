@@ -128,10 +128,11 @@ public class MemberService {
             }
         }
 
-        // 2. 카카오 로그인 사용자 처리
+        // 2. 소셜 로그인 사용자 처리
         if (member.getPassword() == null) { // 비밀번호 없이 로그인 요청한 경우
             db = mapper.selectById(member.getMemberId());
             if (db != null) {
+                System.out.println(db);
                 return generateJwtToken(db.getMemberId(), db.getNickname(), mapper.selectAuthByMemberId(db.getMemberId()));
             }
         }
