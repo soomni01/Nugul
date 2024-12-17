@@ -51,7 +51,7 @@ export function MemberSocial() {
     axios
       .post("/api/member/signup", {
         memberId: email,
-        nickname: nickname,
+        nickname: newNickname,
         profileImage: useProfileImage ? profileImage : "",
       })
       .then((res) => {
@@ -73,7 +73,7 @@ export function MemberSocial() {
   }
 
   const disabled = !nicknameCheck;
-  const nicknameCheckButtonDisabled = !nickname || nickname.length === 0;
+  const nicknameCheckButtonDisabled = !newNickname || newNickname.length === 0;
 
   return (
     <Box>
@@ -107,7 +107,7 @@ export function MemberSocial() {
         >
           <Group attached w={"100%"}>
             <Input
-              value={nickname}
+              value={newNickname}
               placeholder={nickname}
               onChange={(e) => {
                 setNickName(e.target.value);
