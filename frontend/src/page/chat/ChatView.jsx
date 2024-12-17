@@ -326,28 +326,32 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         >
           <Box h={"100%"}>
             {message.map((message, index) => (
-              <Box mx={2} my={1} key={index}>
+              <Box mx={2} my={3} key={index}>
                 <Flex
                   justifyContent={
                     message.sender === id ? "flex-end" : "flex-start"
                   }
                 >
-                  <Stack h={"10%"}>
-                    <Avatar size={"xs"} src={imageSrc} />
-                    <Badge
-                      p={1}
-                      key={index}
-                      colorPalette={message.sender === id ? "gray" : "yellow"}
-                    >
-                      {message.content}
-                    </Badge>
-                    <p style={{ fontSize: "12px" }}>
-                      {message.sentAt === null
-                        ? new Date().toLocaleTimeString()
-                        : new Date(message.sentAt).toLocaleTimeString()}
-                    </p>
+                  <HStack h={"10%"}>
+                    {message.sender !== id && (
+                      <Avatar size={"sm"} src={imageSrc} />
+                    )}
+                    <Stack mx={2}>
+                      <Badge
+                        p={1}
+                        key={index}
+                        colorPalette={message.sender === id ? "gray" : "yellow"}
+                      >
+                        {message.content}
+                      </Badge>
+                      <p style={{ fontSize: "8px" }}>
+                        {message.sentAt === null
+                          ? new Date().toLocaleTimeString()
+                          : new Date(message.sentAt).toLocaleTimeString()}
+                      </p>
+                    </Stack>
                     <div ref={scrollRef}></div>
-                  </Stack>
+                  </HStack>
                 </Flex>
               </Box>
             ))}

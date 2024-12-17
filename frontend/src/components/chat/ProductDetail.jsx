@@ -20,7 +20,6 @@ export function ProductDetail({ productId }) {
       setProduct(res.data);
     });
   }, []);
-
   const fileName = product.fileList?.[0]?.name;
   const fileSrc = product.fileList?.[0]?.src;
   return (
