@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class PaymentRecord {
     private String impUid;
     private String buyerId;
+    private Integer productId;
     private String productName;
     private Double paymentAmount;
     private String paymentMethod;

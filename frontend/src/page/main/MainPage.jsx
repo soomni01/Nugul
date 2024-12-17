@@ -110,11 +110,14 @@ export function MainPage() {
           }}
           navigation={true}
           modules={[Pagination, Navigation]}
-          className="mySwiper"
+          className="main-page-swiper"
         >
           {sellProductList.length > 0 ? (
             sellProductList.map((product) => (
-              <SwiperSlide key={product.productId}>
+              <SwiperSlide
+                className="main-page-swiper-slide"
+                key={product.productId}
+              >
                 <Box w="300px" h="auto">
                   <ProductItem
                     product={product}

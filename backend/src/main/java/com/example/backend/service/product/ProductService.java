@@ -275,20 +275,6 @@ public class ProductService {
         return result;
     }
 
-    public boolean transaction(int productId) {
-        Product product = mapper.selectById(productId);
-        // 거래 완료 시에 Sold로 상태 변경
-        int updateStatus = mapper.updateProductStatus(productId);
-        // 구매 테이블에 추가 (buyer 임의로 설정)
-        String buyer_id = "tt@tt.tt";
-        int insertTrasaction = mapper.insertTranscation(productId, buyer_id, product.getWriter(), product.getProductName(), product.getLocationName(), product.getPrice());
-        return updateStatus == 1 && insertTrasaction == 1;
-    }
-
-    public boolean hasPayAccess(Integer roomId, Authentication authentication) {
-        String buyerId = mapper.getBuyerId(roomId);
-        return buyerId.equals(authentication.getName());
-    }
 
     public boolean checkPurchase(String memberId, String productId) {
 

@@ -34,6 +34,7 @@ import {
 import { FaLocationDot } from "react-icons/fa6";
 import { EmptyState } from "../ui/empty-state.jsx";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { FcLike } from "react-icons/fc";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -50,15 +51,10 @@ const getCardStyle = (isSold) => ({
   cursor: isSold ? "default" : "pointer",
 });
 
-const LikeButton = ({
-  isLiked,
-  hasAccess,
-  handleLikeClick,
-  likeTooltipOpen,
-}) => (
+const LikeButton = ({ hasAccess, handleLikeClick, likeTooltipOpen }) => (
   <Box>
     {hasAccess ? (
-      <GoHeartFill color={isLiked ? "red" : "gray"} onClick={handleLikeClick} />
+      <FcLike onClick={handleLikeClick} />
     ) : (
       <ToggleTip
         open={likeTooltipOpen}
@@ -214,14 +210,15 @@ export function ProductHorizontalItem({
     ? product.mainImageName
     : "/image/productItem.png";
 
+  console.log(product);
   return (
     <Card.Root
       flexDirection="row"
       maxH="150px"
       width="80%"
-      mb={4}
+      mb={5}
       cursor="pointer"
-      boxShadow="sm"
+      boxShadow="md"
       borderRadius="md"
       border="1px solid"
       borderColor="gray.200"
@@ -232,6 +229,7 @@ export function ProductHorizontalItem({
       {product.productId != null ? (
         <Image
           maxW="150px"
+          width="150px"
           objectFit="cover"
           src={mainImage}
           alt={product.productName}
@@ -261,17 +259,20 @@ export function ProductHorizontalItem({
         justifyContent="space-between"
         flex="1"
       >
-        <Card.Body>
+        <Card.Body p={3}>
           {product.productId != null ? (
-            <Badge colorScheme="teal">{categoryLabel}</Badge>
+            <Box w="fit-content">
+              <Badge colorScheme="teal">{categoryLabel}</Badge>
+            </Box>
           ) : (
-            <Box></Box>
+            <Box>
+              <Badge>없음</Badge>
+            </Box>
           )}
           <Card.Title mb={2} fontSize="lg" fontWeight="bold">
             {product.productName}
-            {product.productId}
           </Card.Title>
-          <HStack spacing={10} justify="space-between">
+          <HStack justify="space-between">
             <Text fontSize="sm" color="gray.500">
               <HStack>
                 <FaLocationDot />
@@ -294,10 +295,9 @@ export function ProductHorizontalItem({
 
       <Button
         variant="ghost"
-        size="sm"
         position="absolute"
         top={2}
-        right={2}
+        right={1}
         onClick={(e) => {
           e.stopPropagation();
           if (pageType === "wish") handleLikeClick();
@@ -306,7 +306,6 @@ export function ProductHorizontalItem({
       >
         {pageType === "wish" ? (
           <LikeButton
-            isLiked={isLiked}
             hasAccess={hasAccess}
             handleLikeClick={handleLikeClick}
             likeTooltipOpen={likeTooltipOpen}
@@ -330,18 +329,34 @@ export function ProductHorizontalItem({
             )}
           </Box>
         ) : (
-          <DeleteDialog
-            isOpen={dialogOpen}
-            onClose={() => setDialogOpen(false)}
-            productId={product.productId}
-            handleDeleteClick={handleDeleteClick}
-          />
+          <Box display="flex" alignItems="center">
+            {product.purchasedAt && (
+              <Text fontSize="xs" color="gray.500" mr={2}>
+                판매 일자: {product.purchasedAt.split("T")[0]}
+              </Text>
+            )}
+            <DeleteDialog
+              isOpen={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+              productId={product.productId}
+              handleDeleteClick={handleDeleteClick}
+            />
+          </Box>
         )}
       </Button>
 
       <Box position="absolute" bottom={2} right={2}>
         <Text fontSize="md" fontWeight="bold">
           <HStack gap={1}>
+            {/* 결제 상태 추가 */}
+            {product.paymentStatus === "결제완료" && (
+              <Image
+                src="/image/Kakaopay.png"
+                alt="Kakaopay Icon"
+                width="60px"
+                height="auto"
+              />
+            )}
             {product.pay !== "share" && <PiCurrencyKrwBold />}
             {product.pay === "share" ? "나눔" : product.price}
           </HStack>

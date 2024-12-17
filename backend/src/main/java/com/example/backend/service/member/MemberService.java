@@ -3,10 +3,14 @@ package com.example.backend.service.member;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
-import com.example.backend.mapper.mypage.MyPageMapper;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -14,9 +18,12 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,8 +36,13 @@ public class MemberService {
 
     final MemberMapper mapper;
     private final ProductMapper productMapper;
-    private final MyPageMapper mypageMapper;
     final JwtEncoder jwtEncoder;
+
+    @Value("${naver.client.id}")
+    private String clientId;
+
+    @Value("${naver.client.secret}")
+    private String clientSecret;
 
     // 회원 추가 메소드
     public boolean add(Member member) {
@@ -117,10 +129,11 @@ public class MemberService {
             }
         }
 
-        // 2. 카카오 로그인 사용자 처리
+        // 2. 소셜 로그인 사용자 처리
         if (member.getPassword() == null) { // 비밀번호 없이 로그인 요청한 경우
             db = mapper.selectById(member.getMemberId());
             if (db != null) {
+                System.out.println(db);
                 return generateJwtToken(db.getMemberId(), db.getNickname(), mapper.selectAuthByMemberId(db.getMemberId()));
             }
         }
@@ -155,7 +168,7 @@ public class MemberService {
         return false;
     }
 
-    // 입력된 카카오 이메일이 데이터베이스에 저장된 비밀번호와 일치하는지 확인하는 메소드
+    // 입력된 카카오 이메일이 데이터베이스에 저장된 이메일과 일치하는지 확인하는 메소드
     public boolean isEmailCorrect(String memberId, String email) {
         Member dbMember = mapper.selectById(memberId);
         if (dbMember != null) {
@@ -166,10 +179,70 @@ public class MemberService {
         return false;
     }
 
-    // 카카오 로그인 시 이메일 확인
+    // 소셜 로그인 시 이메일 확인
     public boolean emailCheck(String email) {
         int cnt = mapper.emailCheck(email);
 
         return cnt == 1;
     }
+
+    // 네이버 로그인
+    public Map<String, Object> handleNaverLogin(String code, String state) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 1. 네이버로부터 액세스 토큰 요청
+        String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
+                + "&client_id=" + clientId
+                + "&client_secret=" + clientSecret
+                + "&code=" + code
+                + "&state=" + state;
+
+        Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
+
+        if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
+            throw new RuntimeException("네이버 액세스 토큰 발급 실패");
+        }
+
+        String accessToken = (String) tokenResponse.get("access_token");
+
+        // 2. 액세스 토큰으로 사용자 정보 요청
+        String profileUrl = "https://openapi.naver.com/v1/nid/me";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> entity = new HttpEntity<>("", headers);
+
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                profileUrl,
+                HttpMethod.GET,
+                entity,
+                Map.class
+        );
+
+        Map<String, Object> profileResponse = responseEntity.getBody();
+        System.out.println("Profile Response: " + profileResponse);
+
+        if (profileResponse == null || !"00".equals(profileResponse.get("resultcode"))) {
+            throw new RuntimeException("네이버 사용자 정보 요청 실패");
+        }
+
+        Map<String, Object> userProfile = (Map<String, Object>) profileResponse.get("response");
+
+        if (userProfile == null) {
+            throw new RuntimeException("네이버 사용자 정보가 없습니다.");
+        }
+
+        // 사용자 정보 매핑
+        Member member = new Member();
+        member.setMemberId((String) userProfile.get("email"));
+        member.setNickname((String) userProfile.get("name"));
+        member.setProfileImage((String) userProfile.get("profile_image"));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("member", member);
+
+        return result;
+    }
 }
+

@@ -57,13 +57,41 @@ export function AdminMemberDetail() {
         console.log("결제 내역 데이터:", paymentRes.data);
 
         setSoldList(soldRes.data);
+
+        // 판매 내역을 오름차순 정렬
+        const sortedSoldList = soldRes.data.sort((a, b) => {
+          // 1. 무료 나눔(가격이 0인 상품)을 먼저 정렬
+          if (a.price === 0 && b.price !== 0) return -1; // a가 무료 나눔이면 a가 먼저
+          if (a.price !== 0 && b.price === 0) return 1; // b가 무료 나눔이면 b가 먼저
+
+          // 2. 판매중인 상품을 그 다음으로 정렬
+          if (!a.purchasedAt && b.purchasedAt) return -1; // a가 판매중이면 a가 먼저
+          if (a.purchasedAt && !b.purchasedAt) return 1; // b가 판매중이면 b가 먼저
+
+          // 3. 판매일자 순으로 정렬 (판매된 상품만)
+          const dateA = new Date(a.purchasedAt);
+          const dateB = new Date(b.purchasedAt);
+          return dateA - dateB;
+        });
+
+        setSoldList(sortedSoldList);
+
+        // 구매 내역을 오름차순 정렬
         const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
-          const dateA = new Date(a.createdAt);
-          const dateB = new Date(b.createdAt);
+          const dateA = new Date(a.purchasedAt);
+          const dateB = new Date(b.purchasedAt);
           return dateA - dateB;
         });
         setPurchasedList(sortedPurchasedList);
-        setPaymentRecords(paymentRes.data);
+
+        // 결제 내역을 오름차순 정렬
+        const sortedPaymentRecords = paymentRes.data.sort((a, b) => {
+          const dateA = new Date(a.paymentDate);
+          const dateB = new Date(b.paymentDate);
+          return dateA - dateB;
+        });
+        setPaymentRecords(sortedPaymentRecords);
+
         setLoading(false);
       })
       .catch((error) => {
@@ -154,6 +182,11 @@ export function AdminMemberDetail() {
                       ID
                     </TableColumnHeader>
                     <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
+                      카테고리
+                    </TableColumnHeader>
+                    <TableColumnHeader
                       style={{ ...headerStyle, width: "300px" }}
                     >
                       상품명
@@ -171,17 +204,12 @@ export function AdminMemberDetail() {
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "200px" }}
                     >
-                      카테고리
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
                       상태
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
                     >
-                      작성 일자
+                      판매 일자
                     </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
@@ -200,6 +228,9 @@ export function AdminMemberDetail() {
                           {product.productId}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
+                          {getCategoryLabel(product.category)}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {product.productName}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
@@ -209,13 +240,18 @@ export function AdminMemberDetail() {
                           {product.writer}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {getCategoryLabel(product.category)}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
                           {product.status}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {new Date(product.createdAt).toLocaleDateString()}
+                          {product.price === 0
+                            ? "무료 나눔" // 무료 나눔은 판매중으로 표시
+                            : product.purchasedAt &&
+                                !isNaN(new Date(product.purchasedAt))
+                              ? new Date(
+                                  product.purchasedAt,
+                                ).toLocaleDateString()
+                              : "판매중"}{" "}
+                          {/* 판매일자가 없으면 판매중으로 표시 */}
                         </Table.Cell>
                       </Table.Row>
                     ))
@@ -265,6 +301,11 @@ export function AdminMemberDetail() {
                       ID
                     </TableColumnHeader>
                     <TableColumnHeader
+                      style={{ ...headerStyle, width: "150px" }}
+                    >
+                      카테고리
+                    </TableColumnHeader>
+                    <TableColumnHeader
                       style={{ ...headerStyle, width: "300px" }}
                     >
                       상품명
@@ -280,19 +321,9 @@ export function AdminMemberDetail() {
                       작성자
                     </TableColumnHeader>
                     <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      카테고리
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      상태
-                    </TableColumnHeader>
-                    <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
                     >
-                      작성 일자
+                      구매 일자
                     </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
@@ -308,7 +339,12 @@ export function AdminMemberDetail() {
                         style={{ cursor: "pointer" }}
                       >
                         <Table.Cell style={cellStyle}>
-                          {product.productId}
+                          {product.productId
+                            ? `${product.productId}`
+                            : "상품 정보 없음"}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
+                          {getCategoryLabel(product.category)}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.productName}
@@ -317,16 +353,12 @@ export function AdminMemberDetail() {
                           {product.price ? `${product.price}원` : "무료 나눔"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.writer}
+                          {product.writer ? product.writer : "탈퇴한 회원"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {getCategoryLabel(product.category)}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {product.status}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {new Date(product.createdAt).toLocaleDateString()}
+                          {product.purchasedAt
+                            ? new Date(product.purchasedAt).toLocaleDateString()
+                            : ""}
                         </Table.Cell>
                       </Table.Row>
                     ))

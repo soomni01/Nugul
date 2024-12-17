@@ -1,10 +1,11 @@
-import { Box, Heading } from "@chakra-ui/react";
-import { GoHeart, GoHeartFill } from "react-icons/go";
+import { Box } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import axios from "axios";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { ToggleTip } from "../ui/toggle-tip.jsx";
 import { toaster } from "../ui/toaster.jsx";
+import { FcLike } from "react-icons/fc";
+import { GoHeart } from "react-icons/go";
 
 export function ProductLike({
   productId,
@@ -40,19 +41,24 @@ export function ProductLike({
       display="flex"
       flexDirection={isHorizontal ? "row" : "column"}
       alignItems="center"
-      ml={isHorizontal ? "5" : "0"}
     >
       <Box onClick={handleLikeClick} cursor="pointer">
         <ToggleTip
           open={likeTooltipOpen}
           content={"로그인 후 좋아요를 클릭해주세요."}
         >
-          <Heading fontSize="3xl">
-            {like.like ? <GoHeartFill /> : <GoHeart />}
-          </Heading>
+          <Box
+            style={{
+              fontSize: "2rem", // 좋아요 아이콘 크기 조정
+              width: "auto", // 자동 크기 조정
+              height: "auto", // 자동 크기 조정
+            }}
+          >
+            {like.like ? <FcLike /> : <GoHeart />}
+          </Box>
         </ToggleTip>
       </Box>
-      <Box ml={isHorizontal ? "2" : "0"} alignItems="center">
+      <Box ml={isHorizontal ? "2" : "0"} textAlign="center">
         {like.count}
       </Box>
     </Box>

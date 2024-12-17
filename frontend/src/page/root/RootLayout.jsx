@@ -10,8 +10,9 @@ export function RootLayout() {
       <Box>
         {location.pathname === "/" ||
           location.pathname === "/member/signup" ||
-          location.pathname === "/oauth" ||
-          location.pathname === "/member/kakao" || <Navbar />}
+          location.pathname === "/oauth/kakao" ||
+          location.pathname === "/oauth/naver" ||
+          location.pathname === "/member/social" || <Navbar />}
       </Box>
       <Box mx={{ md: 20, lg: 40 }}>
         <Outlet />

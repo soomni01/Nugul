@@ -32,7 +32,7 @@ public interface MyPageMapper {
                 p.status,
                 p.created_at,
                 p.writer,
-                pr.date AS purchasedAt, 
+                pr.date AS purchased_at,
                 m.nickname AS buyer_nickname,
                 pf.name AS main_image_name
             FROM 
@@ -49,12 +49,17 @@ public interface MyPageMapper {
 
     @Select("""
             SELECT DISTINCT p.product_id, pr.expense_id, pr.date, pr.product_name, p.writer, pr.price, p.category, p.pay, p.status,
-                p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status , pf.name AS main_image_name
+                p.created_at, pr.location_name, pr.date AS purchased_at, m.nickname, pr.review_status , pf.name AS main_image_name,
+            CASE
+                WHEN pr.product_id = prc.product_id THEN '결제완료'
+                ELSE '결제안함'
+            END AS payment_status
             FROM purchased_record pr
             LEFT JOIN product p ON pr.product_id = p.product_id
             LEFT JOIN member m ON pr.seller_id = m.member_id
             LEFT JOIN review r ON pr.product_id = r.product_id 
             LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
+            LEFT JOIN payment_record prc ON pr.product_id = prc.product_id
             WHERE pr.buyer_id = #{name}
             """)
     List<Product> getPurchasedProducts(String name);
@@ -180,7 +185,7 @@ public interface MyPageMapper {
                     c.inquiry_id = #{inquiryId}
             """)
     List<InquiryComment> findCommentsByInquiryId(int inquiryId);
-    
+
     @Update("""
             UPDATE inquiry
             SET category = #{category},

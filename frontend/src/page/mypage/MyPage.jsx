@@ -15,7 +15,6 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
-import { PaymentRecord } from "./PaymentRecord.jsx";
 import { InquiryList } from "./InquiryList.jsx";
 import { InquiryView } from "./InquiryView.jsx";
 import { Budget } from "./Budget.jsx";
@@ -42,18 +41,13 @@ export function MyPage() {
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null);
-  // 이유 찾기
-  const [selectedInquiryId, setSelectedInquiryId] = useState(() => {
-    // 새로고침 시 로컬 스토리지에서 selectedInquiryId 불러오기
-    const storedId = localStorage.getItem("selectedInquiryId");
-    return storedId ? JSON.parse(storedId) : null;
-  });
+  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
+
 
   useEffect(() => {
     if (!id) {
       return;
     }
-
     // 병렬로 두 개의 요청 처리
     Promise.all([
       axios.get("/api/myPage/rating", { params: { memberId: id } }),
@@ -72,7 +66,7 @@ export function MyPage() {
       .catch((error) => {
         console.log("데이터를 가져오는 데 실패했습니다.", error);
       });
-  }, [id]);
+  }, [id, updateProfileImage]);
 
   // 마이페이지 컴포넌트에서만 tab 상태를 관리하도록 수정
   const [activeTab, setActiveTab] = useState(() => {
@@ -85,21 +79,11 @@ export function MyPage() {
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
 
-  // selectedInquiryId가 변경될 때마다 로컬 스토리지에 저장
-  useEffect(() => {
-    if (selectedInquiryId !== null) {
-      localStorage.setItem(
-        "selectedInquiryId",
-        JSON.stringify(selectedInquiryId),
-      );
-    }
-  }, [selectedInquiryId]);
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환합니다.
+  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환
   const handleRowClick = (inquiryId) => {
     setSelectedInquiryId(inquiryId);
     setActiveTab("inquiryDetail");
@@ -131,7 +115,6 @@ export function MyPage() {
           const message = e.response?.data?.message;
           toaster.create({
             description: message?.text || "이미지 업로드에 실패했습니다.",
-
             type: "error",
           });
         })
@@ -145,10 +128,11 @@ export function MyPage() {
   const handleImageDelete = () => {
     axios
       .delete("/api/myPage/image", {
-        params: { memberId: id, profileImageUrl },
+        params: { memberId: id },
       })
       .then((res) => {
         setProfileImageUrl(null);
+        updateProfileImage(null);
       })
       .catch((e) => {
         console.error("이미지 삭제에 실패했습니다.", e);
@@ -217,7 +201,14 @@ export function MyPage() {
           </Box>
           <Stack display="flex" alignItems="center">
             <Text ali>{nickname}</Text>
-            <Rating readOnly value={rating} allowHalf size="md" mb={5} />
+            <Rating
+              colorPalette="yellow"
+              readOnly
+              value={rating}
+              allowHalf
+              size="md"
+              mb={5}
+            />
           </Stack>
           <Button
             variant={
@@ -250,13 +241,6 @@ export function MyPage() {
             onClick={() => handleTabClick("purchased")}
           >
             구매 상품
-          </Button>
-          <Button
-            variant={activeTab === "paymentrecord" ? "solid" : "ghost"}
-            colorScheme="teal"
-            onClick={() => handleTabClick("paymentrecord")}
-          >
-            결제 내역
           </Button>
           <Button
             variant={activeTab === "inquiry" ? "solid" : "ghost"}
@@ -304,7 +288,6 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
-        {activeTab === "paymentrecord" && <PaymentRecord />}
         {activeTab === "inquiry" && <InquiryList onRowClick={handleRowClick} />}
         {activeTab === "inquiryDetail" && (
           <InquiryView inquiryId={selectedInquiryId} />

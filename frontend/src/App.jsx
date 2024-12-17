@@ -1,9 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import { AdminLayout } from "./page/admin/AdminLayout.jsx";
-import { AdminDashBoard } from "./page/admin/AdminDashBoard.jsx";
 import { AdminMemberList } from "./page/admin/AdminMemberList.jsx";
 import { AdminMemberDetail } from "./page/admin/AdminMemberDetail.jsx";
 import { AdminInquiryList } from "./page/admin/AdminInquiryList.jsx";
@@ -28,8 +26,9 @@ import { InquiryView } from "./page/mypage/InquiryView.jsx";
 import { InquiryEdit } from "./page/mypage/InquiryEdit.jsx";
 import ViewMap from "./page/map/ViewMap.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
-import { MemberKakao } from "./page/member/MemberKakao.jsx";
-import { KakaoOauth } from "./components/kakao/KakaoOauth.jsx";
+import { MemberSocial } from "./page/member/MemberSocial.jsx";
+import { KakaoOauth } from "./components/social/KakaoOauth.jsx";
+import { NaverOauth } from "./components/social/NaverOauth.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -127,12 +126,16 @@ const router = createBrowserRouter([
         element: <ViewMap />,
       },
       {
-        path: "oauth",
+        path: "oauth/kakao",
         element: <KakaoOauth />,
       },
       {
-        path: "member/kakao",
-        element: <MemberKakao />,
+        path: "oauth/naver",
+        element: <NaverOauth />,
+      },
+      {
+        path: "member/social",
+        element: <MemberSocial />,
       },
     ],
   },
@@ -140,10 +143,6 @@ const router = createBrowserRouter([
     path: "admin",
     element: <AdminLayout />,
     children: [
-      {
-        path: "dashboard",
-        element: <AdminDashBoard />,
-      },
       {
         path: "members",
         element: <AdminMemberList />,

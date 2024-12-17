@@ -195,37 +195,33 @@ export function ProductEdit() {
 
   return (
     <Box>
-      <Heading>{id}번 상품 수정</Heading>
+      <Heading mb={3}>{id}번 상품 수정</Heading>
       <Stack gap={5}>
         <Flex alignItems="center">
-          <Box minWidth="150px">
-            <Field label={"이미지"}>
-              <Box
-                p="10"
-                borderWidth="1px"
-                borderColor="lightgray"
-                borderRadius="10px"
-                onClick={() => fileInputRef.current?.click()}
-                cursor="pointer"
-                textAlign="center"
-              >
-                <input
-                  ref={fileInputRef} // input 참조
-                  onChange={handleFileUpload}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                />
-                <FcAddImage size="30px" />
-              </Box>
-            </Field>
+          <Box
+            p="10"
+            borderWidth="1px"
+            borderColor="lightgray"
+            borderRadius="10px"
+            onClick={() => fileInputRef.current?.click()}
+            cursor="pointer"
+            textAlign="center"
+          >
+            <input
+              ref={fileInputRef} // input 참조
+              onChange={handleFileUpload}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: "none" }}
+            />
+            <FcAddImage size="30px" />
           </Box>
 
           <Box
+            ml={3}
             display="flex"
             gap="10px"
-            mt={6}
             overflowX="auto"
             whiteSpace="nowrap"
             minWidth="100px"
@@ -262,9 +258,9 @@ export function ProductEdit() {
           {!fileInputInvalid ? (
             "가장 처음 이미지가 대표이미지입니다."
           ) : (
-            <span style={{ color: "red", fontSize: "12px" }}>
+            <Text color="red">
               각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
-            </span>
+            </Text>
           )}
         </Text>
 
@@ -319,15 +315,14 @@ export function ProductEdit() {
           </Flex>
         </Field>
         {product.pay === "sell" && (
-          <Field label={"가격"}>
-            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-              <Input value={product.price} onChange={handlePriceChange} />
-            </InputGroup>
-          </Field>
+          <InputGroup w={"20%"} flex="1" startElement={<PiCurrencyKrwBold />}>
+            <Input value={product.price} onChange={handlePriceChange} />
+          </InputGroup>
         )}
         <Field label={"상품 설명"}>
           <Textarea
-            h={200}
+            placeholder="등록할 상품의 게시글 내용을 작성해주세요."
+            h={150}
             value={product.description}
             onChange={(e) =>
               setProduct({ ...product, description: e.target.value })
