@@ -15,7 +15,7 @@ import { FaCommentDots } from "react-icons/fa";
 import {
   BoardCategories,
   BoardCategoryContainer,
-} from "../../components/board/BoardCategoryContainer.jsx";
+} from "../../components/category/BoardCategoryContainer.jsx";
 import { FaImages } from "react-icons/fa6";
 
 export function BoardList() {

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { BoardCategories } from "../../components/board/BoardCategoryContainer.jsx";
+import { BoardCategories } from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -34,7 +34,7 @@ export function BoardAdd() {
 
   const navigate = useNavigate();
 
-  console.log(files);
+  //console.log(files);
 
   useEffect(() => {
     if (!isAuthenticated) {

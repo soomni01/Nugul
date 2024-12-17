@@ -20,7 +20,7 @@ import { CommentContainer } from "../../components/comment/CommentContainer.jsx"
 import {
   BoardCategories,
   BoardCategoryContainer,
-} from "../../components/board/BoardCategoryContainer.jsx";
+} from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill 스타일 추가
 

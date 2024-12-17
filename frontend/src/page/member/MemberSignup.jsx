@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Box, Group, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Group, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
@@ -135,7 +135,15 @@ export function MemberSignup() {
     );
 
   return (
-    <Box p={5} border="1px solid" borderColor="gray.300" borderRadius="md">
+    <Box
+      p={5}
+      border="1px solid"
+      borderColor="gray.300"
+      borderRadius="md"
+      minWidth="400px"
+      maxWidth="500px"
+      margin="0 auto"
+    >
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
         회원 가입
       </Text>
@@ -154,7 +162,7 @@ export function MemberSignup() {
           <Group attached w={"100%"}>
             <Input
               value={memberId}
-              placeholder="이메일"
+              placeholder="이메일( text@naver.com 등)"
               onChange={(e) => {
                 setIdCheck(false);
                 setMemberId(e.target.value);
@@ -242,11 +250,18 @@ export function MemberSignup() {
           </Group>
         </Field>
         <hr />
+      </Stack>
+      <Flex justifyContent="center" gap={4} mt={4}>
         <Button onClick={handleSaveClick} disabled={disabled}>
           회원 가입
         </Button>
-        <Button onClick={handleLoginClick}>가입 취소</Button>
-      </Stack>
+      </Flex>
+      <Box textAlign="center" mt={4}>
+        이미 계정이 있으신가요?{" "}
+        <Link to="/" style={{ color: "blue", textDecoration: "underline" }}>
+          로그인
+        </Link>
+      </Box>
     </Box>
   );
 }
