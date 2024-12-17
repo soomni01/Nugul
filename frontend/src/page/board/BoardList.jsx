@@ -15,7 +15,7 @@ import { FaCommentDots } from "react-icons/fa";
 import {
   BoardCategories,
   BoardCategoryContainer,
-} from "../../components/board/BoardCategoryContainer.jsx";
+} from "../../components/category/BoardCategoryContainer.jsx";
 import { FaImages } from "react-icons/fa6";
 
 export function BoardList() {
@@ -126,9 +126,26 @@ export function BoardList() {
   }
 
   return (
-    <Box>
+    <Box width="100%">
+      {/* 카테고리 선택 컴포넌트 */}
+      <BoardCategoryContainer
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
+      />
+
       <Box>
-        <h3>
+        <h3
+          style={{
+            textAlign: "center", // 텍스트 중앙 정렬
+            fontSize: "32px", // 글씨 크기 키우기
+            marginBottom: "10px", // 아래쪽 여백 추가
+            marginTop: "10px", // 위쪽 여백
+            borderTop: "2px solid #ccc", // 상단 구분선
+            borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
+            paddingBottom: "10px", // 구분선 아래 여백 추가
+            paddingTop: "10px", // 구분선 위 여백 추가
+          }}
+        >
           {selectedCategory === "all"
             ? "전체"
             : BoardCategories.find((cat) => cat.value === selectedCategory)
@@ -136,12 +153,6 @@ export function BoardList() {
           게시판
         </h3>
       </Box>
-
-      {/* 카테고리 선택 컴포넌트 */}
-      <BoardCategoryContainer
-        selectedCategory={selectedCategory}
-        onCategorySelect={handleCategorySelect}
-      />
 
       {/* 게시물 제목 */}
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -153,15 +164,22 @@ export function BoardList() {
 
       {/* 게시물 리스트 */}
       {boardList.length > 0 ? (
-        <>
+        <Box>
+          <hr />
           <Table.Root interactive>
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>번호</Table.ColumnHeader>
-                <Table.ColumnHeader>제목</Table.ColumnHeader>
-                <Table.ColumnHeader>작성자</Table.ColumnHeader>
-                <Table.ColumnHeader>카테고리</Table.ColumnHeader>
-                <Table.ColumnHeader>작성날짜</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">번호</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">제목</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  작성자
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  카테고리
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  작성날짜
+                </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -170,8 +188,8 @@ export function BoardList() {
                   onClick={() => handleRowClick(board.boardId)}
                   key={board.boardId}
                 >
-                  <Table.Cell>{board.boardId}</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell textAlign="center">{board.boardId}</Table.Cell>
+                  <Table.Cell textAlign="center">
                     {board.title}
                     {board.countComment > 0 && (
                       <Badge variant={"subtle"} colorPalette={"green"}>
@@ -186,12 +204,12 @@ export function BoardList() {
                       </Badge>
                     )}
                   </Table.Cell>
-                  <Table.Cell>{board.writer}</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell textAlign="center">{board.writer}</Table.Cell>
+                  <Table.Cell textAlign="center">
                     {BoardCategories.find((cat) => cat.value === board.category)
                       ?.label || board.category}
                   </Table.Cell>
-                  <Table.Cell>{board.createdAt}</Table.Cell>
+                  <Table.Cell textAlign="center">{board.createdAt}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -214,13 +232,13 @@ export function BoardList() {
               </Flex>
             </PaginationRoot>
           )}
-        </>
+        </Box>
       ) : (
         <p>조회된 결과가 없습니다.</p>
       )}
 
       {/* 검색 UI */}
-      <HStack mt={4}>
+      <HStack justify="center" mt={4} minHeight="50px">
         <Box>
           <select
             value={search.type}

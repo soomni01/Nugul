@@ -1,18 +1,7 @@
-import { Box, Image, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Field } from "../../components/ui/field.jsx";
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
@@ -20,42 +9,39 @@ import { CommentContainer } from "../../components/comment/CommentContainer.jsx"
 import {
   BoardCategories,
   BoardCategoryContainer,
-} from "../../components/board/BoardCategoryContainer.jsx";
-
-export function ImageFileView({ files }) {
-  console.log("ImageFileView files:", files);
-  return (
-    <Box>
-      {files.map((file) => (
-        <Image
-          key={file.name}
-          src={file.src}
-          border={"1px solid black"}
-          m={3}
-        />
-      ))}
-    </Box>
-  );
-}
+} from "../../components/category/BoardCategoryContainer.jsx";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all"); // 카테고리 상태 추가
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
+  const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
 
+  // URL에서 category 쿼리 파라미터를 읽어서 selectedCategory를 설정
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryFromUrl = params.get("category") || "all"; // 기본값은 "all"
+    setSelectedCategory(categoryFromUrl);
+  }, [location]);
+
+  // 게시글 데이터를 불러오기
   useEffect(() => {
     axios.get(`/api/board/boardView/${boardId}`).then((res) => {
       setBoard(res.data);
-      setSelectedCategory(res.data.category || "all"); // 게시물 카테고리 설정
+      setSelectedCategory(res.data.category || "all");
     });
   }, [boardId]);
 
+  // 게시글이 로딩 중일 때 Spinner 표시
   if (!board) {
     return <Spinner />;
   }
 
+  // 게시글 삭제 핸들러
   const handleDeleteClick = () => {
     axios
       .delete(`/api/board/boardDelete/${board.boardId}`)
@@ -78,78 +64,112 @@ export function BoardView() {
 
   // 카테고리 선택 핸들러
   const handleCategorySelect = (categoryValue) => {
-    setSelectedCategory(categoryValue); // 카테고리 상태 갱신
-    navigate(`/board/list?category=${categoryValue}`); // 카테고리 변경 시 게시물 리스트로 이동
+    setSelectedCategory(categoryValue);
+    if (categoryValue === "all") {
+      navigate(`/board/list`); // "전체" 카테고리로 이동
+    } else {
+      navigate(`/board/list?category=${categoryValue}`); // 선택된 카테고리로 이동
+    }
   };
 
   return (
-    <Box>
-      <h3>{boardId} 번 게시글</h3>
-
+    <Box mb={10}>
       {/* 카테고리 선택 */}
-      <BoardCategoryContainer
-        selectedCategory={selectedCategory} // 선택된 카테고리 상태 전달
-        onCategorySelect={handleCategorySelect} // 카테고리 선택 함수 전달
-      />
+      <Box mb={5}>
+        <BoardCategoryContainer
+          selectedCategory={selectedCategory}
+          onCategorySelect={handleCategorySelect}
+        />
+      </Box>
 
-      <Stack gap={5}>
-        <Field label="제목" readOnly>
-          <Input value={board.title} />
-        </Field>
-        <Field label="본문" readOnly>
-          <Textarea value={board.content} />
-        </Field>
-        <ImageFileView files={board.fileList} />
-        <Field label="작성자" readOnly>
-          <Input value={board.writer} />
-        </Field>
-        <Field label={"카테고리"} readOnly>
-          <Input
-            value={
-              BoardCategories.find((cat) => cat.value === board.category)
-                ?.label || ""
-            }
+      {/* 카테고리 제목 */}
+      <h3
+        style={{
+          textAlign: "center", // 텍스트 중앙 정렬
+          fontSize: "32px", // 글씨 크기 키우기
+          marginBottom: "10px", // 아래쪽 여백 추가
+          marginTop: "10px", // 위쪽 여백
+          borderTop: "2px solid #ccc", // 상단 구분선
+          borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
+          paddingBottom: "10px", // 구분선 아래 여백 추가
+          paddingTop: "10px", // 구분선 위 여백 추가
+        }}
+      >
+        {selectedCategory === "all"
+          ? "전체"
+          : BoardCategories.find((cat) => cat.value === selectedCategory)
+              ?.label || "잘못된 카테고리"}{" "}
+        게시판
+      </h3>
+
+      <Box p={5} border="1px solid #e2e8f0" borderRadius="lg">
+        {/* 제목, 작성자, 날짜 */}
+        <Box mb={5} borderBottom="1px solid #e2e8f0" pb={3}>
+          <Text fontSize="2xl" fontWeight="bold" mb={2}>
+            {board.title}
+          </Text>
+          <Text fontSize="md" color="gray.500">
+            {board.writer} | {board.createdAt}
+          </Text>
+        </Box>
+
+        {/* 본문 */}
+        <Stack gap={5}>
+          <ReactQuill
+            value={board.content || ""}
+            readOnly
+            modules={{ toolbar: false }}
+            style={{ width: "100%", height: "auto" }}
           />
-        </Field>
-        <Field label={"작성날짜"} readOnly>
-          <Input type={"date"} value={board.createdAt} />
-        </Field>
-        {hasAccess(board.memberId) && (
-          <Box>
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"} variant={"outline"}>
-                  삭제
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
-            >
-              수정
-            </Button>
-          </Box>
-        )}
-      </Stack>
-      <hr />
-      <CommentContainer boardId={board.boardId} />
+
+          {/* 이미지 표시 */}
+          {board.fileList && (
+            <Box>
+              {board.fileList.map((file) => (
+                <Box
+                  key={file.name}
+                  border="1px solid black"
+                  m={3}
+                  overflow="hidden"
+                  maxW="100%"
+                  maxH="100%"
+                >
+                  <img
+                    src={file.src}
+                    alt={file.name}
+                    style={{
+                      width: "100%", // 이미지 너비
+                      height: "100%", // 이미지 높이
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {/* 삭제/수정 버튼 */}
+          {hasAccess(board.memberId) && (
+            <Box>
+              <Button
+                colorScheme="cyan"
+                onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
+                mr={3}
+              >
+                수정
+              </Button>
+              <Button colorScheme="red" onClick={handleDeleteClick}>
+                삭제
+              </Button>
+            </Box>
+          )}
+        </Stack>
+
+        {/* 댓글 컴포넌트 */}
+        <hr style={{ margin: "20px 0" }} />
+        <CommentContainer boardId={board.boardId} />
+      </Box>
     </Box>
   );
 }
