@@ -1,12 +1,15 @@
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
-import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
+import {
+  BoardCategories,
+  BoardCategoryContainer,
+} from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -16,7 +19,16 @@ export function BoardView() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
+  const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
 
+  // URL에서 category 쿼리 파라미터를 읽어서 selectedCategory를 설정
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryFromUrl = params.get("category") || "all"; // 기본값은 "all"
+    setSelectedCategory(categoryFromUrl);
+  }, [location]);
+
+  // 게시글 데이터를 불러오기
   useEffect(() => {
     axios.get(`/api/board/boardView/${boardId}`).then((res) => {
       setBoard(res.data);
@@ -24,10 +36,12 @@ export function BoardView() {
     });
   }, [boardId]);
 
+  // 게시글이 로딩 중일 때 Spinner 표시
   if (!board) {
     return <Spinner />;
   }
 
+  // 게시글 삭제 핸들러
   const handleDeleteClick = () => {
     axios
       .delete(`/api/board/boardDelete/${board.boardId}`)
@@ -48,9 +62,14 @@ export function BoardView() {
       });
   };
 
+  // 카테고리 선택 핸들러
   const handleCategorySelect = (categoryValue) => {
     setSelectedCategory(categoryValue);
-    navigate(`/board/list?category=${categoryValue}`);
+    if (categoryValue === "all") {
+      navigate(`/board/list`); // "전체" 카테고리로 이동
+    } else {
+      navigate(`/board/list?category=${categoryValue}`); // 선택된 카테고리로 이동
+    }
   };
 
   return (
@@ -62,6 +81,27 @@ export function BoardView() {
           onCategorySelect={handleCategorySelect}
         />
       </Box>
+
+      {/* 카테고리 제목 */}
+      <h3
+        style={{
+          textAlign: "center", // 텍스트 중앙 정렬
+          fontSize: "32px", // 글씨 크기 키우기
+          marginBottom: "10px", // 아래쪽 여백 추가
+          marginTop: "10px", // 위쪽 여백
+          borderTop: "2px solid #ccc", // 상단 구분선
+          borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
+          paddingBottom: "10px", // 구분선 아래 여백 추가
+          paddingTop: "10px", // 구분선 위 여백 추가
+        }}
+      >
+        {selectedCategory === "all"
+          ? "전체"
+          : BoardCategories.find((cat) => cat.value === selectedCategory)
+              ?.label || "잘못된 카테고리"}{" "}
+        게시판
+      </h3>
+
       <Box p={5} border="1px solid #e2e8f0" borderRadius="lg">
         {/* 제목, 작성자, 날짜 */}
         <Box mb={5} borderBottom="1px solid #e2e8f0" pb={3}>
@@ -92,15 +132,15 @@ export function BoardView() {
                   m={3}
                   overflow="hidden"
                   maxW="100%"
-                  maxH="100%" // 이미지 높이를 고정
+                  maxH="100%"
                 >
                   <img
                     src={file.src}
                     alt={file.name}
                     style={{
-                      width: "100%", // 너비를 100%로 설정
-                      height: "100%", // 높이를 100%로 설정
-                      objectFit: "cover", // 비율 유지 + 컨테이너 채우기
+                      width: "100%", // 이미지 너비
+                      height: "100%", // 이미지 높이
+                      objectFit: "cover",
                       display: "block",
                     }}
                   />
