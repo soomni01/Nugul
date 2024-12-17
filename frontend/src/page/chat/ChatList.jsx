@@ -101,11 +101,11 @@ export function ChatList() {
         display={"flex"}
         borderRadius={"lg"}
         border={"1px solid"}
-        maxHeight={"900px"}
+        maxHeight={"800px"}
         borderColor={"gray.300"}
-        bg={"whiteAlpha.300"}
+        // bg={"whiteAlpha.300"}
       >
-        <Box>
+        <Box overflowY={"scroll"}>
           {chatList.map((chat) => (
             <ChatListItem
               key={chat.roomId}
@@ -118,6 +118,7 @@ export function ChatList() {
             />
           ))}
         </Box>
+
         {chatRoomId === -1 ? null : (
           <ChatView
             z-index={1}

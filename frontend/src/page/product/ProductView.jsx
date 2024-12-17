@@ -236,7 +236,7 @@ export function ProductView() {
               }
             }
             level={3}
-            style={{ width: "100%", height: "400px" }}
+            style={{ width: "100%", height: "200px" }}
           >
             {markerPosition && <MapMarker position={markerPosition} />}
             <ZoomControl />

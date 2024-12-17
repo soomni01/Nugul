@@ -36,12 +36,12 @@ export function ChatListItem({ chat, onDelete, onClick }) {
 
   // TODO,  사진 삭제 되면 채팅방 정보 불러올떄 오류 뜰거같은데, 사진만 남겨놓을수 있나 ?
   return (
-    <Box variant={"outline"} p={3} onClick={onClick}>
+    <Box variant={"outline"} p={3} onClick={onClick} width={"auto"}>
       <Card.Root
         className={chat.status === "Sold" ? "overlay" : ""}
         flex
         Direction="row"
-        maxW="xl"
+        maxH={"200px"}
         _hover={{
           borderColor: "gray",
         }}
@@ -49,7 +49,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
         <HStack>
           <Image
             objectFit={"cover"}
-            maxW={"200px"}
+            maxW={"100px"}
             src={productImage.src}
             alt={productImage.name}
           />
