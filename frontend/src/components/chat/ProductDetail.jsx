@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   Box,
   Heading,
+  HStack,
   Image,
   Input,
   Separator,
@@ -30,7 +31,7 @@ export function ProductDetail({ productId }) {
   const fileSrc = product.fileList?.[0]?.src;
   console.log(product.lat, product.lng);
   return (
-    <Box mx={"auto"} w={"600px"} h={"auto"} p={6}>
+    <Box mx={"auto"} w={"400px"} h={"auto"} p={6} overflow={"hidden"}>
       <Box m={5}>
         <Heading> {product.productName}</Heading>
         <Separator></Separator>
@@ -43,13 +44,17 @@ export function ProductDetail({ productId }) {
       </Box>
       <Box m={3}>
         <Box mx={"auto"}>
-          <Field label={"가격"} readOnly>
-            <InputGroup flex="1" startElement={<PiCurrencyKrwBold />}>
-              <Input value={product.price} />
-            </InputGroup>
-          </Field>
-          <p> 닉네임 : {product.nickname} </p>
-          <p> {product.description}</p>
+          <HStack>
+            <Field label={"가격"} readOnly>
+              <InputGroup startElement={<PiCurrencyKrwBold />}>
+                <Input value={product.price} />
+              </InputGroup>
+            </Field>
+
+            <Field label={"작성자"} readOnly>
+              <Input value={product.nickname} />
+            </Field>
+          </HStack>
         </Box>
       </Box>
       <Box>
