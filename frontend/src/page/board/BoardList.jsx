@@ -134,7 +134,7 @@ export function BoardList() {
       />
 
       {/* 게시물 제목 */}
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+      <Flex justifyContent="space-between" alignItems="center">
         <h3>게시물 목록</h3>
         {isAuthenticated && (
           <Button onClick={handleWriteClick}>게시물 쓰기</Button>
@@ -145,7 +145,7 @@ export function BoardList() {
       {boardList.length > 0 ? (
         <Box>
           <hr />
-          <Table.Root interactive>
+          <Table.Root interactive p={"6px"}>
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader textAlign="center">번호</Table.ColumnHeader>
