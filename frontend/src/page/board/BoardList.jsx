@@ -153,10 +153,17 @@ export function BoardList() {
                 <Table.ColumnHeader textAlign="center">
                   작성자
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
+                <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>
+                <Table.ColumnHeader
+                  display={{ base: "none", md: "table-cell" }}
+                  textAlign="center"
+                >
                   카테고리
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
+                <Table.ColumnHeader
+                  display={{ base: "none", md: "table-cell" }}
+                  textAlign="center"
+                >
                   작성날짜
                 </Table.ColumnHeader>
               </Table.Row>
@@ -164,12 +171,14 @@ export function BoardList() {
             <Table.Body>
               {boardList.map((board) => (
                 <Table.Row
+                  _hover={{ cursor: "pointer" }}
                   onClick={() => handleRowClick(board.boardId)}
                   key={board.boardId}
                 >
                   <Table.Cell textAlign="center">{board.boardId}</Table.Cell>
+                  <Table.Cell textAlign="center">{board.title}</Table.Cell>
+                  <Table.Cell textAlign="center">{board.writer}</Table.Cell>
                   <Table.Cell textAlign="center">
-                    {board.title}
                     {board.countComment > 0 && (
                       <Badge variant={"subtle"} colorPalette={"green"}>
                         <FaCommentDots />
@@ -183,12 +192,19 @@ export function BoardList() {
                       </Badge>
                     )}
                   </Table.Cell>
-                  <Table.Cell textAlign="center">{board.writer}</Table.Cell>
-                  <Table.Cell textAlign="center">
+                  <Table.Cell
+                    display={{ base: "none", md: "table-cell" }}
+                    textAlign="center"
+                  >
                     {BoardCategories.find((cat) => cat.value === board.category)
                       ?.label || board.category}
                   </Table.Cell>
-                  <Table.Cell textAlign="center">{board.createdAt}</Table.Cell>
+                  <Table.Cell
+                    display={{ base: "none", md: "table-cell" }}
+                    textAlign="center"
+                  >
+                    {board.createdAt}
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
