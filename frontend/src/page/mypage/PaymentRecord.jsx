@@ -18,7 +18,11 @@ export function PaymentRecord() {
     axios
       .get("/api/getPayment")
       .then((response) => {
-        setPaymentRecords(response.data);
+        // 결제 내역을 오름차순 정렬
+        const sortedRecords = response.data.sort(
+          (a, b) => new Date(a.paymentDate) - new Date(b.paymentDate),
+        );
+        setPaymentRecords(sortedRecords);
         setLoading(false);
       })
       .catch((error) => {

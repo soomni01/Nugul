@@ -57,13 +57,23 @@ export function AdminMemberDetail() {
         console.log("결제 내역 데이터:", paymentRes.data);
 
         setSoldList(soldRes.data);
+
+        // 구매 내역을 오름차순 정렬
         const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
           return dateA - dateB;
         });
         setPurchasedList(sortedPurchasedList);
-        setPaymentRecords(paymentRes.data);
+
+        // 결제 내역을 오름차순 정렬
+        const sortedPaymentRecords = paymentRes.data.sort((a, b) => {
+          const dateA = new Date(a.paymentDate);
+          const dateB = new Date(b.paymentDate);
+          return dateA - dateB;
+        });
+        setPaymentRecords(sortedPaymentRecords);
+
         setLoading(false);
       })
       .catch((error) => {
