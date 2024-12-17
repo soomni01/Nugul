@@ -73,6 +73,9 @@ export function Navbar() {
           <NavbarItem onClick={() => handleNavigation("/board/list")}>
             <Heading>게시판</Heading>
           </NavbarItem>
+          <NavbarItem onClick={() => handleNavigation("/chat")}>
+            <Heading>채팅</Heading>
+          </NavbarItem>
           <NavbarItem onClick={() => handleNavigation("/map")}>
             <Heading>지도</Heading>
           </NavbarItem>

@@ -311,11 +311,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             상품명: {chatRoom.productName}
           </Box>
           <Flex>
-
-            {isSeller === true ? (
-       
             {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
-            {isSeller && chatRoom.status !== "Sold" && (
+            {isSeller && chatRoom.status !== "Sold" ? (
               <Button
                 style={{ marginLeft: "16px" }}
                 colorPalette={"cyan"}
@@ -331,7 +328,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
             />
-
           </Flex>
         </Box>
         <Box
