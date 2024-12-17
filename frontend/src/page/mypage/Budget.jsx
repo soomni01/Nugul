@@ -80,9 +80,29 @@ export function Budget({ memberId }) {
   // 12월을 기본값으로 설정하고 나머지 월들을 표시
   const monthsToShow = uniqueMonths.filter((month) => month !== "2024-12");
 
+  // 보일러 사용 시간으로 변환하는 함수
+  const boilerHourlyCost = 2000; // 보일러를 1시간 작동시켰을 때의 비용 (예시: 2000원)
+  const calculateBoilerHours = (amount) => {
+    const hours = amount / boilerHourlyCost; // 거래 금액을 보일러 1시간 작동 비용으로 나눔
+    return hours;
+  };
+
+  // 영화 한 편의 평균 가격 (예시: 15000원)
+  const moviePrice = 15000;
+
+  // 거래 금액으로 몇 번의 영화를 관람할 수 있는지 계산
+  const calculateMovieCount = (amount) => {
+    return amount / moviePrice; // 거래 금액에 따른 영화 관람 횟수 계산
+  };
+
   // 자동차 연비와 기름값을 설정
   const fuelEfficiency = 10; // 1리터당 주행 가능한 km
   const fuelPrice = 1500; // 리터당 가격 (예시: 리터당 1500원)
+
+  const coffeePrice = 4500; // 커피 한 잔의 평균 가격 (원)
+  const calculateCoffeeCups = (amount) => {
+    return amount / coffeePrice; // 거래 금액에 따른 커피 잔 수 계산
+  };
 
   // 거래 금액을 자동차 주행 거리로 변환하는 함수
   const calculateEquivalentDistance = (amount) => {
@@ -91,26 +111,28 @@ export function Budget({ memberId }) {
     return distance;
   };
 
-  // 보일러 사용 시간으로 변환하는 함수
-  const boilerHourlyCost = 2000; // 보일러를 1시간 작동시켰을 때의 비용 (예시: 2000원)
-  const calculateBoilerHours = (amount) => {
-    const hours = amount / boilerHourlyCost; // 거래 금액을 보일러 1시간 작동 비용으로 나눔
-    return hours;
-  };
-
-  const coffeePrice = 4500; // 커피 한 잔의 평균 가격 (원)
-  const calculateCoffeeCups = (amount) => {
-    return amount / coffeePrice; // 거래 금액에 따른 커피 잔 수 계산
-  };
-
   // 전체 거래 금액을 기준으로 계산
+  const equivalentBoilerHours = calculateBoilerHours(totalTransaction);
+  const equivalentMovieCount = calculateMovieCount(totalTransaction);
   const equivalentDrivingDistance =
     calculateEquivalentDistance(totalTransaction);
   const equivalentCoffeeCups = calculateCoffeeCups(totalTransaction);
-  const equivalentBoilerHours = calculateBoilerHours(totalTransaction);
 
   return (
-    <Box p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg="white">
+    <Box
+      p={4}
+      borderWidth="1px"
+      borderRadius="lg"
+      boxShadow="md"
+      bg="white"
+      flexDirection="column"
+      justifyContent="center"
+      position="relative"
+      maxWidth="800px"
+      minHeight="500px"
+      margin="0 auto"
+      marginTop="90px"
+    >
       <Box mb={4}>
         <select
           onChange={handleMonthChange}
@@ -130,78 +152,89 @@ export function Budget({ memberId }) {
         </select>
       </Box>
       <Box mb={4}>
-        <Text fontSize="lg" fontWeight="bold" mb={2}>
+        <Text fontSize="lg" fontWeight="bold" mb={2} ml={2.5}>
           {nickname}님의 {selectedMonth.split("-")[1]}월 전체 거래 내역
         </Text>
-        <Text>{totalTransaction} 원</Text>
+        <Text fontSize="xl" fontWeight="bold" ml={2.5}>
+          {totalTransaction}원
+        </Text>
       </Box>
-      <hr style={{ marginBottom: "16px" }} />
-
+      <hr style={{ marginBottom: "30px" }} />
       {/* 판매 내역 박스 */}
-      <Box mb={4}>
+      <Box mb={4} ml={2.5}>
         {filteredSales.length > 0 ? (
           <ul>
             {filteredSales.map((item, index) => (
-              <li key={index}>판매 : {item.total_sales} 원</li>
+              <Text key={index} fontWeight="400">
+                판매 : {item.total_sales}원
+              </Text>
             ))}
           </ul>
         ) : (
-          <p>판매 내역이 없습니다.</p>
+          <Text>판매 내역이 없습니다.</Text>
         )}
       </Box>
-
       {/* 구매 내역 박스 */}
-      <Box mt={4}>
+      <Box mt={4} ml={2.5}>
         {filteredPurchases.length > 0 ? (
           <ul>
             {filteredPurchases.map((item, index) => (
-              <li key={index}>구매 : {item.total_purchases} 원</li>
+              <Text key={index} fontWeight="400">
+                구매 : {item.total_purchases}원
+              </Text>
             ))}
           </ul>
         ) : (
-          <p>구매 내역이 없습니다.</p>
+          <Text>구매 내역이 없습니다.</Text>
         )}
       </Box>
-
-      {/* 거래 가치 박스 */}
-      <Box
-        p={4}
-        borderWidth="1px"
-        borderRadius="lg"
-        boxShadow="md"
-        bg="gray.50"
-        mt={4}
-      >
-        <Text fontSize="lg" fontWeight="bold" mb={2}>
-          거래의 가치
+      <hr style={{ marginTop: "30px" }} />
+      <Text fontSize="lg" fontWeight="bold" mt={4} mb={4} ml={2.5}>
+        거래의 가치
+      </Text>
+      <VStack align="start" spacing={4}>
+        <Text display="inline-flex" alignItems="center" mb={1.5}>
+          <Image
+            src="/image/Boiler.png"
+            alt="Boiler Icon"
+            boxSize="23px"
+            mr={2}
+            ml={2.5}
+          />
+          보일러를 약 {equivalentBoilerHours.toFixed(2)}시간 덜 킨 것과 같아요.
         </Text>
-        <VStack align="start" spacing={4}>
-          <Text display="inline-flex" alignItems="center">
-            <Image src="/image/Car.png" alt="Car Icon" boxSize="20px" mr={2} />
-            자동차를 {equivalentDrivingDistance.toFixed(2)}km 덜 탄 것과 같아요.
-          </Text>
-          <Text display="inline-flex" alignItems="center">
-            <Image
-              src="/image/Boiler.png"
-              alt="Boiler Icon"
-              boxSize="20px"
-              mr={2}
-            />
-            보일러를 약 {equivalentBoilerHours.toFixed(2)}시간 덜 킨 것과
-            같아요.
-          </Text>
-          <Text display="inline-flex" alignItems="center">
-            <Image
-              src="/image/Coffee.png"
-              alt="Coffee Icon"
-              boxSize="20px"
-              mr={2}
-            />
-            커피를 약 {equivalentCoffeeCups.toFixed(2)}잔 마실 수 있는 것과
-            같아요.
-          </Text>
-        </VStack>
-      </Box>
+        <Text display="inline-flex" alignItems="center" mb={1.5}>
+          <Image
+            src="/image/Movie.png"
+            alt="Movie Icon"
+            boxSize="23px"
+            mr={2}
+            ml={2.5}
+          />
+          영화 {equivalentMovieCount.toFixed(2)}편을 볼 수 있는 것과 같아요.
+        </Text>
+        <Text display="inline-flex" alignItems="center" mb={1.5}>
+          <Image
+            src="/image/Car.png"
+            alt="Car Icon"
+            boxSize="23px"
+            mr={2}
+            ml={2.5}
+          />
+          자동차를 {equivalentDrivingDistance.toFixed(2)}km 덜 탄 것과 같아요.
+        </Text>
+        <Text display="inline-flex" alignItems="center">
+          <Image
+            src="/image/Coffee.png"
+            alt="Coffee Icon"
+            boxSize="23px"
+            mr={2}
+            ml={2.5}
+          />
+          커피를 약 {equivalentCoffeeCups.toFixed(2)}잔 마실 수 있는 것과
+          같아요.
+        </Text>
+      </VStack>
     </Box>
   );
 }
