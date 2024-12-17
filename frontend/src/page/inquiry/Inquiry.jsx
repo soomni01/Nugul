@@ -85,13 +85,14 @@ export function Inquiry() {
             문의 유형
           </Text>
           <select
-            value={category}
+            value={savedData ? savedData.category : category}
             onChange={(e) => setCategory(e.target.value)}
             style={{
               padding: "8px",
               borderRadius: "4px",
               border: "1px solid #CBD5E0",
             }}
+            disabled={savedData !== null}
           >
             <option value="">문의 유형 선택</option>
             <option value="신고">신고</option>
@@ -99,6 +100,9 @@ export function Inquiry() {
             <option value="계정 문의">계정 문의</option>
             <option value="기타 문의">기타 문의</option>
           </select>
+          <Text fontSize="sm" color="gray.500" ml={-6}>
+            ※ 문의 유형을 선택 후 문의 내용을 작성해 주세요.
+          </Text>
         </Flex>
       </Field>
       <Flex justify="space-between" align="center" mb={5}>
