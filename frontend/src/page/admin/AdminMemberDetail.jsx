@@ -327,7 +327,7 @@ export function AdminMemberDetail() {
                           {product.price ? `${product.price}원` : "무료 나눔"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.writer}
+                          {product.writer ? product.writer : "탈퇴한 회원"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.purchasedAt
