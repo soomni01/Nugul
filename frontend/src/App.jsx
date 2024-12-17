@@ -29,7 +29,7 @@ import ViewMap from "./page/map/ViewMap.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MemberSocial } from "./page/member/MemberSocial.jsx";
 import { KakaoOauth } from "./components/social/KakaoOauth.jsx";
-import { MemberNaver } from "./page/member/MemberNaver.jsx";
+import { NaverOauth } from "./components/social/NaverOauth.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -132,7 +132,7 @@ const router = createBrowserRouter([
       },
       {
         path: "oauth/naver",
-        element: <MemberNaver />,
+        element: <NaverOauth />,
       },
       {
         path: "member/social",

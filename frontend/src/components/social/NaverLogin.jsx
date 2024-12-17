@@ -3,7 +3,7 @@ import { Image } from "@chakra-ui/react";
 
 export function NaverLogin() {
   const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_KEY;
-  const REDIRECT_URI = "http://localhost:5173/naver/oauth";
+  const REDIRECT_URI = "http://localhost:5173/oauth/naver";
   const STATE = Math.random().toString(36).substring(2);
   const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}&auth_type=reprompt`;
 

@@ -197,7 +197,6 @@ public class MemberService {
 
         Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
 
-        System.out.println(tokenResponse);
         if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
             throw new RuntimeException("네이버 액세스 토큰 발급 실패");
         }
