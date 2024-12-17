@@ -16,7 +16,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { kakaoUnlink } from "../../components/kakao/KakaoLogin.jsx";
+import { kakaoUnlink } from "../../components/social/KakaoLogin.jsx";
 
 // 카카오 계정 연결 해제 함수 추가
 

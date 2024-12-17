@@ -27,8 +27,8 @@ import { InquiryView } from "./page/mypage/InquiryView.jsx";
 import { InquiryEdit } from "./page/mypage/InquiryEdit.jsx";
 import ViewMap from "./page/map/ViewMap.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
-import { MemberKakao } from "./page/member/MemberKakao.jsx";
-import { KakaoOauth } from "./components/kakao/KakaoOauth.jsx";
+import { MemberSocial } from "./page/member/MemberSocial.jsx";
+import { KakaoOauth } from "./components/social/KakaoOauth.jsx";
 import { MemberNaver } from "./page/member/MemberNaver.jsx";
 
 // Axios 인터셉터 설정
@@ -127,16 +127,16 @@ const router = createBrowserRouter([
         element: <ViewMap />,
       },
       {
-        path: "oauth",
+        path: "oauth/kakao",
         element: <KakaoOauth />,
       },
       {
-        path: "member/kakao",
-        element: <MemberKakao />,
+        path: "oauth/naver",
+        element: <MemberNaver />,
       },
       {
-        path: "naver/oauth",
-        element: <MemberNaver />,
+        path: "member/social",
+        element: <MemberSocial />,
       },
     ],
   },

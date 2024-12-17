@@ -3,7 +3,7 @@ import { Box, Flex, Heading } from "@chakra-ui/react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { useContext } from "react";
 import { Avatar } from "../ui/avatar.jsx";
-import { kakaoLogout } from "../kakao/KakaoLogin.jsx";
+import { kakaoLogout } from "../social/KakaoLogin.jsx";
 import { MdLogout } from "react-icons/md";
 
 function NavbarItem({ children, ...rest }) {

@@ -113,7 +113,7 @@ export function KakaoOauth() {
         } else {
           // 신규 회원 → 추가 정보 입력 페이지로 이동
           console.log(kakaoEmail, kakaoNickname, kakaoProfileImage);
-          navigate("/member/kakao", {
+          navigate("/member/social", {
             state: {
               email: kakaoEmail,
               nickname: kakaoNickname,

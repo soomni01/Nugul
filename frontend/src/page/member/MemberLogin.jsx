@@ -1,4 +1,4 @@
-import { Box, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
@@ -8,7 +8,8 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { jwtDecode } from "jwt-decode";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { KakaoLogin } from "../../components/kakao/KakaoLogin.jsx";
+import { KakaoLogin } from "../../components/social/KakaoLogin.jsx";
+import { NaverLogin } from "../../components/social/NaverLogin.jsx";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -16,15 +17,6 @@ export function MemberLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const authentication = useContext(AuthenticationContext);
-
-  const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_KEY;
-  const REDIRECT_URI = "http://localhost:5173/naver/oauth";
-  const STATE = Math.random().toString(36).substring(2);
-  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}&auth_type=reprompt`;
-
-  const NaverLogin = () => {
-    window.location.replace(NAVER_AUTH_URL);
-  };
 
   const handleLoginClick = () => {
     let isValid = true;
@@ -96,20 +88,6 @@ export function MemberLogin() {
       });
   };
 
-  const NaverLogout = () => {
-    // 네이버 로그아웃 URL
-    const logoutUrl = "https://nid.naver.com/nidlogin.logout";
-
-    // 네이버 로그아웃 후 리디렉션할 URL 설정 (로그아웃 후 사용자가 돌아갈 URL)
-    const redirectUri = "http://localhost:5173/signup"; // 본인의 리디렉션 URL로 설정
-
-    // 로그아웃을 위한 URL
-    const logoutRedirectUrl = `${logoutUrl}?url=${encodeURIComponent(redirectUri)}`;
-
-    // 네이버 로그아웃 후 지정된 페이지로 리디렉션
-    window.location.href = logoutRedirectUrl;
-  };
-
   return (
     <Box>
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
@@ -137,12 +115,10 @@ export function MemberLogin() {
           <Button onClick={handleLoginClick}>로그인</Button>
         </Box>
 
-        <Box display="flex" justifyContent="center" mt={4}>
+        <HStack display="flex" justifyContent="center">
           <KakaoLogin />
-        </Box>
-
-        <Button onClick={NaverLogin}>네이버 로그인</Button>
-        <Button onClick={NaverLogout}>네이버 로그아웃</Button>
+          <NaverLogin />
+        </HStack>
 
         <Box textAlign="center" mt={4}>
           아직 계정이 없으신가요?{" "}

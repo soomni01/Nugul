@@ -7,7 +7,7 @@ import { Checkbox } from "../../components/ui/checkbox.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 
-export function MemberKakao() {
+export function MemberSocial() {
   const location = useLocation();
   const { email, nickname, profileImage, platform } = location.state || {};
   const [newNickname, setNickName] = useState(nickname || "");
