@@ -45,7 +45,7 @@ export function AdminMemberDetail() {
       params: { memberId },
     });
 
-    // 회원의 판매, 구매, 결제 내역 데이터를 가져와 상태 업데이트
+    // 회원의 판매, 구매, 결제 내역 데이터를 가져와서 상태 업데이트
     Promise.all([
       fetchSoldProducts,
       fetchPurchasedProducts,
