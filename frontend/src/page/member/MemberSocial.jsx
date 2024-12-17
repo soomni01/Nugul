@@ -123,7 +123,7 @@ export function MemberSocial() {
             </Button>
           </Group>
         </Field>
-        {profileImage !== "프로필 이미지 없음" && (
+        {profileImage && (
           <Checkbox
             checked={useProfileImage}
             onChange={(e) => setUseProfileImage(!useProfileImage)}
