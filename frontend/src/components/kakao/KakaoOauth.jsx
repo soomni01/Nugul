@@ -118,6 +118,7 @@ export function KakaoOauth() {
               email: kakaoEmail,
               nickname: kakaoNickname,
               profileImage: kakaoProfileImage,
+              platform: "kakao",
             },
           });
         }

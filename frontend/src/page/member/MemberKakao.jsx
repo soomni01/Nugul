@@ -8,21 +8,18 @@ import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MemberKakao() {
-  const location = useLocation(); // state 정보 받기
-  const [email, setEmail] = useState(location.state?.email); // 초기값 설정
-  const [nickname, setNickName] = useState(location.state?.nickname);
-  const [profileImage, setProfileImage] = useState(
-    location.state?.profileImage || "",
-  );
+  const location = useLocation();
+  const { email, nickname, profileImage, platform } = location.state || {};
+  const [newNickname, setNickName] = useState(nickname || "");
+  const [useProfileImage, setUseProfileImage] = useState(false);
   const [nicknameCheckMessage, setNickNameCheckMessage] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
-  const [useProfileImage, setUseProfileImage] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 자동 닉네임 중복 체크 (콜백 데이터로)
-    if (nickname) {
-      handleNickNameCheckClick(nickname);
+    // 닉네임 중복 체크
+    if (newNickname) {
+      handleNickNameCheckClick(newNickname);
     }
   }, []);
 
@@ -76,13 +73,14 @@ export function MemberKakao() {
   }
 
   const disabled = !nicknameCheck;
-  const nicknameCheckButtonDisabled = nickname.length === 0;
+  const nicknameCheckButtonDisabled = !nickname || nickname.length === 0;
 
   return (
     <Box>
       <HStack>
         <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-          카카오 회원가입 추가 정보
+          {platform === "naver" ? "네이버 회원가입" : "카카오 회원가입"} 추가
+          정보
         </Text>
         <Button
           onClick={() => {
@@ -130,7 +128,9 @@ export function MemberKakao() {
             checked={useProfileImage}
             onChange={(e) => setUseProfileImage(!useProfileImage)}
           >
-            카카오 프로필 이미지 사용
+            {platform === "naver"
+              ? "네이버 프로필 이미지 사용"
+              : "카카오 프로필 이미지 사용"}
           </Checkbox>
         )}
 

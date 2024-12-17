@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import { AdminLayout } from "./page/admin/AdminLayout.jsx";
 import { AdminDashBoard } from "./page/admin/AdminDashBoard.jsx";
@@ -30,6 +29,7 @@ import ViewMap from "./page/map/ViewMap.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MemberKakao } from "./page/member/MemberKakao.jsx";
 import { KakaoOauth } from "./components/kakao/KakaoOauth.jsx";
+import { MemberNaver } from "./page/member/MemberNaver.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -133,6 +133,10 @@ const router = createBrowserRouter([
       {
         path: "member/kakao",
         element: <MemberKakao />,
+      },
+      {
+        path: "naver/oauth",
+        element: <MemberNaver />,
       },
     ],
   },
