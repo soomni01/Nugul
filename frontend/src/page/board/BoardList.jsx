@@ -133,27 +133,6 @@ export function BoardList() {
         onCategorySelect={handleCategorySelect}
       />
 
-      <Box>
-        <h3
-          style={{
-            textAlign: "center", // 텍스트 중앙 정렬
-            fontSize: "32px", // 글씨 크기 키우기
-            marginBottom: "10px", // 아래쪽 여백 추가
-            marginTop: "10px", // 위쪽 여백
-            borderTop: "2px solid #ccc", // 상단 구분선
-            borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
-            paddingBottom: "10px", // 구분선 아래 여백 추가
-            paddingTop: "10px", // 구분선 위 여백 추가
-          }}
-        >
-          {selectedCategory === "all"
-            ? "전체"
-            : BoardCategories.find((cat) => cat.value === selectedCategory)
-                ?.label || "잘못된 카테고리"}{" "}
-          게시판
-        </h3>
-      </Box>
-
       {/* 게시물 제목 */}
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <h3>게시물 목록</h3>
