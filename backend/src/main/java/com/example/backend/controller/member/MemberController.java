@@ -149,4 +149,72 @@ public class MemberController {
     public boolean emailCheck(@RequestParam String email) {
         return service.emailCheck(email);
     }
+
+    // 네이버 로그인 요청 처리
+    @PostMapping("naver/oauth")
+    public ResponseEntity<Map<String, Object>> naverLogin(@RequestBody Map<String, String> request) {
+        String code = request.get("code");
+        String state = request.get("state");
+        if (code == null || state == null) {
+            System.out.println("null 존재");
+        }
+        try {
+            // 네이버 API에서 액세스 토큰과 사용자 정보를 가져오는 서비스 호출
+            Member member = service.handleNaverLogin(code, state);
+
+            // 이메일로 기존 회원 확인
+            boolean isExistingMember = service.emailCheck(member.getMemberId());
+
+            if (isExistingMember) {
+                // 이미 회원인 경우, 로그인 후 /main으로 리디렉션
+                // String token = service.token(existingMember.get()); // 기존 회원의 토큰 생성
+                return ResponseEntity.ok(Map.of(
+                        "message", "로그인 성공",
+                        "token", 1234, // 실제 토큰을 여기에 넣어야 합니다.
+                        "redirectUrl", "/main",  // 리디렉션 URL 추가
+                        "member", member, // Member 정보 포함
+                        "platform", "naver"
+                ));
+            } else {
+                // 회원이 아닌 경우, /member/kakao로 리디렉션
+                return ResponseEntity.ok(Map.of(
+                        "message", "회원가입이 필요합니다.",
+                        "redirectUrl", "/member/kakao",  // 리디렉션 URL 추가
+                        "member", member, // Member 정보 포함
+                        "platform", "naver"
+
+                ));
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                    "message", "네이버 로그인에 실패하였습니다."
+            ));
+        }
+    }
 }
+//            System.out.println(member);
+//            // 사용자 정보로 토큰 생성
+//            String token = service.token(member);
+//
+//            // 사용자 정보를 반환하거나 기존 회원 가입과 연동
+//            return ResponseEntity.ok(Map.of(
+//                    "email", member.getMemberId(),
+//                    "name", member.getNickname(),
+//                    "profileImage", member.getProfileImage(),
+//                    "token", token,
+//                    "message", Map.of(
+//                            "type", "success",
+//                            "text", "네이버 로그인이 성공하였습니다."
+//                    )
+//            ));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body(Map.of(
+//                    "message", Map.of(
+//                            "type", "error",
+//                            "text", "네이버 로그인에 실패하였습니다. 다시 시도해 주세요."
+//                    )
+//            ));
+//        }
+//    }
+//}
