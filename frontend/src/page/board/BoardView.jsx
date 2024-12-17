@@ -1,56 +1,26 @@
-import { Box, Image, Input, Spinner, Stack } from "@chakra-ui/react";
+import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Field } from "../../components/ui/field.jsx";
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
-import {
-  BoardCategories,
-  BoardCategoryContainer,
-} from "../../components/category/BoardCategoryContainer.jsx";
+import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Quill 스타일 추가
-
-export function ImageFileView({ files }) {
-  console.log("ImageFileView files:", files);
-  return (
-    <Box>
-      {files.map((file) => (
-        <Image
-          key={file.name}
-          src={file.src}
-          border={"1px solid black"}
-          m={3}
-        />
-      ))}
-    </Box>
-  );
-}
+import "react-quill/dist/quill.snow.css";
 
 export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all"); // 카테고리 상태 추가
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios.get(`/api/board/boardView/${boardId}`).then((res) => {
       setBoard(res.data);
-      setSelectedCategory(res.data.category || "all"); // 게시물 카테고리 설정
+      setSelectedCategory(res.data.category || "all");
     });
   }, [boardId]);
 
@@ -78,88 +48,88 @@ export function BoardView() {
       });
   };
 
-  // 카테고리 선택 핸들러
   const handleCategorySelect = (categoryValue) => {
-    setSelectedCategory(categoryValue); // 카테고리 상태 갱신
-    navigate(`/board/list?category=${categoryValue}`); // 카테고리 변경 시 게시물 리스트로 이동
+    setSelectedCategory(categoryValue);
+    navigate(`/board/list?category=${categoryValue}`);
   };
 
   return (
-    <Box>
-      <h3>{boardId} 번 게시글</h3>
-
+    <Box mb={10}>
       {/* 카테고리 선택 */}
-      <BoardCategoryContainer
-        selectedCategory={selectedCategory} // 선택된 카테고리 상태 전달
-        onCategorySelect={handleCategorySelect} // 카테고리 선택 함수 전달
-      />
+      <Box mb={5}>
+        <BoardCategoryContainer
+          selectedCategory={selectedCategory}
+          onCategorySelect={handleCategorySelect}
+        />
+      </Box>
+      <Box p={5} border="1px solid #e2e8f0" borderRadius="lg">
+        {/* 제목, 작성자, 날짜 */}
+        <Box mb={5} borderBottom="1px solid #e2e8f0" pb={3}>
+          <Text fontSize="2xl" fontWeight="bold" mb={2}>
+            {board.title}
+          </Text>
+          <Text fontSize="md" color="gray.500">
+            {board.writer} | {board.createdAt}
+          </Text>
+        </Box>
 
-      <Stack gap={5}>
-        <Field label="제목" readOnly>
-          <Input value={board.title} />
-        </Field>
-        <Field label="본문" readOnly>
+        {/* 본문 */}
+        <Stack gap={5}>
           <ReactQuill
-            value={board.content || ""} // 값이 null 또는 undefined일 때 빈 문자열로 처리
-            readOnly={true} // 읽기 전용 설정
-            modules={{ toolbar: false }} // 툴바 비활성화
-            style={{
-              width: "100%",
-              height: "400px",
-            }}
+            value={board.content || ""}
+            readOnly
+            modules={{ toolbar: false }}
+            style={{ width: "100%", height: "auto" }}
           />
-        </Field>
-        <ImageFileView files={board.fileList} />
-        <Field label="작성자" readOnly>
-          <Input value={board.writer} />
-        </Field>
-        <Field label={"카테고리"} readOnly>
-          <Input
-            value={
-              BoardCategories.find((cat) => cat.value === board.category)
-                ?.label || ""
-            }
-          />
-        </Field>
-        <Field label={"작성날짜"} readOnly>
-          <Input type={"date"} value={board.createdAt} />
-        </Field>
-        {hasAccess(board.memberId) && (
-          <Box>
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"} variant={"outline"}>
-                  삭제
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>{board.boardId}번 게시물을 삭제하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
-            >
-              수정
-            </Button>
-          </Box>
-        )}
-      </Stack>
-      <hr />
-      <CommentContainer boardId={board.boardId} />
+
+          {/* 이미지 표시 */}
+          {board.fileList && (
+            <Box>
+              {board.fileList.map((file) => (
+                <Box
+                  key={file.name}
+                  border="1px solid black"
+                  m={3}
+                  overflow="hidden"
+                  maxW="100%"
+                  maxH="100%" // 이미지 높이를 고정
+                >
+                  <img
+                    src={file.src}
+                    alt={file.name}
+                    style={{
+                      width: "100%", // 너비를 100%로 설정
+                      height: "100%", // 높이를 100%로 설정
+                      objectFit: "cover", // 비율 유지 + 컨테이너 채우기
+                      display: "block",
+                    }}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {/* 삭제/수정 버튼 */}
+          {hasAccess(board.memberId) && (
+            <Box>
+              <Button
+                colorScheme="cyan"
+                onClick={() => navigate(`/board/boardEdit/${board.boardId}`)}
+                mr={3}
+              >
+                수정
+              </Button>
+              <Button colorScheme="red" onClick={handleDeleteClick}>
+                삭제
+              </Button>
+            </Box>
+          )}
+        </Stack>
+
+        {/* 댓글 컴포넌트 */}
+        <hr style={{ margin: "20px 0" }} />
+        <CommentContainer boardId={board.boardId} />
+      </Box>
     </Box>
   );
 }
