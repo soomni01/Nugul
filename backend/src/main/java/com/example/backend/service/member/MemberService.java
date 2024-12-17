@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -186,7 +187,7 @@ public class MemberService {
     }
 
     // 네이버 로그인
-    public Member handleNaverLogin(String code, String state) {
+    public Map<String, Object> handleNaverLogin(String code, String state) {
         RestTemplate restTemplate = new RestTemplate();
 
         // 1. 네이버로부터 액세스 토큰 요청
@@ -237,7 +238,11 @@ public class MemberService {
         member.setNickname((String) userProfile.get("name"));
         member.setProfileImage((String) userProfile.get("profile_image"));
 
-        return member;
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("member", member);
+
+        return result;
     }
 }
 

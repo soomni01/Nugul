@@ -44,6 +44,8 @@ export function Navbar() {
       // 카카오 로그인 사용자는 카카오 액세스 토큰 삭제
       if (sessionStorage.getItem("kakaoAccessToken")) {
         await kakaoLogout();
+      } else if (sessionStorage.getItem("naverAccessToken")) {
+        sessionStorage.removeItem("naverAccessToken");
       }
       navigate("/");
     } catch (error) {

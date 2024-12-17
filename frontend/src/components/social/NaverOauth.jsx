@@ -23,7 +23,7 @@ export function NaverOauth() {
 
           // 서버에서 받은 정보
           const member = data.member; // member 정보
-          // const token = data.token; // token 정보
+          const naverAccessToken = data.naverAccessToken; // token 정보
           const redirectUrl = data.redirectUrl; // 리디렉션 URL
           const platform = data.platform;
 
@@ -43,6 +43,7 @@ export function NaverOauth() {
                 const decodedToken = jwtDecode(data.token);
                 const userScope = decodedToken.scope || "";
 
+                sessionStorage.setItem("naverAccessToken", naverAccessToken);
                 if (userScope === "admin") {
                   navigate("/admin/dashboard");
                 } else {

@@ -160,27 +160,30 @@ public class MemberController {
         }
         try {
             // 네이버 API에서 액세스 토큰과 사용자 정보를 가져오는 서비스 호출
-            Member member = service.handleNaverLogin(code, state);
+            Map<String, Object> result = service.handleNaverLogin(code, state);
+
+            // 액세스 토큰과 사용자 정보 (Member) 모두 반환
+            String accessToken = (String) result.get("accessToken");
+            Member member = (Member) result.get("member");
 
             // 이메일로 기존 회원 확인
             boolean isExistingMember = service.emailCheck(member.getMemberId());
 
             if (isExistingMember) {
                 // 이미 회원인 경우, 로그인 후 /main으로 리디렉션
-//                String token = service.token(member); // 기존 회원의 토큰 생성
                 return ResponseEntity.ok(Map.of(
                         "message", "로그인 성공",
-//                        "token", token, // 실제 토큰을 여기에 넣어야 합니다.
-                        "redirectUrl", "/main",  // 리디렉션 URL 추가
-                        "member", member, // Member 정보 포함
+                        "naverAccessToken", accessToken,
+                        "redirectUrl", "/main",
+                        "member", member,
                         "platform", "naver"
                 ));
             } else {
                 // 회원이 아닌 경우, /member/kakao로 리디렉션
                 return ResponseEntity.ok(Map.of(
                         "message", "회원가입이 필요합니다.",
-                        "redirectUrl", "/member/social",  // 리디렉션 URL 추가
-                        "member", member, // Member 정보 포함
+                        "redirectUrl", "/member/social",
+                        "member", member,
                         "platform", "naver"
                 ));
             }
