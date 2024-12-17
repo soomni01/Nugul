@@ -115,7 +115,7 @@ export function MemberSocial() {
             />
 
             <Button
-              onClick={() => handleNickNameCheckClick(nickname)}
+              onClick={() => handleNickNameCheckClick(newNickname)}
               variant={"outline"}
               disabled={nicknameCheckButtonDisabled}
             >
