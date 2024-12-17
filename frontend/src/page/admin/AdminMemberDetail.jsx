@@ -60,15 +60,20 @@ export function AdminMemberDetail() {
 
         // 판매 내역을 오름차순 정렬
         const sortedSoldList = soldRes.data.sort((a, b) => {
-          // 판매되지 않은 상품을 먼저 정렬
+          // 1. 무료 나눔(가격이 0인 상품)을 먼저 정렬
+          if (a.price === 0 && b.price !== 0) return -1; // a가 무료 나눔이면 a가 먼저
+          if (a.price !== 0 && b.price === 0) return 1; // b가 무료 나눔이면 b가 먼저
+
+          // 2. 판매중인 상품을 그 다음으로 정렬
           if (!a.purchasedAt && b.purchasedAt) return -1; // a가 판매중이면 a가 먼저
           if (a.purchasedAt && !b.purchasedAt) return 1; // b가 판매중이면 b가 먼저
 
-          // 판매일자 순으로 정렬 (판매된 상품만)
+          // 3. 판매일자 순으로 정렬 (판매된 상품만)
           const dateA = new Date(a.purchasedAt);
           const dateB = new Date(b.purchasedAt);
           return dateA - dateB;
         });
+
         setSoldList(sortedSoldList);
 
         // 구매 내역을 오름차순 정렬
@@ -238,9 +243,15 @@ export function AdminMemberDetail() {
                           {product.status}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.purchasedAt
-                            ? new Date(product.purchasedAt).toLocaleDateString()
-                            : "판매중"}
+                          {product.price === 0
+                            ? "무료 나눔" // 무료 나눔은 판매중으로 표시
+                            : product.purchasedAt &&
+                                !isNaN(new Date(product.purchasedAt))
+                              ? new Date(
+                                  product.purchasedAt,
+                                ).toLocaleDateString()
+                              : "판매중"}{" "}
+                          {/* 판매일자가 없으면 판매중으로 표시 */}
                         </Table.Cell>
                       </Table.Row>
                     ))
