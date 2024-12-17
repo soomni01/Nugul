@@ -2,7 +2,6 @@ import { Box, HStack, Image, Input, Spinner, Stack } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import {
   DialogActionTrigger,
@@ -61,12 +60,12 @@ export function BoardEdit() {
     AuthenticationContext,
   );
 
-  console.log("id:", id); // id 확인
-  console.log("isAuthenticated:", isAuthenticated); // 로그인 상태 확인
-  console.log("nickname:", nickname); // 닉네임 확인
-
   const { boardId } = useParams();
   const navigate = useNavigate();
+
+  const handleViewClick = () => {
+    navigate(`/board/boardView/${boardId}`);
+  };
 
   useEffect(() => {
     axios
@@ -158,22 +157,27 @@ export function BoardEdit() {
   );
 
   return (
-    <Box>
+    <Box border="1px solid #ccc" borderRadius="8px" p={2}>
       <h3>{boardId}번 게시물 수정</h3>
+      <hr />
       <Stack gap={5}>
-        <Field label={"제목"}>
-          <Input
-            value={board.title}
-            onChange={(e) => setBoard({ ...board, title: e.target.value })}
-          />
-        </Field>
-        <Field label={"본문"}>
-          <ReactQuill
-            value={board.content} // 수정된 내용을 반영
-            onChange={(content) => setBoard({ ...board, content })}
-            modules={modules} // 툴바 설정
-          />
-        </Field>
+        <Input
+          value={board.title}
+          placeholder="제목을 수정하세요"
+          onChange={(e) => setBoard({ ...board, title: e.target.value })}
+        />
+        <ReactQuill
+          style={{
+            width: "100%",
+            height: "400px", // 자동 크기 조정
+            maxHeight: "auto", // 최대 높이 설정
+            marginBottom: "20px", // 여백 조정
+          }}
+          placeholder="본문 내용을 수정하세요"
+          value={board.content} // 수정된 내용을 반영
+          onChange={(content) => setBoard({ ...board, content })}
+          modules={modules} // 툴바 설정
+        />
         <ImageView
           files={board.fileList}
           onRemoveSwitchClick={handleRemoveSwitchClick}
@@ -233,6 +237,9 @@ export function BoardEdit() {
             </DialogRoot>
           </Box>
         )}
+        <Box>
+          <Button onClick={handleViewClick}>수정 취소</Button>
+        </Box>
       </Stack>
     </Box>
   );

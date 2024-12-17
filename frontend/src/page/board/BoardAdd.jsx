@@ -107,6 +107,7 @@ export function BoardAdd() {
   return (
     <Box border="1px solid #ccc" borderRadius="8px" p={2}>
       <h3>게시글 쓰기</h3>
+      <hr />
       <Stack gap={4}>
         <Box
           border="1px solid #ccc"
@@ -150,6 +151,20 @@ export function BoardAdd() {
           />
         </Box>
 
+        <ReactQuill
+          style={{
+            width: "100%",
+            height: "400px", // 자동 크기 조정
+            maxHeight: "auto", // 최대 높이 설정
+            marginBottom: "20px", // 여백 조정
+          }}
+          value={content}
+          onChange={(content) => setContent(content)}
+          disabled={disabled}
+          modules={modules}
+          placeholder="본문 내용을 입력하세요"
+        />
+
         <Box mt={2}>
           {" "}
           {/* 마진 값 조정 */}
@@ -166,20 +181,6 @@ export function BoardAdd() {
           />
           <Box>{filesList}</Box>
         </Box>
-
-        <ReactQuill
-          style={{
-            width: "100%",
-            height: "400px", // 자동 크기 조정
-            maxHeight: "auto", // 최대 높이 설정
-            marginBottom: "20px", // 여백 조정
-          }}
-          value={content}
-          onChange={(content) => setContent(content)}
-          disabled={disabled}
-          modules={modules}
-          placeholder="본문 내용을 입력하세요"
-        />
 
         <Box mt={4}>
           <HStack justify="flex-end" spacing={4}>
