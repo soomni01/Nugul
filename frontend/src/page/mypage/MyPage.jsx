@@ -42,12 +42,7 @@ export function MyPage() {
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null);
-  // 이유 찾기
-  const [selectedInquiryId, setSelectedInquiryId] = useState(() => {
-    // 새로고침 시 로컬 스토리지에서 selectedInquiryId 불러오기
-    const storedId = localStorage.getItem("selectedInquiryId");
-    return storedId ? JSON.parse(storedId) : null;
-  });
+  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
   useEffect(() => {
     if (!id) {
@@ -85,21 +80,11 @@ export function MyPage() {
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]); // activeTab 상태가 변경될 때마다 실행
 
-  // selectedInquiryId가 변경될 때마다 로컬 스토리지에 저장
-  useEffect(() => {
-    if (selectedInquiryId !== null) {
-      localStorage.setItem(
-        "selectedInquiryId",
-        JSON.stringify(selectedInquiryId),
-      );
-    }
-  }, [selectedInquiryId]);
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환합니다.
+  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환
   const handleRowClick = (inquiryId) => {
     setSelectedInquiryId(inquiryId);
     setActiveTab("inquiryDetail");
@@ -131,7 +116,6 @@ export function MyPage() {
           const message = e.response?.data?.message;
           toaster.create({
             description: message?.text || "이미지 업로드에 실패했습니다.",
-
             type: "error",
           });
         })
