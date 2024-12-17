@@ -58,6 +58,19 @@ export function AdminMemberDetail() {
 
         setSoldList(soldRes.data);
 
+        // 판매 내역을 오름차순 정렬
+        const sortedSoldList = soldRes.data.sort((a, b) => {
+          // 판매되지 않은 상품을 먼저 정렬
+          if (!a.purchasedAt && b.purchasedAt) return -1; // a가 판매중이면 a가 먼저
+          if (a.purchasedAt && !b.purchasedAt) return 1; // b가 판매중이면 b가 먼저
+
+          // 판매일자 순으로 정렬 (판매된 상품만)
+          const dateA = new Date(a.purchasedAt);
+          const dateB = new Date(b.purchasedAt);
+          return dateA - dateB;
+        });
+        setSoldList(sortedSoldList);
+
         // 구매 내역을 오름차순 정렬
         const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
           const dateA = new Date(a.purchasedAt);
@@ -191,7 +204,7 @@ export function AdminMemberDetail() {
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
                     >
-                      작성 일자
+                      판매 일자
                     </TableColumnHeader>
                   </TableRow>
                 </TableHeader>
@@ -225,7 +238,9 @@ export function AdminMemberDetail() {
                           {product.status}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {new Date(product.createdAt).toLocaleDateString()}
+                          {product.purchasedAt
+                            ? new Date(product.purchasedAt).toLocaleDateString()
+                            : "판매중"}
                         </Table.Cell>
                       </Table.Row>
                     ))
