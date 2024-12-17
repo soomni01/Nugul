@@ -147,8 +147,9 @@ public class ChatController {
     }
 
     @GetMapping("{roomId}/image")
-    public void getImage(@RequestParam String memberId) {
-        System.out.println("memberId = " + memberId);
+    public String getImage(@RequestParam String memberId) {
+        
+        return chatService.getImage(memberId);
     }
 
 }

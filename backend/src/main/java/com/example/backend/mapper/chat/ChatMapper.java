@@ -177,4 +177,11 @@ public interface ChatMapper {
 
 
     String findNickname(String memberId);
+
+    @Select("""
+            SELECT profile_image
+            FROM member
+            WHERE member_id = #{id}
+            """)
+    String getProfileImage(String memberId);
 }

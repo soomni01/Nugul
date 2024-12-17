@@ -19,6 +19,7 @@ import { LuSend } from "react-icons/lu";
 import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import Payment from "../../components/chat/Payment.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { Avatar } from "../../components/ui/avatar.jsx";
 
 export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
@@ -32,6 +33,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [purchased, setPurchased] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
@@ -108,6 +110,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         memberId: chatPartnerId,
       },
     });
+
+    setImageSrc(imageRes.data);
     checkPurchase(id, res.data.productId);
   }
 
@@ -329,6 +333,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                   }
                 >
                   <Stack h={"10%"}>
+                    <Avatar size={"xs"} src={imageSrc} />
                     <Badge
                       p={1}
                       key={index}
