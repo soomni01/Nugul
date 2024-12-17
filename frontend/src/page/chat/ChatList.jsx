@@ -6,6 +6,7 @@ import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ChatView } from "./ChatView.jsx";
+import { ProductDetail } from "../../components/chat/ProductDetail.jsx";
 
 export function ChatList() {
   const [chatList, setChatList] = useState([]);
@@ -14,6 +15,7 @@ export function ChatList() {
   const { id } = useContext(AuthenticationContext);
   const [chatRoomId, setChatRoomId] = useState(-1);
   const [status, setStatus] = useState("For Sale");
+  const [productId, setProductId] = useState(0);
 
   useEffect(() => {
     if (id) {
@@ -63,6 +65,8 @@ export function ChatList() {
       });
   };
 
+  console.log(productId);
+
   return (
     <Box>
       <Heading> 채팅 목록</Heading>
@@ -96,6 +100,7 @@ export function ChatList() {
         display={"flex"}
         borderRadius={"lg"}
         border={"1px solid"}
+        maxHeight={"900px"}
         borderColor={"gray.300"}
         bg={"whiteAlpha.300"}
       >
@@ -106,6 +111,7 @@ export function ChatList() {
               chat={chat}
               onDelete={() => removeChatRoom(chat.roomId, id)}
               onClick={() => {
+                setProductId(chat.productId);
                 setChatRoomId(chat.roomId);
               }}
             />
@@ -122,7 +128,9 @@ export function ChatList() {
             onDelete={() => removeChatRoom(chatRoomId, id)}
           />
         )}
-        <Box>상품 정보</Box>
+        {productId === 0 ? null : (
+          <ProductDetail key={productId} productId={productId} />
+        )}
       </Box>
     </Box>
   );

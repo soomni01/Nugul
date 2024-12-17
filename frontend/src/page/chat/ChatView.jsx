@@ -37,8 +37,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   // 경로데 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
 
-  //  상품명, 방 번호 , 작성자를 보여줄
-
   //  stomp 객체 생성 및, 연결
   useEffect(() => {
     const client = new Client({
@@ -91,6 +89,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     // chatroom 정보
     handleSetData();
   }, []);
+
+  useEffect(() => {}, []);
 
   function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -256,20 +256,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       });
   };
 
-  console.log(chatRoom.status);
   return (
     <Box>
-      {/* Todo 없애햐 할것 */}
-      {/*<Heading mx={"auto"}>*/}
-      {/*  {" "}*/}
-      {/*  {realChatRoomId} 번 채팅 화면입니다. <hr />*/}
-      {/*</Heading>*/}
-      {/*<Button onClick={leaveRoom()}>뒤로가기</Button>*/}
-
       <Flex
         direction="column"
-        w={600}
-        h={700}
+        w={500}
+        h={800}
         overflow={"hidden"}
         bg={"blue.300/50"}
         border={"1px solid"}
@@ -292,7 +284,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
             />
-            {/* 판매자 일때만 거래완료 버튼이 보이게*/}
 
             {isSeller === true ? (
               <Button
