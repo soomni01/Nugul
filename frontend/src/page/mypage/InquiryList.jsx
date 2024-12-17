@@ -21,7 +21,7 @@ export function InquiryList({ onRowClick }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const { nickname } = useContext(AuthenticationContext);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
   // 데이터 정렬 함수
