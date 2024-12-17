@@ -91,23 +91,27 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     handleSetData();
   }, []);
 
-  function handleSetData() {
+  async function handleSetData() {
     // 전체 데이터 가져오는 코드
-    axios
-      .get(`/api/chat/view/${realChatRoomId}`, {
-        params: {
-          memberId: id,
-        },
-      })
-      .then((res) => {
-        setChatRoom(res.data);
-        checkPurchase(id, res.data.productId);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    var chatPartnerId;
+    const res = await axios.get(`/api/chat/view/${realChatRoomId}`, {
+      params: {
+        memberId: id,
+      },
+    });
+    setChatRoom(res.data);
+    chatPartnerId = id === res.data.writer ? res.data.buyer : res.data.writer;
+
+    // 두 번째 요청 (채팅 상대의 이미지 가져오기)
+    const imageRes = await axios.get(`/api/chat/${realChatRoomId}/image`, {
+      params: {
+        memberId: chatPartnerId,
+      },
+    });
+    checkPurchase(id, res.data.productId);
   }
 
+  // 내가 구매자인지 확인하는함수
   function checkPurchase(id, productId) {
     axios
       .get("/api/product/checkpurchase", {
@@ -267,7 +271,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       });
   };
 
-  console.log(purchased);
   return (
     <Box>
       <Flex
@@ -303,11 +306,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 colorPalette={"cyan"}
                 onClick={handleSuccessTransaction}
               >
-                {viewText}
+                거래완료
               </Button>
             ) : (
               <Payment chatRoom={chatRoom} />
             )}
+            {!purchased && !isSeller && <Button>후기</Button>}
           </Flex>
         </Box>
         <Box

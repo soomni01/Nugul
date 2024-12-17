@@ -200,8 +200,6 @@ public class ProductController {
     @GetMapping("checkpurchase")
     @PreAuthorize("isAuthenticated()")
     public boolean checkPurchase(String memberId, String productId) {
-        System.out.println("productId = " + productId);
-        System.out.println("memberId = " + memberId);
 
         return service.checkPurchase(memberId, productId);
 

@@ -146,4 +146,9 @@ public class ChatController {
     public void updateChatRoomTime(@RequestBody ChatRoom chatRoom) {
     }
 
+    @GetMapping("{roomId}/image")
+    public void getImage(@RequestParam String memberId) {
+        System.out.println("memberId = " + memberId);
+    }
+
 }
