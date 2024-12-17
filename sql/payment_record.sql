@@ -16,3 +16,7 @@ FROM payment_record;
 DESC payment_record;
 
 DROP TABLE payment_record;
+
+ALTER TABLE payment_record
+    ADD COLUMN product_id INT NOT NULL, -- 상품 ID 컬럼 추가
+    ADD FOREIGN KEY (product_id) REFERENCES product (product_id);

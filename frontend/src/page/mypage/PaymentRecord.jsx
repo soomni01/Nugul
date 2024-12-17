@@ -61,6 +61,7 @@ export function PaymentRecord() {
           <TableRow>
             <TableColumnHeader>결제 ID</TableColumnHeader>
             <TableColumnHeader>구매자 ID</TableColumnHeader>
+            <TableColumnHeader>상품 ID</TableColumnHeader>
             <TableColumnHeader>상품명</TableColumnHeader>
             <TableColumnHeader>결제 금액</TableColumnHeader>
             <TableColumnHeader>결제 방법</TableColumnHeader>
@@ -74,6 +75,7 @@ export function PaymentRecord() {
               <Table.Row key={record.impUid}>
                 <Table.Cell>{record.impUid}</Table.Cell>
                 <Table.Cell>{record.buyerId}</Table.Cell>
+                <Table.Cell>{record.productId}</Table.Cell>
                 <Table.Cell>{record.productName}</Table.Cell>
                 <Table.Cell>{record.paymentAmount}원</Table.Cell>
                 <Table.Cell>

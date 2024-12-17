@@ -40,6 +40,7 @@ const Payment = ({ chatRoom }) => {
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
         merchant_uid: new Date().getTime(), // 고유 거래 ID
+        id: product.productId,
         name: product.productName,
         amount: product.price,
         buyer_email: id,
@@ -57,6 +58,7 @@ const Payment = ({ chatRoom }) => {
             await axios.post("/api/savePayment", {
               impUid: rsp.imp_uid,
               buyerId: id,
+              productId: product.productId,
               productName: product.productName,
               paymentAmount: product.price,
               paymentMethod: rsp.pay_method,

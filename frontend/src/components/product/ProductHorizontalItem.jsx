@@ -342,6 +342,15 @@ export function ProductHorizontalItem({
       <Box position="absolute" bottom={2} right={2}>
         <Text fontSize="md" fontWeight="bold">
           <HStack gap={1}>
+            {/* 결제 상태 추가 */}
+            {product.paymentStatus === "결제완료" && (
+              <Image
+                src="/image/Kakaopay.png"
+                alt="Kakaopay Icon"
+                width="60px"
+                height="auto"
+              />
+            )}
             {product.pay !== "share" && <PiCurrencyKrwBold />}
             {product.pay === "share" ? "나눔" : product.price}
           </HStack>
