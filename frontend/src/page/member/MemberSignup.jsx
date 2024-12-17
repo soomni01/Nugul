@@ -23,6 +23,10 @@ export function MemberSignup() {
   const passwordRegEx =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,49}$/;
 
+  const handleLoginClick = () => {
+    navigate("/");
+  };
+
   function handleSaveClick() {
     if (!passwordRegEx.test(password) || password !== rePassword) {
       return;
@@ -55,10 +59,6 @@ export function MemberSignup() {
 
   const handleIdCheckClick = () => {
     if (!emailRegEx.test(memberId)) {
-      toaster.create({
-        type: "error",
-        description: "이메일 형식이 잘못되었습니다.",
-      });
       setIdCheckMessage("이메일 형식이 잘못되었습니다.");
       return;
     }
@@ -71,12 +71,6 @@ export function MemberSignup() {
       })
       .then((res) => res.data)
       .then((data) => {
-        const message = data.message;
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
-
         if (data.available) {
           setIdCheckMessage("사용 가능합니다.");
           setIdCheck(true);
@@ -101,11 +95,6 @@ export function MemberSignup() {
       })
       .then((res) => res.data)
       .then((data) => {
-        const message = data.message;
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
         if (data.available) {
           setNickNameCheckMessage("사용 가능합니다.");
           setNickNameCheck(true);
@@ -146,11 +135,13 @@ export function MemberSignup() {
     );
 
   return (
-    <Box>
+    <Box p={5} border="1px solid" borderColor="gray.300" borderRadius="md">
       <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
         회원 가입
       </Text>
+      <Text mb={5}>가입을 통해 더 다양한 서비스를 만나 보세요</Text>
       <Stack gap={5}>
+        <hr />
         <Field
           helperText={
             idCheckMessage && (
@@ -178,29 +169,46 @@ export function MemberSignup() {
 
         <Field
           helperText={
-            !password ? (
-              "비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상으로 작성"
-            ) : passwordRegEx.test(password) ? (
-              <Text color="green.500">비밀번호가 올바른 형식입니다.</Text>
+            password &&
+            (passwordRegEx.test(password) ? (
+              <Text color="green.500" mt={1}>
+                비밀번호가 올바른 형식입니다.
+              </Text>
             ) : (
-              <Text color="red.500">
+              <Text color="red.500" mt={1}>
                 비밀번호 형식이 올바르지 않습니다. (영문, 숫자, 특수문자 포함,
                 8자 이상)
               </Text>
-            )
+            ))
           }
         >
           <Input
+            type="password"
             value={password}
-            placeholder="비밀번호"
+            placeholder="비밀번호(영문, 숫자, 특수문자 포함 8~50자)"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
         </Field>
-        <Field helperText={passwordMatchText}>
+
+        <Field
+          helperText={
+            rePassword &&
+            (password === rePassword ? (
+              <Text color="green.500" mt={1}>
+                비밀번호가 일치합니다.
+              </Text>
+            ) : (
+              <Text color="red.500" mt={1}>
+                비밀번호가 일치하지 않습니다.
+              </Text>
+            ))
+          }
+        >
           <Input
-            placeholder="비밀번호 확인"
+            type="password"
+            placeholder="비밀번호 재입력"
             value={rePassword}
             onChange={(e) => setRePassword(e.target.value)}
           />
@@ -218,7 +226,7 @@ export function MemberSignup() {
           <Group attached w={"100%"}>
             <Input
               value={nickname}
-              placeholder="별명을 입력하세요"
+              placeholder="닉네임을 입력하세요"
               onChange={(e) => {
                 setNickName(e.target.value);
               }}
@@ -233,10 +241,11 @@ export function MemberSignup() {
             </Button>
           </Group>
         </Field>
-
-        <Button w={"100%"} onClick={handleSaveClick} disabled={disabled}>
+        <hr />
+        <Button onClick={handleSaveClick} disabled={disabled}>
           회원 가입
         </Button>
+        <Button onClick={handleLoginClick}>가입 취소</Button>
       </Stack>
     </Box>
   );
