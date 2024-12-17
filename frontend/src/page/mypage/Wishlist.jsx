@@ -5,6 +5,8 @@ import { ProductHorizontalItem } from "../../components/product/ProductHorizonta
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { EmptyState } from "../../components/ui/empty-state.jsx";
+import { BsCartX } from "react-icons/bs";
 
 export function Wishlist() {
   const [productList, setProductList] = useState([]);
@@ -45,24 +47,29 @@ export function Wishlist() {
         <Heading size="lg">관심 목록</Heading>
         <Text>총 {productList.length}건</Text>
       </HStack>
-      <Box height="70vh" overflow="hidden">
-        <Swiper
-          direction={"vertical"}
-          slidesPerView={"auto"} // 각 상품의 높이에 맞춰 자동으로 크기를 조정
-          freeMode={true} // 슬라이드를 자유롭게 이동
-          scrollbar={{ draggable: true }}
-          mousewheel={true}
-          modules={[FreeMode, Scrollbar, Mousewheel]}
-          style={{ height: "100%", width: "100%" }}
-        >
-          {productList.length > 0 ? (
-            productList.map((product) => (
+      <Box
+        height="70vh"
+        overflow="hidden"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {productList.length > 0 ? (
+          <Swiper
+            direction={"vertical"}
+            slidesPerView={"auto"} // 각 상품의 높이에 맞춰 자동으로 크기를 조정
+            freeMode={true} // 슬라이드를 자유롭게 이동
+            scrollbar={{ draggable: true }}
+            mousewheel={true}
+            modules={[FreeMode, Scrollbar, Mousewheel]}
+            style={{ height: "100%", width: "100%" }}
+          >
+            {productList.map((product) => (
               <SwiperSlide
                 key={product.productId}
                 style={{
                   height: "auto",
                   width: "100%",
-                  justifyContent: "left",
                 }}
               >
                 <ProductHorizontalItem
@@ -71,11 +78,11 @@ export function Wishlist() {
                   pageType={"wish"}
                 />
               </SwiperSlide>
-            ))
-          ) : (
-            <Text>조회된 결과가 없습니다.</Text>
-          )}
-        </Swiper>
+            ))}
+          </Swiper>
+        ) : (
+          <EmptyState icon={<BsCartX />} title="관심 상품이 없습니다." />
+        )}
       </Box>
     </Box>
   );

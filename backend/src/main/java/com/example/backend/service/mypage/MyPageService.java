@@ -130,17 +130,21 @@ public class MyPageService {
 
         String mainImageUrl;
 
-        if (profileImage.startsWith("http://") || profileImage.startsWith("https://")) {
-            // 카카오 로그인 사용자: 외부 URL인 경우
-            mainImageUrl = profileImage;
+        if (profileImage != null) {
+            if (profileImage.startsWith("http://") || profileImage.startsWith("https://")) {
+                // 카카오 로그인 사용자: 외부 URL인 경우
+                mainImageUrl = profileImage;
+            } else {
+                // S3 URL을 기반으로 메인 이미지 경로 설정
+                mainImageUrl = String.format(STR."\{imageSrcPrefix}/profile/\{memberId}/\{profileImage}");
+            }
         } else {
-            // S3 URL을 기반으로 메인 이미지 경로 설정
-            mainImageUrl = String.format(STR."\{imageSrcPrefix}/profile/\{memberId}/\{profileImage}");
+            mainImageUrl = null;
         }
 
         // 멤버 객체에 프로필 이미지 경로 설정
         member.setProfileImage(mainImageUrl);
-        
+
         return mainImageUrl;
     }
 
@@ -202,7 +206,7 @@ public class MyPageService {
     }
 
     // 프로필 지우기
-    public boolean deleteProfileImage(String memberId, String profileImage) {
+    public boolean deleteProfileImage(String memberId) {
         String fileName = mapper.selectProfileImage(memberId);
 
         String deleteObjectKey = STR."prj1126/profile/\{memberId}/\{fileName}";

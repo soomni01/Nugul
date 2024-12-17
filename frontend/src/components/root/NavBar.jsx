@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { useContext } from "react";
 import { Avatar } from "../ui/avatar.jsx";
-import { kakaoLogout } from "../kakao/KakaoLogin.jsx";
+import { kakaoLogout } from "../social/KakaoLogin.jsx";
+import { MdLogout } from "react-icons/md";
 
 function NavbarItem({ children, ...rest }) {
   return (
@@ -43,6 +44,8 @@ export function Navbar() {
       // 카카오 로그인 사용자는 카카오 액세스 토큰 삭제
       if (sessionStorage.getItem("kakaoAccessToken")) {
         await kakaoLogout();
+      } else if (sessionStorage.getItem("naverAccessToken")) {
+        sessionStorage.removeItem("naverAccessToken");
       }
       navigate("/");
     } catch (error) {
@@ -50,32 +53,52 @@ export function Navbar() {
     }
   };
   return (
-    <Flex gap={3}>
-      <NavbarItem onClick={() => handleNavigation("/main")}>HOME</NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/product/list")}>
-        중고거래
-      </NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/product/share/list")}>
-        나눔
-      </NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/board/list")}>
-        게시판
-      </NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/map")}>지도</NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/chat")}>채팅</NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/inquiry")}>
-        문의하기
-      </NavbarItem>
-      <NavbarItem onClick={() => handleNavigation("/myPage")} p={0} mt="10px">
-        <Avatar
-          size="2xl"
-          src={profileImage}
-          name={nickname}
-          variant="outline"
-        />
-      </NavbarItem>
+    <Box background="gray.200">
+      <Flex justify="space-between" align="center" width="100%">
+        {/* 왼쪽: HOME */}
+        <Flex>
+          <NavbarItem onClick={() => handleNavigation("/main")}>
+            <Heading size="3xl">너굴마켓</Heading>
+          </NavbarItem>
+        </Flex>
 
-      <NavbarItem onClick={handleLogout}>로그아웃</NavbarItem>
-    </Flex>
+        {/* 가운데: 중고거래, 나눔, 게시판, 지도 */}
+        <Flex justify="center" flex="1" gap={3}>
+          <NavbarItem onClick={() => handleNavigation("/product/list")}>
+            <Heading>중고거래</Heading>
+          </NavbarItem>
+          <NavbarItem onClick={() => handleNavigation("/product/share/list")}>
+            <Heading>나눔</Heading>
+          </NavbarItem>
+          <NavbarItem onClick={() => handleNavigation("/board/list")}>
+            <Heading>게시판</Heading>
+          </NavbarItem>
+          <NavbarItem onClick={() => handleNavigation("/map")}>
+            <Heading>지도</Heading>
+          </NavbarItem>
+        </Flex>
+
+        {/* 오른쪽: 문의하기, 마이페이지, 로그아웃 */}
+        <Flex align="center" justify="center" gap={3}>
+          <NavbarItem onClick={() => handleNavigation("/inquiry")}>
+            1:1 문의
+          </NavbarItem>
+          <NavbarItem onClick={() => handleNavigation("/myPage")} p={0}>
+            <Avatar
+              boxSize="80px"
+              my={3}
+              src={profileImage}
+              name={nickname}
+              variant="outline"
+            />
+          </NavbarItem>
+          <NavbarItem onClick={handleLogout}>
+            <Box fontSize="36px">
+              <MdLogout />
+            </Box>
+          </NavbarItem>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }

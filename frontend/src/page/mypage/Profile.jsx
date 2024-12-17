@@ -16,7 +16,8 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { kakaoUnlink } from "../../components/kakao/KakaoLogin.jsx";
+import { kakaoUnlink } from "../../components/social/KakaoLogin.jsx";
+import { naverUnlink } from "../../components/social/NaverLogin.jsx";
 
 // 카카오 계정 연결 해제 함수 추가
 
@@ -41,47 +42,47 @@ export function Profile({ onEditClick }) {
       .finally(() => setLoading(false));
   }, [id]);
 
-  function handleDeleteClick() {
-    // 카카오 사용자의 경우 이메일로 탈퇴 처리
-    const data = member.password
-      ? { memberId: id, password }
-      : { memberId: id, email };
-
-    axios
-      .delete("/api/member/remove", {
+  async function handleDeleteClick() {
+    try {
+      // 서버 회원 삭제 요청
+      const response = await axios.delete("/api/member/remove", {
         data: { memberId: id, password },
-      })
-      .then((res) => {
-        const message = res.data.message;
-
-        // 카카오 계정 연결 해제
-        kakaoUnlink()
-          .then(() => {
-            console.log("카카오 계정 연결 해제 성공");
-          })
-          .catch((error) => {
-            console.error("카카오 계정 연결 해제 실패:", error);
-          });
-
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
-        navigate("/member/signup");
-      })
-      .catch((e) => {
-        const message = e.response.data.message;
-
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
-      })
-      .finally(() => {
-        setOpen(false);
-        setPassword("");
-        setEmail("");
       });
+
+      // 카카오 계정 로그아웃 및 연결 해제
+      if (sessionStorage.getItem("kakaoAccessToken")) {
+        await kakaoUnlink(); // 연결 해제
+        console.log("카카오 계정 연결 해제 성공");
+        sessionStorage.removeItem("kakaoAccessToken");
+      } else if (sessionStorage.getItem("naverAccessToken")) {
+        // 네이버 계정 로그아웃 처리
+        console.log("네이버");
+        await naverUnlink();
+        sessionStorage.removeItem("naverAccessToken");
+      }
+
+      // 성공 메시지
+      const message = response.data.message;
+      toaster.create({
+        type: message.type,
+        description: message.text,
+      });
+
+      navigate("/"); // 회원가입 페이지로 이동
+    } catch (error) {
+      const message = error.response?.data?.message || {
+        type: "error",
+        text: "회원 탈퇴 중 오류가 발생했습니다.",
+      };
+      toaster.create({
+        type: message.type,
+        description: message.text,
+      });
+    } finally {
+      setOpen(false);
+      setPassword("");
+      setEmail("");
+    }
   }
 
   if (loading || !id || !member) {
@@ -129,7 +130,7 @@ export function Profile({ onEditClick }) {
                   ) : (
                     <Field label={"이메일"}>
                       <Input
-                        placeholder={"카카오 이메일을 입력해주세요."}
+                        placeholder={"이메일을 입력해주세요."}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />

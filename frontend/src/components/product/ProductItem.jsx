@@ -73,10 +73,10 @@ export function ProductItem({ product, likeCount, isLiked }) {
           </Card.Description>
         </Card.Body>
 
-        <Card.Footer px="4" py="0">
-          <Flex justify="space-between" align="center" w="100%">
+        <Card.Footer px="4" pb="1">
+          <Flex justify="space-between" align="center" w="100%" gap={4}>
             <Button
-              onClick={openMapModal} // 장소 버튼 클릭 시 모달 열기
+              onClick={openMapModal}
               size="xs"
               colorPalette="gray"
               variant="outline"

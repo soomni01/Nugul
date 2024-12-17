@@ -1,13 +1,32 @@
-.swiper {
-    width: 80%;
+.main-page-swiper {
+
     height: 100%;
     padding-bottom: 40px;
 }
 
-.swiper-slide {
+.main-page-swiper-slide {
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.product-page-swiper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.product-page-swiper-slide {
+    display: flex;
+    justify-content: center;
+}
+
+.product-page-swiper-slide img {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 100%;
+    object-fit: contain;
+}

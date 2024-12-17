@@ -29,9 +29,8 @@ public class MyPageController {
     @DeleteMapping("/image")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteProfileImage(
-            @RequestParam String memberId,
-            @RequestParam String profileImage) {
-        if (service.deleteProfileImage(memberId, profileImage)) {
+            @RequestParam String memberId) {
+        if (service.deleteProfileImage(memberId)) {
             return ResponseEntity.ok()
                     .body(Map.of("message", Map.of("type", "success",
                             "text", "프로필 이미지가 삭제되었습니다.")));
