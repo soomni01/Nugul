@@ -226,4 +226,11 @@ public interface ProductMapper {
                         where product_id = #{productId}
             """)
     String checkPurchaseByMemberId(String memberId, String productId);
+
+    @Select("""
+            SELECT pay
+            FROM product
+            WHERE product_id = #{productId}
+            """)
+    String getProductStatus(Integer productId);
 }

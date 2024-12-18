@@ -19,6 +19,13 @@ public class ProductController {
 
     final ProductService service;
 
+    // navbar에서 경로 구분
+    @GetMapping("{productId}")
+    public String getStatus(@PathVariable Integer productId) {
+        return service.getProductStatus(productId);
+    }
+
+
     // 메인 페이지 상품
     @GetMapping("main")
     public Map<String, List<Product>> mainProduct() {
@@ -175,7 +182,7 @@ public class ProductController {
     @GetMapping("checkpurchase")
     @PreAuthorize("isAuthenticated()")
     public boolean checkPurchase(String memberId, String productId) {
-        
+
         return service.checkPurchase(memberId, productId);
 
     }

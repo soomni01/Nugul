@@ -287,5 +287,10 @@ public class ProductService {
         }
 
     }
+
+    // navbar에서 경로 구분
+    public String getProductStatus(Integer productId) {
+        return mapper.getProductStatus(productId);
+    }
 }
 
