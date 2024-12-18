@@ -2,6 +2,7 @@ package com.example.backend.service.member;
 
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
+import com.example.backend.mapper.board.BoardMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class MemberService {
 
     final MemberMapper mapper;
     private final ProductMapper productMapper;
+    private final BoardMapper boardMapper;
     final JwtEncoder jwtEncoder;
 
     @Value("${naver.client.id}")
@@ -93,6 +95,13 @@ public class MemberService {
             List<Integer> likes = productMapper.likedProductByMemberId(member.getMemberId());
             for (Integer productId : likes) {
                 productMapper.deleteLike(productId);
+            }
+
+            // 쓴 게시물 목록 얻기
+            List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
+            // 각 게시물 지우기
+            for (Integer boardId : boards) {
+                boardMapper.deleteById(boardId);
             }
 
 //            // 구매 목록 지우기

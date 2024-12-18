@@ -145,4 +145,11 @@ public interface BoardMapper {
               AND name = #{name}
             """)
     int deleteFileByBoardIdAndName(Integer boardId, String name);
+
+    @Select("""
+            SELECT board_id
+            FROM board
+            WHERE writer = #{memberId}
+            """)
+    List<Integer> boardByMemberId(String memberId);
 }
