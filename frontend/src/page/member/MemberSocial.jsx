@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box, Group, Image, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Group,
+  HStack,
+  Image,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { Checkbox } from "../../components/ui/checkbox.jsx";
@@ -8,6 +16,8 @@ import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
+import { ToggleTip } from "../../components/ui/toggle-tip.jsx";
+import { LuInfo } from "react-icons/lu";
 
 export function MemberSocial() {
   const location = useLocation();
@@ -104,15 +114,16 @@ export function MemberSocial() {
           />
           회원가입
         </Text>
-        <Text
-          fontSize="lg"
-          fontWeight="bold"
-          display="flex"
-          justifyContent="center"
-          mb={8}
-        >
-          사용자 정보 추가 입력
-        </Text>
+        <HStack gap={0} display="flex" justifyContent="center" mb={8}>
+          <Text fontSize="lg" fontWeight="bold">
+            사용자 정보 추가 입력
+          </Text>
+          <ToggleTip content="네이버 로그인에서 제공하는 '이메일' 주소 정보는 이용자가 계정에 등록한 '연락처 이메일' 정보입니다.">
+            <Button size="xs" variant="ghost">
+              <LuInfo />
+            </Button>
+          </ToggleTip>
+        </HStack>
 
         <Stack gap={5}>
           <Group attached w={"100%"}>
