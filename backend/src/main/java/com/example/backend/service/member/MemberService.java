@@ -4,6 +4,7 @@ import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
+import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,8 @@ public class MemberService {
     final MemberMapper mapper;
     private final ProductMapper productMapper;
     final JwtEncoder jwtEncoder;
+
+    private final ProductService productService;
 
     @Value("${naver.client.id}")
     private String clientId;
@@ -84,9 +87,10 @@ public class MemberService {
             // 쓴 상품 목록 얻기
             List<Integer> products = productMapper.getProductId(member.getMemberId());
 
+
             // 각 상품 지우기
             for (Integer productId : products) {
-                productMapper.deleteById(productId);
+                productService.deleteProduct(productId);
             }
 
             // 좋아요 목록 지우기
@@ -95,11 +99,7 @@ public class MemberService {
                 productMapper.deleteLike(productId);
             }
 
-//            // 구매 목록 지우기
-//            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());
-//            for (Integer productId : purchased) {
-//                mypageMapper.deletePurchased(productId);
-//            }
+
             cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
@@ -165,6 +165,7 @@ public class MemberService {
                 return true;
             }
         }
+        System.out.println(password);
         return false;
     }
 
