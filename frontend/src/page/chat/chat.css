@@ -1,10 +1,15 @@
-.visible-scrollbar,
-.invisible-scrollbar,
-.mostly-customized-scrollbar {
-    display: block;
-    width: 8px;
-    overflow: auto;
+/* ChatMessageContainer.css */
 
+
+.ScrollBarContainer::-webkit-scrollbar {
+    width: 3px;
+    height: 1px;
+    background-color: #aaa; /* 또는 트랙에 추가한다 */
+}
+
+.ScrollBarContainer::-webkit-scrollbar-thumb {
+    background: #000;
+    height: 1px;
 }
 
 .overlay {

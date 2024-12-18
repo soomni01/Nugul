@@ -88,7 +88,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   // 의존성에  message 넣어야함
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       // 토큰이 없으면 로그인 페이지로 리다이렉트
       navigate("/");
@@ -97,6 +96,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     loadInitialMessages();
     // chatroom 정보
     handleSetData();
+    if (chatBoxRef.current) {
+      console.log("실행시점에 작동하는지 확인");
+      // 예: 스크롤을 맨 아래로 이동
+      chatBoxRef.current.scrollTop =
+        chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
+    }
   }, [navigate]);
 
   async function handleSetData() {
@@ -116,7 +121,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         memberId: chatPartnerId,
       },
     });
-
     setImageSrc(imageRes.data);
     checkPurchase(id, res.data.productId);
   }
@@ -223,7 +227,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
     if (chatBox.scrollTop < reach) {
       // 스크롤 끝 점에서 로드
-      loadPreviousMessage();
+      await loadPreviousMessage();
     }
   };
 
@@ -320,6 +324,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
             {isSeller ? (
               <Button
+                className={"ScrollBarContainer"}
                 style={{ marginLeft: "16px" }}
                 colorPalette={"cyan"}
                 disabled={isSold}
@@ -330,7 +335,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ) : (
               <Payment chatRoom={chatRoom} />
             )}
-            {purchased && !isSeller && <Button>후기</Button>}
+            {!purchased && !isSeller && (
+              <Button onClick={() => navigate("/myPage")}>후기</Button>
+            )}
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
