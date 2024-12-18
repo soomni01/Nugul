@@ -1,7 +1,6 @@
 package com.example.backend.mapper.payment;
 
-import com.example.backend.dto.payment.PaymentRecord;
-import com.example.backend.dto.product.Product;
+import com.example.backend.dto.payment.PaymentMethod;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -12,28 +11,6 @@ import java.util.Map;
 
 @Mapper
 public interface PaymentMapper {
-    @Insert("""
-            INSERT INTO payment_record (imp_uid, buyer_id, product_id, product_name, payment_amount, payment_method, payment_date, status)
-            VALUES (#{impUid}, #{buyerId}, #{productId}, #{productName}, #{paymentAmount}, #{paymentMethod}, #{paymentDate}, #{status})
-            """)
-    int savePayment(PaymentRecord paymentrecord);
-
-    @Select("""
-            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, 
-            p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname, pf.name as mainImageName
-            FROM product p
-            LEFT JOIN member m ON p.writer = m.member_id
-            LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
-            WHERE p.product_id = #{productId}
-            """)
-    Product selectById(Integer productId);
-
-    @Select("""
-            SELECT *
-            FROM payment_record
-            WHERE buyer_id = #{buyerId}
-            """)
-    List<PaymentRecord> getPayment(String buyerId);
 
     @Select("""
             SELECT buyer
@@ -48,6 +25,13 @@ public interface PaymentMapper {
             WHERE roomId = #{roomId}
             """)
     String getWriter(Integer roomId);
+
+    @Select("""
+            SELECT *
+            FROM payment_record 
+            WHERE buyer_id = #{buyerId}
+            """)
+    List<PaymentMethod> getPayment(String buyerId);
 
     @Update("""
             UPDATE product
@@ -65,15 +49,14 @@ public interface PaymentMapper {
                 p.location_name AS locationName,
                 p.price AS price
             FROM chatroom cr
-            JOIN product p ON cr.product_id = p.product_id
+            LEFT JOIN product p ON cr.product_id = p.product_id
             WHERE cr.roomId = #{roomId}
             """)
     Map<String, Object> getTransactionInfoByRoomId(int roomId);
 
     @Insert("""
-            INSERT INTO purchased_record
-            (buyer_id, product_id, seller_id, product_name, location_name, price)
-            VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price})
+            INSERT INTO purchased_record(buyer_id, product_id, seller_id, product_name, location_name, price, payment_method)
+            VALUES (#{buyerId}, #{productId}, #{writer}, #{productName}, #{locationName}, #{price}, #{paymentMethod})
             """)
-    int insertTransaction(int productId, String buyerId, String writer, String productName, String locationName, Integer price);
+    int insertTransaction(int productId, String buyerId, String writer, String productName, String locationName, Integer price, String paymentMethod);
 }

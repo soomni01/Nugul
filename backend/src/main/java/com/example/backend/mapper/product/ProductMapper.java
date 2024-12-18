@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Mapper
 public interface ProductMapper {
+
     @Insert("""
             INSERT INTO product
             (product_name, price, description, writer, pay, category,  latitude, longitude, location_name)
@@ -226,4 +227,11 @@ public interface ProductMapper {
                         where product_id = #{productId}
             """)
     String checkPurchaseByMemberId(String memberId, String productId);
+
+//    @Update("""
+//            UPDATE product
+//            SET payment_method = #{paymentMethod}
+//            WHERE product_id = #{productId}
+//            """)
+//    int updatePaymentMethod(Integer productId, String paymentMethod);
 }

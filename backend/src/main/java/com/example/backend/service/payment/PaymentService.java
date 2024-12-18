@@ -1,6 +1,6 @@
 package com.example.backend.service.payment;
 
-import com.example.backend.dto.payment.PaymentRecord;
+import com.example.backend.dto.payment.PaymentMethod;
 import com.example.backend.mapper.payment.PaymentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -17,19 +17,19 @@ public class PaymentService {
 
     final PaymentMapper mapper;
 
-    // 결제 내역 유효성 검사 (금액이 0보다 큰지)
-    public boolean validate(PaymentRecord paymentrecord) {
-        return paymentrecord.getPaymentAmount() > 0;
-    }
-
-    // 결제 내역 저장
-    public boolean savePayment(PaymentRecord paymentrecord) {
-        int cnt = mapper.savePayment(paymentrecord);
-        return cnt == 1;
-    }
+//    // 결제 내역 유효성 검사 (금액이 0보다 큰지)
+//    public boolean validate(PaymentRecord paymentrecord) {
+//        return paymentrecord.getPaymentAmount() > 0;
+//    }
+//
+//    // 결제 내역 저장
+//    public boolean savePayment(PaymentRecord paymentrecord) {
+//        int cnt = mapper.savePayment(paymentrecord);
+//        return cnt == 1;
+//    }
 
     // 결제 내역 조회
-    public List<PaymentRecord> getPayment(String buyerId) {
+    public List<PaymentMethod> getPayment(String buyerId) {
         return mapper.getPayment(buyerId);
     }
 
@@ -44,8 +44,11 @@ public class PaymentService {
     }
 
     // 거래 완료
-    public boolean transaction(int roomId, Authentication auth) {
+    public boolean transaction(PaymentMethod paymentMethod, Authentication auth) {
+        int roomId = paymentMethod.getRoomId();
         Map<String, Object> transactionInfo = mapper.getTransactionInfoByRoomId(roomId); // Map을 사용하는 이유는 다양한 데이터 타입을 저장하기 위해서
+
+        String pay = paymentMethod.getPaymentMethod();
 
         Integer productId = (Integer) transactionInfo.get("productId");
         String buyerId = (String) transactionInfo.get("buyerId");
@@ -58,9 +61,7 @@ public class PaymentService {
         int updateStatus = mapper.updateProductStatus(productId);
 
         // 구매 테이블에 거래 정보 추가
-        int insertTransaction = mapper.insertTransaction(
-                productId, buyerId, writer, productName, locationName, price
-        );
+        int insertTransaction = mapper.insertTransaction(productId, buyerId, writer, productName, locationName, price, pay);
 
         // 성공 여부 반환
         return updateStatus == 1 && insertTransaction == 1;

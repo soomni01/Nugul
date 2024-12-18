@@ -349,7 +349,7 @@ export function AdminMemberDetail() {
                           {product.price ? `${product.price}원` : "무료 나눔"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.paymentStatus === "결제완료" && (
+                          {product.paymentMethod === "KakaoPay" && (
                             <img
                               src="/image/Kakaopay.png"
                               alt="Kakaopay Icon"
@@ -358,7 +358,7 @@ export function AdminMemberDetail() {
                               style={{ marginLeft: "60px" }}
                             />
                           )}
-                          {product.paymentStatus === "결제안함" && (
+                          {product.paymentMethod === null && (
                             <Text>만나서 거래</Text>
                           )}
                         </Table.Cell>
