@@ -1,4 +1,4 @@
-import { Box, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Group, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
@@ -10,6 +10,8 @@ import { PasswordInput } from "../../components/ui/password-input.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { KakaoLogin } from "../../components/social/KakaoLogin.jsx";
 import { NaverLogin } from "../../components/social/NaverLogin.jsx";
+import { MdOutlineEmail } from "react-icons/md";
+import { TbLock } from "react-icons/tb";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -88,47 +90,85 @@ export function MemberLogin() {
   };
 
   return (
-    <Box>
-      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-        로그인
-      </Text>
-      <Stack gap={5}>
-        <Field>
-          <Input
-            placeholder="이메일"
-            value={memberId}
-            onChange={(e) => setMemberId(e.target.value)}
-          />
-        </Field>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+    >
+      <Box>
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          justifyContent="center"
+          display="flex"
+          mb={8}
+        >
+          로그인
+        </Text>
+        <Stack gap={5}>
+          <Field>
+            <Group attached w={"100%"}>
+              <Button
+                variant={"outline"}
+                _hover={{ bg: "transparent" }}
+                size={"xl"}
+                cursor={"default"}
+              >
+                <MdOutlineEmail />
+              </Button>
 
-        <Field>
-          <PasswordInput
-            placeholder="비밀번호 입력"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Field>
+              <Input
+                size={"xl"}
+                placeholder="이메일"
+                value={memberId}
+                onChange={(e) => setMemberId(e.target.value)}
+              />
+            </Group>
+          </Field>
 
-        <Box display="flex" gap={2}>
-          <Button onClick={handleLoginClick}>로그인</Button>
-        </Box>
+          <Group attached w={"100%"}>
+            <Button
+              variant={"outline"}
+              _hover={{ bg: "transparent" }}
+              size={"xl"}
+              cursor={"default"}
+            >
+              <TbLock />
+            </Button>
+            <Field>
+              <PasswordInput
+                size={"xl"}
+                placeholder="비밀번호 입력"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Field>
+          </Group>
 
-        <HStack display="flex" justifyContent="center">
-          <KakaoLogin />
-          <NaverLogin />
-        </HStack>
+          <Box display="flex" mt={5}>
+            <Button w={"100%"} onClick={handleLoginClick}>
+              로그인
+            </Button>
+          </Box>
 
-        <Box textAlign="center" mt={4}>
-          아직 계정이 없으신가요?{" "}
-          <Link
-            to="/member/signup"
-            style={{ color: "blue", textDecoration: "underline" }}
-          >
-            회원가입
-          </Link>
-        </Box>
-      </Stack>
+          <HStack display="flex" justifyContent="center">
+            <KakaoLogin />
+            <NaverLogin />
+          </HStack>
+
+          <Box textAlign="center" mt={4}>
+            아직 계정이 없으신가요?{" "}
+            <Link
+              to="/member/signup"
+              style={{ color: "blue", textDecoration: "underline" }}
+            >
+              회원가입
+            </Link>
+          </Box>
+        </Stack>
+      </Box>
     </Box>
   );
 }
