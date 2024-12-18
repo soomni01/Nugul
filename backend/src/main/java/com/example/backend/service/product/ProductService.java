@@ -276,14 +276,14 @@ public class ProductService {
     }
 
 
-    public boolean checkPurchase(String memberId, String productId) {
+    public Product checkPurchase(String memberId, String productId) {
         // 구매자 아이디 가져와서
-        String buyerId = mapper.checkPurchaseByMemberId(memberId, productId);
+        Product product = mapper.checkPurchaseByMemberId(memberId, productId);
         // 있는지 없는지확인후 , 같은놈인지
-        if (buyerId == null) {
-            return false;
+        if (product == null) {
+            return new Product();
         } else {
-            return buyerId.equals(memberId);
+            return product;
         }
 
     }

@@ -221,9 +221,9 @@ public interface ProductMapper {
 
 
     @Select("""
-                        select buyer_id
-                        from purchased_record
+                        select  expense_id,buyer_id,product_id,date as purchased_at,seller_id,product_name,location_name,price
+                        from purchased_record 
                         where product_id = #{productId}
             """)
-    String checkPurchaseByMemberId(String memberId, String productId);
+    Product checkPurchaseByMemberId(String memberId, String productId);
 }

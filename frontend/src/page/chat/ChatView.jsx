@@ -20,6 +20,7 @@ import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
 import Payment from "../../components/chat/Payment.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { Avatar } from "../../components/ui/avatar.jsx";
+import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 
 export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
@@ -36,6 +37,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [imageSrc, setImageSrc] = useState("");
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [product, setProduct] = useState({});
 
   // 경로데 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -97,7 +100,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     // chatroom 정보
     handleSetData();
     if (chatBoxRef.current) {
-      console.log("실행시점에 작동하는지 확인");
       // 예: 스크롤을 맨 아래로 이동
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
@@ -121,9 +123,30 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         memberId: chatPartnerId,
       },
     });
+
+    const productRes = await axios.get(
+      `/api/product/view/${res.data.productId}`,
+    );
+
+    setProduct(productRes.data);
+    const purchaseRes = await axios.get("/api/product/checkpurchase", {
+      params: {
+        memberId: id,
+        productId: res.data.productId,
+      },
+    });
+    console.log(purchaseRes.data);
+
+    setProduct((prev) => ({
+      ...prev,
+      expenseId: purchaseRes.data.expenseId,
+      purchasedAt: purchaseRes.data.purchasedAt,
+    }));
     setImageSrc(imageRes.data);
     checkPurchase(id, res.data.productId);
   }
+
+  console.log(purchased);
 
   // 내가 구매자인지 확인하는함수
   function checkPurchase(id, productId) {
@@ -297,6 +320,21 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       });
   };
 
+  const handleOpenReviewModal = () => {
+    console.log("실행확인");
+    setIsModalOpen(true);
+  };
+
+  const handleReviewComplete = (productId) => {
+    setPurchasedList((prevList) =>
+      prevList.map((product) =>
+        product.productId === productId
+          ? { ...product, reviewStatus: "completed" }
+          : product,
+      ),
+    );
+  };
+
   return (
     <Box>
       <Flex
@@ -335,8 +373,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ) : (
               <Payment chatRoom={chatRoom} />
             )}
-            {!purchased && !isSeller && (
-              <Button onClick={() => navigate("/myPage")}>후기</Button>
+            {/* Todo pruchase 로직 다시 짜야함*/}
+            {purchased && !isSeller && (
+              <Button onClick={handleOpenReviewModal}>후기</Button>
             )}
             <DialogCompo
               roomId={realChatRoomId}
@@ -424,6 +463,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           </Button>
         </HStack>
       </Flex>
+      <ReviewModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={product}
+        onComplete={() => handleReviewComplete(product.productId)}
+      />
     </Box>
   );
 }
