@@ -248,7 +248,7 @@ public class ProductService {
 
     // 메인 페이지에서 각각 상품 5개씩 가져오기
     public Map<String, List<Product>> getProductMainList() {
-        Integer limit = 5;
+        Integer limit = 10;
 
         List<Product> sellProducts = mapper.selectSellProducts(limit);
 

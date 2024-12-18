@@ -13,7 +13,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { SegmentedControl } from "../../components/ui/segmented-control.jsx";
 
 export function MainPage() {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [sellProductList, setSellProductList] = useState([]);
   const [shareProductList, setShareProductList] = useState([]);
   const [likeData, setLikeData] = useState({});
@@ -79,11 +79,15 @@ export function MainPage() {
   }, []);
 
   return (
-    <Box>
+    <Box mb={"30px"}>
       <Image src="/image/testImage.png" w="100%" h="300px" mt="3" />
       <Separator my={10} />
-      <Heading m={5}> 카테고리별 상품 찾기</Heading>
+      <Heading my={3} size={"2xl"}>
+        {" "}
+        카테고리별 상품 찾기
+      </Heading>
       <SegmentedControl
+        size={"lg"}
         defaultValue="product"
         onValueChange={(e) => setPay(e.value)}
         items={[
@@ -97,73 +101,110 @@ export function MainPage() {
       />
 
       <Separator my={10} />
-      <Heading>중고 아이템</Heading>
+
+      <Heading size={"2xl"} mb={5} ml={"10%"}>
+        중고 아이템
+      </Heading>
       {loading ? (
         <p>상품 정보를 불러오는 중입니다...</p>
       ) : (
-        <Swiper
-          slidesPerView={3}
-          spaceBetween={30}
-          loop={true}
-          pagination={{
-            clickable: true,
-          }}
-          navigation={true}
-          modules={[Pagination, Navigation]}
-          className="main-page-swiper"
-        >
-          {sellProductList.length > 0 ? (
-            sellProductList.map((product) => (
-              <SwiperSlide
-                className="main-page-swiper-slide"
-                key={product.productId}
-              >
-                <Box w="300px" h="auto">
-                  <ProductItem
-                    product={product}
-                    likeCount={likeData[product.productId] || 0}
-                    isLiked={userLikes.has(product.productId)}
-                  />
-                </Box>
-              </SwiperSlide>
-            ))
-          ) : (
-            <p>조회된 결과가 없습니다.</p>
-          )}
-        </Swiper>
+        <Box position="relative">
+          <Swiper
+            slidesPerView={5}
+            spaceBetween={20}
+            loop={true}
+            pagination={{
+              clickable: true,
+              el: ".swiper-pagination-sell", // sell Swiper의 pagination
+            }}
+            navigation={{
+              nextEl: ".swiper-button-next-sell", // sell Swiper의 내비게이션
+              prevEl: ".swiper-button-prev-sell",
+            }}
+            modules={[Pagination, Navigation]}
+            className="main-page-swiper"
+          >
+            {sellProductList.length > 0 ? (
+              sellProductList.map((product) => (
+                <SwiperSlide
+                  className="main-page-swiper-slide"
+                  key={product.productId}
+                >
+                  <Box w="300px" h="auto">
+                    <ProductItem
+                      product={product}
+                      likeCount={likeData[product.productId] || 0}
+                      isLiked={userLikes.has(product.productId)}
+                    />
+                  </Box>
+                </SwiperSlide>
+              ))
+            ) : (
+              <p>조회된 결과가 없습니다.</p>
+            )}
+          </Swiper>
+          <div className="swiper-pagination-sell"></div>
+          <div className="swiper-button-next-sell">
+            <Image src="/image/Arrow.png" />
+          </div>
+          <div className="swiper-button-prev-sell">
+            <Image src="/image/Arrow.png" />
+          </div>
+        </Box>
       )}
+
       <Separator my={10} />
-      <Heading>나눔 아이템</Heading>
+
+      <Heading size={"2xl"} mb={5} ml={"10%"}>
+        나눔 아이템
+      </Heading>
       {loading ? (
         <p>상품 정보를 불러오는 중입니다...</p>
       ) : (
-        <Swiper
-          slidesPerView={3}
-          spaceBetween={30}
-          loop={true}
-          pagination={{
-            clickable: true,
-          }}
-          navigation={true}
-          modules={[Pagination, Navigation]}
-          className="mySwiper"
-        >
-          {shareProductList.length > 0 ? (
-            shareProductList.map((product) => (
-              <SwiperSlide key={product.productId}>
-                <Box w="300px" h="auto">
-                  <ProductItem
-                    product={product}
-                    likeCount={likeData[product.productId] || 0}
-                    isLiked={userLikes.has(product.productId)}
-                  />
-                </Box>
-              </SwiperSlide>
-            ))
-          ) : (
-            <p>조회된 결과가 없습니다.</p>
-          )}
-        </Swiper>
+        <Box position="relative">
+          <Swiper
+            slidesPerView={5}
+            spaceBetween={20}
+            loop={true}
+            pagination={{
+              clickable: true,
+              el: ".swiper-pagination-share", // share Swiper의 pagination
+            }}
+            navigation={{
+              nextEl: ".swiper-button-next-share", // share Swiper의 내비게이션
+              prevEl: ".swiper-button-prev-share",
+            }}
+            modules={[Pagination, Navigation]}
+            className="main-page-swiper"
+          >
+            {shareProductList.length > 0 ? (
+              shareProductList.map((product) => (
+                <SwiperSlide
+                  className="main-page-swiper-slide"
+                  key={product.productId}
+                >
+                  <Box w="300px" h="auto">
+                    <ProductItem
+                      product={product}
+                      likeCount={likeData[product.productId] || 0}
+                      isLiked={userLikes.has(product.productId)}
+                    />
+                  </Box>
+                </SwiperSlide>
+              ))
+            ) : (
+              <p>조회된 결과가 없습니다.</p>
+            )}
+          </Swiper>
+
+          <div className="swiper-pagination-share"></div>
+          <div className="swiper-button-next-share">
+            <Image src="/image/Arrow.png" />
+          </div>
+          <div className="swiper-button-prev-share">
+            <Image src="/image/Arrow.png" />
+          </div>
+        </Box>
       )}
     </Box>
   );

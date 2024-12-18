@@ -1,16 +1,65 @@
+/* 메인페이지 swiper*/
 .main-page-swiper {
-
-    height: 100%;
-    padding-bottom: 40px;
+    position: relative;
+    width: 80%;
 }
 
 .main-page-swiper-slide {
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* 메인페이지 pagination*/
+.swiper-pagination-sell, .swiper-pagination-share {
+    display: flex;
+    justify-content: center;
+    z-index: 5;
+    margin-top: 20px;
+    bottom: 20px; /* 원하는 만큼 아래로 내리기 */
+}
+
+/* 페이지네이션의 각 불릿 스타일 */
+.swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background-color: darkseagreen;
+    opacity: 0.5;
+    margin: 0 8px;
+}
+
+/* 활성화된 페이지네이션 불릿 */
+.swiper-pagination-bullet-active {
+    opacity: 1;
+}
+
+/* 메인페이지 navigation 버튼*/
+.swiper-button-prev-sell,
+.swiper-button-prev-share,
+.swiper-button-next-sell,
+.swiper-button-next-share {
+    position: absolute;
+    cursor: pointer;
+    top: 45%;
+    width: 60px;
+    height: 40px;
+    display: flex;
+    z-index: 10;
+}
+
+.swiper-button-prev-sell,
+.swiper-button-prev-share {
+    left: 100px;
+    transform: rotate(180deg);
+}
+
+.swiper-button-next-sell,
+.swiper-button-next-share {
+    right: 100px;
+}
+
+
+/* 상품 페이지 swiper */
 .product-page-swiper {
     display: flex;
     justify-content: center;
@@ -30,3 +79,4 @@
     max-height: 100%;
     object-fit: contain;
 }
+
