@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { IoClose } from "react-icons/io5";
 import "./MapModal.css";
-import { FaLocationArrow } from "react-icons/fa";
 import { createPortal } from "react-dom";
+import { Image } from "@chakra-ui/react";
 
 export const MiniMapModal = ({ isOpen, onClose, product }) => {
   const [markerPosition, setMarkerPosition] = useState({
@@ -64,7 +64,7 @@ export const MiniMapModal = ({ isOpen, onClose, product }) => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <FaLocationArrow />
+                    <Image src="/image/KakaoMap.png" boxSize={"20px"} />
                   </a>
                 </div>
               </MapMarker>
