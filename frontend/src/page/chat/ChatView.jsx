@@ -325,15 +325,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     setIsModalOpen(true);
   };
 
-  const handleReviewComplete = (productId) => {
-    setPurchasedList((prevList) =>
-      prevList.map((product) =>
-        product.productId === productId
-          ? { ...product, reviewStatus: "completed" }
-          : product,
-      ),
-    );
-  };
+  const handleReviewComplete = (productId) => {};
 
   return (
     <Box>
