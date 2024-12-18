@@ -300,7 +300,7 @@ export function ProductAdd(props) {
             <Field label={"상세지역"}>
               <Input
                 value={detailAddress}
-                placeholder="ex) 이대역 4번출구 스타벅스 "
+                placeholder="ex) (이대역) 4번출구 스타벅스 "
                 onChange={(e) => setDetailAddress(e.target.value)}
               />
             </Field>
