@@ -6,12 +6,10 @@ import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
-import {
-  BoardCategories,
-  BoardCategoryContainer,
-} from "../../components/category/BoardCategoryContainer.jsx";
+import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import styled from "@emotion/styled";
 
 export function BoardView() {
   const { boardId } = useParams();
@@ -20,6 +18,16 @@ export function BoardView() {
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
   const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
+
+  const StyledQuill = styled(ReactQuill)`
+    .ql-container {
+      border: none !important;
+    }
+
+    .ql-editor {
+      border: none !important;
+    }
+  `;
 
   // URL에서 category 쿼리 파라미터를 읽어서 selectedCategory를 설정
   useEffect(() => {
@@ -82,26 +90,6 @@ export function BoardView() {
         />
       </Box>
 
-      {/* 카테고리 제목 */}
-      <h3
-        style={{
-          textAlign: "center", // 텍스트 중앙 정렬
-          fontSize: "32px", // 글씨 크기 키우기
-          marginBottom: "10px", // 아래쪽 여백 추가
-          marginTop: "10px", // 위쪽 여백
-          borderTop: "2px solid #ccc", // 상단 구분선
-          borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
-          paddingBottom: "10px", // 구분선 아래 여백 추가
-          paddingTop: "10px", // 구분선 위 여백 추가
-        }}
-      >
-        {selectedCategory === "all"
-          ? "전체"
-          : BoardCategories.find((cat) => cat.value === selectedCategory)
-              ?.label || "잘못된 카테고리"}{" "}
-        게시판
-      </h3>
-
       <Box p={5} border="1px solid #e2e8f0" borderRadius="lg">
         {/* 제목, 작성자, 날짜 */}
         <Box mb={5} borderBottom="1px solid #e2e8f0" pb={3}>
@@ -115,11 +103,16 @@ export function BoardView() {
 
         {/* 본문 */}
         <Stack gap={5}>
-          <ReactQuill
+          <StyledQuill
             value={board.content || ""}
             readOnly
             modules={{ toolbar: false }}
-            style={{ width: "100%", height: "auto" }}
+            style={{
+              width: "100%",
+              height: "auto",
+              minHeight: "400px",
+              maxHeight: "auto",
+            }}
           />
 
           {/* 이미지 표시 */}

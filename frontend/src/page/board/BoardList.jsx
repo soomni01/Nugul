@@ -133,29 +133,8 @@ export function BoardList() {
         onCategorySelect={handleCategorySelect}
       />
 
-      <Box>
-        <h3
-          style={{
-            textAlign: "center", // 텍스트 중앙 정렬
-            fontSize: "32px", // 글씨 크기 키우기
-            marginBottom: "10px", // 아래쪽 여백 추가
-            marginTop: "10px", // 위쪽 여백
-            borderTop: "2px solid #ccc", // 상단 구분선
-            borderBottom: "2px solid #ccc", // 구분선 (hr 대신)
-            paddingBottom: "10px", // 구분선 아래 여백 추가
-            paddingTop: "10px", // 구분선 위 여백 추가
-          }}
-        >
-          {selectedCategory === "all"
-            ? "전체"
-            : BoardCategories.find((cat) => cat.value === selectedCategory)
-                ?.label || "잘못된 카테고리"}{" "}
-          게시판
-        </h3>
-      </Box>
-
       {/* 게시물 제목 */}
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+      <Flex justifyContent="space-between" alignItems="center">
         <h3>게시물 목록</h3>
         {isAuthenticated && (
           <Button onClick={handleWriteClick}>게시물 쓰기</Button>
@@ -166,7 +145,7 @@ export function BoardList() {
       {boardList.length > 0 ? (
         <Box>
           <hr />
-          <Table.Root interactive>
+          <Table.Root interactive p={"6px"}>
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader textAlign="center">번호</Table.ColumnHeader>
@@ -174,10 +153,17 @@ export function BoardList() {
                 <Table.ColumnHeader textAlign="center">
                   작성자
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
+                <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>
+                <Table.ColumnHeader
+                  display={{ base: "none", md: "table-cell" }}
+                  textAlign="center"
+                >
                   카테고리
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
+                <Table.ColumnHeader
+                  display={{ base: "none", md: "table-cell" }}
+                  textAlign="center"
+                >
                   작성날짜
                 </Table.ColumnHeader>
               </Table.Row>
@@ -185,12 +171,14 @@ export function BoardList() {
             <Table.Body>
               {boardList.map((board) => (
                 <Table.Row
+                  _hover={{ cursor: "pointer" }}
                   onClick={() => handleRowClick(board.boardId)}
                   key={board.boardId}
                 >
                   <Table.Cell textAlign="center">{board.boardId}</Table.Cell>
+                  <Table.Cell textAlign="center">{board.title}</Table.Cell>
+                  <Table.Cell textAlign="center">{board.writer}</Table.Cell>
                   <Table.Cell textAlign="center">
-                    {board.title}
                     {board.countComment > 0 && (
                       <Badge variant={"subtle"} colorPalette={"green"}>
                         <FaCommentDots />
@@ -204,12 +192,19 @@ export function BoardList() {
                       </Badge>
                     )}
                   </Table.Cell>
-                  <Table.Cell textAlign="center">{board.writer}</Table.Cell>
-                  <Table.Cell textAlign="center">
+                  <Table.Cell
+                    display={{ base: "none", md: "table-cell" }}
+                    textAlign="center"
+                  >
                     {BoardCategories.find((cat) => cat.value === board.category)
                       ?.label || board.category}
                   </Table.Cell>
-                  <Table.Cell textAlign="center">{board.createdAt}</Table.Cell>
+                  <Table.Cell
+                    display={{ base: "none", md: "table-cell" }}
+                    textAlign="center"
+                  >
+                    {board.createdAt}
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
