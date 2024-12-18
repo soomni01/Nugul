@@ -6,7 +6,7 @@ export function RootLayout() {
   const location = useLocation();
 
   return (
-    <Stack mx={{ md: 20, lg: 40 }}>
+    <Stack>
       <Box>
         {location.pathname === "/" ||
           location.pathname === "/member/signup" ||
