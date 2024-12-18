@@ -15,9 +15,9 @@ export function NaverLogin() {
   return (
     <>
       <Image
-        size="10%"
+        boxSize="50px"
         onClick={handleNaverLogin}
-        src="../../../public/image/NaverButton.png"
+        src="../../../public/image/NaverLogin.png"
         cursor="pointer"
       />
     </>

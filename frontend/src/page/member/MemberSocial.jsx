@@ -95,12 +95,11 @@ export function MemberSocial() {
           <Image
             src={
               platform === "naver"
-                ? "/image/NaverIcon.png"
-                : "/image/KakaoIcon.png"
+                ? "/image/NaverLogin.png"
+                : "/image/KakaoLogin.png"
             }
             boxSize="30px"
-            borderRadius="full"
-            m={1}
+            mt={1}
             mr={3}
           />
           회원가입
@@ -195,8 +194,7 @@ export function MemberSocial() {
           mt={3}
           color="gray"
           cursor="pointer"
-          justifyContent="end"
-          display="flex"
+          textAlign="end"
           onClick={() => {
             navigate("/");
           }}

@@ -146,28 +146,20 @@ export function MemberLogin() {
               />
             </Field>
           </Group>
-
-          <Box display="flex" mt={5}>
-            <Button w={"100%"} onClick={handleLoginClick}>
-              로그인
-            </Button>
-          </Box>
-
-          <HStack display="flex" justifyContent="center">
-            <KakaoLogin />
-            <NaverLogin />
-          </HStack>
-
-          <Box textAlign="center" mt={4}>
-            아직 계정이 없으신가요?{" "}
-            <Link
-              to="/member/signup"
-              style={{ color: "blue", textDecoration: "underline" }}
-            >
-              회원가입
-            </Link>
-          </Box>
         </Stack>
+        <Box display="flex" mt={5}>
+          <Button w={"100%"} onClick={handleLoginClick}>
+            로그인
+          </Button>
+        </Box>
+
+        <Box textAlign="end" mt={3}>
+          <Link to="/member/signup">회원가입</Link>
+        </Box>
+        <HStack display="flex" justifyContent="center">
+          <KakaoLogin />
+          <NaverLogin />
+        </HStack>
       </Box>
     </Box>
   );

@@ -145,7 +145,7 @@ export function MemberSignup() {
           display="flex"
           mb={8}
         >
-          회원 가입
+          회원가입
         </Text>
         <Stack gap={5}>
           <Field
@@ -299,14 +299,11 @@ export function MemberSignup() {
         </Stack>
         <Flex justifyContent="center" gap={4} mt={10}>
           <Button onClick={handleSaveClick} disabled={disabled} w={"100%"}>
-            회원 가입
+            회원가입
           </Button>
         </Flex>
-        <Box textAlign="center" mt={4}>
-          이미 계정이 있으신가요?{" "}
-          <Link to="/" style={{ color: "blue", textDecoration: "underline" }}>
-            로그인
-          </Link>
+        <Box textAlign="end" mt={3}>
+          <Link to="/">로그인</Link>
         </Box>
       </Box>
     </Box>
