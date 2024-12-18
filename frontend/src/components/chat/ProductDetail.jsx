@@ -29,44 +29,51 @@ export function ProductDetail({ productId }) {
   }, []);
   const fileName = product.fileList?.[0]?.name;
   const fileSrc = product.fileList?.[0]?.src;
-  console.log(product.lat, product.lng);
-  return (
-    <Box mx={"auto"} w={"400px"} h={"auto"} p={6} overflow={"hidden"}>
-      <Box m={5}>
-        <Heading> {product.productName}</Heading>
-        <Separator></Separator>
-      </Box>
-      <Box m={5}>
-        <Image src={fileSrc} alt={fileName} />
-        <Field label={"상품 설명"} readOnly>
-          <Textarea h={50} value={product.description} />
-        </Field>
-      </Box>
-      <Box m={3}>
-        <Box mx={"auto"}>
-          <HStack>
-            <Field label={"가격"} readOnly>
-              <InputGroup startElement={<PiCurrencyKrwBold />}>
-                <Input value={product.price} />
-              </InputGroup>
-            </Field>
+  const defaultsrc = "./image/testImage.png";
 
-            <Field label={"작성자"} readOnly>
-              <Input value={product.nickname} />
-            </Field>
-          </HStack>
+  return (
+    <Box w={"350px"} h={"650px"} p={3} overflow={"hidden"}>
+      <Box mx={"auto"}>
+        <Box mx={5}>
+          <Heading> {product.productName}</Heading>
+          <Separator></Separator>
         </Box>
-      </Box>
-      <Box>
-        <Map
-          className={"map"}
-          center={position}
-          style={{ width: "100%", height: "250px" }}
-          level={3}
-        >
-          <MapMarker position={position} />
-        </Map>
-        <p>거래장소:{product.locationName}</p>
+        <Box m={5} display="flex" flexDirection="column" alignItems="center">
+          <Image
+            height={"200px"}
+            w={"100%"}
+            src={fileSrc || defaultsrc}
+            alt={fileName}
+          />
+          <Field label={"상품 설명"} readOnly>
+            <Textarea h={50} value={product.description} />
+          </Field>
+        </Box>
+        <Box m={3}>
+          <Box mx={"auto"}>
+            <HStack>
+              <Field label={"가격"} readOnly>
+                <InputGroup startElement={<PiCurrencyKrwBold />}>
+                  <Input value={product.price} />
+                </InputGroup>
+              </Field>
+
+              <Field label={"작성자"} readOnly>
+                <Input value={product.nickname} />
+              </Field>
+            </HStack>
+          </Box>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Map
+            center={position}
+            style={{ width: "90%", height: "180px" }}
+            level={3}
+          >
+            <MapMarker position={position} />
+          </Map>
+          <p>거래장소:{product.locationName}</p>
+        </Box>
       </Box>
     </Box>
   );

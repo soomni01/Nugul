@@ -87,11 +87,22 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   // 의존성에  message 넣어야함
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // 토큰이 없으면 로그인 페이지로 리다이렉트
+      navigate("/");
+    }
     // 최신 메세지
     loadInitialMessages();
     // chatroom 정보
     handleSetData();
-  }, []);
+    if (chatBoxRef.current) {
+      console.log("실행시점에 작동하는지 확인");
+      // 예: 스크롤을 맨 아래로 이동
+      chatBoxRef.current.scrollTop =
+        chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
+    }
+  }, [navigate]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -110,7 +121,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         memberId: chatPartnerId,
       },
     });
-
     setImageSrc(imageRes.data);
     checkPurchase(id, res.data.productId);
   }
@@ -217,7 +227,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
     if (chatBox.scrollTop < reach) {
       // 스크롤 끝 점에서 로드
-      loadPreviousMessage();
+      await loadPreviousMessage();
     }
   };
 
@@ -291,8 +301,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     <Box>
       <Flex
         direction="column"
-        w={500}
-        h={800}
+        w={"500px"}
+        h={"650px"}
         overflow={"hidden"}
         bg={"blue.300/50"}
         border={"1px solid"}
@@ -312,10 +322,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           </Box>
           <Flex>
             {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
-            {isSeller && chatRoom.status !== "Sold" ? (
+            {isSeller ? (
               <Button
+                className={"ScrollBarContainer"}
                 style={{ marginLeft: "16px" }}
                 colorPalette={"cyan"}
+                disabled={isSold}
                 onClick={handleSuccessTransaction}
               >
                 거래완료
@@ -323,7 +335,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ) : (
               <Payment chatRoom={chatRoom} />
             )}
-            {!purchased && !isSeller && <Button>후기</Button>}
+            {!purchased && !isSeller && (
+              <Button onClick={() => navigate("/myPage")}>후기</Button>
+            )}
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
@@ -348,15 +362,30 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                     {message.sender !== id && (
                       <Avatar size={"sm"} src={imageSrc} />
                     )}
-                    <Stack mx={2}>
+                    <Stack
+                      mx={2}
+                      spacing={0}
+                      align={message.sender === id ? "flex-end" : "flex-start"}
+                    >
                       <Badge
                         p={1}
                         key={index}
                         colorPalette={message.sender === id ? "gray" : "yellow"}
+                        alignSelf={
+                          message.sender === id ? "flex-end" : "flex-start"
+                        }
                       >
                         {message.content}
                       </Badge>
-                      <p style={{ fontSize: "8px" }}>
+                      <p
+                        style={{
+                          fontSize: "8px",
+                          textAlign: message.sender === id ? "right" : "left",
+                          margin: 0, // margin을 0으로 설정
+                          padding: 0, // padding도 0으로 설정
+                          marginTop: "2px", // 메시지와 시간 사이 약간의 간격
+                        }}
+                      >
                         {message.sentAt === null
                           ? new Date().toLocaleTimeString()
                           : new Date(message.sentAt).toLocaleTimeString()}

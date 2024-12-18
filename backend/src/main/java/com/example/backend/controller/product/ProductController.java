@@ -175,7 +175,7 @@ public class ProductController {
     @GetMapping("checkpurchase")
     @PreAuthorize("isAuthenticated()")
     public boolean checkPurchase(String memberId, String productId) {
-
+        
         return service.checkPurchase(memberId, productId);
 
     }

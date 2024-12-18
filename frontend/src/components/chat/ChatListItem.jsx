@@ -34,7 +34,8 @@ export function ChatListItem({ chat, onDelete, onClick }) {
       });
   }, []);
 
-  // TODO,  사진 삭제 되면 채팅방 정보 불러올떄 오류 뜰거같은데, 사진만 남겨놓을수 있나 ?
+  const defaultsrc = "./image/testImage.png";
+
   return (
     <Box variant={"outline"} p={3} onClick={onClick} width={"auto"}>
       <Card.Root
@@ -50,12 +51,14 @@ export function ChatListItem({ chat, onDelete, onClick }) {
           <Image
             objectFit={"cover"}
             maxW={"100px"}
-            src={productImage.src}
+            src={productImage.src || defaultsrc}
             alt={productImage.name}
           />
           <Box>
             <Card.Body>
-              <Card.Title> 상품명: {chat.productName} </Card.Title>
+              <Card.Title>
+                <h3> 상품명: {chat.productName} </h3>
+              </Card.Title>
               <HStack mt="4">
                 <Badge> 닉네임 : {chat.nickname}</Badge>
               </HStack>

@@ -81,7 +81,6 @@ public class MemberController {
         } else {
             return ResponseEntity.badRequest().body(Map.of("message",
                     Map.of("type", "warning", "text", "정확한 정보를 입력해주세요.")));
-
         }
     }
 

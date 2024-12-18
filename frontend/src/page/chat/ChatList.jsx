@@ -16,13 +16,25 @@ export function ChatList() {
   const [chatRoomId, setChatRoomId] = useState(-1);
   const [status, setStatus] = useState("For Sale");
   const [productId, setProductId] = useState(-1);
+  const token = localStorage.getItem("token");
 
+  if (!token) {
+    // 토큰이 없으면 로그인 페이지로 리다이렉트
+    navigate("/");
+  }
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // 토큰이 없으면 로그인 페이지로 리다이렉트
+      navigate("/");
+    }
+
     if (id) {
       fetch(id);
     }
     getChatList();
-  }, [searchParams, id, status]);
+  }, [searchParams, id, status, navigate]);
 
   function getChatList() {
     axios
@@ -66,7 +78,7 @@ export function ChatList() {
   };
 
   return (
-    <Box>
+    <Box w={"auto"}>
       <Heading> 채팅 목록</Heading>
       <HStack>
         <Button
@@ -101,9 +113,9 @@ export function ChatList() {
         display={"flex"}
         borderRadius={"lg"}
         border={"1px solid"}
-        maxHeight={"800px"}
+        maxHeight={"650px"}
         borderColor={"gray.300"}
-        // bg={"whiteAlpha.300"}
+        w={"auto"}
       >
         <Box overflowY={"scroll"}>
           {chatList.map((chat) => (
