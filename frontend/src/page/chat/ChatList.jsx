@@ -103,7 +103,7 @@ export function ChatList() {
         border={"1px solid"}
         maxHeight={"650px"}
         borderColor={"gray.300"}
-        // bg={"whiteAlpha.300"}
+        w={"auto"}
       >
         <Box overflowY={"scroll"}>
           {chatList.map((chat) => (

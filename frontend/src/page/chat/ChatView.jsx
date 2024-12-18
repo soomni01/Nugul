@@ -291,7 +291,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     <Box>
       <Flex
         direction="column"
-        w={"auto"}
+        w={"500px"}
         h={"650px"}
         overflow={"hidden"}
         bg={"blue.300/50"}
@@ -349,15 +349,30 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                     {message.sender !== id && (
                       <Avatar size={"sm"} src={imageSrc} />
                     )}
-                    <Stack mx={2}>
+                    <Stack
+                      mx={2}
+                      spacing={0}
+                      align={message.sender === id ? "flex-end" : "flex-start"}
+                    >
                       <Badge
                         p={1}
                         key={index}
                         colorPalette={message.sender === id ? "gray" : "yellow"}
+                        alignSelf={
+                          message.sender === id ? "flex-end" : "flex-start"
+                        }
                       >
                         {message.content}
                       </Badge>
-                      <p style={{ fontSize: "8px" }}>
+                      <p
+                        style={{
+                          fontSize: "8px",
+                          textAlign: message.sender === id ? "right" : "left",
+                          margin: 0, // margin을 0으로 설정
+                          padding: 0, // padding도 0으로 설정
+                          marginTop: "2px", // 메시지와 시간 사이 약간의 간격
+                        }}
+                      >
                         {message.sentAt === null
                           ? new Date().toLocaleTimeString()
                           : new Date(message.sentAt).toLocaleTimeString()}
