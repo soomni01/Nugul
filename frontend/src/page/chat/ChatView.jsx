@@ -87,11 +87,17 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   // 의존성에  message 넣어야함
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // 토큰이 없으면 로그인 페이지로 리다이렉트
+      navigate("/");
+    }
     // 최신 메세지
     loadInitialMessages();
     // chatroom 정보
     handleSetData();
-  }, []);
+  }, [navigate]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드

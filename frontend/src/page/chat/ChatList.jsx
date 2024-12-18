@@ -16,7 +16,12 @@ export function ChatList() {
   const [chatRoomId, setChatRoomId] = useState(-1);
   const [status, setStatus] = useState("For Sale");
   const [productId, setProductId] = useState(-1);
+  const token = localStorage.getItem("token");
 
+  if (!token) {
+    // 토큰이 없으면 로그인 페이지로 리다이렉트
+    navigate("/");
+  }
   useEffect(() => {
     const token = localStorage.getItem("token");
 
