@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box, Group, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Group,
+  HStack,
+  Image,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { Checkbox } from "../../components/ui/checkbox.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { MdOutlineEmail } from "react-icons/md";
+import { FaRegUser } from "react-icons/fa";
+import { ToggleTip } from "../../components/ui/toggle-tip.jsx";
+import { LuInfo } from "react-icons/lu";
 
 export function MemberSocial() {
   const location = useLocation();
@@ -76,68 +88,131 @@ export function MemberSocial() {
   const nicknameCheckButtonDisabled = !newNickname || newNickname.length === 0;
 
   return (
-    <Box>
-      <HStack>
-        <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-          {platform === "naver" ? "네이버 회원가입" : "카카오 회원가입"} 추가
-          정보
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+    >
+      <Box>
+        <Text
+          justifyContent="center"
+          display="flex"
+          fontSize="2xl"
+          fontWeight="bold"
+          mb={3}
+        >
+          <Image
+            src={
+              platform === "naver"
+                ? "/image/NaverLogin.png"
+                : "/image/KakaoLogin.png"
+            }
+            boxSize="30px"
+            mt={1}
+            mr={3}
+          />
+          회원가입
         </Text>
-        <Button
+        <HStack gap={0} display="flex" justifyContent="center" mb={8}>
+          <Text fontSize="lg" fontWeight="bold">
+            사용자 정보 추가 입력
+          </Text>
+          <ToggleTip content="네이버 로그인에서 제공하는 '이메일' 주소 정보는 이용자가 계정에 등록한 '연락처 이메일' 정보입니다.">
+            <Button size="xs" variant="ghost">
+              <LuInfo />
+            </Button>
+          </ToggleTip>
+        </HStack>
+
+        <Stack gap={5}>
+          <Group attached w={"100%"}>
+            <Button
+              variant={"outline"}
+              _hover={{ bg: "transparent" }}
+              size={"xl"}
+              cursor={"default"}
+            >
+              <MdOutlineEmail />
+            </Button>
+            <Input size={"xl"} value={email} />
+          </Group>
+
+          <Field
+            helperText={
+              nicknameCheckMessage && (
+                <Text color={nicknameCheck ? "green.500" : "red.500"}>
+                  {nicknameCheckMessage}
+                </Text>
+              )
+            }
+          >
+            <Group attached w={"100%"}>
+              <Button
+                variant={"outline"}
+                _hover={{ bg: "transparent" }}
+                size={"xl"}
+                cursor={"default"}
+              >
+                <FaRegUser />
+              </Button>
+              <Group>
+                <Input
+                  size={"xl"}
+                  value={newNickname}
+                  placeholder={nickname}
+                  onChange={(e) => {
+                    setNickName(e.target.value);
+                  }}
+                />
+
+                <Button
+                  size={"xl"}
+                  onClick={() => handleNickNameCheckClick(newNickname)}
+                  variant={"outline"}
+                  disabled={nicknameCheckButtonDisabled}
+                >
+                  중복 확인
+                </Button>
+              </Group>
+            </Group>
+          </Field>
+
+          {profileImage && (
+            <Checkbox
+              ml={1}
+              size={"md"}
+              checked={useProfileImage}
+              onChange={(e) => setUseProfileImage(!useProfileImage)}
+            >
+              {platform === "naver"
+                ? "네이버 프로필 이미지 사용"
+                : "카카오 프로필 이미지 사용"}
+            </Checkbox>
+          )}
+
+          <Button
+            ml={1}
+            mt={3}
+            w={"99%"}
+            onClick={handleSaveClick}
+            disabled={disabled}
+          >
+            회원가입
+          </Button>
+        </Stack>
+        <Text
+          mt={3}
+          color="gray"
+          cursor="pointer"
+          textAlign="end"
           onClick={() => {
             navigate("/");
           }}
         >
           취소
-        </Button>
-      </HStack>
-      <Stack gap={5}>
-        <Field readOnly label="이메일">
-          <Input value={email} />
-        </Field>
-
-        <Field
-          label={"닉네임"}
-          helperText={
-            nicknameCheckMessage && (
-              <Text color={nicknameCheck ? "green.500" : "red.500"}>
-                {nicknameCheckMessage}
-              </Text>
-            )
-          }
-        >
-          <Group attached w={"100%"}>
-            <Input
-              value={newNickname}
-              placeholder={nickname}
-              onChange={(e) => {
-                setNickName(e.target.value);
-              }}
-            />
-
-            <Button
-              onClick={() => handleNickNameCheckClick(nickname)}
-              variant={"outline"}
-              disabled={nicknameCheckButtonDisabled}
-            >
-              중복 확인
-            </Button>
-          </Group>
-        </Field>
-        {profileImage && (
-          <Checkbox
-            checked={useProfileImage}
-            onChange={(e) => setUseProfileImage(!useProfileImage)}
-          >
-            {platform === "naver"
-              ? "네이버 프로필 이미지 사용"
-              : "카카오 프로필 이미지 사용"}
-          </Checkbox>
-        )}
-
-        <Button w={"100%"} onClick={handleSaveClick} disabled={disabled}>
-          회원 가입
-        </Button>
-      </Stack>
+        </Text>
+      </Box>
     </Box>
   );
 }

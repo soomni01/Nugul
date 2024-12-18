@@ -244,5 +244,28 @@ public class MemberService {
 
         return result;
     }
+
+    // 네이버 액세스 토큰을 이용한 연동 해제 처리
+    public String unlinkNaver(String accessToken) {
+        if (accessToken == null || accessToken.isEmpty()) {
+            throw new IllegalArgumentException("액세스 토큰이 없습니다.");
+        }
+
+        // 네이버 액세스 토큰 삭제 요청 URL
+        String url = "https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=" + clientId + "&client_secret=" + clientSecret + "&access_token=" + accessToken;
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            String result = restTemplate.postForObject(url, null, String.class);
+            // 결과를 확인하여 연동 해제 성공/실패를 판단
+            if (result != null && result.contains("error")) {
+                throw new RuntimeException("연동 해제 실패");
+            }
+            return "네이버 연동 해제 성공";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("네이버 연동 해제 실패", e);
+        }
+    }
 }
 

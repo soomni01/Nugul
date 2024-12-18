@@ -5,6 +5,9 @@ import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import { TbLock, TbLockCheck } from "react-icons/tb";
+import { FaRegUser } from "react-icons/fa";
+import { MdOutlineEmail } from "react-icons/md";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
@@ -121,146 +124,187 @@ export function MemberSignup() {
 
   let nicknameCheckButtonDisabled = nickname.length === 0;
 
-  const passwordMatchText =
-    rePassword.length === 0 ? (
-      "비밀번호를 다시 입력하세요."
-    ) : !passwordRegEx.test(rePassword) ? (
-      <Text color="red.500">
-        확인 비밀번호가 올바르지 않습니다. (영문, 숫자, 특수문자 포함, 8자 이상)
-      </Text>
-    ) : password === rePassword ? (
-      <Text color="green.500">비밀번호가 일치합니다.</Text>
-    ) : (
-      <Text color="red.500">비밀번호가 일치하지 않습니다.</Text>
-    );
-
   return (
     <Box
-      p={5}
-      border="1px solid"
-      borderColor="gray.300"
-      borderRadius="md"
-      minWidth="400px"
-      maxWidth="500px"
-      margin="0 auto"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
     >
-      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-        회원 가입
-      </Text>
-      <Text mb={5}>가입을 통해 더 다양한 서비스를 만나 보세요</Text>
-      <Stack gap={5}>
-        <hr />
-        <Field
-          helperText={
-            idCheckMessage && (
-              <Text color={idCheck ? "green.500" : "red.500"}>
-                {idCheckMessage}
-              </Text>
-            )
-          }
+      <Box
+        p={10}
+        borderRadius="xl"
+        minWidth="400px"
+        maxWidth="500px"
+        margin="0 auto"
+      >
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          justifyContent="center"
+          display="flex"
+          mb={8}
         >
-          <Group attached w={"100%"}>
-            <Input
-              value={memberId}
-              placeholder="이메일( text@naver.com 등)"
-              onChange={(e) => {
-                setIdCheck(false);
-                setMemberId(e.target.value);
-                setIdCheckMessage("");
-              }}
-            />
-            <Button onClick={handleIdCheckClick} variant={"outline"}>
-              중복 확인
-            </Button>
-          </Group>
-        </Field>
+          회원가입
+        </Text>
+        <Stack gap={5}>
+          <Field
+            helperText={
+              idCheckMessage && (
+                <Text color={idCheck ? "green.500" : "red.500"}>
+                  {idCheckMessage}
+                </Text>
+              )
+            }
+          >
+            <Group attached w={"100%"}>
+              <Button
+                variant={"outline"}
+                _hover={{ bg: "transparent" }}
+                size={"xl"}
+                cursor={"default"}
+              >
+                <MdOutlineEmail />
+              </Button>
+              <Group>
+                <Input
+                  size={"xl"}
+                  value={memberId}
+                  placeholder="이메일"
+                  onChange={(e) => {
+                    setIdCheck(false);
+                    setMemberId(e.target.value);
+                    setIdCheckMessage("");
+                  }}
+                />
+                <Button
+                  size={"xl"}
+                  onClick={handleIdCheckClick}
+                  variant={"outline"}
+                >
+                  중복 확인
+                </Button>
+              </Group>
+            </Group>
+          </Field>
 
-        <Field
-          helperText={
-            password &&
-            (passwordRegEx.test(password) ? (
-              <Text color="green.500" mt={1}>
-                비밀번호가 올바른 형식입니다.
-              </Text>
-            ) : (
-              <Text color="red.500" mt={1}>
-                비밀번호 형식이 올바르지 않습니다. (영문, 숫자, 특수문자 포함,
-                8자 이상)
-              </Text>
-            ))
-          }
-        >
-          <Input
-            type="password"
-            value={password}
-            placeholder="비밀번호(영문, 숫자, 특수문자 포함 8~50자)"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </Field>
+          <Field
+            helperText={
+              password &&
+              (passwordRegEx.test(password) ? (
+                <Text color="green.500" mt={1}>
+                  비밀번호가 올바른 형식입니다.
+                </Text>
+              ) : (
+                <Text color="red.500" mt={1}>
+                  비밀번호 형식이 올바르지 않습니다. (영문, 숫자, 특수문자 포함,
+                  8자 이상)
+                </Text>
+              ))
+            }
+          >
+            <Group attached w={"100%"}>
+              <Button
+                variant={"outline"}
+                _hover={{ bg: "transparent" }}
+                size={"xl"}
+                cursor={"default"}
+              >
+                <TbLock />
+              </Button>
+              <Input
+                size={"xl"}
+                type="password"
+                value={password}
+                placeholder="비밀번호"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </Group>
+          </Field>
 
-        <Field
-          helperText={
-            rePassword &&
-            (password === rePassword ? (
-              <Text color="green.500" mt={1}>
-                비밀번호가 일치합니다.
-              </Text>
-            ) : (
-              <Text color="red.500" mt={1}>
-                비밀번호가 일치하지 않습니다.
-              </Text>
-            ))
-          }
-        >
-          <Input
-            type="password"
-            placeholder="비밀번호 재입력"
-            value={rePassword}
-            onChange={(e) => setRePassword(e.target.value)}
-          />
-        </Field>
+          <Field
+            helperText={
+              rePassword &&
+              (password === rePassword ? (
+                <Text color="green.500" mt={1}>
+                  비밀번호가 일치합니다.
+                </Text>
+              ) : (
+                <Text color="red.500" mt={1}>
+                  비밀번호가 일치하지 않습니다.
+                </Text>
+              ))
+            }
+          >
+            <Group attached w={"100%"}>
+              <Button
+                variant={"outline"}
+                _hover={{ bg: "transparent" }}
+                size={"xl"}
+                cursor={"default"}
+              >
+                <TbLockCheck />
+              </Button>
+              <Input
+                size={"xl"}
+                type="password"
+                placeholder="비밀번호 확인"
+                value={rePassword}
+                onChange={(e) => setRePassword(e.target.value)}
+              />
+            </Group>
+          </Field>
 
-        <Field
-          helperText={
-            nicknameCheckMessage && (
-              <Text color={nicknameCheck ? "green.500" : "red.500"}>
-                {nicknameCheckMessage}
-              </Text>
-            )
-          }
-        >
-          <Group attached w={"100%"}>
-            <Input
-              value={nickname}
-              placeholder="닉네임을 입력하세요"
-              onChange={(e) => {
-                setNickName(e.target.value);
-              }}
-            />
+          <Field
+            helperText={
+              nicknameCheckMessage && (
+                <Text color={nicknameCheck ? "green.500" : "red.500"}>
+                  {nicknameCheckMessage}
+                </Text>
+              )
+            }
+          >
+            <Group attached w={"100%"}>
+              <Button
+                variant={"outline"}
+                _hover={{ bg: "transparent" }}
+                size={"xl"}
+                cursor={"default"}
+              >
+                <FaRegUser />
+              </Button>
+              <Group>
+                <Input
+                  size={"xl"}
+                  value={nickname}
+                  placeholder="닉네임"
+                  onChange={(e) => {
+                    setNickName(e.target.value);
+                  }}
+                />
 
-            <Button
-              onClick={handleNickNameCheckClick}
-              variant={"outline"}
-              disabled={nicknameCheckButtonDisabled}
-            >
-              중복 확인
-            </Button>
-          </Group>
-        </Field>
-        <hr />
-      </Stack>
-      <Flex justifyContent="center" gap={4} mt={4}>
-        <Button onClick={handleSaveClick} disabled={disabled}>
-          회원 가입
-        </Button>
-      </Flex>
-      <Box textAlign="center" mt={4}>
-        이미 계정이 있으신가요?{" "}
-        <Link to="/" style={{ color: "blue", textDecoration: "underline" }}>
-          로그인
-        </Link>
+                <Button
+                  size={"xl"}
+                  onClick={handleNickNameCheckClick}
+                  variant={"outline"}
+                  disabled={nicknameCheckButtonDisabled}
+                >
+                  중복 확인
+                </Button>
+              </Group>
+            </Group>
+          </Field>
+        </Stack>
+        <Flex justifyContent="center" gap={4} mt={10}>
+          <Button onClick={handleSaveClick} disabled={disabled} w={"100%"}>
+            회원가입
+          </Button>
+        </Flex>
+        <Box textAlign="end" mt={3}>
+          <Link to="/">로그인</Link>
+        </Box>
       </Box>
     </Box>
   );
