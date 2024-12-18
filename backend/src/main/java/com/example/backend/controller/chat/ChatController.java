@@ -109,8 +109,6 @@ public class ChatController {
             boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
             boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId, roomId);
             boolean chatRemoved;
-            // 끝나고나면 일단 메시지를 보내긴 해야하고 , 진짜 삭제할건지는 한번 더 안에서 결정해야지
-
             if (messageRemoved && updateDeleted) {
                 // 둘다   삭제 한적 있는지 확인  >
                 boolean allDeleted = chatService.checkAllDeleted(roomId);
@@ -125,7 +123,6 @@ public class ChatController {
                     }
                 } else {
                     return ResponseEntity.ok().body(Map.of("message", Map.of("type", "success", "content", "메시지 삭제가  완료되었습니다.")));
-
                 }
             } else
                 return ResponseEntity.ok().body(Map.of("message", Map.of("type", "warning", "content", "뭘 삭제하려는 겁니까")));
@@ -148,7 +145,6 @@ public class ChatController {
 
     @GetMapping("{roomId}/image")
     public String getImage(@RequestParam String memberId) {
-        
         return chatService.getImage(memberId);
     }
 

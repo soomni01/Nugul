@@ -24,7 +24,7 @@ public class MemberController {
     @PostMapping("login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
         String token = service.token(member);
-      
+
         if (token != null) {
             return ResponseEntity.ok(Map.of("token", token,
                     "message", Map.of("type", "success",
@@ -81,7 +81,6 @@ public class MemberController {
         } else {
             return ResponseEntity.badRequest().body(Map.of("message",
                     Map.of("type", "warning", "text", "정확한 정보를 입력해주세요.")));
-
         }
     }
 
