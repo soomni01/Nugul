@@ -75,11 +75,12 @@ export function BoardView() {
     setSelectedCategory(categoryValue);
     if (categoryValue === "all") {
       navigate(`/board/list`); // "전체" 카테고리로 이동
+      console.log("선택된 카테고리:", categoryValue); // 상태 변경 전 출력
     } else {
+      console.log("선택된 카테고리:", categoryValue);
       navigate(`/board/list?category=${categoryValue}`); // 선택된 카테고리로 이동
     }
   };
-
   return (
     <Box mb={10}>
       {/* 카테고리 선택 */}

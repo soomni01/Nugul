@@ -29,7 +29,6 @@ export function BoardList() {
   });
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
-
   useEffect(() => {
     const controller = new AbortController();
     axios
@@ -66,6 +65,10 @@ export function BoardList() {
       nextSearch.keyword = "";
     }
     setSearch(nextSearch);
+    const selectedCategory = searchParams.get("category");
+    if (selectedCategory) {
+      setSelectedCategory(selectedCategory);
+    }
   }, [searchParams]);
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
