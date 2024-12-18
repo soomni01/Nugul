@@ -82,16 +82,16 @@ export function InquiryList({ onRowClick }) {
 
   return (
     <Box mt="60px">
-      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
+      <Text fontSize="2xl" fontWeight="bold" mt={-7} ml={5}>
         문의 내역
       </Text>
-      <Box>
+      <Box pt={4}>
         <Table.Root interactive>
           <TableHeader>
             <TableRow>
               <TableColumnHeader style={cellStyle}>번호</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>문의 유형</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>제목</TableColumnHeader>
+              <TableColumnHeader style={cellStyle}>문의 제목</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>작성자</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>작성 일자</TableColumnHeader>
               <TableColumnHeader style={cellStyle}>상태</TableColumnHeader>

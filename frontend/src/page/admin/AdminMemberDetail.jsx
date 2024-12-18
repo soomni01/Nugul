@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
   Tabs,
+  Text,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../components/ui/button.jsx";
@@ -45,7 +46,7 @@ export function AdminMemberDetail() {
       params: { memberId },
     });
 
-    // 회원의 판매, 구매, 결제 내역 데이터를 가져와 상태 업데이트
+    // 회원의 판매, 구매, 결제 내역 데이터를 가져와서 상태 업데이트
     Promise.all([
       fetchSoldProducts,
       fetchPurchasedProducts,
@@ -167,7 +168,6 @@ export function AdminMemberDetail() {
             <span>{memberId} 님의</span>
             <Tabs.Trigger value="SoldProducts">판매 내역</Tabs.Trigger>
             <Tabs.Trigger value="PurchasedProducts">구매 내역</Tabs.Trigger>
-            <Tabs.Trigger value="PaymentRecord">결제 내역</Tabs.Trigger>
           </Tabs.List>
 
           {/* 판매 내역 탭 */}
@@ -184,6 +184,11 @@ export function AdminMemberDetail() {
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "200px" }}
                     >
+                      구매자
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
                       카테고리
                     </TableColumnHeader>
                     <TableColumnHeader
@@ -195,16 +200,6 @@ export function AdminMemberDetail() {
                       style={{ ...headerStyle, width: "200px" }}
                     >
                       가격
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "250px" }}
-                    >
-                      작성자
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      상태
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
@@ -228,29 +223,22 @@ export function AdminMemberDetail() {
                           {product.productId}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
+                          {product.buyerId ? product.buyerId : "미정"}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {getCategoryLabel(product.category)}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.productName}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.price ? `${product.price}원` : "무료 나눔"}
+                          {product.price ? `${product.price}원` : "나눔"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.writer}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {product.status}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {product.price === 0
-                            ? "무료 나눔" // 무료 나눔은 판매중으로 표시
-                            : product.purchasedAt &&
-                                !isNaN(new Date(product.purchasedAt))
-                              ? new Date(
-                                  product.purchasedAt,
-                                ).toLocaleDateString()
-                              : "판매중"}{" "}
+                          {product.purchasedAt &&
+                          !isNaN(new Date(product.purchasedAt))
+                            ? new Date(product.purchasedAt).toLocaleDateString()
+                            : "판매중"}{" "}
                           {/* 판매일자가 없으면 판매중으로 표시 */}
                         </Table.Cell>
                       </Table.Row>
@@ -301,6 +289,11 @@ export function AdminMemberDetail() {
                       ID
                     </TableColumnHeader>
                     <TableColumnHeader
+                      style={{ ...headerStyle, width: "250px" }}
+                    >
+                      판매자
+                    </TableColumnHeader>
+                    <TableColumnHeader
                       style={{ ...headerStyle, width: "150px" }}
                     >
                       카테고리
@@ -316,9 +309,9 @@ export function AdminMemberDetail() {
                       가격
                     </TableColumnHeader>
                     <TableColumnHeader
-                      style={{ ...headerStyle, width: "250px" }}
+                      style={{ ...headerStyle, width: "200px" }}
                     >
-                      작성자
+                      거래 방법
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
@@ -344,6 +337,9 @@ export function AdminMemberDetail() {
                             : "상품 정보 없음"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
+                          {product.writer ? product.writer : "탈퇴한 회원"}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {getCategoryLabel(product.category)}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
@@ -353,7 +349,18 @@ export function AdminMemberDetail() {
                           {product.price ? `${product.price}원` : "무료 나눔"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
-                          {product.writer ? product.writer : "탈퇴한 회원"}
+                          {product.paymentStatus === "결제완료" && (
+                            <img
+                              src="/image/Kakaopay.png"
+                              alt="Kakaopay Icon"
+                              width="60px"
+                              height="auto"
+                              style={{ marginLeft: "60px" }}
+                            />
+                          )}
+                          {product.paymentStatus === "결제안함" && (
+                            <Text>만나서 거래</Text>
+                          )}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.purchasedAt
@@ -386,114 +393,6 @@ export function AdminMemberDetail() {
                       currentPagePurchased === page + 1 ? "#D2D2D2" : "#E4E4E4",
                     color:
                       currentPagePurchased === page + 1 ? "white" : "black",
-                    border: "none",
-                    borderRadius: "3px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {page + 1}
-                </Button>
-              ))}
-            </Flex>
-          </Tabs.Content>
-
-          {/* 결제 내역 탭 */}
-          <Tabs.Content value="PaymentRecord">
-            <Box mt={-4}>
-              <Table.Root interactive>
-                <TableHeader>
-                  <TableRow>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      결제 ID
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      구매자 ID
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "300px" }}
-                    >
-                      상품명
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      결제 금액
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      결제 방법
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      결제 날짜
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      결제 상태
-                    </TableColumnHeader>
-                  </TableRow>
-                </TableHeader>
-                <Table.Body>
-                  {currentPaymentRecords.length > 0 ? (
-                    currentPaymentRecords.map((record) => (
-                      <Table.Row key={record.impUid}>
-                        <Table.Cell style={cellStyle}>
-                          {record.impUid}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {record.buyerId}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {record.productName}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {record.paymentAmount}원
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {record.paymentMethod === "point"
-                            ? "카카오페이"
-                            : record.paymentMethod}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {record.paymentDate}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {record.status === "paid"
-                            ? "결제 완료"
-                            : record.status}
-                        </Table.Cell>
-                      </Table.Row>
-                    ))
-                  ) : (
-                    <Table.Row>
-                      <Table.Cell
-                        colSpan={7}
-                        style={{ textAlign: "center", padding: "22px" }}
-                      >
-                        결제 내역이 없습니다.
-                      </Table.Cell>
-                    </Table.Row>
-                  )}
-                </Table.Body>
-              </Table.Root>
-            </Box>
-            <Flex justify="center" mt={4} gap={2}>
-              {[...Array(totalPaymentPages).keys()].map((page) => (
-                <Button
-                  key={page + 1}
-                  onClick={() => handlePageChange("payment", page + 1)}
-                  style={{
-                    padding: "5px 10px",
-                    backgroundColor:
-                      currentPagePayment === page + 1 ? "#D2D2D2" : "#E4E4E4",
-                    color: currentPagePayment === page + 1 ? "white" : "black",
                     border: "none",
                     borderRadius: "3px",
                     cursor: "pointer",

@@ -12,7 +12,6 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { Field } from "../../components/ui/field.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import {
   DialogActionTrigger,
@@ -45,7 +44,9 @@ export function AdminInquiryDetail({
       <>
         <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
           <DialogTrigger asChild>
-            <Button colorPalette={"red"}>삭제</Button>
+            <Button colorPalette={"red"} mt={2}>
+              삭제
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -197,111 +198,165 @@ export function AdminInquiryDetail({
   }
 
   return (
-    <Box mt="60px">
-      <Text fontSize="2xl" fontWeight="bold" mb={5} m={2}>
-        1:1 문의
-      </Text>
-      <Box
-        maxW="80%"
-        mx="auto"
-        mt="4"
-        p="3"
-        borderWidth="1px"
-        borderRadius="md"
-        boxShadow="lg"
-        bg="white"
-      >
-        <Heading mb={4}>{inquiry.inquiryId}번 문의</Heading>
-        <Stack spacing={5}>
-          <Field label="문의 유형">
-            <Input value={inquiry ? inquiry.category : ""} readOnly />
-          </Field>
-          <Field label={"제목"} readOnly>
-            <Input value={inquiry.title} readOnly />
-          </Field>
-          <Field label={"작성자"} readOnly>
-            <Input value={inquiry.memberId} readOnly />
-          </Field>
-          <Field label={"작성일자"} readOnly>
-            <Input
-              value={new Date(inquiry.inserted).toLocaleDateString()}
-              readOnly
-            />
-          </Field>
-          <Field label={"내용"} readOnly>
-            <Textarea h="25vh" value={inquiry.content} readOnly />
-          </Field>
-          <Box mt={4}>
-            <Heading size="md" mb={2}>
-              COMMENTS
-            </Heading>
-            <Flex>
-              <Textarea
-                placeholder="댓글을 입력해 주세요."
-                value={editingCommentId ? "" : comment} // 수정 중일 땐 입력 영역 초기화
-                onChange={(e) => setComment(e.target.value)}
-                flex="1"
-                isDisabled={!!editingCommentId} // 수정 중일 때 댓글 작성 비활성화
-              />
-              <Button
-                colorScheme="teal"
-                mt={2}
-                ml={2}
-                onClick={handleCommentSubmit}
-                isDisabled={!!editingCommentId} // 수정 중일 때 버튼 비활성화
-              >
-                등록
-              </Button>
+    <Box
+      width="64%"
+      mx="auto"
+      mt="36"
+      p="5"
+      borderWidth="1px"
+      borderRadius="md"
+      boxShadow="lg"
+      bg="white"
+    >
+      <Heading fontSize="2xl" ml={3} mb={7}>
+        {inquiry.inquiryId}번 문의
+      </Heading>
+      <Stack spacing={5}>
+        <Flex align="center" gap={14} mb={3}>
+          <Text fontSize="md" fontWeight="bold" ml={3}>
+            문의 유형
+          </Text>
+          <Input
+            value={inquiry ? inquiry.category : ""}
+            readOnly
+            width="30%"
+            ml={-2} // 왼쪽 여백을 0으로 설정
+          />
+        </Flex>
+        <Flex justify="space-between" align="center">
+          <Text fontSize="md" fontWeight="bold" width="30%" mb={2} ml={3}>
+            문의 제목
+          </Text>
+          <Input value={inquiry.title} readOnly mb={3} width="220%" />
+        </Flex>
+        <Flex justify="space-between" align="center" mb={3}>
+          <Text fontSize="md" fontWeight="bold" width="30%" ml={3}>
+            작성자
+          </Text>
+          <Input value={inquiry.memberId} readOnly width="220%" />
+        </Flex>
+        <Flex justify="space-between" align="center" mb={3}>
+          <Text fontSize="md" fontWeight="bold" width="30%" ml={3}>
+            작성 일자
+          </Text>
+          <Input
+            value={new Date(inquiry.inserted).toLocaleDateString()}
+            readOnly
+            width="220%"
+          />
+        </Flex>
+        <Flex justify="space-between" align="center">
+          <Text fontSize="md" fontWeight="bold" width="30%" ml={3}>
+            문의 내용
+          </Text>
+          <Textarea
+            value={inquiry.content}
+            width="220%"
+            height="150px"
+            readOnly
+          />
+        </Flex>
+
+        <Heading size="xl" fontWeight="bold" mt={6} ml={3}>
+          COMMENTS
+        </Heading>
+        <Flex>
+          <Textarea
+            placeholder="댓글을 입력해 주세요."
+            value={editingCommentId ? "" : comment} // 수정 중일 땐 입력 영역 초기화
+            onChange={(e) => setComment(e.target.value)}
+            isDisabled={!!editingCommentId} // 수정 중일 때 댓글 작성 비활성화
+            mt={1}
+            ml={2}
+            height="60px"
+            resize="none"
+          />
+          <Button
+            colorScheme="teal"
+            height="57px"
+            mt={1}
+            ml={2}
+            onClick={handleCommentSubmit}
+            isDisabled={!!editingCommentId} // 수정 중일 때 버튼 비활성화
+          >
+            등록
+          </Button>
+        </Flex>
+        {comments.map((c) => (
+          <Box
+            key={c.id}
+            borderWidth="1px"
+            borderRadius="md"
+            p={3}
+            mt={2}
+            mb={1}
+            ml={2}
+            height="110px"
+          >
+            <Flex align="center" gap={2} mb={2}>
+              <Text fontWeight="bold" ml={1}>
+                {nickname}
+              </Text>
+              <Text fontSize="sm" color="gray.500">
+                {new Date(c.inserted).toLocaleDateString()}
+              </Text>
             </Flex>
-            {comments.map((c) => (
-              <Box
-                key={c.id}
-                borderWidth="1px"
-                borderRadius="md"
-                p={3}
-                mt={4}
-                mb={1}
-              >
-                <Text fontWeight="bold">{nickname}</Text>
-                {editingCommentId === c.id ? (
-                  <Textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                  />
-                ) : (
-                  <Text>{c.comment}</Text>
-                )}
-                <Text fontSize="sm" color="gray.500">
-                  {new Date(c.inserted).toLocaleDateString()}
-                </Text>
-                <Flex justify="flex-end" mt={2}>
-                  {editingCommentId === c.id ? (
+            {editingCommentId === c.id ? (
+              <Textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                height="45px"
+                width="84%"
+                resize="none"
+                mt={1}
+              />
+            ) : (
+              <Text height="5%">{c.comment}</Text>
+            )}
+            <Flex justify="flex-end">
+              {editingCommentId === c.id ? (
+                <>
+                  <Box mt={-12}>
                     <Button
                       colorScheme="teal"
                       onClick={() => handleCommentSubmit()}
                       mr={2}
                     >
-                      수정 완료
+                      저장
                     </Button>
-                  ) : (
                     <Button
-                      colorPalette={"white"}
-                      onClick={() => handleEditClick(c.id)}
-                      mr={2}
+                      colorScheme="gray"
+                      onClick={() => {
+                        setComment("");
+                        setEditingCommentId(null); // 수정 모드 종료
+                      }}
                     >
-                      수정
+                      취소
                     </Button>
-                  )}
-                  <DeleteButton
-                    colorPalette={"red"}
-                    onClick={() => handleDeleteClick(c.id)}
-                  />
-                </Flex>
-              </Box>
-            ))}
+                  </Box>
+                </>
+              ) : (
+                <Button
+                  colorScheme="white"
+                  onClick={() => handleEditClick(c.id)}
+                  mr={2}
+                  mt={2}
+                >
+                  수정
+                </Button>
+              )}
+
+              {/* 수정 모드일 때는 삭제 버튼 숨기기 */}
+              {editingCommentId !== c.id && (
+                <DeleteButton
+                  colorScheme="red"
+                  onClick={() => handleDeleteClick(c.id)}
+                />
+              )}
+            </Flex>
           </Box>
-        </Stack>
-      </Box>
+        ))}
+      </Stack>
     </Box>
   );
 }
