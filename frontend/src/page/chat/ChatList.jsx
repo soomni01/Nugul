@@ -18,11 +18,18 @@ export function ChatList() {
   const [productId, setProductId] = useState(-1);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // 토큰이 없으면 로그인 페이지로 리다이렉트
+      navigate("/");
+    }
+
     if (id) {
       fetch(id);
     }
     getChatList();
-  }, [searchParams, id, status]);
+  }, [searchParams, id, status, navigate]);
 
   function getChatList() {
     axios
