@@ -21,6 +21,7 @@ public class Product {
     private String nickname;
     private LocalDateTime createdAt;
 
+    private String buyerId;
     private String buyerNickname;
     private LocalDateTime purchasedAt;
     private List<ProductFile> fileList;

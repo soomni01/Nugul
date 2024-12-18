@@ -34,6 +34,7 @@ public interface MyPageMapper {
                 p.writer,
                 pr.date AS purchased_at,
                 m.nickname AS buyer_nickname,
+                m.member_id AS buyer_id,
                 pf.name AS main_image_name
             FROM 
                 product p

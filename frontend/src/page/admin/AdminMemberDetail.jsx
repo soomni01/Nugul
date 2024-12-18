@@ -184,6 +184,11 @@ export function AdminMemberDetail() {
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "200px" }}
                     >
+                      구매자
+                    </TableColumnHeader>
+                    <TableColumnHeader
+                      style={{ ...headerStyle, width: "200px" }}
+                    >
                       카테고리
                     </TableColumnHeader>
                     <TableColumnHeader
@@ -195,11 +200,6 @@ export function AdminMemberDetail() {
                       style={{ ...headerStyle, width: "200px" }}
                     >
                       가격
-                    </TableColumnHeader>
-                    <TableColumnHeader
-                      style={{ ...headerStyle, width: "200px" }}
-                    >
-                      상태
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
@@ -223,6 +223,9 @@ export function AdminMemberDetail() {
                           {product.productId}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
+                          {product.buyerId ? product.buyerId : "미정"}
+                        </Table.Cell>
+                        <Table.Cell style={cellStyle}>
                           {getCategoryLabel(product.category)}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
@@ -230,11 +233,6 @@ export function AdminMemberDetail() {
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.price ? `${product.price}원` : "나눔"}
-                        </Table.Cell>
-                        <Table.Cell style={cellStyle}>
-                          {product.status === "For Sale"
-                            ? "판매중"
-                            : "판매완료"}
                         </Table.Cell>
                         <Table.Cell style={cellStyle}>
                           {product.purchasedAt &&
@@ -293,7 +291,7 @@ export function AdminMemberDetail() {
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "250px" }}
                     >
-                      작성자
+                      판매자
                     </TableColumnHeader>
                     <TableColumnHeader
                       style={{ ...headerStyle, width: "150px" }}
