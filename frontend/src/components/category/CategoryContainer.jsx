@@ -2,24 +2,36 @@ import { Box, HStack, Image, Text } from "@chakra-ui/react";
 
 export function CategoryContainer({ selectedCategory, onCategorySelect }) {
   return (
-    <HStack my={5} spacing={0} w="100%" justify="space-between">
+    <HStack my={10} spacing={0} w="100%" justifyContent="center">
       {categories.map((category) => (
         <Box
           key={category.value}
-          flex="1"
           textAlign="center"
           onClick={() => onCategorySelect(category.value)}
           bg={selectedCategory === category.value ? "gray.200" : "transparent"}
           _hover={{ cursor: "pointer", bg: "gray.100" }}
-          p={2}
+          p={3}
+          borderRadius="full"
+          justifyContent="center"
+          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          width={"150px"}
+          height={"150px"}
         >
-          <Image
-            src={category.imageUrl}
-            alt={category.label}
-            boxSize="50px" // 이미지 크기 설정
-            objectFit="contain"
-            mx="auto" // 가운데 정렬
-          />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            width={"80px"}
+            height={"80px"}
+          >
+            <Image
+              src={category.imageUrl}
+              alt={category.label}
+              boxSize="100%" // 이미지 크기를 Box에 맞게 설정
+            />
+          </Box>
           <Text>{category.label}</Text>
         </Box>
       ))}
