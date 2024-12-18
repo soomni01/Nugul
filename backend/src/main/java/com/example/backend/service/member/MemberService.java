@@ -101,15 +101,25 @@ public class MemberService {
 
             // 쓴 게시물 목록 얻기
             List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
-            // 각 게시물 지우기
             for (Integer boardId : boards) {
+
+                // 게시물에 연결된 파일 목록 가져오기
+                List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
+
+                // DB에서 파일 삭제
+                for (String fileName : fileNames) {
+                    boardMapper.deleteFileByBoardIdAndName(boardId, fileName);  // board_file 테이블에서 파일 삭제
+                }
+
+                // 각 게시물 지우기
+                boardMapper.deleteById(boardId);
                 // 각 게시판 댓글 삭제
                 commentMapper.deleteByBoardId(boardId);
-                boardMapper.deleteById(boardId);
             }
 
             // 회원의 댓글 삭제 (게시물 외 개인 댓글)
             commentMapper.deleteByMemberId(member.getMemberId());
+
 
 //            // 구매 목록 지우기
 //            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());
