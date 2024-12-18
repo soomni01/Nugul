@@ -4,6 +4,7 @@ import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
+import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,7 @@ public class MemberService {
     final MemberMapper mapper;
     private final ProductMapper productMapper;
     final JwtEncoder jwtEncoder;
+    final ProductService productService;
 
     @Value("${naver.client.id}")
     private String clientId;
@@ -86,7 +88,7 @@ public class MemberService {
 
             // 각 상품 지우기
             for (Integer productId : products) {
-                productMapper.deleteById(productId);
+                productService.deleteProduct(productId);
             }
 
             // 좋아요 목록 지우기
@@ -95,11 +97,6 @@ public class MemberService {
                 productMapper.deleteLike(productId);
             }
 
-//            // 구매 목록 지우기
-//            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());
-//            for (Integer productId : purchased) {
-//                mypageMapper.deletePurchased(productId);
-//            }
             cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
@@ -192,10 +189,10 @@ public class MemberService {
 
         // 1. 네이버로부터 액세스 토큰 요청
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
-                + "&client_id=" + clientId
-                + "&client_secret=" + clientSecret
-                + "&code=" + code
-                + "&state=" + state;
+                          + "&client_id=" + clientId
+                          + "&client_secret=" + clientSecret
+                          + "&code=" + code
+                          + "&state=" + state;
 
         Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
 
