@@ -1,6 +1,7 @@
 import {
   Box,
   Card,
+  Flex,
   FormatNumber,
   HStack,
   Icon,
@@ -26,6 +27,7 @@ export function BoardAdd() {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [files, setFiles] = useState([]);
+  const [filePreviews, setFilePreviews] = useState([]); // 미리보기 저장
   const [progress, setProgress] = useState(false);
 
   const modules = {
@@ -163,8 +165,15 @@ export function BoardAdd() {
 
   // 파일 삭제 핸들러
   const handleFileDelete = (fileName) => {
-    // 파일 삭제 후, 해당 파일을 목록에서 필터링하여 삭제
+    // 파일 삭제 후 목록 갱신
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
+
+    // 미리 보기 삭제 후 목록 갱신
+    setFilePreviews((prevPreviews) =>
+      prevPreviews.filter((preview) => preview.name !== fileName),
+    );
+
+    return updatedFiles; // 파일 목록 업데이트
   };
 
   // 파일 변경 처리 (중복 방지)
@@ -177,6 +186,18 @@ export function BoardAdd() {
     );
     // 새로운 파일 목록을 기존 파일 목록에 추가
     setFiles((prevFiles) => [...prevFiles, ...uniqueFiles]);
+    // 파일 미리보기 생성
+    const newPreviews = uniqueFiles.map((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreviews((prevPreviews) => [
+          ...prevPreviews,
+          { name: file.name, preview: reader.result },
+        ]);
+      };
+      reader.readAsDataURL(file); // 이미지 파일을 읽어들임
+      return { name: file.name, preview: reader.result };
+    });
   };
 
   // files 의 파일명을 component 리스트로 만들기
@@ -218,6 +239,17 @@ export function BoardAdd() {
       </Card.Root>,
     );
   }
+
+  const filePreviewsList = filePreviews.map((filePreview) => (
+    <Box key={filePreview.name} mb={2}>
+      <img
+        src={filePreview.preview}
+        alt={filePreview.name}
+        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+      />
+      <Text>{filePreview.name}</Text>
+    </Box>
+  ));
 
   let fileInputInvalid = false;
 
@@ -304,7 +336,16 @@ export function BoardAdd() {
                 marginTop: "30px", // 상단 여백 조정
               }}
             />
-            <Box>{filesList}</Box>
+            <Box>
+              <Flex wrap="wrap" gap={4}>
+                {filesList}
+              </Flex>
+            </Box>
+            <Box>
+              <Flex wrap="wrap" gap={4}>
+                {filePreviewsList}
+              </Flex>
+            </Box>
           </Field>
         </Box>
 
