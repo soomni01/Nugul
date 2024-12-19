@@ -17,6 +17,11 @@ export function RootLayout() {
       <Box mx={{ md: 20, lg: 40 }}>
         <Outlet />
       </Box>
+      {location.pathname === "chat" && (
+        <Box>
+          <Outlet />
+        </Box>
+      )}
     </Stack>
   );
 }
