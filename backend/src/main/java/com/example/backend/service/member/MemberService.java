@@ -2,6 +2,8 @@ package com.example.backend.service.member;
 
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
+import com.example.backend.mapper.board.BoardMapper;
+import com.example.backend.mapper.comment.CommentMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,8 @@ public class MemberService {
 
     final MemberMapper mapper;
     private final ProductMapper productMapper;
+    private final BoardMapper boardMapper;
+    private final CommentMapper commentMapper;
     final JwtEncoder jwtEncoder;
 
     @Value("${naver.client.id}")
@@ -94,6 +98,28 @@ public class MemberService {
             for (Integer productId : likes) {
                 productMapper.deleteLike(productId);
             }
+
+            // 쓴 게시물 목록 얻기
+            List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
+            for (Integer boardId : boards) {
+
+                // 게시물에 연결된 파일 목록 가져오기
+                List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
+
+                // DB에서 파일 삭제
+                for (String fileName : fileNames) {
+                    boardMapper.deleteFileByBoardIdAndName(boardId, fileName);  // board_file 테이블에서 파일 삭제
+                }
+
+                // 각 게시물 지우기
+                boardMapper.deleteById(boardId);
+                // 각 게시판 댓글 삭제
+                commentMapper.deleteByBoardId(boardId);
+            }
+
+            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
+            commentMapper.deleteByMemberId(member.getMemberId());
+
 
 //            // 구매 목록 지우기
 //            List<Integer> purchased = mypageMapper.purchasedProductByMemberId(member.getMemberId());

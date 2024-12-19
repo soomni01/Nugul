@@ -15,6 +15,7 @@ export function BoardView() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [imageSizes, setImageSizes] = useState([]); // 이미지 크기 상태 배열 추가
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
   const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
@@ -75,11 +76,22 @@ export function BoardView() {
     setSelectedCategory(categoryValue);
     if (categoryValue === "all") {
       navigate(`/board/list`); // "전체" 카테고리로 이동
+      console.log("선택된 카테고리:", categoryValue); // 상태 변경 전 출력
     } else {
+      console.log("선택된 카테고리:", categoryValue);
       navigate(`/board/list?category=${categoryValue}`); // 선택된 카테고리로 이동
     }
   };
 
+  // 이미지 로딩 후 크기 설정
+  const handleImageLoad = (index, e) => {
+    const newImageSizes = [...imageSizes];
+    newImageSizes[index] = {
+      width: e.target.naturalWidth,
+      height: e.target.naturalHeight,
+    };
+    setImageSizes(newImageSizes);
+  };
   return (
     <Box mb={10}>
       {/* 카테고리 선택 */}
@@ -118,7 +130,7 @@ export function BoardView() {
           {/* 이미지 표시 */}
           {board.fileList && (
             <Box>
-              {board.fileList.map((file) => (
+              {board.fileList.map((file, index) => (
                 <Box
                   key={file.name}
                   border="1px solid black"
@@ -126,15 +138,20 @@ export function BoardView() {
                   overflow="hidden"
                   maxW="100%"
                   maxH="100%"
+                  width={`${imageSizes[index]?.width || 1000}px`} // 이미지 크기 동적으로 설정
+                  height={`${imageSizes[index]?.height || 0}px`} // 이미지 크기 동적으로 설정
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
                 >
                   <img
                     src={file.src}
                     alt={file.name}
+                    onLoad={(e) => handleImageLoad(index, e)} // 이미지 로드 시 크기 계산
                     style={{
-                      width: "100%", // 이미지 너비
-                      height: "100%", // 이미지 높이
-                      objectFit: "cover",
-                      display: "block",
+                      width: "100%", // Box에 맞게 크기 조정
+                      height: "100%", // Box에 맞게 크기 조정
+                      objectFit: "cover", // 비율 유지하며 꽉 채우기
                     }}
                   />
                 </Box>

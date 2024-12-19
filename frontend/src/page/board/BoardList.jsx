@@ -29,7 +29,6 @@ export function BoardList() {
   });
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
-
   useEffect(() => {
     const controller = new AbortController();
     axios
@@ -66,6 +65,10 @@ export function BoardList() {
       nextSearch.keyword = "";
     }
     setSearch(nextSearch);
+    const selectedCategory = searchParams.get("category");
+    if (selectedCategory) {
+      setSelectedCategory(selectedCategory);
+    }
   }, [searchParams]);
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
@@ -176,19 +179,21 @@ export function BoardList() {
                   key={board.boardId}
                 >
                   <Table.Cell textAlign="center">{board.boardId}</Table.Cell>
-                  <Table.Cell textAlign="center">{board.title}</Table.Cell>
+                  <Table.Cell textAlign="center">
+                    {board.title}
+                    {board.countFile > 0 && (
+                      <Badge variant={"subtle"} colorPalette={"gray"}>
+                        <FaImages />
+                        {board.countFile}
+                      </Badge>
+                    )}
+                  </Table.Cell>
                   <Table.Cell textAlign="center">{board.writer}</Table.Cell>
                   <Table.Cell textAlign="center">
                     {board.countComment > 0 && (
                       <Badge variant={"subtle"} colorPalette={"green"}>
                         <FaCommentDots />
                         {board.countComment}
-                      </Badge>
-                    )}
-                    {board.countFile > 0 && (
-                      <Badge variant={"subtle"} colorPalette={"gray"}>
-                        <FaImages />
-                        {board.countFile}
                       </Badge>
                     )}
                   </Table.Cell>
