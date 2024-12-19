@@ -122,6 +122,7 @@ public class MemberService {
             List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
             for (Integer boardId : boards) {
 
+
                 // 게시물에 연결된 파일 목록 가져오기
                 List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
 
@@ -132,9 +133,8 @@ public class MemberService {
 
                 // 각 게시물 지우기
                 boardMapper.deleteById(boardId);
-                // 각 게시판 댓글 삭제
-                commentMapper.deleteByBoardId(boardId);
             }
+
             // 회원의 댓글 삭제 (게시물 외 개인 댓글)
             commentMapper.deleteByMemberId(member.getMemberId());
             cnt = mapper.deleteById(member.getMemberId());
