@@ -45,6 +45,9 @@ public interface MyPageMapper {
             LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE 
                 writer = #{name}
+            ORDER BY
+                CASE WHEN p.status = 'For sale' THEN 0 ELSE 1 END,
+                pr.date DESC
             """)
     List<Product> getSoldProducts(String name);
 
@@ -57,6 +60,8 @@ public interface MyPageMapper {
             LEFT JOIN review r ON pr.product_id = r.product_id 
             LEFT JOIN product_file pf ON p.product_id = pf.product_id AND pf.is_main = TRUE
             WHERE pr.buyer_id = #{name}
+            ORDER BY
+                pr.date DESC
             """)
     List<Product> getPurchasedProducts(String name);
 
