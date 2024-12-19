@@ -69,10 +69,7 @@ export function Profile({ onEditClick }) {
       }
 
       // 성공 메시지
-      if (
-        response.data.message.type === "success" &&
-        (kakaoUnlinked || naverUnlinked)
-      ) {
+      if (response.data.message.type === "success") {
         const message = response.data.message;
         toaster.create({
           type: message.type,
@@ -84,6 +81,7 @@ export function Profile({ onEditClick }) {
         throw new Error("연동 해제 실패");
       }
     } catch (error) {
+      console.error(error);
       const message = error.response?.data?.message || {
         type: "error",
         text: "회원 탈퇴 중 오류가 발생했습니다.",

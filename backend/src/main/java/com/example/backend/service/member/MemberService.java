@@ -1,9 +1,13 @@
 package com.example.backend.service.member;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
+import com.example.backend.mapper.inquiry.InquiryMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
+import com.example.backend.service.inquiry.InquiryService;
+import com.example.backend.service.mypage.MyPageService;
 import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,12 @@ public class MemberService {
 
     @Value("${naver.client.secret}")
     private String clientSecret;
+    @Autowired
+    private InquiryMapper inquiryMapper;
+    @Autowired
+    private InquiryService inquiryService;
+    @Autowired
+    private MyPageService myPageService;
 
     // 회원 추가 메소드
     public boolean add(Member member) {
@@ -95,6 +105,12 @@ public class MemberService {
             List<Integer> likes = productMapper.likedProductByMemberId(member.getMemberId());
             for (Integer productId : likes) {
                 productMapper.deleteLike(productId);
+            }
+
+            // 문의 내역 지우기
+            List<Inquiry> inquiries = myPageService.getInquiryByMemberId(member.getMemberId());
+            for (Inquiry inquiry : inquiries) {
+                myPageService.deleteInquiry(inquiry.getInquiryId());
             }
 
             cnt = mapper.deleteById(member.getMemberId());
