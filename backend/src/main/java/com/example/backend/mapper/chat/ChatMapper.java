@@ -191,4 +191,22 @@ public interface ChatMapper {
                                     where roomId=#{roomId} and sender=#{memberId}
             """)
     int countMessageByRoomIdAndMemberId(String roomId, String memberId);
+
+
+    @Update("""
+                        update  chat_message SET  sender=null
+            where  sender=#{memberId}
+            """)
+    int updateSenderIdNull(String memberId);
+
+    @Update("""
+                UPDATE chatroom
+                SET
+                    buyer = CASE WHEN buyer = #{memberId} THEN NULL ELSE buyer END,
+                    isbuyer_deleted = CASE WHEN buyer = #{memberId} THEN TRUE ELSE isbuyer_deleted END,
+                    writer = CASE WHEN writer = #{memberId} THEN NULL ELSE writer END,
+                    iswriter_deleted = CASE WHEN writer = #{memberId} THEN TRUE ELSE iswriter_deleted END
+                WHERE buyer = #{memberId} OR writer = #{memberId}
+            """)
+    int updateBuyerIdOrWriterIdNull(String memberId);
 }

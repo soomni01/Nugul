@@ -4,11 +4,11 @@ import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.board.BoardMapper;
+import com.example.backend.mapper.chat.ChatMapper;
 import com.example.backend.mapper.comment.CommentMapper;
 import com.example.backend.mapper.inquiry.InquiryMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
-import com.example.backend.service.chat.ChatService;
 import com.example.backend.service.inquiry.InquiryService;
 import com.example.backend.service.mypage.MyPageService;
 import com.example.backend.service.product.ProductService;
@@ -48,7 +48,7 @@ public class MemberService {
     private final CommentMapper commentMapper;
     final JwtEncoder jwtEncoder;
     private final ProductService productService;
-    private final ChatService chatService;
+    private final ChatMapper chatMapper;
 
 
     @Value("${naver.client.id}")
@@ -122,8 +122,9 @@ public class MemberService {
 
             // 쓴 게시물 목록 얻기
             List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
+            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
+            commentMapper.deleteByMemberId(member.getMemberId());
             for (Integer boardId : boards) {
-
                 // 게시물에 연결된 파일 목록 가져오기
                 List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
 
@@ -131,19 +132,16 @@ public class MemberService {
                 for (String fileName : fileNames) {
                     boardMapper.deleteFileByBoardIdAndName(boardId, fileName);  // board_file 테이블에서 파일 삭제
                 }
-
                 // 각 게시물 지우기
                 boardMapper.deleteById(boardId);
-                // 각 게시판 댓글 삭제
-                commentMapper.deleteByBoardId(boardId);
             }
-
-            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
-            commentMapper.deleteByMemberId(member.getMemberId());
-            cnt = mapper.deleteById(member.getMemberId());
-
             // 채팅방 삭제
+            // 해당 아이디의 모든 sender를 널로 변경
+            chatMapper.updateSenderIdNull(member.getMemberId());
+            // chatroom에서  buyer 일경우와 writer의 경우 , null로 변경하고 삭제 true
+            chatMapper.updateBuyerIdOrWriterIdNull(member.getMemberId());
 
+            cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
         return cnt == 1;
