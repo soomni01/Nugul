@@ -138,7 +138,7 @@ export function BoardView() {
                   overflow="hidden"
                   maxW="100%"
                   maxH="100%"
-                  width={`${imageSizes[index]?.width || 0}px`} // 이미지 크기 동적으로 설정
+                  width={`${imageSizes[index]?.width || 1000}px`} // 이미지 크기 동적으로 설정
                   height={`${imageSizes[index]?.height || 0}px`} // 이미지 크기 동적으로 설정
                   display="flex"
                   justifyContent="center"
