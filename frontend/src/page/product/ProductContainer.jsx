@@ -225,7 +225,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
       </Box>
       <Flex justify="center" w="100%">
         <HStack
-          w="85%"
+          w="80%"
           display="flex"
           justify="space-between"
           align="center"
@@ -269,7 +269,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
 
       <Box w={"100%"} display={"flex"} justifyContent={"center"}>
         {productList.length > 0 ? (
-          <Grid templateColumns="repeat(4, 1fr)" gap="10">
+          <Grid templateColumns="repeat(4, 1fr)" rowGap="12" columnGap="16">
             {sortedList?.map((product) => (
               <ProductItem
                 key={product.productId}
@@ -289,7 +289,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
           <PaginationRoot
             onPageChange={handlePageChange}
             count={count}
-            pageSize={16}
+            pageSize={12}
             page={page}
             variant="solid"
           >

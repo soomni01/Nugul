@@ -77,7 +77,7 @@ public interface ProductMapper {
                         AND status = 'For Sale'
                 </where>
                 ORDER BY product_id DESC
-                LIMIT #{offset}, 16
+                LIMIT #{offset}, 12
             </script>
             """)
     List<Product> selectPage(Integer offset, String category, String keyword, String pay);

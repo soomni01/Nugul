@@ -1,15 +1,16 @@
 import { Badge, Box, Card, Flex, HStack, Image } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button.jsx";
 import React, { useState } from "react";
 import { categories } from "../category/CategoryContainer.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { getDaysAgo } from "./ProductDate.jsx";
 import { ProductLike } from "./ProductLike.jsx";
-import { FaLocationDot } from "react-icons/fa6";
 import { MiniMapModal } from "../../components/map/MiniMapModal.jsx";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 export function ProductItem({ product, likeCount, isLiked }) {
+  const location = useLocation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -40,10 +41,15 @@ export function ProductItem({ product, likeCount, isLiked }) {
     ? product.mainImageName
     : "/image/productItem.png";
 
+  const isListPage =
+    location.pathname.includes("/product/list") ||
+    location.pathname.includes("/product/share/list");
+  const cardSize = isListPage ? "310px" : "400px";
+
   return (
     <Box>
       <Card.Root
-        maxW="sm"
+        maxW={cardSize}
         overflow="hidden"
         onClick={handleCardClick}
         cursor="pointer"
@@ -55,40 +61,45 @@ export function ProductItem({ product, likeCount, isLiked }) {
           src={mainImage}
           alt={product.productName}
         />
-        <Card.Body gap="2" px="4" py="2">
+        <Card.Body gap="2" px="3" pt="3" mb={0} pb={3}>
           <HStack justify="space-between" w="100%">
-            <Badge>{categoryLabel}</Badge>
-            <Box>{daysAgo}</Box>
-          </HStack>
-          <Card.Title>
-            <Box isTruncated maxWidth="100%">
-              {product.productName}
-            </Box>
-          </Card.Title>
-          <Card.Description>
-            <HStack gap="1">
-              {product.pay !== "share" && <PiCurrencyKrwBold />}
-              {product.pay === "share" ? "나눔" : product.price}
-            </HStack>
-          </Card.Description>
-        </Card.Body>
-
-        <Card.Footer px="4" pb="1">
-          <Flex justify="space-between" align="center" w="100%" gap={4}>
-            <Button
-              onClick={openMapModal}
-              size="xs"
-              colorPalette="gray"
-              variant="outline"
-            >
-              <FaLocationDot /> {product.locationName}
-            </Button>
+            <Badge mt="-5" size={"lg"}>
+              {categoryLabel}
+            </Badge>
             <ProductLike
               productId={product.productId}
               initialLike={isLiked}
               initialCount={likeCount}
               isHorizontal={false}
             />
+          </HStack>
+          <Card.Title>
+            <Box mt="-5" ml={1} fontSize="xl" isTruncated maxWidth="100%">
+              {product.productName}
+            </Box>
+          </Card.Title>
+          <Card.Description>
+            <HStack fontSize="lg" gap="0.5" ml={1}>
+              {product.pay !== "share" && <PiCurrencyKrwBold />}
+              {product.pay === "share" ? "나눔" : product.price}
+            </HStack>
+          </Card.Description>
+        </Card.Body>
+
+        <Card.Footer px="3" pb="3">
+          <Flex justify="space-between" align="center" w="100%">
+            <Button
+              isTruncated
+              onClick={openMapModal}
+              size="sm"
+              colorPalette="gray"
+              variant="outline"
+            >
+              <FaMapMarkerAlt />
+              {product.locationName}
+            </Button>
+
+            <Box fontSize="lg">{daysAgo}</Box>
           </Flex>
         </Card.Footer>
       </Card.Root>

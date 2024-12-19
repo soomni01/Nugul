@@ -71,7 +71,7 @@ public class ProductService {
     public Map<String, Object> getProductList(Integer page, String category, String keyword, String pay) {
 
         // SQL 의 LIMIT 키워드에서 사용되는 offset
-        Integer offset = (page - 1) * 16;
+        Integer offset = (page - 1) * 12;
 
         // 조회되는 게시물들
         List<Product> list = mapper.selectPage(offset, category, keyword, pay);
