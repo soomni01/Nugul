@@ -184,4 +184,11 @@ public interface ChatMapper {
             WHERE member_id = #{id}
             """)
     String getProfileImage(String memberId);
+
+
+    @Select("""
+                       select  count(*) from chat_message
+                                    where roomId=#{roomId} and sender=#{memberId}
+            """)
+    int countMessageByRoomIdAndMemberId(String roomId, String memberId);
 }

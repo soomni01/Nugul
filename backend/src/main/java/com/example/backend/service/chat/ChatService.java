@@ -91,9 +91,15 @@ public class ChatService {
         int messageCount = mapper.countMessageByRoomId(roomId);
 
         //메시지 갯수가 0 보다 크면 > 메세지를 지우고 삭제하고 , 그 여부에 따라 > 실패를 반납,  0이면 > 그냥 삭제하면 됨
-        if (messageCount > 0) {
-            int cnt = mapper.deleteChatRoomMessageByRoomId(roomId, memberId);
-            return cnt == 1;
+        if (messageCount != 0) {
+            // 메시지가 0이지만, 내 메시지 도 0인지 확인해야함
+            int messageCountMemberId = mapper.countMessageByRoomIdAndMemberId(roomId, memberId);
+            if (messageCountMemberId != 0) {
+                int cnt = mapper.deleteChatRoomMessageByRoomId(roomId, memberId);
+                return cnt == 1;
+            } else {
+                return true;
+            }
         } else {
             return true;
         }

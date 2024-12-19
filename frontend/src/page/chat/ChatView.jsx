@@ -311,7 +311,13 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     setIsModalOpen(true);
   };
 
-  const handleReviewComplete = (productId) => {};
+  const handleReviewComplete = (productId) => {
+    // 이떄 상태가 바뀌는거니까
+  };
+
+  const handleTransactionState = () => {
+    setPurchased(true);
+  };
 
   return (
     <Box>
@@ -349,7 +355,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 거래완료
               </Button>
             ) : (
-              <Payment chatRoom={chatRoom} />
+              <Payment
+                chatRoom={chatRoom}
+                onComplete={handleTransactionState}
+              />
             )}
             {/* Todo purchase 로직 다시 짜야함*/}
             {purchased && <Button onClick={handleOpenReviewModal}>후기</Button>}
