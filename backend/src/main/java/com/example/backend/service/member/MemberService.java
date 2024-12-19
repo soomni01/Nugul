@@ -3,9 +3,9 @@ package com.example.backend.service.member;
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
-import com.example.backend.mapper.inquiry.InquiryMapper;
 import com.example.backend.mapper.board.BoardMapper;
 import com.example.backend.mapper.comment.CommentMapper;
+import com.example.backend.mapper.inquiry.InquiryMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
 import com.example.backend.service.inquiry.InquiryService;
@@ -46,9 +46,8 @@ public class MemberService {
     private final BoardMapper boardMapper;
     private final CommentMapper commentMapper;
     final JwtEncoder jwtEncoder;
-    final ProductService productService;
-
     private final ProductService productService;
+
 
     @Value("${naver.client.id}")
     private String clientId;
@@ -231,10 +230,10 @@ public class MemberService {
 
         // 1. 네이버로부터 액세스 토큰 요청
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
-                          + "&client_id=" + clientId
-                          + "&client_secret=" + clientSecret
-                          + "&code=" + code
-                          + "&state=" + state;
+                + "&client_id=" + clientId
+                + "&client_secret=" + clientSecret
+                + "&code=" + code
+                + "&state=" + state;
 
         Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
 

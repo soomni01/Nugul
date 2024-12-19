@@ -59,3 +59,6 @@ ALTER TABLE purchased_record
 
 ALTER TABLE purchased_record
     DROP COLUMN payment_status;
+
+ALTER TABLE purchased_record
+    ADD CONSTRAINT unique_product_id UNIQUE (product_id);
