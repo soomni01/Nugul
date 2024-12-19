@@ -21,10 +21,8 @@ export function AdminMemberDetail() {
   const navigate = useNavigate();
   const [soldList, setSoldList] = useState([]);
   const [purchasedList, setPurchasedList] = useState([]);
-  const [paymentRecords, setPaymentRecords] = useState([]);
   const [currentPageSold, setCurrentPageSold] = useState(1);
   const [currentPagePurchased, setCurrentPagePurchased] = useState(1);
-  const [currentPagePayment, setCurrentPagePayment] = useState(1);
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
 
@@ -42,20 +40,12 @@ export function AdminMemberDetail() {
     const fetchPurchasedProducts = axios.get("/api/myPage/purchased", {
       params: { id: memberId },
     });
-    const fetchPaymentRecords = axios.get("/api/getPaymentByMember", {
-      params: { memberId },
-    });
 
     // 회원의 판매, 구매, 결제 내역 데이터를 가져와서 상태 업데이트
-    Promise.all([
-      fetchSoldProducts,
-      fetchPurchasedProducts,
-      fetchPaymentRecords,
-    ])
-      .then(([soldRes, purchasedRes, paymentRes]) => {
+    Promise.all([fetchSoldProducts, fetchPurchasedProducts])
+      .then(([soldRes, purchasedRes]) => {
         console.log("판매 내역 데이터:", soldRes.data);
         console.log("구매 내역 데이터:", purchasedRes.data);
-        console.log("결제 내역 데이터:", paymentRes.data);
 
         setSoldList(soldRes.data);
 
@@ -85,21 +75,12 @@ export function AdminMemberDetail() {
         });
         setPurchasedList(sortedPurchasedList);
 
-        // 결제 내역을 오름차순 정렬
-        const sortedPaymentRecords = paymentRes.data.sort((a, b) => {
-          const dateA = new Date(a.paymentDate);
-          const dateB = new Date(b.paymentDate);
-          return dateA - dateB;
-        });
-        setPaymentRecords(sortedPaymentRecords);
-
         setLoading(false);
       })
       .catch((error) => {
         console.error("데이터를 가져오는 중 오류 발생:", error);
         setSoldList([]);
         setPurchasedList([]);
-        setPaymentRecords([]);
         setLoading(false);
       });
   }, [memberId]);
@@ -124,23 +105,12 @@ export function AdminMemberDetail() {
   );
   const totalPurchasedPages = Math.ceil(purchasedList.length / itemsPerPage);
 
-  // 결제 내역 페이지네이션 로직
-  const indexOfLastPayment = currentPagePayment * itemsPerPage;
-  const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
-  const currentPaymentRecords = paymentRecords.slice(
-    indexOfFirstPayment,
-    indexOfLastPayment,
-  );
-  const totalPaymentPages = Math.ceil(paymentRecords.length / itemsPerPage);
-
   // 페이지 변경 시 현재 페이지를 업데이트
   function handlePageChange(tab, newPage) {
     if (tab === "sold") {
       setCurrentPageSold(newPage);
     } else if (tab === "purchased") {
       setCurrentPagePurchased(newPage);
-    } else if (tab === "payment") {
-      setCurrentPagePayment(newPage);
     }
   }
 

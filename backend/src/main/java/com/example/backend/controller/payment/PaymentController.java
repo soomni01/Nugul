@@ -10,12 +10,10 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -41,13 +39,6 @@ public class PaymentController {
     @PostMapping("/verifyIamport/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid) throws IamportResponseException, IOException {
         return iamportClient.paymentByImpUid(imp_uid);
-    }
-
-    // 특정 사용자 결제 내역 조회 (관리자용)
-    @GetMapping("/getPaymentByMember")
-    @PreAuthorize("isAuthenticated()")
-    public List<PaymentMethod> getPaymentByMember(@RequestParam String memberId) {
-        return service.getPayment(memberId);
     }
 
     // 거래 완료

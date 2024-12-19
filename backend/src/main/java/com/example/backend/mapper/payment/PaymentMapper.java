@@ -1,12 +1,10 @@
 package com.example.backend.mapper.payment;
 
-import com.example.backend.dto.payment.PaymentMethod;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -25,13 +23,6 @@ public interface PaymentMapper {
             WHERE roomId = #{roomId}
             """)
     String getWriter(Integer roomId);
-
-    @Select("""
-            SELECT *
-            FROM payment_record 
-            WHERE buyer_id = #{buyerId}
-            """)
-    List<PaymentMethod> getPayment(String buyerId);
 
     @Update("""
             UPDATE product
