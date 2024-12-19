@@ -1,4 +1,15 @@
-import { Box, HStack, Image, Input, Spinner, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  FormatNumber,
+  HStack,
+  Icon,
+  Image,
+  Input,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -18,6 +29,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { Switch } from "../../components/ui/switch.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { CiFileOn } from "react-icons/ci";
 
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
@@ -189,9 +201,31 @@ export function BoardEdit() {
           </Box>
           <Box>
             {Array.from(uploadFiles).map((file) => (
-              <li key={file.name}>
-                {file.name} ({Math.floor(file.size / 1024)} kb)
-              </li>
+              <Card.Root size={"sm"}>
+                <Card.Body>
+                  <HStack>
+                    <Text
+                      css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
+                      fontWeight={"bold"}
+                      me={"auto"}
+                      truncate
+                    >
+                      <Icon>
+                        <CiFileOn />
+                      </Icon>
+
+                      {file.name}
+                    </Text>
+                    <Text>
+                      <FormatNumber
+                        value={file.size}
+                        notation={"compact"}
+                        compactDisplay="short"
+                      ></FormatNumber>
+                    </Text>
+                  </HStack>
+                </Card.Body>
+              </Card.Root>
             ))}
           </Box>
         </Box>

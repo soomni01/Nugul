@@ -1,4 +1,13 @@
-import { Box, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  FormatNumber,
+  HStack,
+  Icon,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
@@ -8,6 +17,8 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { BoardCategories } from "../../components/category/BoardCategoryContainer.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { CiFileOn } from "react-icons/ci";
+import { Field } from "../../components/ui/field.jsx";
 
 export function BoardAdd() {
   const { isAuthenticated, logout } = useContext(AuthenticationContext);
@@ -126,12 +137,46 @@ export function BoardAdd() {
 
   // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
+  let sumOfFileSize = 0;
+  let invalidOneFileSize = false; // 한 파일이라도 1MB을 넘는지?
   for (const file of files) {
+    sumOfFileSize += file.size;
+    if (file.size > 1024 * 1024) {
+      invalidOneFileSize = true;
+    }
     filesList.push(
-      <li>
-        {file.name} ({Math.floor(file.size / 1024)} kb)
-      </li>,
+      <Card.Root size={"sm"}>
+        <Card.Body>
+          <HStack>
+            <Text
+              css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
+              fontWeight={"bold"}
+              me={"auto"}
+              truncate
+            >
+              <Icon>
+                <CiFileOn />
+              </Icon>
+
+              {file.name}
+            </Text>
+            <Text>
+              <FormatNumber
+                value={file.size}
+                notation={"compact"}
+                compactDisplay="short"
+              ></FormatNumber>
+            </Text>
+          </HStack>
+        </Card.Body>
+      </Card.Root>,
     );
+  }
+
+  let fileInputInvalid = false;
+
+  if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
+    fileInputInvalid = true;
   }
 
   return (
@@ -198,18 +243,24 @@ export function BoardAdd() {
         <Box mt={2}>
           {" "}
           {/* 마진 값 조정 */}
-          <input
-            onChange={(e) => setFiles(e.target.files)}
-            type="file"
-            accept="image/*"
-            multiple
-            style={{
-              fontSize: "14px",
-              height: "30px", // 파일 입력의 높이 조정
-              marginTop: "10px", // 상단 여백 조정
-            }}
-          />
-          <Box>{filesList}</Box>
+          <Field
+            helperText={"총 10MB, 한 파일은 1MB 이내로 선택하세요."}
+            invalid={fileInputInvalid}
+            errorText={"선택된 파일의 용량이 초과되었습니다."}
+          >
+            <input
+              onChange={(e) => setFiles(e.target.files)}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{
+                fontSize: "14px",
+                height: "30px", // 파일 입력의 높이 조정
+                marginTop: "10px", // 상단 여백 조정
+              }}
+            />
+            <Box>{filesList}</Box>
+          </Field>
         </Box>
 
         <Box mt={4}>
