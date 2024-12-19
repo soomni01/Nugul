@@ -23,10 +23,6 @@ export function ChatList() {
   );
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    // 토큰이 없으면 로그인 페이지로 리다이렉트
-    navigate("/");
-  }
   useEffect(() => {
     const token = localStorage.getItem("token");
 

@@ -64,15 +64,18 @@ export function ProductDetail({ productId }) {
             </HStack>
           </Box>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" mx={"5%"}>
+          <Box display="flex" justifyContent="space-between">
+            <Heading> 거래장소</Heading>
+            <p> {product.locationName}</p>
+          </Box>
           <Map
             center={position}
-            style={{ width: "90%", height: "180px" }}
+            style={{ width: "100%", height: "180px" }}
             level={3}
           >
             <MapMarker position={position} />
           </Map>
-          <p>거래장소:{product.locationName}</p>
         </Box>
       </Box>
     </Box>
