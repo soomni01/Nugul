@@ -106,7 +106,6 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     };
   }, [searchParams, selectedCategory]);
 
-  console.log(productList);
   // 검색 키워드 유지 또는 초기화
   useEffect(() => {
     const nextSearch = { ...search };

@@ -156,7 +156,16 @@ export function ProductView() {
       })
       .then((res) => {
         const roomId = res.data;
-        navigate("/chat/room/" + roomId);
+      })
+      .catch((e) => {
+        console.log(e);
+        toaster.create({
+          type: "error",
+          description: "오류 발생",
+        });
+      })
+      .finally(() => {
+        navigate("/chat");
       });
   };
 
