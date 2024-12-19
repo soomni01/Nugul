@@ -349,7 +349,7 @@ export function ProductHorizontalItem({
         <Text fontSize="md" fontWeight="bold">
           <HStack gap={1}>
             {/* 결제 상태 추가 */}
-            {product.paymentStatus === "결제완료" && (
+            {product.paymentMethod === "KakaoPay" && (
               <Image
                 src="/image/Kakaopay.png"
                 alt="Kakaopay Icon"

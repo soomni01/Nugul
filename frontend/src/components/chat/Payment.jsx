@@ -51,23 +51,13 @@ const Payment = ({ chatRoom }) => {
 
           // 결제 금액이 일치하는지 확인
           if (rsp.paid_amount === data.response.amount) {
-            // 결제 내역을 payment_record 테이블에 저장
-            await axios.post("/api/savePayment", {
-              impUid: rsp.imp_uid,
-              buyerId: id,
-              productId: product.productId,
-              productName: product.productName,
-              paymentAmount: product.price,
-              paymentMethod: rsp.pay_method,
-              paymentDate: new Date(),
-              status: "paid",
-            });
-
+            // 결제 완료 후 거래 처리
             await axios
               .post(
                 `/api/product/transaction/${productId}`,
                 {
                   roomId: chatRoom.roomId, // body로 roomId를 전달
+                  paymentMethod: "KakaoPay",
                 },
                 {
                   headers: {
