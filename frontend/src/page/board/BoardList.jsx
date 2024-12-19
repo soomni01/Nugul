@@ -11,7 +11,6 @@ import {
 } from "../../components/ui/pagination.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { FaCommentDots } from "react-icons/fa";
 import {
   BoardCategories,
   BoardCategoryContainer,
@@ -156,7 +155,6 @@ export function BoardList() {
                 <Table.ColumnHeader textAlign="center">
                   작성자
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>
                 <Table.ColumnHeader
                   display={{ base: "none", md: "table-cell" }}
                   textAlign="center"
@@ -189,14 +187,6 @@ export function BoardList() {
                     )}
                   </Table.Cell>
                   <Table.Cell textAlign="center">{board.writer}</Table.Cell>
-                  <Table.Cell textAlign="center">
-                    {board.countComment > 0 && (
-                      <Badge variant={"subtle"} colorPalette={"green"}>
-                        <FaCommentDots />
-                        {board.countComment}
-                      </Badge>
-                    )}
-                  </Table.Cell>
                   <Table.Cell
                     display={{ base: "none", md: "table-cell" }}
                     textAlign="center"
