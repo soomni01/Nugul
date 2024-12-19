@@ -225,7 +225,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
       </Box>
       <Flex justify="center" w="100%">
         <HStack
-          w="80%"
+          w="90%"
           display="flex"
           justify="space-between"
           align="center"
