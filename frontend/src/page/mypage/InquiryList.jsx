@@ -24,15 +24,6 @@ export function InquiryList({ onRowClick }) {
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
-  // 데이터 정렬 함수
-  const sortInquiries = (inquiries) => {
-    return inquiries.sort((a, b) => {
-      const dateA = new Date(a.inserted);
-      const dateB = new Date(b.inserted);
-      return dateA - dateB || a.inquiryId - b.inquiryId; // 오래된 날짜, 작은 ID 우선 정렬
-    });
-  };
-
   // 문의 내역 데이터 로드
   useEffect(() => {
     const fetchInquiries = async () => {
@@ -40,7 +31,7 @@ export function InquiryList({ onRowClick }) {
       try {
         const response = await axios.get("/api/myPage/list");
         if (response.status === 200) {
-          setInquiryList(sortInquiries(response.data));
+          setInquiryList(response.data); // 정렬 없이 그대로 설정
         }
       } catch (error) {
         console.error("데이터를 불러오는 중 오류가 발생했습니다:", error);

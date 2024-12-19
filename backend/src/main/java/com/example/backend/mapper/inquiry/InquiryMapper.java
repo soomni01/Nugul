@@ -45,7 +45,7 @@ public interface InquiryMapper {
                        WHERE ic.inquiry_id = i.inquiry_id
                    ) AS has_answer
             FROM inquiry i
-            ORDER BY i.inquiry_id
+            ORDER BY i.inserted DESC
             """)
     List<Inquiry> InquiryAll();
 
