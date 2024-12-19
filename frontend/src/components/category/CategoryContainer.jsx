@@ -2,7 +2,7 @@ import { Box, HStack, Image, Text } from "@chakra-ui/react";
 
 export function CategoryContainer({ selectedCategory, onCategorySelect }) {
   return (
-    <HStack my={10} spacing={0} w="100%" justifyContent="center">
+    <HStack my={5} spacing={0} w="100%" justifyContent="center">
       {categories.map((category) => (
         <Box
           key={category.value}
