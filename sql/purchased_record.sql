@@ -52,6 +52,8 @@ SELECT DATE_FORMAT(date, '%Y-%m')                                         AS mon
        SUM(CASE WHEN buyer_id = 'coogie@naver.com' THEN price ELSE 0 END) AS total_purchases
 FROM purchased_record;
 
+
+desc purchased_record;
 ALTER TABLE purchased_record
     ADD COLUMN payment_status ENUM ('Not Paid', 'Paid') DEFAULT 'Not Paid';
 

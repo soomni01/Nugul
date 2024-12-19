@@ -58,9 +58,9 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
         onComplete(product.productId); // 리뷰 작성 완료 콜백 호출
         setReviewText(""); // 후기 내용 초기화
         setRating(3); // 별점 초기화 (기본값 3)
-        onClose();
       })
       .catch((e) => {
+        console.log(e);
         const errorMessage =
           e.response?.data?.message?.text || "알 수 없는 오류가 발생했습니다.";
         const errorType = e.response?.data?.message?.type || "error";
@@ -70,7 +70,10 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
           type: errorType,
         });
       })
-      .finally(() => setProgress(false));
+      .finally(() => {
+        setProgress(false);
+        onClose;
+      });
   };
 
   return (

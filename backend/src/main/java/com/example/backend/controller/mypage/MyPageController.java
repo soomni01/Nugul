@@ -106,6 +106,7 @@ public class MyPageController {
                                     "text", "상품에 대한 후기 작성이 실패하였습니다.")));
                 }
 
+
             } else {
                 return ResponseEntity.internalServerError()
                         .body(Map.of("message", Map.of("type", "error",

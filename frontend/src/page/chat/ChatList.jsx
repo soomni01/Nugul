@@ -74,11 +74,12 @@ export function ChatList() {
       })
       .finally(() => {
         setChatRoomId(-1);
+        setProductId(-1);
       });
   };
 
   return (
-    <Box w={"auto"}>
+    <Box>
       <Heading> 채팅 목록</Heading>
       <HStack>
         <Button
