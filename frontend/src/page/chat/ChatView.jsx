@@ -143,21 +143,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       purchasedAt: purchaseRes.data.purchasedAt,
     }));
     setImageSrc(imageRes.data);
-    checkPurchase(id, res.data.productId);
-  }
-
-  console.log(purchased);
-
-  // 내가 구매자인지 확인하는함수
-  function checkPurchase(id, productId) {
-    axios
-      .get("/api/product/checkpurchase", {
-        params: {
-          memberId: id,
-          productId: productId,
-        },
-      })
-      .then((res) => setPurchased(res.data));
+    setPurchased(id == purchaseRes.data.buyerId);
   }
 
   function sendMessage(sender, content) {
@@ -365,10 +351,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ) : (
               <Payment chatRoom={chatRoom} />
             )}
-            {/* Todo pruchase 로직 다시 짜야함*/}
-            {purchased && !isSeller && (
-              <Button onClick={handleOpenReviewModal}>후기</Button>
-            )}
+            {/* Todo purchase 로직 다시 짜야함*/}
+            {purchased && <Button onClick={handleOpenReviewModal}>후기</Button>}
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}

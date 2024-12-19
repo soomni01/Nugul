@@ -142,6 +142,7 @@ public interface MyPageMapper {
             """)
     Double getRating(String id);
 
+
     @Select("""
             SELECT profile_image
             FROM member

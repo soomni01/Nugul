@@ -78,7 +78,7 @@ export function ChatList() {
   };
 
   return (
-    <Box w={"auto"}>
+    <Box>
       <Heading> 채팅 목록</Heading>
       <HStack>
         <Button
