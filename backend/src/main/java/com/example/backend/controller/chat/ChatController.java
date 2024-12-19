@@ -34,8 +34,6 @@ public class ChatController {
         chatMessage.setRoomId(roomId);
 
         chatService.insertMessage(chatMessage);
-
-
         return chatMessage;
     }
 

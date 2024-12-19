@@ -155,7 +155,6 @@ export function ProductView() {
         buyer: buyer,
       })
       .then((res) => {
-        console.log(res.data);
         const roomId = res.data;
         navigate("/chat/room/" + roomId);
       });
@@ -349,9 +348,8 @@ export function ProductView() {
                 lng: product.longitude,
               }
             }
-            level={3}        
+            level={3}
             style={{ width: "90%", height: "300px" }}
-
           >
             {markerPosition && <MapMarker position={markerPosition} />}
             <ZoomControl />
