@@ -79,7 +79,7 @@ export function ProfileEdit({ id, onCancel, onSave }) {
         <Field readOnly label={"아이디"}>
           <Input defaultValue={member?.memberId || ""} />
         </Field>
-        {password && (
+        {member?.password && (
           <Field label={"암호"}>
             <Input
               value={password}
@@ -133,12 +133,7 @@ export function ProfileEdit({ id, onCancel, onSave }) {
         <Box>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button
-                colorPalette={"blue"}
-                {...(isPasswordValid ? { disabled: true } : {})}
-              >
-                저장
-              </Button>
+              <Button colorPalette={"blue"}>저장</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
