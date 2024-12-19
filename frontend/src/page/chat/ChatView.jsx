@@ -367,6 +367,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 disabled={isSold}
                 onClick={handleSuccessTransaction}
               >
+                {/* Todo거래 완료시 disabled 여부를 결정해주는  isSold 가 상태가 아님 그래서 바로 안 그려진다 */}
                 거래완료
               </Button>
             ) : purchased ? (
