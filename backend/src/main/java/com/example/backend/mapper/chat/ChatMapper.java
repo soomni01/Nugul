@@ -209,4 +209,11 @@ public interface ChatMapper {
                 WHERE buyer = #{memberId} OR writer = #{memberId}
             """)
     int updateBuyerIdOrWriterIdNull(String memberId);
+
+    @Select("""
+                    SELECT  *
+                    FROM  chatroom
+                    where  writer = #{memberId} or buyer = #{memberId}
+            """)
+    List<ChatRoom> selectAllChatRoom(String memberId);
 }

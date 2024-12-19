@@ -1,5 +1,6 @@
 package com.example.backend.service.member;
 
+import com.example.backend.dto.chat.ChatRoom;
 import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
@@ -136,10 +137,23 @@ public class MemberService {
                 boardMapper.deleteById(boardId);
             }
             // 채팅방 삭제
+            List<ChatRoom> chatRoomList = chatMapper.selectAllChatRoom(member.getMemberId());
+            // 참여한 채팅방에서  상대 삭제상태 확인후 ,  참이면 > 메시지 지우고 채팅방 삭제 ,
+            for (ChatRoom chatRoom : chatRoomList) {
+                Boolean flag = (chatRoom.getBuyer() != null && chatRoom.getBuyer().equals(member.getMemberId()))
+                        ? chatRoom.getIswriter_deleted()
+                        : chatRoom.getIsBuyer_deleted();
+                if (flag) {
+                    String roomId = chatRoom.getRoomId() + "";
+                    chatMapper.deleteChatRoomMessageByRoomId(roomId, member.getMemberId());
+                    chatMapper.deleteChatRoomByRoomId(roomId);
+                }
+            }
             // 해당 아이디의 모든 sender를 널로 변경
             chatMapper.updateSenderIdNull(member.getMemberId());
             // chatroom에서  buyer 일경우와 writer의 경우 , null로 변경하고 삭제 true
             chatMapper.updateBuyerIdOrWriterIdNull(member.getMemberId());
+
 
             cnt = mapper.deleteById(member.getMemberId());
         }

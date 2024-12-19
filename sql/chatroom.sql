@@ -62,5 +62,11 @@ where roomId = 93;
 desc chatroom;
 
 ALTER TABLE chatroom
-    ADD CONSTRAINT fk_writer FOREIGN KEY (writer) REFERENCES member (member_id) ON DELETE SET NULL,
-    ADD CONSTRAINT fk_buyer FOREIGN KEY (buyer) REFERENCES member (member_id) ON DELETE SET NULL;
+    MODIFY writer VARCHAR(50) NULL,
+    MODIFY buyer VARCHAR(50) NULL;
+
+ALTER TABLE chatroom
+    ADD CONSTRAINT writer FOREIGN KEY (writer) REFERENCES member (member_id) ON DELETE SET NULL;
+
+ALTER TABLE chatroom
+    ADD CONSTRAINT buyer FOREIGN KEY (buyer) REFERENCES member (member_id) ON DELETE SET NULL;
