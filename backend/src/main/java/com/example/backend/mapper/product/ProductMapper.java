@@ -78,7 +78,7 @@ public interface ProductMapper {
                         AND status = 'For Sale'
                 </where>
                 ORDER BY product_id DESC
-                LIMIT #{offset}, 16
+                LIMIT #{offset}, 12
             </script>
             """)
     List<Product> selectPage(Integer offset, String category, String keyword, String pay);
@@ -227,11 +227,11 @@ public interface ProductMapper {
                         where product_id = #{productId}
             """)
     String checkPurchaseByMemberId(String memberId, String productId);
+    @Select("""
+            SELECT pay
+            FROM product
+            WHERE product_id = #{productId}
+            """)
+    String getProductStatus(Integer productId);
 
-//    @Update("""
-//            UPDATE product
-//            SET payment_method = #{paymentMethod}
-//            WHERE product_id = #{productId}
-//            """)
-//    int updatePaymentMethod(Integer productId, String paymentMethod);
 }

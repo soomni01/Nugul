@@ -48,6 +48,8 @@ public class MemberService {
     final JwtEncoder jwtEncoder;
     final ProductService productService;
 
+    private final ProductService productService;
+
     @Value("${naver.client.id}")
     private String clientId;
 
@@ -100,6 +102,7 @@ public class MemberService {
             // 쓴 상품 목록 얻기
             List<Integer> products = productMapper.getProductId(member.getMemberId());
 
+
             // 각 상품 지우기
             for (Integer productId : products) {
                 productService.deleteProduct(productId);
@@ -133,7 +136,6 @@ public class MemberService {
                 // 각 게시판 댓글 삭제
                 commentMapper.deleteByBoardId(boardId);
             }
-
             // 회원의 댓글 삭제 (게시물 외 개인 댓글)
             commentMapper.deleteByMemberId(member.getMemberId());
             cnt = mapper.deleteById(member.getMemberId());
@@ -201,6 +203,7 @@ public class MemberService {
                 return true;
             }
         }
+        System.out.println(password);
         return false;
     }
 

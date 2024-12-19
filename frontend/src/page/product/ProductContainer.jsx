@@ -3,7 +3,6 @@ import {
   Center,
   Flex,
   Grid,
-  Heading,
   HStack,
   IconButton,
   Input,
@@ -25,6 +24,14 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ProductItem } from "../../components/product/ProductItem.jsx";
+import {
+  MenuContent,
+  MenuRadioItem,
+  MenuRadioItemGroup,
+  MenuRoot,
+  MenuTrigger,
+} from "../../components/ui/menu.jsx";
+import { HiSortAscending } from "react-icons/hi";
 
 export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [productList, setProductList] = useState([]);
@@ -144,11 +151,13 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   };
 
   // 정렬 옵션 변경
-  const handleSortChange = (e) => {
-    const sortValue = e.target.value;
-    setSortOption(sortValue);
+  const handleSortChange = (option) => {
+    // 전달된 값이 객체인 경우, value 속성에서 값을 추출
+    const sortValue = typeof option === "object" ? option.value : option;
+
     const nextSearchParams = new URLSearchParams(searchParams);
     nextSearchParams.set("sort", sortValue);
+    nextSearchParams.set("page", 1);
     setSearchParams(nextSearchParams);
   };
 
@@ -197,11 +206,13 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         selectedCategory={selectedCategory}
         onCategorySelect={handleCategorySelect}
       />
-      <Heading textAlign="center">{selectedCategoryLabel}</Heading>
-      <Box my={5} display="flex" justifyContent="center">
-        <HStack w="80%">
+
+      <Box my={10} display="flex" justifyContent="center">
+        <HStack w="70%">
           <Input
+            size={"lg"}
             value={search.keyword}
+            placeholder="검색어를 입력해주세요"
             onChange={(e) =>
               setSearch({ ...search, keyword: e.target.value.trim() })
             }
@@ -212,56 +223,84 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
           </IconButton>
         </HStack>
       </Box>
-      <Flex justify="space-between" align="center" mb={4}>
-        <Flex gap={4}>
-          <select value={sortOption} onChange={handleSortChange} size="sm">
-            <option value="newest">최신순</option>
-            <option value="popular">인기순</option>
-            {pay !== "share" && (
-              <>
-                <option value="low-to-high">저가순</option>
-                <option value="high-to-low">고가순</option>
-              </>
-            )}
-          </select>
-        </Flex>
-        <Button
-          onClick={() => navigate(addProductRoute)}
-          colorScheme="teal"
-          size="sm"
+      <Flex justify="center" w="100%">
+        <HStack
+          w="80%"
+          display="flex"
+          justify="space-between"
+          align="center"
+          mb={4}
         >
-          판매하기
-        </Button>
+          <MenuRoot size="md">
+            <MenuTrigger asChild>
+              <Button variant="outline" size="lg">
+                <HiSortAscending />
+                {sortOption === "newest" && "최신순"}
+                {sortOption === "popular" && "인기순"}
+                {sortOption === "low-to-high" && "저가순"}
+                {sortOption === "high-to-low" && "고가순"}
+              </Button>
+            </MenuTrigger>
+            <MenuContent minW="10rem">
+              <MenuRadioItemGroup
+                value={sortOption}
+                onValueChange={handleSortChange}
+              >
+                <MenuRadioItem value="newest">최신순</MenuRadioItem>
+                <MenuRadioItem value="popular">인기순</MenuRadioItem>
+                {pay !== "share" && (
+                  <>
+                    <MenuRadioItem value="low-to-high">저가순</MenuRadioItem>
+                    <MenuRadioItem value="high-to-low">고가순</MenuRadioItem>
+                  </>
+                )}
+              </MenuRadioItemGroup>
+            </MenuContent>
+          </MenuRoot>
+          <Button
+            onClick={() => navigate(addProductRoute)}
+            colorScheme="teal"
+            size="xl"
+          >
+            판매하기
+          </Button>
+        </HStack>
       </Flex>
-      {productList.length > 0 ? (
-        <Grid templateColumns="repeat(4, 1fr)" gap="8">
-          {sortedList?.map((product) => (
-            <ProductItem
-              key={product.productId}
-              product={product}
-              likeCount={likeData[product.productId] || 0}
-              isLiked={userLikes.has(product.productId)}
-            />
-          ))}
-        </Grid>
-      ) : (
-        <p>조회된 결과가 없습니다.</p>
-      )}
-      <Center>
-        <PaginationRoot
-          onPageChange={handlePageChange}
-          count={count}
-          pageSize={16}
-          page={page}
-          variant="solid"
-        >
-          <HStack>
-            <PaginationPrevTrigger />
-            <PaginationItems />
-            <PaginationNextTrigger />
-          </HStack>
-        </PaginationRoot>
-      </Center>
+
+      <Box w={"100%"} display={"flex"} justifyContent={"center"}>
+        {productList.length > 0 ? (
+          <Grid templateColumns="repeat(4, 1fr)" rowGap="12" columnGap="16">
+            {sortedList?.map((product) => (
+              <ProductItem
+                key={product.productId}
+                product={product}
+                likeCount={likeData[product.productId] || 0}
+                isLiked={userLikes.has(product.productId)}
+              />
+            ))}
+          </Grid>
+        ) : (
+          <p>조회된 결과가 없습니다.</p>
+        )}
+      </Box>
+
+      <Box my={10}>
+        <Center>
+          <PaginationRoot
+            onPageChange={handlePageChange}
+            count={count}
+            pageSize={12}
+            page={page}
+            variant="solid"
+          >
+            <HStack>
+              <PaginationPrevTrigger />
+              <PaginationItems />
+              <PaginationNextTrigger />
+            </HStack>
+          </PaginationRoot>
+        </Center>
+      </Box>
     </Box>
   );
 }
