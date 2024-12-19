@@ -23,15 +23,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.mini-modal {
-    position: relative;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 30%; /* 화면 크기의 80% */
-    height: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
 /* 닫기 버튼 */
 .close {
@@ -55,9 +46,10 @@
 .map {
     width: 400px;
     margin-top: 10px;
-    height: 400px; /* 원하는 높이 */
+    height: 100%; /* 원하는 높이 */
     z-index: 1;
 }
+
 
 .button-container {
     display: flex;
