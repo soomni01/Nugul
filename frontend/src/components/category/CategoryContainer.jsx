@@ -1,19 +1,38 @@
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack, Image, Text } from "@chakra-ui/react";
 
 export function CategoryContainer({ selectedCategory, onCategorySelect }) {
   return (
-    <HStack my={5} spacing={0} w="100%" justify="space-between">
+    <HStack my={5} spacing={0} w="100%" justifyContent="center">
       {categories.map((category) => (
         <Box
           key={category.value}
-          flex="1"
           textAlign="center"
           onClick={() => onCategorySelect(category.value)}
           bg={selectedCategory === category.value ? "gray.200" : "transparent"}
           _hover={{ cursor: "pointer", bg: "gray.100" }}
-          p={2} // 클릭 영역을 넓히기 위한 패딩
+          p={3}
+          borderRadius="full"
+          justifyContent="center"
+          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          width={"150px"}
+          height={"150px"}
         >
-          {category.label}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            width={"80px"}
+            height={"80px"}
+          >
+            <Image
+              src={category.imageUrl}
+              alt={category.label}
+              boxSize="100%" // 이미지 크기를 Box에 맞게 설정
+            />
+          </Box>
+          <Text>{category.label}</Text>
         </Box>
       ))}
     </HStack>
@@ -21,11 +40,39 @@ export function CategoryContainer({ selectedCategory, onCategorySelect }) {
 }
 
 export const categories = [
-  { label: "전체", value: "all" },
-  { label: "의류", value: "clothes" },
-  { label: "잡화", value: "miscellaneous" },
-  { label: "식품", value: "food" },
-  { label: "뷰티", value: "beauty" },
-  { label: "디지털 기기", value: "digital" },
-  { label: "쿠폰", value: "coupon" },
+  {
+    label: "전체",
+    value: "all",
+    imageUrl: "../../public/image/category/all.png",
+  },
+  {
+    label: "의류",
+    value: "clothes",
+    imageUrl: "../../public/image/category/clothes.png",
+  },
+  {
+    label: "잡화",
+    value: "miscellaneous",
+    imageUrl: "../../public/image/category/miscellaneous.png",
+  },
+  {
+    label: "식품",
+    value: "food",
+    imageUrl: "../../public/image/category/food.png",
+  },
+  {
+    label: "뷰티",
+    value: "beauty",
+    imageUrl: "../../public/image/category/beauty.png",
+  },
+  {
+    label: "디지털 기기",
+    value: "digital",
+    imageUrl: "../../public/image/category/digital.png",
+  },
+  {
+    label: "쿠폰",
+    value: "coupon",
+    imageUrl: "../../public/image/category/coupon.png",
+  },
 ];

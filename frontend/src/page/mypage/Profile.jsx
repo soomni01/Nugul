@@ -50,14 +50,10 @@ export function Profile({ onEditClick }) {
       });
 
       // 카카오 계정 로그아웃 및 연결 해제
-      let kakaoUnlinked = false;
-      let naverUnlinked = false;
-
       if (sessionStorage.getItem("kakaoAccessToken")) {
         await kakaoUnlink(); // 연결 해제
         console.log("카카오 계정 연결 해제 성공");
         sessionStorage.removeItem("kakaoAccessToken");
-        kakaoUnlinked = true;
       }
 
       if (sessionStorage.getItem("naverAccessToken")) {
@@ -65,14 +61,10 @@ export function Profile({ onEditClick }) {
         await naverUnlink();
         console.log("네이버 계정 연결 해제 성공");
         sessionStorage.removeItem("naverAccessToken");
-        naverUnlinked = true;
       }
 
       // 성공 메시지
-      if (
-        response.data.message.type === "success" &&
-        (kakaoUnlinked || naverUnlinked)
-      ) {
+      if (response.data.message.type === "success") {
         const message = response.data.message;
         toaster.create({
           type: message.type,
@@ -84,6 +76,7 @@ export function Profile({ onEditClick }) {
         throw new Error("연동 해제 실패");
       }
     } catch (error) {
+      console.error(error);
       const message = error.response?.data?.message || {
         type: "error",
         text: "회원 탈퇴 중 오류가 발생했습니다.",

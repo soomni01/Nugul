@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Mapper
 public interface ProductMapper {
+
     @Insert("""
             INSERT INTO product
             (product_name, price, description, writer, pay, category,  latitude, longitude, location_name)
@@ -77,7 +78,7 @@ public interface ProductMapper {
                         AND status = 'For Sale'
                 </where>
                 ORDER BY product_id DESC
-                LIMIT #{offset}, 16
+                LIMIT #{offset}, 12
             </script>
             """)
     List<Product> selectPage(Integer offset, String category, String keyword, String pay);
@@ -225,5 +226,11 @@ public interface ProductMapper {
                         from purchased_record 
                         where product_id = #{productId}
             """)
-    Product checkPurchaseByMemberId(String memberId, String productId);
+    Product checkPurchaseByMemberId(String memberId, String productId); 
+    @Select("""
+            SELECT pay
+            FROM product
+            WHERE product_id = #{productId}
+            """)
+    String getProductStatus(Integer productId);
 }

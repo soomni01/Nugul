@@ -71,7 +71,7 @@ public class ProductService {
     public Map<String, Object> getProductList(Integer page, String category, String keyword, String pay) {
 
         // SQL 의 LIMIT 키워드에서 사용되는 offset
-        Integer offset = (page - 1) * 16;
+        Integer offset = (page - 1) * 12;
 
         // 조회되는 게시물들
         List<Product> list = mapper.selectPage(offset, category, keyword, pay);
@@ -147,6 +147,8 @@ public class ProductService {
         // 상품의 구매 내역 지우기 (purchased_record 테이블엔 null 값)
         mapper.deletePurchasedRecord(productId);
 
+//        // 상품의 결제 내역 지우기
+//        mapper.deletePaymentRecord(productId);
 
         int cnt = mapper.deleteById(productId);
         return cnt == 1;
@@ -248,7 +250,7 @@ public class ProductService {
 
     // 메인 페이지에서 각각 상품 5개씩 가져오기
     public Map<String, List<Product>> getProductMainList() {
-        Integer limit = 5;
+        Integer limit = 10;
 
         List<Product> sellProducts = mapper.selectSellProducts(limit);
 
@@ -286,6 +288,11 @@ public class ProductService {
             return product;
         }
 
+    }
+
+    // navbar에서 경로 구분
+    public String getProductStatus(Integer productId) {
+        return mapper.getProductStatus(productId);
     }
 }
 

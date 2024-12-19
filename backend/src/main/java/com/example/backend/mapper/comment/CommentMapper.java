@@ -15,15 +15,15 @@ public interface CommentMapper {
     int insert(Comment comment);
 
     @Select("""
-    SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
-           m.nickname AS nickname
-    FROM comment c
-    LEFT JOIN member m ON c.member_id = m.member_id
-    LEFT JOIN board b ON c.board_id = b.board_id
-    WHERE c.board_id = #{boardId}
-    ORDER BY c.comment_id
-    LIMIT #{offset}, 10
-""")
+                SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
+                       m.nickname AS nickname
+                FROM comment c
+                LEFT JOIN member m ON c.member_id = m.member_id
+                LEFT JOIN board b ON c.board_id = b.board_id
+                WHERE c.board_id = #{boardId}
+                ORDER BY c.comment_id
+                LIMIT #{offset}, 10
+            """)
     List<Comment> selectByBoardId(Integer boardId, Integer offset);
 
     @Select("""
@@ -47,21 +47,21 @@ public interface CommentMapper {
     int update(Comment comment);
 
     @Select("""
-    SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
-           m.nickname AS nickname
-    FROM comment c
-    LEFT JOIN member m ON c.member_id = m.member_id
-    LEFT JOIN board b ON c.board_id = b.board_id
-    WHERE c.board_id = #{boardId}
-    ORDER BY c.comment_id DESC
-    LIMIT #{offset}, 10
-""")
-    List<Comment> selectCommentPage(Integer boardId,Integer offset);
+                SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
+                       m.nickname AS nickname
+                FROM comment c
+                LEFT JOIN member m ON c.member_id = m.member_id
+                LEFT JOIN board b ON c.board_id = b.board_id
+                WHERE c.board_id = #{boardId}
+                ORDER BY c.comment_id DESC
+                LIMIT #{offset}, 10
+            """)
+    List<Comment> selectCommentPage(Integer boardId, Integer offset);
 
     @Select("""
-    SELECT COUNT(*) FROM comment
-    WHERE board_id = #{boardId}
-""")
+                SELECT COUNT(*) FROM comment
+                WHERE board_id = #{boardId}
+            """)
     Integer countByBoardId(Integer boardId);
 
     @Delete("""
@@ -71,22 +71,35 @@ public interface CommentMapper {
     int deleteByBoardId(int boardId);
 
     @Select("""
-    SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
-           m.nickname AS nickname, b.title AS boardTitle, b.created_at AS boardInserted,b.category AS boardCategory
-    FROM comment c
-    LEFT JOIN member m ON c.member_id = m.member_id
-    LEFT JOIN board b ON c.board_id = b.board_id
-    WHERE c.member_id = #{memberId}
-    ORDER BY c.inserted DESC
-    LIMIT #{offset}, 6
-""")
+                SELECT c.comment_id, c.board_id, c.member_id AS memberId, c.comment, c.inserted,
+                       m.nickname AS nickname, b.title AS boardTitle, b.created_at AS boardInserted,b.category AS boardCategory
+                FROM comment c
+                LEFT JOIN member m ON c.member_id = m.member_id
+                LEFT JOIN board b ON c.board_id = b.board_id
+                WHERE c.member_id = #{memberId}
+                ORDER BY c.inserted DESC
+                LIMIT #{offset}, 6
+            """)
     List<Comment> findCommentsByMemberId(String memberId, Integer offset);
 
     @Select("""
-            SELECT COUNT(*) 
+                SELECT COUNT(*) 
+                FROM comment
+                WHERE member_id = #{memberId}
+            """)
+    int countCommentsByMemberId(String memberId);
+
+    @Select("""
+            SELECT comment_id
             FROM comment
             WHERE member_id = #{memberId}
-        """)
-    int countCommentsByMemberId(String memberId);
+            """)
+    List<Integer> commentIdsByMemberId(String memberId);
+
+    @Delete("""
+            DELETE FROM comment
+            WHERE member_id=#{memberId}
+            """)
+    int deleteByMemberId(String memberId);
 }
 

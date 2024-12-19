@@ -1,18 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Flex, Heading } from "@chakra-ui/react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
-import { useContext } from "react";
-import { Avatar } from "../ui/avatar.jsx";
+import { useContext, useEffect, useState } from "react";
 import { kakaoLogout } from "../social/KakaoLogin.jsx";
-import { MdLogout } from "react-icons/md";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu.jsx";
+import { Avatar } from "../ui/avatar.jsx";
+import axios from "axios";
 
-function NavbarItem({ children, ...rest }) {
+function NavbarItem({ children, isActive, ...rest }) {
   return (
     <Box
       css={{
         paddingX: "20px",
-        paddingY: "15px",
+        paddingY: "10px",
+        borderRadius: "20px",
       }}
+      bgColor={isActive ? "blue.300" : "transparent"}
       _hover={{
         bgColor: "blue.300",
         cursor: "pointer",
@@ -26,8 +29,23 @@ function NavbarItem({ children, ...rest }) {
 
 export function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [productType, setProductType] = useState(null);
 
   const { id, nickname, profileImage } = useContext(AuthenticationContext);
+
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+    if (
+      (pathParts[1] === "product" && pathParts[2] === "view") ||
+      (pathParts[1] === "product" && pathParts[2] === "edit")
+    ) {
+      const productId = pathParts[3];
+      axios.get(`/api/product/${productId}`).then((res) => {
+        setProductType(res.data); // Assume API response has { type: "sale" | "share" }
+      });
+    }
+  }, [location.pathname]);
 
   const handleNavigation = (path) => {
     // activeTab을 삭제하여 초기화
@@ -53,52 +71,95 @@ export function Navbar() {
     }
   };
   return (
-    <Box background="gray.200">
+    <Box background="gray.100" borderBottom={"1px solid"}>
       <Flex justify="space-between" align="center" width="100%">
         {/* 왼쪽: HOME */}
         <Flex>
-          <NavbarItem onClick={() => handleNavigation("/main")}>
+          <NavbarItem ml={10} onClick={() => handleNavigation("/main")}>
             <Heading size="3xl">너굴마켓</Heading>
           </NavbarItem>
         </Flex>
 
         {/* 가운데: 중고거래, 나눔, 게시판, 지도 */}
         <Flex justify="center" flex="1" gap={3}>
-          <NavbarItem onClick={() => handleNavigation("/product/list")}>
+          <NavbarItem
+            onClick={() => handleNavigation("/product/list")}
+            isActive={
+              location.pathname.startsWith("/product/list") ||
+              (location.pathname.startsWith("/product/view") &&
+                productType === "sell") ||
+              (location.pathname.startsWith("/product/edit") &&
+                productType === "sell")
+            }
+          >
             <Heading>중고거래</Heading>
           </NavbarItem>
-          <NavbarItem onClick={() => handleNavigation("/product/share/list")}>
+          <NavbarItem
+            onClick={() => handleNavigation("/product/share/list")}
+            isActive={
+              location.pathname.startsWith("/product/share/list") ||
+              (location.pathname.startsWith("/product/view") &&
+                productType === "share") ||
+              (location.pathname.startsWith("/product/edit") &&
+                productType === "share")
+            }
+          >
             <Heading>나눔</Heading>
           </NavbarItem>
-          <NavbarItem onClick={() => handleNavigation("/board/list")}>
+          <NavbarItem
+            onClick={() => handleNavigation("/board/list")}
+            isActive={[
+              "/board/list",
+              "/board/boardView",
+              "/board/boardAdd",
+            ].some((path) => location.pathname.startsWith(path))}
+          >
             <Heading>게시판</Heading>
           </NavbarItem>
-          <NavbarItem onClick={() => handleNavigation("/chat")}>
+          <NavbarItem
+            onClick={() => handleNavigation("/chat")}
+            isActive={location.pathname === "/chat"}
+          >
             <Heading>채팅</Heading>
           </NavbarItem>
-          <NavbarItem onClick={() => handleNavigation("/map")}>
+          <NavbarItem
+            onClick={() => handleNavigation("/map")}
+            isActive={location.pathname === "/map"}
+          >
             <Heading>지도</Heading>
           </NavbarItem>
         </Flex>
 
-        {/* 오른쪽: 문의하기, 마이페이지, 로그아웃 */}
-        <Flex align="center" justify="center" gap={3}>
-          <NavbarItem onClick={() => handleNavigation("/inquiry")}>
-            1:1 문의
-          </NavbarItem>
-          <NavbarItem onClick={() => handleNavigation("/myPage")} p={0}>
-            <Avatar
-              boxSize="80px"
-              my={3}
-              src={profileImage}
-              name={nickname}
-              variant="outline"
-            />
-          </NavbarItem>
-          <NavbarItem onClick={handleLogout}>
-            <Box fontSize="36px">
-              <MdLogout />
-            </Box>
+        <Flex align="center" justify="center" gap={3} mr={10}>
+          <NavbarItem p={0}>
+            <MenuRoot>
+              <MenuTrigger asChild>
+                <Box>
+                  <Avatar
+                    boxSize="70px"
+                    my={2}
+                    src={profileImage}
+                    name={nickname}
+                    variant="outline"
+                  />
+                </Box>
+              </MenuTrigger>
+              <MenuContent>
+                <MenuItem
+                  value={"myPage"}
+                  onClick={() => handleNavigation("/myPage")}
+                >
+                  마이페이지
+                </MenuItem>
+                <MenuItem
+                  value={"inquiry"}
+                  onClick={() => handleNavigation("/inquiry")}
+                >
+                  1:1 문의
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+              </MenuContent>
+            </MenuRoot>
           </NavbarItem>
         </Flex>
       </Flex>
