@@ -255,7 +255,7 @@ export function BoardAdd() {
         <ReactQuill
           style={{
             ...editorStyles,
-            fontSize: "18px",
+            fontSize: "16px",
           }} // 기본 스타일 적용
           value={content}
           onChange={(content) => setContent(content)}
