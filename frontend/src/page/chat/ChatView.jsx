@@ -354,6 +354,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               >
                 거래완료
               </Button>
+            ) : purchased ? (
+              <></>
             ) : (
               <Payment
                 chatRoom={chatRoom}
