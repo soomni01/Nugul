@@ -143,16 +143,20 @@ public class MemberService {
                 Boolean flag = (chatRoom.getBuyer() != null && chatRoom.getBuyer().equals(member.getMemberId()))
                         ? chatRoom.getIswriter_deleted()
                         : chatRoom.getIsBuyer_deleted();
+                String roomId = chatRoom.getRoomId() + "";
                 if (flag) {
-                    String roomId = chatRoom.getRoomId() + "";
                     chatMapper.deleteChatRoomMessageByRoomId(roomId, member.getMemberId());
                     chatMapper.deleteChatRoomByRoomId(roomId);
+                } else {
+                    // 아니면 내 메시지만 삭제
+                    chatMapper.deleteChatRoomMessageByRoomId(roomId, member.getMemberId());
                 }
             }
             // 해당 아이디의 모든 sender를 널로 변경
             chatMapper.updateSenderIdNull(member.getMemberId());
             // chatroom에서  buyer 일경우와 writer의 경우 , null로 변경하고 삭제 true
             chatMapper.updateBuyerIdOrWriterIdNull(member.getMemberId());
+            // 채팅방 삭제 끝
 
 
             cnt = mapper.deleteById(member.getMemberId());

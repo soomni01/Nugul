@@ -41,7 +41,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [product, setProduct] = useState({});
   const [reviewText, setReviewText] = useState("후기");
 
-  // 경로데 따라서  받아줄 변수를 다르게 설정
+  // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
 
   //  stomp 객체 생성 및, 연결
@@ -77,7 +77,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           }
         });
       },
-
       onStompError: (err) => {
         console.error(err);
       },
@@ -115,8 +114,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         memberId: id,
       },
     });
-    setChatRoom(res.data);
     chatPartnerId = id === res.data.writer ? res.data.buyer : res.data.writer;
+    res.data.nickname === null ? "삭제한 사용자" : res.data.nickname;
+    await deletedChatPartnerId(chatPartnerId);
+    setChatRoom(() => ({ ...res.data }));
 
     // 두 번째 요청 (채팅 상대의 이미지 가져오기)
     const imageRes = await axios.get(`/api/chat/${realChatRoomId}/image`, {
@@ -145,6 +146,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }));
     setImageSrc(imageRes.data);
     setPurchased(id == purchaseRes.data.buyerId);
+  }
+
+  function deletedChatPartnerId(chatPartnerId) {
+    return chatPartnerId === null ? "삭제한 사용자" : chatPartnerId;
   }
 
   function sendMessage(sender, content) {
