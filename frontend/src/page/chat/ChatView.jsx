@@ -39,6 +39,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState({});
+  const [reviewText, setReviewText] = useState("후기");
 
   // 경로데 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -135,7 +136,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         productId: res.data.productId,
       },
     });
-    console.log(purchaseRes.data);
+
     setProduct((prev) => ({
       ...prev,
       expenseId: purchaseRes.data.expenseId,
@@ -307,14 +308,16 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   };
 
   const handleOpenReviewModal = () => {
-    console.log("실행확인");
     setIsModalOpen(true);
   };
 
   const handleReviewComplete = (productId) => {
     // 이떄 상태가 바뀌는거니까
+    setReviewText("거래 완료 ");
+    setIsModalOpen(false);
   };
 
+  // 결제 후 바로 후기로 리렌더
   const handleTransactionState = () => {
     setPurchased(true);
   };
@@ -363,7 +366,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               />
             )}
             {/* Todo purchase 로직 다시 짜야함*/}
-            {purchased && <Button onClick={handleOpenReviewModal}>후기</Button>}
+            {purchased && (
+              <Button onClick={handleOpenReviewModal}>{reviewText}</Button>
+            )}
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
