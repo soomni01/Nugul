@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Flex,
   Input,
   Spinner,
   Text,
@@ -9,7 +10,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { Field } from "../../components/ui/field.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   DialogActionTrigger,
@@ -91,87 +91,132 @@ export const InquiryView = () => {
   if (loading) return <Spinner />;
 
   return (
-    <Box mt="20px">
+    <Box
+      width="64%"
+      // height="700px"
+      mx="auto"
+      mt="36"
+      p="5"
+      borderRadius="md"
+      boxShadow="0px 10px 30px rgba(0, 0, 0, 0.2)"
+      bg="white"
+    >
       {inquiryView ? (
         <>
-          <Text fontSize="2xl" fontWeight="bold" mb={4}>
+          {/* 제목 */}
+          <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={6}>
             문의 상세 정보
           </Text>
-          <Box mb={3}>
-            <Field label="문의 유형" mb={2}>
-              <Input value={inquiryView.category} readOnly />
-            </Field>
-            <Field label="제목" mb={2}>
-              <Input value={inquiryView.title} readOnly />
-            </Field>
-            <Field label="작성자" mb={2}>
-              <Input value={nickname} readOnly />
-            </Field>
-            <Field label="작성 일자" mb={2}>
+
+          {/* 문의 상세 정보 */}
+          <Box mb={4}>
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                문의 유형
+              </Text>
+              <Input value={inquiryView.category} readOnly width="70%" ml={3} />
+            </Flex>
+
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                문의 제목
+              </Text>
+              <Input value={inquiryView.title} readOnly width="70%" ml={3} />
+            </Flex>
+
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                작성자
+              </Text>
+              <Input value={nickname} readOnly width="70%" ml={3} />
+            </Flex>
+
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                작성 일자
+              </Text>
               <Input
                 value={new Date(inquiryView.inserted).toLocaleDateString()}
                 readOnly
+                width="70%"
+                ml={3}
               />
-            </Field>
-            <Field label="내용" mb={2}>
-              <Textarea value={inquiryView.content} readOnly />
-            </Field>
+            </Flex>
+
+            <Flex align="center">
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                문의 내용
+              </Text>
+              <Textarea
+                value={inquiryView.content}
+                readOnly
+                width="70%"
+                height="150px"
+                ml={3}
+              />
+            </Flex>
           </Box>
-          <Button
-            onClick={() => navigate(`/inquiry/edit/${inquiryView.inquiryId}`)}
-          >
-            수정
-          </Button>
-          <DialogRoot>
-            <DialogTrigger asChild>
-              <Button colorPalette={"red"}>삭제</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>삭제 확인</DialogTitle>
-              </DialogHeader>
-              <DialogBody>
-                {inquiryView && <p>해당 문의글을 삭제하시겠습니까?</p>}
-              </DialogBody>
-              <DialogFooter>
-                <DialogActionTrigger>
-                  <Button variant={"outline"}>취소</Button>
-                </DialogActionTrigger>
-                <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                  삭제
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </DialogRoot>
-          <Box mt={4}>
+
+          {/* 버튼 */}
+          <Flex justify="space-between" mt={4}>
+            <Button
+              colorScheme="blue"
+              onClick={() => navigate(`/inquiry/edit/${inquiryView.inquiryId}`)}
+            >
+              수정
+            </Button>
+            <DialogRoot>
+              <DialogTrigger asChild>
+                <Button colorScheme="red">삭제</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>삭제 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  {inquiryView && <p>해당 문의글을 삭제하시겠습니까?</p>}
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant="outline">취소</Button>
+                  </DialogActionTrigger>
+                  <Button colorScheme="red" onClick={handleDeleteClick}>
+                    삭제
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </Flex>
+
+          {/* 댓글 */}
+          <Box mt={6}>
             {comments.length === 0 ? (
-              <Text mt={4}>아직 관리자가 답변하지 않았습니다.</Text>
+              <Text>아직 관리자가 답변하지 않았습니다.</Text>
             ) : (
-              <Box mt={4}>
-                <VStack spacing={3}>
-                  {comments.map((comment) => (
-                    <Box
-                      key={comment.nickname}
-                      borderWidth="1px"
-                      p={3}
-                      borderRadius="md"
-                    >
-                      <Text fontWeight="bold" fontSize="lg">
-                        {comment.nickname}{" "}
-                        <Text
-                          as="span"
-                          color="gray.500"
-                          fontSize="sm"
-                          fontWeight="medium"
-                        >
-                          {new Date(comment.inserted).toLocaleDateString()}
-                        </Text>
+              <VStack spacing={3}>
+                {comments.map((comment) => (
+                  <Box
+                    key={comment.nickname}
+                    borderWidth="1px"
+                    p={3}
+                    borderRadius="md"
+                    width="100%"
+                  >
+                    <Text fontWeight="bold" fontSize="lg">
+                      {comment.nickname}{" "}
+                      <Text
+                        as="span"
+                        color="gray.500"
+                        fontSize="sm"
+                        fontWeight="medium"
+                      >
+                        {new Date(comment.inserted).toLocaleDateString()}
                       </Text>
-                      <Text>{comment.comment}</Text>
-                    </Box>
-                  ))}
-                </VStack>
-              </Box>
+                    </Text>
+                    <Text mt={1}>{comment.comment}</Text>
+                  </Box>
+                ))}
+              </VStack>
             )}
           </Box>
         </>
