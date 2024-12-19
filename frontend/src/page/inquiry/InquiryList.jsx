@@ -81,38 +81,68 @@ export function InquiryList({ onRowClick }) {
         mb={4}
         alignItems="center"
       >
-        <Text fontSize="2xl" fontWeight="bold" ml={14}>
+        <Text fontSize="2xl" fontWeight="bold">
           1:1 문의 내역
         </Text>
         <Button
+          width="100%"
+          height="120%"
           colorScheme="blue"
           onClick={() => navigate("/inquiry")}
-          ml="auto"
         >
           문의하기
         </Button>
       </Grid>
-
       <Box pt={4} display="flex" justifyContent="center">
         <Table.Root interactive>
           <TableHeader>
-            <TableRow>
-              <TableColumnHeader style={{ ...cellStyle, width: "12%" }}>
+            <TableRow style={{ backgroundColor: "#EAEAEA" }}>
+              <TableColumnHeader
+                style={{
+                  ...cellStyle,
+                  width: "11%",
+                }}
+              >
                 번호
               </TableColumnHeader>
-              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+              <TableColumnHeader
+                style={{
+                  ...cellStyle,
+                  width: "15%",
+                }}
+              >
                 문의 유형
               </TableColumnHeader>
-              <TableColumnHeader style={{ ...cellStyle, width: "20%" }}>
+              <TableColumnHeader
+                style={{
+                  ...cellStyle,
+                  width: "20%",
+                }}
+              >
                 문의 제목
               </TableColumnHeader>
-              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+              <TableColumnHeader
+                style={{
+                  ...cellStyle,
+                  width: "15%",
+                }}
+              >
                 작성자
               </TableColumnHeader>
-              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+              <TableColumnHeader
+                style={{
+                  ...cellStyle,
+                  width: "15%",
+                }}
+              >
                 작성 일자
               </TableColumnHeader>
-              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+              <TableColumnHeader
+                style={{
+                  ...cellStyle,
+                  width: "16%",
+                }}
+              >
                 상태
               </TableColumnHeader>
             </TableRow>
