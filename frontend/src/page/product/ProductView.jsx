@@ -156,6 +156,9 @@ export function ProductView() {
       })
       .then((res) => {
         const roomId = res.data;
+        navigate("/chat", {
+          state: { productId: product.productId, roomId: roomId },
+        });
       })
       .catch((e) => {
         console.log(e);
@@ -164,9 +167,7 @@ export function ProductView() {
           description: "오류 발생",
         });
       })
-      .finally(() => {
-        navigate("/chat");
-      });
+      .finally(() => {});
   };
 
   // 카카오 맵 길찾기 링크 생성 함수
