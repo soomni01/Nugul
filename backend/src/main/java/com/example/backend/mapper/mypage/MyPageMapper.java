@@ -1,7 +1,5 @@
 package com.example.backend.mapper.mypage;
 
-import com.example.backend.dto.inquiry.Inquiry;
-import com.example.backend.dto.inquiry.InquiryComment;
 import com.example.backend.dto.product.Product;
 import com.example.backend.dto.review.Review;
 import org.apache.ibatis.annotations.*;
@@ -104,45 +102,13 @@ public interface MyPageMapper {
             """)
     List<Review> getReviews(String memberId, String role);
 
-
-    @Select("""
-            SELECT i.inquiry_id,
-                   i.title,
-                   i.content,
-                   i.category,
-                   i.member_id,
-                   i.inserted,
-                   EXISTS (
-                       SELECT 1
-                       FROM inquiry_comment ic
-                       WHERE ic.inquiry_id = i.inquiry_id
-                   ) AS has_answer
-            FROM inquiry i
-            WHERE i.member_id = #{memberId}
-            ORDER BY i.inquiry_id DESC
-            """)
-    List<Inquiry> inquiryList(String memberId);
-
-    @Select("""
-            SELECT i.inquiry_id,
-                   i.title,
-                   i.content,
-                   i.category,
-                   i.member_id,
-                   i.inserted
-            FROM inquiry i
-            WHERE i.inquiry_id = #{inquiryId}
-            """)
-    Inquiry inquiryListview(String memberId, int inquiryId);
-
     @Select("""
             SELECT AVG(rating) AS average_rating
             FROM review
             WHERE seller_id = #{id};
             """)
     Double getRating(String id);
-
-
+    
     @Select("""
             SELECT profile_image
             FROM member
@@ -172,45 +138,6 @@ public interface MyPageMapper {
     int deleteProfileImage(String memberId);
 
     @Select("""
-                SELECT
-                    c.id,
-                    c.inquiry_id,
-                    c.admin_id AS member_id,
-                    c.comment,
-                    c.inserted,
-                    m.nickname
-                FROM
-                    inquiry_comment c
-                JOIN
-                    member m ON c.admin_id = m.member_id
-                WHERE
-                    c.inquiry_id = #{inquiryId}
-            """)
-    List<InquiryComment> findCommentsByInquiryId(int inquiryId);
-
-    @Update("""
-            UPDATE inquiry
-            SET category = #{category},
-                title = #{title},
-                content = #{content}
-            WHERE inquiry_id = #{inquiryId}
-            """)
-    int inquiryEdit(Inquiry inquiry);
-
-    @Delete("""
-            DELETE FROM inquiry
-            WHERE inquiry_id = #{inquiryId}
-            """)
-    int deleteInquiry(int inquiryId);
-
-    @Select("""
-            SELECT inquiry_id, title, content, member_id, answer, inserted
-            FROM inquiry
-            WHERE inquiry_id = #{inquiryId}
-            """)
-    Inquiry selectByInquiryId(int inquiryId);
-
-    @Select("""
             SELECT DATE_FORMAT(date, '%Y-%m') AS month,
             SUM(CASE WHEN buyer_id = #{memberId} THEN price ELSE 0 END) AS total_purchases
             FROM purchased_record
@@ -225,5 +152,4 @@ public interface MyPageMapper {
             GROUP BY DATE_FORMAT(created_at, '%Y-%m')
             """)
     List<Map<String, Object>> getMonthlySales(String memberId);
-
 }

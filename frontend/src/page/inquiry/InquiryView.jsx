@@ -36,7 +36,7 @@ export const InquiryView = () => {
   const fetchInquiryView = () => {
     setLoading(true);
     axios
-      .get(`/api/myPage/view?inquiryId=${inquiryId}`)
+      .get(`/api/inquiry/view?inquiryId=${inquiryId}`)
       .then((res) => {
         setInquiryView(res.data);
         fetchComments(); // 댓글도 불러오기
@@ -52,7 +52,7 @@ export const InquiryView = () => {
   // 댓글을 가져오는 함수
   const fetchComments = () => {
     axios
-      .get(`/api/myPage/comments/${inquiryId}`)
+      .get(`/api/inquiry/comments/${inquiryId}`)
       .then((response) => {
         if (Array.isArray(response.data)) {
           setComments(response.data);
@@ -66,14 +66,14 @@ export const InquiryView = () => {
   // 삭제 클릭 시 호출되는 함수
   const handleDeleteClick = () => {
     axios
-      .delete(`/api/myPage/delete/${inquiryId}`)
+      .delete(`/api/inquiry/delete/${inquiryId}`)
       .then((response) => {
         if (response.status === 200) {
           toaster.create({
             type: "success",
-            description: `${inquiryView.inquiryId}번 문의글이 삭제되었습니다.`,
+            description: `해당 문의글이 삭제되었습니다.`,
           });
-          navigate("/myPage");
+          navigate("/inquiry/myList");
         }
       })
       .catch((error) => {
@@ -118,7 +118,7 @@ export const InquiryView = () => {
             </Field>
           </Box>
           <Button
-            onClick={() => navigate(`/myPage/${inquiryView.inquiryId}/edit`)}
+            onClick={() => navigate(`/inquiry/edit/${inquiryView.inquiryId}`)}
           >
             수정
           </Button>
@@ -131,9 +131,7 @@ export const InquiryView = () => {
                 <DialogTitle>삭제 확인</DialogTitle>
               </DialogHeader>
               <DialogBody>
-                {inquiryView && (
-                  <p>{inquiryView.inquiryId}번 문의글을 삭제하시겠습니까?</p>
-                )}
+                {inquiryView && <p>해당 문의글을 삭제하시겠습니까?</p>}
               </DialogBody>
               <DialogFooter>
                 <DialogActionTrigger>

@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
   Spinner,
   Table,
   TableColumnHeader,
@@ -29,7 +30,7 @@ export function InquiryList({ onRowClick }) {
     const fetchInquiries = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("/api/myPage/list");
+        const response = await axios.get("/api/inquiry/myList");
         if (response.status === 200) {
           setInquiryList(response.data); // 정렬 없이 그대로 설정
         }
@@ -57,7 +58,7 @@ export function InquiryList({ onRowClick }) {
   // 행 클릭 핸들러
   const handleRowClick = (inquiryId) => {
     localStorage.setItem("selectedInquiryId", inquiryId);
-    navigate(`/myPage/${inquiryId}`);
+    navigate(`/inquiry/myList/${inquiryId}`);
   };
 
   // 로딩 상태
@@ -73,19 +74,47 @@ export function InquiryList({ onRowClick }) {
 
   return (
     <Box mt="60px">
-      <Text fontSize="2xl" fontWeight="bold" mt={-7} ml={5}>
-        문의 내역
-      </Text>
-      <Box pt={4}>
+      <Grid
+        templateColumns="1fr auto"
+        gap={4}
+        mr={1}
+        mb={4}
+        alignItems="center"
+      >
+        <Text fontSize="2xl" fontWeight="bold" ml={14}>
+          1:1 문의 내역
+        </Text>
+        <Button
+          colorScheme="blue"
+          onClick={() => navigate("/inquiry")}
+          ml="auto"
+        >
+          문의하기
+        </Button>
+      </Grid>
+
+      <Box pt={4} display="flex" justifyContent="center">
         <Table.Root interactive>
           <TableHeader>
             <TableRow>
-              <TableColumnHeader style={cellStyle}>번호</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>문의 유형</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>문의 제목</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>작성자</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>작성 일자</TableColumnHeader>
-              <TableColumnHeader style={cellStyle}>상태</TableColumnHeader>
+              <TableColumnHeader style={{ ...cellStyle, width: "12%" }}>
+                번호
+              </TableColumnHeader>
+              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+                문의 유형
+              </TableColumnHeader>
+              <TableColumnHeader style={{ ...cellStyle, width: "20%" }}>
+                문의 제목
+              </TableColumnHeader>
+              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+                작성자
+              </TableColumnHeader>
+              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+                작성 일자
+              </TableColumnHeader>
+              <TableColumnHeader style={{ ...cellStyle, width: "15%" }}>
+                상태
+              </TableColumnHeader>
             </TableRow>
           </TableHeader>
           <Table.Body>
@@ -124,6 +153,7 @@ export function InquiryList({ onRowClick }) {
           </Table.Body>
         </Table.Root>
       </Box>
+
       <Flex justify="center" mt={4} gap={2}>
         {Array.from({ length: totalPages }, (_, index) => (
           <Button

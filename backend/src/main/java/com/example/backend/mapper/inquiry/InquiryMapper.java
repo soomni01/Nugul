@@ -9,14 +9,6 @@ import java.util.List;
 @Mapper
 public interface InquiryMapper {
 
-    @Insert("""
-            INSERT INTO inquiry
-            (title, content, category, member_id)
-            VALUES (#{title}, #{content}, #{category}, #{memberId})
-            """)
-    @Options(keyProperty = "inquiryId", useGeneratedKeys = true)
-    int insert(Inquiry inquiry);
-
     @Select("""
             SELECT i.inquiry_id,
                    i.title,
@@ -88,4 +80,64 @@ public interface InquiryMapper {
             WHERE id = #{commentId}
             """)
     int deleteComment(int commentId);
+
+    @Insert("""
+            INSERT INTO inquiry
+            (title, content, category, member_id)
+            VALUES (#{title}, #{content}, #{category}, #{memberId})
+            """)
+    @Options(keyProperty = "inquiryId", useGeneratedKeys = true)
+    int insert(Inquiry inquiry);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.inserted,
+                   EXISTS (
+                       SELECT 1
+                       FROM inquiry_comment ic
+                       WHERE ic.inquiry_id = i.inquiry_id
+                   ) AS has_answer
+            FROM inquiry i
+            WHERE i.member_id = #{memberId}
+            ORDER BY i.inquiry_id DESC
+            """)
+    List<Inquiry> inquiryList(String memberId);
+
+    @Select("""
+            SELECT i.inquiry_id,
+                   i.title,
+                   i.content,
+                   i.category,
+                   i.member_id,
+                   i.inserted
+            FROM inquiry i
+            WHERE i.inquiry_id = #{inquiryId}
+            """)
+    Inquiry inquiryListview(String memberId, int inquiryId);
+
+    @Update("""
+            UPDATE inquiry
+            SET category = #{category},
+                title = #{title},
+                content = #{content}
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    int inquiryEdit(Inquiry inquiry);
+
+    @Delete("""
+            DELETE FROM inquiry
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    int deleteInquiry(int inquiryId);
+
+    @Select("""
+            SELECT inquiry_id, title, content, member_id, answer, inserted
+            FROM inquiry
+            WHERE inquiry_id = #{inquiryId}
+            """)
+    Inquiry selectByInquiryId(int inquiryId);
 }

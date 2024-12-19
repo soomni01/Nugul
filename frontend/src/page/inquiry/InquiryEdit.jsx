@@ -24,12 +24,12 @@ export function InquiryEdit() {
   const { hasAccess } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
-  // 문의 내역의 상세 문의 보기 데이터 로드
+  // 문의 내역에서 문의 상세 보는 데이터 로드
   useEffect(() => {
     const fetchInquiry = async () => {
       try {
         const response = await axios.get(
-          `/api/myPage/view?inquiryId=${inquiryId}`,
+          `/api/inquiry/view?inquiryId=${inquiryId}`,
         );
         if (response.status === 200) {
           setInquiry(response.data);
@@ -54,15 +54,15 @@ export function InquiryEdit() {
   const handleSaveClick = () => {
     setProgress(true); // 로딩 상태 활성화
     axios
-      .put("/api/myPage/edit", inquiry) // 수정 요청
+      .put("/api/inquiry/edit", inquiry)
       .then((res) => res.data)
       .then((data) => {
         toaster.create({
           type: data.message.type,
           description: data.message.text,
         });
-        setInquiry(data); // 상태 업데이트
-        navigate(`/myPage/${inquiry.inquiryId}`);
+        setInquiry(data);
+        navigate(`/inquiry/myList/${inquiry.inquiryId}`);
       })
       .catch((e) => {
         const message = e.response?.data?.message || {
@@ -147,7 +147,7 @@ export function InquiryEdit() {
                 <DialogTitle>저장 확인</DialogTitle>
               </DialogHeader>
               <DialogBody>
-                <p>{inquiry.inquiryId}번 문의글을 수정하시겠습니까?</p>
+                <p>문의글을 수정하시겠습니까?</p>
               </DialogBody>
               <DialogFooter>
                 <DialogActionTrigger>
