@@ -3,8 +3,10 @@ import {
   Box,
   Flex,
   Group,
-  Heading,
+  HStack,
   Input,
+  Separator,
+  Spacer,
   Stack,
   Text,
   Textarea,
@@ -151,84 +153,94 @@ export function ProductAdd(props) {
   }
 
   return (
-    <Box>
-      <Heading mb={3}>상품 등록</Heading>
-      <Stack gap={5}>
-        <Flex alignItems="center">
-          <Box
-            p="10"
-            borderWidth="1px"
-            borderColor="lightgray"
-            borderRadius="10px"
-            onClick={handleBoxClick}
-            cursor="pointer"
-            textAlign="center"
-          >
-            <input
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-              type="file"
-              accept="image/*"
-              multiple
-              style={{ display: "none" }}
-            />
-            <FcAddImage size="30px" />
-          </Box>
-
-          <Box
-            display="flex"
-            gap="10px"
-            mt={6}
-            overflowX="auto"
-            whiteSpace="nowrap"
-            minWidth="100px"
-          >
-            {filesUrl.map((file, index) => (
+    <Box display="flex" p={5} width="100%">
+      <Stack gap={5} width="100%">
+        <HStack alignItems="flex-start" width="100%">
+          <Text fontSize="lg" fontWeight="bold" textAlign="left" minWidth="15%">
+            상품 이미지
+          </Text>
+          <Spacer />
+          <Box width="85%">
+            <Flex alignItems="center" gap={3} mb={4}>
               <Box
-                key={index}
-                width="100px"
-                height="100px"
-                border="1px solid lightgray"
+                p="16"
+                borderWidth="1px"
+                borderColor="lightgray"
                 borderRadius="10px"
-                overflow="hidden"
+                onClick={handleBoxClick}
                 cursor="pointer"
-                display="inline-block"
-                flexShrink={0} // 이미지가 축소되지 않도록 설정
-                onClick={() => handleRemoveImage(index)}
+                textAlign="center"
               >
-                <img
-                  src={file}
-                  alt={`파일 미리보기: ${index}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
+                <input
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: "none" }}
                 />
+                <FcAddImage size="40px" />
               </Box>
-            ))}
+
+              <Box display="flex" gap="10px" overflowX="auto">
+                {filesUrl.map((file, index) => (
+                  <Box
+                    key={index}
+                    width="150px"
+                    height="150px"
+                    border="1px solid lightgray"
+                    borderRadius="10px"
+                    overflow="hidden"
+                    cursor="pointer"
+                    display="inline-block"
+                    flexShrink={0}
+                    onClick={() => handleRemoveImage(index)}
+                  >
+                    <img
+                      src={file}
+                      alt={`파일 미리보기: ${index}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Flex>
+
+            {fileInputInvalid && (
+              <Text fontSize="sm" color="red" mb={3}>
+                각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
+              </Text>
+            )}
+
+            <Text fontSize="sm" color="blue.400" whiteSpace="pre-line">
+              - 가장 처음 이미지가 대표이미지입니다.{"\n"}- 이미지는 상품 등록
+              시 정사각형으로 짤려서 등록됩니다.{"\n"}- 이미지를 클릭하여 삭제할
+              수 있습니다. {"\n"}- 큰 이미지일경우 이미지가 깨지는 경우가 발생할
+              수 있습니다. {"\n"}- 각 파일은 1MB 이하, 총 용량은 10MB 이하이어야
+              합니다.
+            </Text>
           </Box>
-        </Flex>
+        </HStack>
 
-        <Text size="xs" mt={-2}>
-          {!fileInputInvalid ? (
-            "가장 처음 이미지가 대표이미지입니다."
-          ) : (
-            <span style={{ color: "red", fontSize: "12px" }}>
-              각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
-            </span>
-          )}
-        </Text>
+        <Separator />
 
-        <Flex gap={3}>
-          <Box minWidth="100px">
-            <Field label={"카테고리"}>
+        <HStack alignItems="flex-start">
+          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
+            상품명
+            <span style={{ color: "red" }}>*</span>
+          </Text>
+          <Flex alignItems="center" w="85%" gap={3}>
+            <Box minWidth="100px">
               <select
                 value={category}
                 onChange={handleCategoryChange}
                 style={{
                   width: "100px",
-                  padding: "8px",
+                  padding: "11px",
                   borderRadius: "4px",
                   border: "1px solid #ccc",
                 }}
@@ -239,87 +251,124 @@ export function ProductAdd(props) {
                   </option>
                 ))}
               </select>
-            </Field>
-          </Box>
-          <Box flex={8}>
-            <Field label={"상품명"}>
+            </Box>
+            <Box width="100%">
               <Input
+                size="xl"
                 value={productName}
                 placeholder="상품명을 입력하세요"
                 onChange={(e) => setProductName(e.target.value)}
               />
-            </Field>
-          </Box>
-        </Flex>
-
-        <Field label={"거래방식"}>
-          <Flex gap={4}>
-            <Button
-              borderRadius="10px"
-              variant={pay === "sell" ? "solid" : "outline"}
-              onClick={() => handlePayClick("sell")}
-            >
-              판매하기
-            </Button>
-            <Button
-              borderRadius="10px"
-              variant={pay === "share" ? "solid" : "outline"}
-              onClick={() => handlePayClick("share")}
-            >
-              나눔하기
-            </Button>
+            </Box>
           </Flex>
-        </Field>
-        {pay === "sell" && (
-          <InputGroup w={"20%"} flex="1" startElement={<PiCurrencyKrwBold />}>
-            <Input
-              value={price}
-              onChange={handlePriceChange}
-              placeholder="가격을 입력하세요"
+        </HStack>
+
+        <Separator />
+
+        <HStack alignItems="flex-start">
+          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
+            거래 방식
+            <span style={{ color: "red" }}>*</span>
+          </Text>
+          <Flex alignItems="flex-start" w="85%" gap={4} direction="column">
+            <HStack>
+              <Button
+                size="lg"
+                borderRadius="10px"
+                variant={pay === "sell" ? "solid" : "outline"}
+                onClick={() => handlePayClick("sell")}
+              >
+                판매하기
+              </Button>
+              <Button
+                size="lg"
+                borderRadius="10px"
+                variant={pay === "share" ? "solid" : "outline"}
+                onClick={() => handlePayClick("share")}
+              >
+                나눔하기
+              </Button>
+            </HStack>
+
+            {pay === "sell" && (
+              <InputGroup
+                w={"20%"}
+                flex="1"
+                startElement={<PiCurrencyKrwBold />}
+              >
+                <Input
+                  value={price}
+                  onChange={handlePriceChange}
+                  placeholder="가격을 입력하세요"
+                />
+              </InputGroup>
+            )}
+          </Flex>
+        </HStack>
+
+        <Separator />
+
+        <HStack alignItems="flex-start">
+          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
+            상품 설명
+            <span style={{ color: "red" }}>*</span>
+          </Text>
+          <Flex alignItems="center" w="85%">
+            <Textarea
+              placeholder="등록할 상품의 게시글 내용을 작성해주세요."
+              fontSize="md"
+              h={150}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
-          </InputGroup>
-        )}
-        <Field label={"상품 설명"}>
-          <Textarea
-            placeholder="등록할 상품의 게시글 내용을 작성해주세요."
-            h={150}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </Field>
-        <Group>
-          <Field label={"거래 희망 장소"}>
-            <Input
-              value={location?.name || ""}
-              onClick={() => setIsModalOpen(true)}
-              placeholder="거래 희망 장소를 추가하세요"
-              readOnly
-            />
-          </Field>
-          {location?.name && (
-            <Field label={"상세지역"}>
+          </Flex>
+        </HStack>
+
+        <Separator />
+
+        <HStack alignItems="flex-start">
+          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
+            거래 장소
+            <span style={{ color: "red" }}>*</span>
+          </Text>
+          <Flex alignItems="center" minWidth="85%">
+            <Group>
               <Input
-                value={detailAddress}
-                placeholder="ex) (이대역) 4번출구 스타벅스 "
-                onChange={(e) => setDetailAddress(e.target.value)}
+                value={location?.name || ""}
+                onClick={() => setIsModalOpen(true)}
+                placeholder="거래 희망 장소를 추가하세요"
+                readOnly
               />
-            </Field>
-          )}
-        </Group>
+
+              {location?.name && (
+                <Field label={"상세지역"}>
+                  <Input
+                    value={detailAddress}
+                    placeholder="ex) (이대역) 4번출구 스타벅스 "
+                    onChange={(e) => setDetailAddress(e.target.value)}
+                  />
+                </Field>
+              )}
+            </Group>
+          </Flex>
+        </HStack>
 
         <MapModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSelectLocation={handleLocationSelect}
         />
-        <Button
-          w={"10%"}
-          disabled={disabled}
-          loading={progress}
-          onClick={handleSave}
-        >
-          상품 등록
-        </Button>
+
+        <Box display="flex" w="100%" justifyContent="flex-end">
+          <Button
+            w={"10%"}
+            disabled={disabled}
+            loading={progress}
+            onClick={handleSave}
+          >
+            상품 등록
+          </Button>
+        </Box>
       </Stack>
     </Box>
   );
