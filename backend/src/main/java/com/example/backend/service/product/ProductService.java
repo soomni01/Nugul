@@ -147,6 +147,8 @@ public class ProductService {
         // 상품의 구매 내역 지우기 (purchased_record 테이블엔 null 값)
         mapper.deletePurchasedRecord(productId);
 
+//        // 상품의 결제 내역 지우기
+//        mapper.deletePaymentRecord(productId);
 
         int cnt = mapper.deleteById(productId);
         return cnt == 1;

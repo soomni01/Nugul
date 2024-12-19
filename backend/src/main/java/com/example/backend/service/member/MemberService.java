@@ -1,9 +1,15 @@
 package com.example.backend.service.member;
 
+import com.example.backend.dto.inquiry.Inquiry;
 import com.example.backend.dto.member.Member;
 import com.example.backend.dto.member.MemberEdit;
+import com.example.backend.mapper.inquiry.InquiryMapper;
+import com.example.backend.mapper.board.BoardMapper;
+import com.example.backend.mapper.comment.CommentMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
+import com.example.backend.service.inquiry.InquiryService;
+import com.example.backend.service.mypage.MyPageService;
 import com.example.backend.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +43,10 @@ public class MemberService {
 
     final MemberMapper mapper;
     private final ProductMapper productMapper;
+    private final BoardMapper boardMapper;
+    private final CommentMapper commentMapper;
     final JwtEncoder jwtEncoder;
+    final ProductService productService;
 
     private final ProductService productService;
 
@@ -46,6 +55,12 @@ public class MemberService {
 
     @Value("${naver.client.secret}")
     private String clientSecret;
+    @Autowired
+    private InquiryMapper inquiryMapper;
+    @Autowired
+    private InquiryService inquiryService;
+    @Autowired
+    private MyPageService myPageService;
 
     // 회원 추가 메소드
     public boolean add(Member member) {
@@ -98,8 +113,31 @@ public class MemberService {
             for (Integer productId : likes) {
                 productMapper.deleteLike(productId);
             }
+            // 문의 내역 지우기
+            List<Inquiry> inquiries = myPageService.getInquiryByMemberId(member.getMemberId());
+            for (Inquiry inquiry : inquiries) {
+                myPageService.deleteInquiry(inquiry.getInquiryId());
+            }
 
+            // 쓴 게시물 목록 얻기
+            List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
+            for (Integer boardId : boards) {
 
+                // 게시물에 연결된 파일 목록 가져오기
+                List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
+
+                // DB에서 파일 삭제
+                for (String fileName : fileNames) {
+                    boardMapper.deleteFileByBoardIdAndName(boardId, fileName);  // board_file 테이블에서 파일 삭제
+                }
+
+                // 각 게시물 지우기
+                boardMapper.deleteById(boardId);
+                // 각 게시판 댓글 삭제
+                commentMapper.deleteByBoardId(boardId);
+            }
+            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
+            commentMapper.deleteByMemberId(member.getMemberId());
             cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
@@ -193,10 +231,10 @@ public class MemberService {
 
         // 1. 네이버로부터 액세스 토큰 요청
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
-                + "&client_id=" + clientId
-                + "&client_secret=" + clientSecret
-                + "&code=" + code
-                + "&state=" + state;
+                          + "&client_id=" + clientId
+                          + "&client_secret=" + clientSecret
+                          + "&code=" + code
+                          + "&state=" + state;
 
         Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
 

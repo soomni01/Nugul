@@ -29,5 +29,5 @@ public class Product {
     private Integer likeCount;
     private String reviewStatus;
     private Integer expenseId;
-    private String paymentStatus;
+    private String paymentMethod;
 }
