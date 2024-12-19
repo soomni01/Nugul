@@ -76,7 +76,7 @@ export function BoardAdd() {
         borderRadius="12px"
         p={8}
         textAlign="center"
-        maxWidth="550px"
+        maxWidth="450px"
         mx="auto"
         mt={16}
         boxShadow="lg"
@@ -161,6 +161,24 @@ export function BoardAdd() {
     category.trim().length > 0
   );
 
+  // 파일 삭제 핸들러
+  const handleFileDelete = (fileName) => {
+    // 파일 삭제 후, 해당 파일을 목록에서 필터링하여 삭제
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
+  };
+
+  // 파일 변경 처리 (중복 방지)
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files); // 새로운 파일들
+    // 기존 파일 목록에서 파일 이름이 중복되지 않도록 필터링
+    const uniqueFiles = newFiles.filter(
+      (newFile) =>
+        !files.some((existingFile) => existingFile.name === newFile.name),
+    );
+    // 새로운 파일 목록을 기존 파일 목록에 추가
+    setFiles((prevFiles) => [...prevFiles, ...uniqueFiles]);
+  };
+
   // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
   let sumOfFileSize = 0;
@@ -179,6 +197,8 @@ export function BoardAdd() {
               fontWeight={"bold"}
               me={"auto"}
               truncate
+              onClick={() => handleFileDelete(file.name)} // 파일 이름을 클릭하면 삭제
+              style={{ cursor: "pointer" }} // 커서 모양을 포인터로 변경하여 클릭 가능하도록 스타일 추가
             >
               <Icon>
                 <CiFileOn />
@@ -274,14 +294,14 @@ export function BoardAdd() {
             errorText={"선택된 파일의 용량이 초과되었습니다."}
           >
             <input
-              onChange={(e) => setFiles(e.target.files)}
+              onChange={handleFileChange}
               type="file"
               accept="image/*"
               multiple
               style={{
                 fontSize: "14px",
                 height: "30px", // 파일 입력의 높이 조정
-                marginTop: "10px", // 상단 여백 조정
+                marginTop: "30px", // 상단 여백 조정
               }}
             />
             <Box>{filesList}</Box>
