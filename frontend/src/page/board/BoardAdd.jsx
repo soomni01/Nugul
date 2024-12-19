@@ -32,6 +32,7 @@ export function BoardAdd() {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
       [{ list: "ordered" }, { list: "bullet" }],
+      [{ size: ["small", "medium", "large", "huge"] }],
       ["bold", "italic", "underline"],
       [{ align: [] }],
       ["link"],
@@ -40,6 +41,31 @@ export function BoardAdd() {
       ["clean"],
     ],
   };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "list",
+    "bold",
+    "italic",
+    "underline",
+    "align",
+    "link",
+    "blockquote",
+    "color",
+    "background",
+  ];
+
+  // CSS로 기본 글씨 크기 고정
+  const editorStyles = {
+    width: "100%",
+    height: "400px", // 자동 크기 조정
+    maxHeight: "auto", // 최대 높이 설정
+    marginBottom: "20px", // 여백 조정
+    lineHeight: "1.0", // 줄 간격 설정
+  };
+
   const navigate = useNavigate();
 
   // 권한 없을 떄
@@ -228,15 +254,14 @@ export function BoardAdd() {
 
         <ReactQuill
           style={{
-            width: "100%",
-            height: "400px", // 자동 크기 조정
-            maxHeight: "auto", // 최대 높이 설정
-            marginBottom: "20px", // 여백 조정
-          }}
+            ...editorStyles,
+            fontSize: "18px",
+          }} // 기본 스타일 적용
           value={content}
           onChange={(content) => setContent(content)}
           disabled={disabled}
-          modules={modules}
+          modules={modules} // 툴바 및 모듈 설정
+          formats={formats} // 사용 가능한 서식 제한
           placeholder="본문 내용을 입력하세요"
         />
 
