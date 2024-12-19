@@ -8,6 +8,7 @@ import com.example.backend.mapper.comment.CommentMapper;
 import com.example.backend.mapper.inquiry.InquiryMapper;
 import com.example.backend.mapper.member.MemberMapper;
 import com.example.backend.mapper.product.ProductMapper;
+import com.example.backend.service.chat.ChatService;
 import com.example.backend.service.inquiry.InquiryService;
 import com.example.backend.service.mypage.MyPageService;
 import com.example.backend.service.product.ProductService;
@@ -47,6 +48,7 @@ public class MemberService {
     private final CommentMapper commentMapper;
     final JwtEncoder jwtEncoder;
     private final ProductService productService;
+    private final ChatService chatService;
 
 
     @Value("${naver.client.id}")
@@ -135,9 +137,13 @@ public class MemberService {
                 // 각 게시판 댓글 삭제
                 commentMapper.deleteByBoardId(boardId);
             }
+
             // 회원의 댓글 삭제 (게시물 외 개인 댓글)
             commentMapper.deleteByMemberId(member.getMemberId());
             cnt = mapper.deleteById(member.getMemberId());
+
+            // 채팅방 삭제
+
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
         return cnt == 1;

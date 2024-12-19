@@ -107,8 +107,7 @@ public class ChatController {
             boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
             boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId, roomId);
             boolean chatRemoved;
-            System.out.println("messageRemoved = " + messageRemoved);
-            System.out.println("updateDeleted = " + updateDeleted);
+            
             if (messageRemoved && updateDeleted) {
                 // 둘다   삭제 한적 있는지 확인  >
                 boolean allDeleted = chatService.checkAllDeleted(roomId);
