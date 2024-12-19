@@ -120,8 +120,9 @@ public class MemberService {
 
             // 쓴 게시물 목록 얻기
             List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
+            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
+            commentMapper.deleteByMemberId(member.getMemberId());
             for (Integer boardId : boards) {
-
 
                 // 게시물에 연결된 파일 목록 가져오기
                 List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
@@ -134,9 +135,6 @@ public class MemberService {
                 // 각 게시물 지우기
                 boardMapper.deleteById(boardId);
             }
-
-            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
-            commentMapper.deleteByMemberId(member.getMemberId());
             cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
