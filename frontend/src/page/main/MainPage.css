@@ -61,22 +61,26 @@
 
 /* 상품 페이지 swiper */
 .product-page-swiper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 75%;
+    height: auto;
     background-color: #f8f9fa;
+    aspect-ratio: 1;
 }
 
 .product-page-swiper-slide {
     display: flex;
     justify-content: center;
+    width: 100%;
+    position: relative;
 }
 
 .product-page-swiper-slide img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 100%;
-    max-width: 300px;
-    max-height: 100%;
-    object-fit: contain;
+    min-height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover; /* 이미지가 비율을 유지하면서 꽉 채워짐 */
 }
 
