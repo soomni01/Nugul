@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
+import {
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  ZoomControl,
+} from "react-kakao-maps-sdk";
+import { HStack, Image, Text } from "@chakra-ui/react";
 import { IoClose } from "react-icons/io5";
-import "./MapModal.css";
+import "./MiniMapModal.css";
 import { createPortal } from "react-dom";
-import { Image } from "@chakra-ui/react";
 
 export const MiniMapModal = ({ isOpen, onClose, product }) => {
   const [markerPosition, setMarkerPosition] = useState({
@@ -29,45 +34,59 @@ export const MiniMapModal = ({ isOpen, onClose, product }) => {
   };
 
   return createPortal(
-    <div className="background">
+    <div className="mini-background">
       <div className="mini-modal">
-        <button className="close" onClick={onClose}>
+        <button className="mini-close" onClick={onClose}>
           <IoClose />
         </button>
-        <div className="content">
+        <div className="mini-content">
           <Map
-            className="map"
+            className="mini-map"
             center={{ lat: product.latitude, lng: product.longitude }}
             level={3}
-            style={{ width: "100%", height: "400px" }}
             onCreate={handleMapCreate}
           >
             {markerPosition && (
-              <MapMarker position={markerPosition}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    whiteSpace: "nowrap",
-                    padding: "5px",
-                    borderRadius: "5px",
+              <>
+                <MapMarker
+                  position={markerPosition}
+                  clickable={false}
+                  image={{
+                    src: "/image/MapMarker2.png",
+                    size: {
+                      width: 33,
+                      height: 36,
+                    },
                   }}
-                >
-                  <span>{markerMessage}</span>
-                  <a
-                    href={getKakaoLink()}
+                />
+                <CustomOverlayMap position={markerPosition} yAnchor={2.1}>
+                  <HStack
+                    px={3}
+                    pr={7}
+                    w={"100%"} // 100% 너비로 지정
                     style={{
-                      textDecoration: "none", // 링크 밑줄 제거
-                      marginLeft: "5px", // 텍스트와 링크 사이의 간격 추가
+                      background: "white",
+                      borderRadius: "4px",
+                      border: "1px solid #ccc",
+                      alignItems: "center",
+                      whiteSpace: "nowrap",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                      height: "36px",
                     }}
-                    target="_blank"
-                    rel="noreferrer"
                   >
-                    <Image src="/image/KakaoMap.png" boxSize={"20px"} />
-                  </a>
-                </div>
-              </MapMarker>
+                    <Text>{product.locationName}</Text>
+                    <Image
+                      onClick={() => window.open(getKakaoLink(), "_blank")}
+                      src="/image/KakaoMap.png"
+                      boxSize={"20px"} // 이미지를 20px 크기로 설정
+                      style={{
+                        cursor: "pointer",
+                        objectFit: "contain", // 이미지 비율 유지
+                      }}
+                    />
+                  </HStack>
+                </CustomOverlayMap>
+              </>
             )}
             <ZoomControl />
           </Map>
