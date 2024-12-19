@@ -102,7 +102,7 @@ export function MainPage() {
 
       <Separator my={10} />
 
-      <Heading size={"2xl"} mb={5} ml={"10%"}>
+      <Heading size={"2xl"} mb={5} ml={"5%"}>
         중고 아이템
       </Heading>
       {loading ? (
@@ -155,7 +155,7 @@ export function MainPage() {
 
       <Separator my={10} />
 
-      <Heading size={"2xl"} mb={5} ml={"10%"}>
+      <Heading size={"2xl"} mb={5} ml={"5%"}>
         나눔 아이템
       </Heading>
       {loading ? (

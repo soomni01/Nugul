@@ -1,7 +1,7 @@
 /* 메인페이지 swiper*/
 .main-page-swiper {
     position: relative;
-    width: 80%;
+    width: 90%;
 }
 
 .main-page-swiper-slide {
@@ -49,13 +49,13 @@
 
 .swiper-button-prev-sell,
 .swiper-button-prev-share {
-    left: 100px;
+    left: 10px;
     transform: rotate(180deg);
 }
 
 .swiper-button-next-sell,
 .swiper-button-next-share {
-    right: 100px;
+    right: 10px;
 }
 
 
