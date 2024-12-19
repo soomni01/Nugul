@@ -1,5 +1,5 @@
-import { Box, HStack, Input, Stack } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { Box, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -29,25 +29,55 @@ export function BoardAdd() {
       ["clean"],
     ],
   };
-
   const navigate = useNavigate();
+
+  // 권한 없을 떄
+  if (!isAuthenticated) {
+    return (
+      <Box
+        border="1px solid red"
+        borderRadius="12px"
+        p={8}
+        textAlign="center"
+        maxWidth="550px"
+        mx="auto"
+        mt={16}
+        boxShadow="lg"
+      >
+        <Box>
+          <Text fontSize="3xl" color="red.600" fontWeight="bold" mb={6}>
+            권한이 없습니다.
+          </Text>
+          <Text color="gray.700" fontSize="lg" mb={8}>
+            글을 작성하려면 로그인하거나 회원가입이 필요합니다.
+          </Text>
+          <Stack direction="row" spacing={6} justify="center" mb={4}>
+            <Button
+              colorScheme="blue"
+              variant="outline"
+              size="lg"
+              onClick={() => navigate("/member/signup")}
+            >
+              회원가입
+            </Button>
+            <Button
+              colorScheme="teal"
+              size="lg"
+              onClick={() => navigate("/")} // 로그인 페이지로 이동
+            >
+              로그인
+            </Button>
+          </Stack>
+        </Box>
+      </Box>
+    );
+  }
 
   //console.log(files);
 
   const handleListClick = () => {
     navigate("/board/list");
   };
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      logout(); // 자동 로그아웃 처리
-      toaster.create({
-        description: "글쓰기 권한이 없습니다. 로그인 하셔야 합니다.",
-        type: "error", // "error" type 설정
-      });
-      navigate("/"); // 로그인 페이지로 리디렉션
-    }
-  }, [isAuthenticated, logout, navigate]);
 
   const handleSaveClick = () => {
     setProgress(true);
