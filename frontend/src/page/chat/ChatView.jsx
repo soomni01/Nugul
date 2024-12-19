@@ -104,7 +104,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
     }
-  }, [navigate]);
+  }, [navigate, purchased]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
