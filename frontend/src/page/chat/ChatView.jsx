@@ -326,6 +326,13 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const handleTransactionState = () => {
     setPurchased(true);
   };
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      var client = id;
+      var message = clientMessage;
+      sendMessage(client, message);
+    }
+  };
 
   return (
     <Box>
@@ -441,6 +448,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               bg={"white"}
               placeholder={"전송할 메시지를 입력하세요"}
               value={clientMessage}
+              onKeyDown={handleKeyPress}
               onChange={(e) => {
                 setClientMessage(e.target.value);
               }}
