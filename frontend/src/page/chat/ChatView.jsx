@@ -136,11 +136,11 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       },
     });
     console.log(purchaseRes.data);
-
     setProduct((prev) => ({
       ...prev,
       expenseId: purchaseRes.data.expenseId,
       purchasedAt: purchaseRes.data.purchasedAt,
+      reviewStatus: purchaseRes.data.reviewStatus,
     }));
     setImageSrc(imageRes.data);
     setPurchased(id == purchaseRes.data.buyerId);

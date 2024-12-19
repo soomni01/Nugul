@@ -221,7 +221,7 @@ public interface ProductMapper {
 
 
     @Select("""
-                        select  expense_id,buyer_id,product_id,date as purchased_at,seller_id,product_name,location_name,price
+                        select  expense_id,buyer_id,product_id,date as purchased_at,seller_id,product_name,location_name,price ,review_status
                         from purchased_record 
                         where product_id = #{productId}
             """)

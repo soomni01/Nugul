@@ -74,6 +74,7 @@ export function ChatList() {
       })
       .finally(() => {
         setChatRoomId(-1);
+        setProductId(-1);
       });
   };
 
