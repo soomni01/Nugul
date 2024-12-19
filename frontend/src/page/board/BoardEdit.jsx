@@ -88,10 +88,6 @@ export function BoardEdit() {
             navigate("/"); // 로그인 페이지로 리디렉션
           } else {
             // 로그인했지만 작성자가 아닌 경우
-            toaster.create({
-              type: "error",
-              description: "수정 권한이 없습니다. 작성자만 수정할 수 있습니다.",
-            });
             navigate("/board/list"); // 목록 페이지로 리디렉션
           }
           return; // 더 이상 실행하지 않도록 종료
