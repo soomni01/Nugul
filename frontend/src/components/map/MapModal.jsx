@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CustomOverlayMap,
   Map,
@@ -12,11 +12,22 @@ import { toaster } from "../ui/toaster.jsx";
 import { LuSearch } from "react-icons/lu";
 import { Field } from "../ui/field.jsx";
 
-export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
+export const MapModal = ({
+  isOpen,
+  onClose,
+  onSelectLocation,
+  prevLocationName,
+}) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [locationName, setLocationName] = useState(null);
   const [customLocationName, setCustomLocationName] = useState(null);
   const [map, setMap] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCustomLocationName(prevLocationName); // locationName으로 초기화
+    }
+  }, [isOpen, locationName]);
 
   if (!isOpen) return null; // 모달이 닫혀 있으면 렌더링하지 않음
 
@@ -129,7 +140,7 @@ export const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Input
-                    placeholder="장소명을 입력하세요"
+                    placeholder={prevLocationName}
                     size="sm"
                     minLength={3} // 최소 길이 설정
                     value={customLocationName || ""}
