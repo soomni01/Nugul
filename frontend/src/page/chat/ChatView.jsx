@@ -39,8 +39,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState({});
+  const [reviewText, setReviewText] = useState("후기");
+  const [reviewComplete, setReviewComplete] = useState(false);
 
-  // 경로데 따라서  받아줄 변수를 다르게 설정
+  // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
 
   //  stomp 객체 생성 및, 연결
@@ -76,7 +78,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           }
         });
       },
-
       onStompError: (err) => {
         console.error(err);
       },
@@ -104,7 +105,11 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
     }
-  }, [navigate]);
+    // return () => {
+    //   // 정리 작업 수행
+    //   setPage(1);
+    // };
+  }, [navigate, purchased]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -114,8 +119,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         memberId: id,
       },
     });
-    setChatRoom(res.data);
     chatPartnerId = id === res.data.writer ? res.data.buyer : res.data.writer;
+    res.data.nickname === null ? "삭제한 사용자" : res.data.nickname;
+    await deletedChatPartnerId(chatPartnerId);
+    setChatRoom(() => ({ ...res.data }));
 
     // 두 번째 요청 (채팅 상대의 이미지 가져오기)
     const imageRes = await axios.get(`/api/chat/${realChatRoomId}/image`, {
@@ -135,7 +142,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         productId: res.data.productId,
       },
     });
-    console.log(purchaseRes.data);
+
     setProduct((prev) => ({
       ...prev,
       expenseId: purchaseRes.data.expenseId,
@@ -144,6 +151,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }));
     setImageSrc(imageRes.data);
     setPurchased(id == purchaseRes.data.buyerId);
+    // 누르면 >  SOLD로 바꿈
+    setReviewComplete(purchaseRes.data.reviewStatus === "completed");
+  }
+
+  function deletedChatPartnerId(chatPartnerId) {
+    return chatPartnerId === null ? "삭제한 사용자" : chatPartnerId;
   }
 
   function sendMessage(sender, content) {
@@ -222,6 +235,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     } catch (error) {
       console.log("이전 메시지 로딩 중 오류 ", error, page);
     } finally {
+      console.log("실행 여부");
       const chatBox = chatBoxRef.current;
       const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.4;
       chatBoxRef.current.scrollTop = reach;
@@ -235,6 +249,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.9;
 
     if (chatBox.scrollTop < reach) {
+      console.log("실행");
       // 스크롤 끝 점에서 로드
       await loadPreviousMessage();
     }
@@ -263,6 +278,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         } else {
           console.error("응답 데이터에 message가 없습니다:", data); // 'message'가 없을 경우 에러 처리
         }
+        setReviewComplete(true);
+        statusControl();
       })
       .catch((e) => {
         // 오류가 발생했을 경우 처리
@@ -276,13 +293,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           console.error("오류 응답에서 message가 없습니다:", e); // 오류 응답에 'message'가 없을 경우 에러 처리
         }
       })
-      .finally(statusControl); // 상태 변경 (무조건 실행되는 부분)
+      .finally(() => {}); // 상태 변경 (무조건 실행되는 부분)
   };
 
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
   const isSold = chatRoom.status === "Sold";
-  const viewText = isSold === true ? "후기 작성하기" : "거래완료";
 
   const removeChatRoom = (roomId, id) => {
     axios
@@ -307,11 +323,31 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   };
 
   const handleOpenReviewModal = () => {
-    console.log("실행확인");
     setIsModalOpen(true);
   };
 
-  const handleReviewComplete = (productId) => {};
+  const handleReviewComplete = (productId) => {
+    // 이떄 상태가 바뀌는거니까
+    setReviewText("거래 완료 ");
+    setReviewComplete(true);
+    setIsModalOpen(false);
+  };
+
+  // 결제 후 바로 후기로 리렌더
+  const handleTransactionState = () => {
+    console.log("실행");
+    statusControl();
+    setPurchased(true);
+  };
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      var client = id;
+      var message = clientMessage;
+      sendMessage(client, message);
+    }
+  };
+  console.log(reviewComplete);
+  console.log(product);
 
   return (
     <Box>
@@ -342,17 +378,34 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               <Button
                 className={"ScrollBarContainer"}
                 style={{ marginLeft: "16px" }}
-                colorPalette={"cyan"}
-                disabled={isSold}
-                onClick={handleSuccessTransaction}
+                colorPalette={reviewComplete && "cyan"}
+                isDisabled
+                cursor={reviewComplete && "default"}
+                onClick={reviewComplete ? null : handleSuccessTransaction}
               >
                 거래완료
               </Button>
+            ) : purchased ? (
+              <></>
             ) : (
-              <Payment chatRoom={chatRoom} />
+              <Payment
+                chatRoom={chatRoom}
+                statusControl={statusControl}
+                onComplete={handleTransactionState}
+              />
             )}
-            {/* Todo purchase 로직 다시 짜야함*/}
-            {purchased && <Button onClick={handleOpenReviewModal}>후기</Button>}
+
+            {purchased && (
+              <Button
+                onClick={reviewComplete ? null : handleOpenReviewModal}
+                isDisabled
+                colorPalette={reviewComplete && "cyan"}
+                cursor={reviewComplete && "default"}
+                // disabled={reviewComplete ? true : false}
+              >
+                {reviewComplete ? "작성완료" : "후기작성하기"}
+              </Button>
+            )}
             <DialogCompo
               roomId={realChatRoomId}
               onDelete={onDelete || (() => removeChatRoom(roomId, id))}
@@ -420,6 +473,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               bg={"white"}
               placeholder={"전송할 메시지를 입력하세요"}
               value={clientMessage}
+              onKeyDown={handleKeyPress}
               onChange={(e) => {
                 setClientMessage(e.target.value);
               }}

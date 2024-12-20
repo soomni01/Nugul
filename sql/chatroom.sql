@@ -57,3 +57,16 @@ from chatroom c
          left join product p on c.product_id = p.product_id
          join member m
 where roomId = 93;
+
+
+desc chatroom;
+
+ALTER TABLE chatroom
+    MODIFY writer VARCHAR(50) NULL,
+    MODIFY buyer VARCHAR(50) NULL;
+
+ALTER TABLE chatroom
+    ADD CONSTRAINT writer FOREIGN KEY (writer) REFERENCES member (member_id) ON DELETE SET NULL;
+
+ALTER TABLE chatroom
+    ADD CONSTRAINT buyer FOREIGN KEY (buyer) REFERENCES member (member_id) ON DELETE SET NULL;

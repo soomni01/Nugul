@@ -4,7 +4,7 @@ import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { Button } from "@chakra-ui/react";
 
-const Payment = ({ chatRoom }) => {
+const Payment = ({ chatRoom, onComplete, statusControl }) => {
   const [product, setProduct] = useState({});
   const { id, nickname } = useContext(AuthenticationContext);
 
@@ -71,7 +71,12 @@ const Payment = ({ chatRoom }) => {
                   "Transaction Error:",
                   error.response?.data || error,
                 ),
-              );
+              )
+              .finally(() => {
+                // 결제시 purchased 바꿔서 리렌더
+                onComplete();
+                // statusControl();
+              });
 
             // 결제 성공 알림
             toaster.create({
@@ -90,6 +95,7 @@ const Payment = ({ chatRoom }) => {
       },
     );
   };
+  console.log(onComplete);
 
   return (
     <div>

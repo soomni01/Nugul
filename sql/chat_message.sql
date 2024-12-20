@@ -24,3 +24,5 @@ delete
 from chat_message
 where roomId = 46;
 
+ALTER TABLE chat_message
+    MODIFY sender VARCHAR(50) NULL;

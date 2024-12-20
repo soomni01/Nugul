@@ -165,10 +165,19 @@ export function ProductView() {
         buyer: buyer,
       })
       .then((res) => {
-        console.log(res.data);
         const roomId = res.data;
-        navigate("/chat/room/" + roomId);
-      });
+        navigate("/chat", {
+          state: { productId: product.productId, roomId: roomId },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        toaster.create({
+          type: "error",
+          description: "오류 발생",
+        });
+      })
+      .finally(() => {});
   };
 
   // 카카오 맵 길찾기 링크 생성 함수

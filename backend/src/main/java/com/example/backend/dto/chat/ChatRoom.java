@@ -17,5 +17,15 @@ public class ChatRoom {
     // dto용
     private List<ChatMessage> messages;
     private String status;
+    private boolean iswriter_deleted;
+    private boolean isbuyer_deleted;
 
+
+    public Boolean getIswriter_deleted() {
+        return iswriter_deleted;
+    }
+
+    public Boolean getIsBuyer_deleted() {
+        return isbuyer_deleted;
+    }
 }

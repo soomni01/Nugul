@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { Badge, Box, Card, HStack, Image } from "@chakra-ui/react";
-import { Button } from "../../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -64,14 +63,14 @@ export function ChatListItem({ chat, onDelete, onClick }) {
               </HStack>
             </Card.Body>
             <Card.Footer>
-              <Button
-                variant={"outline"}
-                onClick={() => {
-                  navigate(`/chat/room/${chat.roomId}`);
-                }}
-              >
-                대화하러 가기
-              </Button>
+              {/*<Button*/}
+              {/*  variant={"outline"}*/}
+              {/*  onClick={() => {*/}
+              {/*    navigate(`/chat/room/${chat.roomId}`);*/}
+              {/*  }}*/}
+              {/*>*/}
+              {/*  대화하러 가기*/}
+              {/*</Button>*/}
             </Card.Footer>
           </Box>
         </HStack>
