@@ -212,6 +212,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }
 
     setIsloading(true);
+    console.log("A");
 
     try {
       const response = await axios.get(
