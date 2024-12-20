@@ -11,10 +11,7 @@ import {
 } from "../../components/ui/pagination.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import {
-  BoardCategories,
-  BoardCategoryContainer,
-} from "../../components/category/BoardCategoryContainer.jsx";
+import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
 import { FaImages } from "react-icons/fa6";
 
 export function BoardList() {
@@ -159,12 +156,6 @@ export function BoardList() {
                   display={{ base: "none", md: "table-cell" }}
                   textAlign="center"
                 >
-                  카테고리
-                </Table.ColumnHeader>
-                <Table.ColumnHeader
-                  display={{ base: "none", md: "table-cell" }}
-                  textAlign="center"
-                >
                   작성날짜
                 </Table.ColumnHeader>
               </Table.Row>
@@ -187,13 +178,6 @@ export function BoardList() {
                     )}
                   </Table.Cell>
                   <Table.Cell textAlign="center">{board.writer}</Table.Cell>
-                  <Table.Cell
-                    display={{ base: "none", md: "table-cell" }}
-                    textAlign="center"
-                  >
-                    {BoardCategories.find((cat) => cat.value === board.category)
-                      ?.label || board.category}
-                  </Table.Cell>
                   <Table.Cell
                     display={{ base: "none", md: "table-cell" }}
                     textAlign="center"
