@@ -2,7 +2,6 @@ import React, { useContext, useRef, useState } from "react";
 import {
   Box,
   Flex,
-  Group,
   HStack,
   Input,
   Separator,
@@ -11,7 +10,6 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
@@ -20,8 +18,9 @@ import { MapModal } from "../../components/map/MapModal.jsx";
 import { categories } from "../../components/category/CategoryContainer.jsx";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { IoIosArrowForward } from "react-icons/io";
+import axios from "axios";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -97,7 +96,6 @@ export function ProductAdd(props) {
   // 상품 등록 요청
   const handleSave = () => {
     setProgress(true);
-    var fullLocationName = location.name + detailAddress;
 
     const formData = new FormData();
     formData.append("productName", productName);
@@ -106,7 +104,7 @@ export function ProductAdd(props) {
     formData.append("category", category);
     formData.append("latitude", location?.latitude || "");
     formData.append("longitude", location?.longitude || "");
-    formData.append("locationName", fullLocationName || "");
+    formData.append("locationName", location?.name || "");
     formData.append("pay", pay);
     formData.append("writer", id);
 
@@ -332,24 +330,14 @@ export function ProductAdd(props) {
             <span style={{ color: "red" }}>*</span>
           </Text>
           <Flex alignItems="center" minWidth="85%">
-            <Group>
+            <InputGroup flex="1" endElement={<IoIosArrowForward />}>
               <Input
                 value={location?.name || ""}
                 onClick={() => setIsModalOpen(true)}
                 placeholder="거래 희망 장소를 추가하세요"
                 readOnly
               />
-
-              {location?.name && (
-                <Field label={"상세지역"}>
-                  <Input
-                    value={detailAddress}
-                    placeholder="ex) (이대역) 4번출구 스타벅스 "
-                    onChange={(e) => setDetailAddress(e.target.value)}
-                  />
-                </Field>
-              )}
-            </Group>
+            </InputGroup>
           </Flex>
         </HStack>
 
