@@ -131,4 +131,10 @@ public class ChatService {
         mainImageUrl = String.format(STR."\{imageSrcPrefix}/profile/\{memberId}/\{profileImage}");
         return mainImageUrl;
     }
+
+    public boolean updateDeletedTrue(int roomId, String buyer) {
+        int cnt = mapper.updateDeletedTrue(roomId, buyer);
+       
+        return cnt == 1;
+    }
 }

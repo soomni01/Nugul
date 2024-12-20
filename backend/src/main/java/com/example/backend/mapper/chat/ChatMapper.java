@@ -216,4 +216,12 @@ public interface ChatMapper {
                     where  writer = #{memberId} or buyer = #{memberId}
             """)
     List<ChatRoom> selectAllChatRoom(String memberId);
+
+
+    @Update("""
+                            update chatroom
+                            set   isbuyer_deleted = 0
+                            where roomId=#{roomId} and buyer=#{buyer}
+            """)
+    int updateDeletedTrue(int roomId, String buyer);
 }

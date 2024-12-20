@@ -47,9 +47,9 @@ public class ChatController {
 
         if (roomId == null) {
             chatService.creatChatRoom(chatRoom);
-
             return ResponseEntity.ok().body(chatRoom.getRoomId());
         } else {
+            chatService.updateDeletedTrue(roomId, chatRoom.getBuyer());
             chatRoom.setRoomId(roomId);
             return ResponseEntity.ok().body(chatRoom.getRoomId());
         }
@@ -107,7 +107,7 @@ public class ChatController {
             boolean messageRemoved = chatService.deleteMessageAll(roomId, memberId);
             boolean updateDeleted = chatService.updateDeleted(messageRemoved, memberId, roomId);
             boolean chatRemoved;
-            
+
             if (messageRemoved && updateDeleted) {
                 // 둘다   삭제 한적 있는지 확인  >
                 boolean allDeleted = chatService.checkAllDeleted(roomId);
