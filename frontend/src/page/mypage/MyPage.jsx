@@ -15,8 +15,6 @@ import { ProfileEdit } from "./ProfileEdit.jsx";
 import { Wishlist } from "./Wishlist.jsx";
 import { SoldItems } from "./SoldItems.jsx";
 import { PurchasedItems } from "./PurchasedItems.jsx";
-import { InquiryList } from "./InquiryList.jsx";
-import { InquiryView } from "./InquiryView.jsx";
 import { Budget } from "./Budget.jsx";
 import { Review } from "./Review.jsx";
 import { Rating } from "../../components/ui/rating.jsx";
@@ -24,7 +22,6 @@ import axios from "axios";
 import { Avatar } from "../../components/ui/avatar.jsx";
 import { TbMoodEdit } from "react-icons/tb";
 import { SkeletonCircle } from "../../components/ui/skeleton.jsx";
-import { BoardsAndComments } from "./BoardsAndComments.jsx";
 import {
   MenuContent,
   MenuItem,
@@ -32,6 +29,7 @@ import {
   MenuTrigger,
 } from "../../components/ui/menu.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { BoardsAndComments } from "./BoardsAndComments.jsx";
 
 export function MyPage() {
   const { id, nickname, profileImage, updateProfileImage } = useContext(
@@ -41,8 +39,6 @@ export function MyPage() {
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null);
-  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
-
 
   useEffect(() => {
     if (!id) {
@@ -81,12 +77,6 @@ export function MyPage() {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-  };
-
-  // 행 클릭 시 선택된 문의 ID를 설정하고 'inquiryDetail' 탭으로 전환
-  const handleRowClick = (inquiryId) => {
-    setSelectedInquiryId(inquiryId);
-    setActiveTab("inquiryDetail");
   };
 
   const handleImageUpload = (e) => {
@@ -243,13 +233,6 @@ export function MyPage() {
             구매 상품
           </Button>
           <Button
-            variant={activeTab === "inquiry" ? "solid" : "ghost"}
-            colorScheme="teal"
-            onClick={() => handleTabClick("inquiry")}
-          >
-            문의 내역
-          </Button>
-          <Button
             variant={activeTab === "budget" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("budget")}
@@ -288,10 +271,6 @@ export function MyPage() {
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "sold" && <SoldItems />}
         {activeTab === "purchased" && <PurchasedItems />}
-        {activeTab === "inquiry" && <InquiryList onRowClick={handleRowClick} />}
-        {activeTab === "inquiryDetail" && (
-          <InquiryView inquiryId={selectedInquiryId} />
-        )}
         {activeTab === "budget" && <Budget />}
         {activeTab === "review" && <Review />}
         {activeTab === "boardsAndComments" && <BoardsAndComments />}

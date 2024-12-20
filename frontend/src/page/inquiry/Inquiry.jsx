@@ -16,6 +16,11 @@ export function Inquiry() {
   const currentDate = new Date().toLocaleDateString();
   const navigate = useNavigate();
 
+  // 문의 목록 페이지로 이동하는 함수
+  const handleNavigateToList = () => {
+    navigate("/inquiry/myList");
+  };
+
   // 클릭 시 호출되는 함수로, 사용자 입력 데이터를 서버에 저장 요청
   const handleSaveClick = () => {
     const inquiryData = {
@@ -37,14 +42,7 @@ export function Inquiry() {
             type: message.type,
             description: message.text,
           });
-          setSavedData({
-            title: title,
-            content: content,
-            category: category,
-            memberId: id,
-            nickname: nickname,
-            inserted: new Date().toLocaleDateString(),
-          });
+          handleNavigateToList(); // 저장 후 문의 목록 페이지로 이동
         }
       })
       .catch((e) => {
@@ -69,7 +67,7 @@ export function Inquiry() {
       borderRadius="md"
       boxShadow="0px 10px 30px rgba(0, 0, 0, 0.2)"
       bg="white"
-      top="20px"
+      top="50px"
       left="50%"
       position="relative"
       transform="translateX(-50%)"
