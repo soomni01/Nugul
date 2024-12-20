@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
@@ -15,6 +15,13 @@ export function Inquiry() {
   const { id, nickname } = useContext(AuthenticationContext);
   const currentDate = new Date().toLocaleDateString();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
 
   // 문의 목록 페이지로 이동하는 함수
   const handleNavigateToList = () => {
