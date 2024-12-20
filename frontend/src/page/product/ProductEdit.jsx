@@ -401,6 +401,7 @@ export function ProductEdit() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSelectLocation={handleLocationSelect}
+          prevLocationName={product.locationName}
         />
 
         {hasAccess(product.writer) && (
