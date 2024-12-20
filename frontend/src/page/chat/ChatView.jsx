@@ -85,23 +85,26 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      // 토큰이 없으면 로그인 페이지로 리다이렉트
       navigate("/");
+      return;
     }
-    // 최신 메세지
-    loadInitialMessages();
-    // chatroom 정보
+
+    const initializeData = async () => {
+      await loadInitialMessages();
+      await handleSetData();
+
+      // if (chatBoxRef.current) {
+      //   chatBoxRef.current.scrollTop =
+      //     chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
+      // }
+    };
+
+    initializeData();
+  }, [navigate]); // 초기 데이터 로드를 위한 useEffect
+
+  useEffect(() => {
     handleSetData();
-    if (chatBoxRef.current) {
-      // 예: 스크롤을 맨 아래로 이동
-      chatBoxRef.current.scrollTop =
-        chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
-    }
-    // return () => {
-    //   // 정리 작업 수행
-    //   setPage(1);
-    // };
-  }, [navigate, purchased]);
+  }, [purchased]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -142,8 +145,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       reviewStatus: purchaseRes.data.reviewStatus,
     }));
     setImageSrc(imageRes.data);
-    setPurchased(id == purchaseRes.data.buyerId);
-    // 누르면 >  SOLD로 바꿈
+    if (purchased === false) {
+      setPurchased(id == purchaseRes.data.buyerId);
+    }
     setReviewComplete(purchaseRes.data.reviewStatus === "completed");
   }
 
@@ -229,7 +233,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     } finally {
       console.log("실행 여부");
       const chatBox = chatBoxRef.current;
-      const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.4;
+      const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.2;
       chatBoxRef.current.scrollTop = reach;
       setPage((prev) => prev + 1);
       setIsloading(false);
@@ -338,8 +342,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       sendMessage(client, message);
     }
   };
-  console.log(reviewComplete);
-  console.log(product);
 
   return (
     <Box pt={3}>

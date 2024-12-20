@@ -32,6 +32,13 @@ export function BoardView() {
     }
   `;
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
   // URL에서 category 쿼리 파라미터를 읽어서 selectedCategory를 설정
   useEffect(() => {
     const params = new URLSearchParams(location.search);

@@ -43,3 +43,5 @@ ALTER TABLE member
 
 ALTER TABLE member
     MODIFY is_deleted BOOLEAN DEFAULT FALSE;
+
+

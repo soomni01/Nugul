@@ -61,4 +61,11 @@ public interface MemberMapper {
             WHERE member_id=#{email}
             """)
     int emailCheck(String email);
+
+    @Select("""
+                        SELECT  member_id,password
+                        from member
+                        where member_id=#{memberId}
+            """)
+    Member selecMembertById(String memberId);
 }

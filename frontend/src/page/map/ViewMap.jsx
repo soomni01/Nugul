@@ -18,6 +18,7 @@ import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdLocalPhone } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -33,8 +34,16 @@ function ViewMap() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [sameKeyword, setSameKeyword] = useState(false);
+  useNavigate();
 
   const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
 
   useEffect(() => {
     if (currCategory) {

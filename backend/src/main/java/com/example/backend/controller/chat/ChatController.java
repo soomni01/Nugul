@@ -27,7 +27,7 @@ public class ChatController {
 
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
-
+    @PreAuthorize("isAuthenticated()")
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
 
         // 보낸 메시지 저장시킬 방 번호 입력
@@ -74,6 +74,7 @@ public class ChatController {
     }
 
     @GetMapping("view/{roomId}/messages")
+    @PreAuthorize("isAuthenticated()")
     public List<ChatMessage> getMessage(@PathVariable String roomId,
                                         @RequestParam(value = "page", defaultValue = "1") Integer page) {
         // 메시지 페이지네이션

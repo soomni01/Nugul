@@ -26,7 +26,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
             );
           }
         } else {
-          console.error("fileList가 존재하지 않거나 비어 있습니다.");
+          // console.error("fileList가 존재하지 않거나 비어 있습니다.");
         }
       });
   }, []);
