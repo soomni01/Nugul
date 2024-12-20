@@ -1,26 +1,18 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Input,
-  Stack,
-} from "@chakra-ui/react";
+import { Badge, Box, Flex, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import "./chat.css";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Field } from "../../components/ui/field.jsx";
 import { Client } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { LuSend } from "react-icons/lu";
-import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
-import Payment from "../../components/chat/Payment.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { Avatar } from "../../components/ui/avatar.jsx";
+import { Button } from "../../components/ui/button.jsx";
+import Payment from "../../components/chat/Payment.jsx";
+import { DialogCompo } from "../../components/chat/DialogCompo.jsx";
+import { Field } from "../../components/ui/field.jsx";
+import { LuSend } from "react-icons/lu";
 import { ReviewModal } from "../../components/review/ReviewModal.jsx";
+import { Avatar } from "../../components/ui/avatar.jsx";
 
 export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
@@ -350,67 +342,70 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   console.log(product);
 
   return (
-    <Box>
-      <Flex
-        direction="column"
-        w={"500px"}
-        h={"650px"}
-        overflow={"hidden"}
-        bg={"blue.300/50"}
-        border={"1px solid"}
-        borderColor={"gray.300"}
-      >
-        {/* 상단 정보 박스 */}
+    <Box pt={3}>
+      <Flex direction="column" w={"99%"} h={"85vh"} overflow={"hidden"}>
         <Box
+          // bg={"blue.300/50"}
           display={"flex"}
           justifyContent={"space-between"}
           p={5}
-          variant={"outline"}
+          pt={0}
           borderBottom={"1px solid gray"}
         >
           <Box>
-            <Heading> 닉네임: {chatRoom.nickname} </Heading>
-            상품명: {chatRoom.productName}
+            <Text mb={8} fontSize={"2xl"} fontWeight={"bold"}>
+              {chatRoom.productName}
+            </Text>
+            <Text fontSize={"xl"} fontWeight={"bold"}>
+              {chatRoom.nickname || "탈퇴한 회원"}
+            </Text>
           </Box>
-          <Flex>
-            {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
-            {isSeller ? (
-              <Button
-                className={"ScrollBarContainer"}
-                style={{ marginLeft: "16px" }}
-                colorPalette={reviewComplete && "cyan"}
-                isDisabled
-                cursor={reviewComplete && "default"}
-                onClick={reviewComplete ? null : handleSuccessTransaction}
-              >
-                거래완료
-              </Button>
-            ) : purchased ? (
-              <></>
-            ) : (
-              <Payment
-                chatRoom={chatRoom}
-                statusControl={statusControl}
-                onComplete={handleTransactionState}
-              />
-            )}
 
-            {purchased && (
-              <Button
-                onClick={reviewComplete ? null : handleOpenReviewModal}
-                isDisabled
-                colorPalette={reviewComplete && "cyan"}
-                cursor={reviewComplete && "default"}
-                // disabled={reviewComplete ? true : false}
-              >
-                {reviewComplete ? "작성완료" : "후기작성하기"}
-              </Button>
-            )}
-            <DialogCompo
-              roomId={realChatRoomId}
-              onDelete={onDelete || (() => removeChatRoom(roomId, id))}
-            />
-          </Flex>
+          <Box>
+            <Button w={"100%"} mb={5} mr={0}>
+              상품 정보 보기
+            </Button>
+            <Flex>
+              {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
+              {isSeller ? (
+                <Button
+                  size={"xl"}
+                  className={"ScrollBarContainer"}
+                  colorPalette={reviewComplete && "cyan"}
+                  isDisabled
+                  cursor={reviewComplete && "default"}
+                  onClick={reviewComplete ? null : handleSuccessTransaction}
+                >
+                  거래완료
+                </Button>
+              ) : purchased ? (
+                <></>
+              ) : (
+                <Payment
+                  chatRoom={chatRoom}
+                  statusControl={statusControl}
+                  onComplete={handleTransactionState}
+                />
+              )}
+
+              {purchased && (
+                <Button
+                  size={"xl"}
+                  onClick={reviewComplete ? null : handleOpenReviewModal}
+                  isDisabled
+                  colorPalette={reviewComplete && "cyan"}
+                  cursor={reviewComplete && "default"}
+                  // disabled={reviewComplete ? true : false}
+                >
+                  {reviewComplete ? "작성완료" : "후기작성하기"}
+                </Button>
+              )}
+              <DialogCompo
+                roomId={realChatRoomId}
+                onDelete={onDelete || (() => removeChatRoom(roomId, id))}
+              />
+            </Flex>
+          </Box>
         </Box>
         <Box
           h={"85%"}
