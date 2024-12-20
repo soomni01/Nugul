@@ -1,12 +1,14 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, Heading, HStack } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Button, HStack, VStack } from "@chakra-ui/react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { ChatView } from "./ChatView.jsx";
-import { ProductDetail } from "../../components/chat/ProductDetail.jsx";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
+import { EmptyState } from "../../components/ui/empty-state.jsx";
 
 export function ChatList() {
   const queryLocation = useLocation();
@@ -80,74 +82,108 @@ export function ChatList() {
   };
 
   return (
-    <Box>
-      <Heading> 채팅 목록</Heading>
-      <HStack>
-        <Button
-          onClick={() => {
-            setChatRoomId(-1);
-            setProductId(-1);
-            setSearchParams({ type: "all" });
-          }}
+    <Box h="85vh" overflow="hidden">
+      <HStack w="100%" h="100vh" spacing={0}>
+        <VStack
+          w="20%"
+          p={5}
+          borderRight="1px solid"
+          borderColor="gray.300"
+          h="100%"
         >
-          전체
-        </Button>
-        <Button
-          onClick={() => {
-            setChatRoomId(-1);
-            setProductId(-1);
-            setSearchParams({ type: "buy" });
-          }}
-        >
-          구매
-        </Button>
-        <Button
-          onClick={() => {
-            setChatRoomId(-1);
-            setProductId(-1);
-            setSearchParams({ type: "sell" });
-          }}
-        >
-          판매
-        </Button>
-      </HStack>
-      <Box
-        display={"flex"}
-        borderRadius={"lg"}
-        border={"1px solid"}
-        maxHeight={"650px"}
-        borderColor={"gray.300"}
-        w={"auto"}
-      >
-        <Box overflowY={"scroll"}>
-          {chatList.map((chat) => (
-            <ChatListItem
-              key={chat.roomId}
-              chat={chat}
-              onDelete={() => removeChatRoom(chat.roomId, id)}
+          <HStack w={"100%"} gap={3} mb={3} align="center">
+            <Button
+              w="30%"
               onClick={() => {
-                setProductId(chat.productId);
-                setChatRoomId(chat.roomId);
+                setChatRoomId(-1);
+                setProductId(-1);
+                setSearchParams({ type: "all" });
               }}
-            />
-          ))}
-        </Box>
+            >
+              전체
+            </Button>
+            <Button
+              w="30%"
+              onClick={() => {
+                setChatRoomId(-1);
+                setProductId(-1);
+                setSearchParams({ type: "buy" });
+              }}
+            >
+              구매
+            </Button>
+            <Button
+              w="30%"
+              onClick={() => {
+                setChatRoomId(-1);
+                setProductId(-1);
+                setSearchParams({ type: "sell" });
+              }}
+            >
+              판매
+            </Button>
+          </HStack>
 
-        {chatRoomId === -1 ? null : (
-          <ChatView
-            z-index={1}
-            statusControl={() => {
-              setStatus("Sold");
-            }}
-            key={chatRoomId}
-            chatRoomId={chatRoomId}
-            onDelete={() => removeChatRoom(chatRoomId, id)}
-          />
-        )}
-        {productId === -1 ? null : (
-          <ProductDetail key={productId} productId={productId} />
-        )}
-      </Box>
+          <Box
+            height="80vh"
+            overflow="hidden"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {chatList.length > 0 ? (
+              <Swiper
+                direction={"vertical"}
+                slidesPerView="auto"
+                spaceBetween={8}
+                freeMode={true}
+                scrollbar={{ draggable: true }}
+                mousewheel={true}
+                modules={[FreeMode, Scrollbar, Mousewheel]}
+                style={{ height: "100%", width: "100%" }}
+              >
+                {chatList.map((chat) => (
+                  <SwiperSlide
+                    key={chat.roomId}
+                    style={{
+                      height: "auto",
+                      width: "100%",
+                    }}
+                  >
+                    <ChatListItem
+                      chat={chat}
+                      onDelete={() => removeChatRoom(chat.roomId, id)}
+                      onClick={() => {
+                        setProductId(chat.productId);
+                        setChatRoomId(chat.roomId);
+                      }}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <EmptyState title="채팅방이 없습니다." />
+            )}
+          </Box>
+        </VStack>
+
+        <Box w="100%" h="100%">
+          {chatRoomId === -1 ? null : (
+            <ChatView
+              zIndex={1}
+              statusControl={() => {
+                setStatus("Sold");
+              }}
+              key={chatRoomId}
+              chatRoomId={chatRoomId}
+              onDelete={() => removeChatRoom(chatRoomId, id)}
+            />
+          )}
+          {/*{productId === -1 ? null : (*/}
+          {/*  <ProductDetail key={productId} productId={productId} />*/}
+          {/*)}*/}
+        </Box>
+      </HStack>
     </Box>
   );
 }

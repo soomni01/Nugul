@@ -85,7 +85,6 @@ const router = createBrowserRouter([
         path: "chat",
         element: <ChatList />,
       },
-
       {
         path: "product/list",
         element: <ProductList />,
