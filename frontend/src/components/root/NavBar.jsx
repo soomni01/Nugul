@@ -138,7 +138,7 @@ export function Navbar() {
                   <Avatar
                     boxSize="70px"
                     my={2}
-                    src={profileImage}
+                    src={profileImage || "/image/default.png"}
                     name={nickname}
                     variant="outline"
                   />
@@ -148,16 +148,20 @@ export function Navbar() {
                 <MenuItem
                   value={"myPage"}
                   onClick={() => handleNavigation("/myPage")}
+                  style={{ cursor: "pointer" }}
                 >
                   마이페이지
                 </MenuItem>
                 <MenuItem
                   value={"inquiry"}
-                  onClick={() => handleNavigation("/inquiry")}
+                  onClick={() => handleNavigation("/inquiry/myList")}
+                  style={{ cursor: "pointer" }}
                 >
                   1:1 문의
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+                <MenuItem onClick={handleLogout} style={{ cursor: "pointer" }}>
+                  로그아웃
+                </MenuItem>
               </MenuContent>
             </MenuRoot>
           </NavbarItem>

@@ -40,7 +40,14 @@ export function ProductLike({
     <Box
       display="flex"
       flexDirection={isHorizontal ? "row" : "column"}
+      justifyContent="center"
       alignItems="center"
+      border={isHorizontal ? "1px solid gray" : "none"}
+      borderRadius={isHorizontal ? "8px" : "0"}
+      p={isHorizontal ? "2" : "0"}
+      height={isHorizontal ? "45px" : "auto"}
+      mt={0.5}
+      maxWidth={isHorizontal ? "120px" : "none"}
     >
       <Box onClick={handleLikeClick} cursor="pointer">
         <ToggleTip

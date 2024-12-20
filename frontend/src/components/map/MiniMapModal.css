@@ -1,5 +1,5 @@
 /* 전체 화면을 덮는 배경 */
-.background {
+.mini-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,19 +13,20 @@
 }
 
 /* 모달 창 */
-.modal {
+.mini-modal {
     position: relative;
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-
 /* 닫기 버튼 */
-.close {
+.mini-close {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -37,30 +38,30 @@
 }
 
 /* 맵을 포함하는 콘텐츠 영역 */
-.content {
+.mini-content {
     margin-top: 20px;
     width: 100%;
     flex-grow: 1;
 }
 
 /* 맵 스타일 */
-.map {
+.mini-map {
     width: 100%;
-    margin-top: 10px;
     height: 100%;
     z-index: 1;
 }
 
-
-.button-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-}
-
-.search-container {
-    position: relative;
-    z-index: 2;
+.custom-overlay {
     background: white;
-    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    height: 36px;
+    padding-left: 12px;
+    padding-right: 28px;
+    width: 100%;
 }
+

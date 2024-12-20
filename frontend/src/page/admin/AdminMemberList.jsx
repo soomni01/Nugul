@@ -118,18 +118,11 @@ export function AdminMemberList() {
 
   const navigate = useNavigate();
 
-  // 컴포넌트가 처음 렌더링될 때 회원 목록 데이터를 가져오고, 가입 날짜 기준으로 정렬함
   useEffect(() => {
     axios
       .get("/api/member/list")
       .then((res) => {
-        // 회원 데이터를 'inserted' 날짜 기준으로 오름차순 정렬 후 상태에 저장
-        const sortedMembers = res.data.sort((a, b) => {
-          const dateA = new Date(a.inserted);
-          const dateB = new Date(b.inserted);
-          return dateA - dateB;
-        });
-        setMemberList(sortedMembers);
+        setMemberList(res.data);
       })
       .catch((error) => {
         console.error("회원 목록 요청 중 오류 발생:", error);

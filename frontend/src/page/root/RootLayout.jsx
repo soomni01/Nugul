@@ -14,9 +14,19 @@ export function RootLayout() {
           location.pathname === "/oauth/naver" ||
           location.pathname === "/member/social" || <Navbar />}
       </Box>
+      {(location.pathname === "/chat" || location.pathname === "/myPage") && (
+        <Box>
+          <Outlet />
+        </Box>
+      )}
       <Box mx={{ md: 20, lg: 40 }}>
         <Outlet />
       </Box>
+      {location.pathname === "chat" && (
+        <Box>
+          <Outlet />
+        </Box>
+      )}
     </Stack>
   );
 }

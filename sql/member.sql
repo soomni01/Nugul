@@ -38,3 +38,8 @@ ALTER TABLE member
 # 카카오 로그인 시 비밀번호 미사용
 ALTER TABLE member
     MODIFY COLUMN password VARCHAR(50) NULL;
+
+
+
+ALTER TABLE member
+    MODIFY is_deleted BOOLEAN DEFAULT FALSE;

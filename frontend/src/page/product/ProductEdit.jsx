@@ -1,18 +1,6 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Input,
-  Spinner,
-  Stack,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Heading, Separator, Spinner } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
-import { InputGroup } from "../../components/ui/input-group.jsx";
-import { PiCurrencyKrwBold } from "react-icons/pi";
 import { MapModal } from "../../components/map/MapModal.jsx";
 import {
   DialogActionTrigger,
@@ -26,10 +14,16 @@ import {
 } from "../../components/ui/dialog.jsx";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { categories } from "../../components/category/CategoryContainer.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { FcAddImage } from "react-icons/fc";
+import {
+  ProductDescriptionSection,
+  ProductFormLayout,
+  ProductImageSection,
+  ProductLocationSection,
+  ProductNameSection,
+  ProductPaymentSection,
+} from "../../components/product/ProductFormLayout.jsx";
 
 export function ProductEdit() {
   const { id } = useParams();
@@ -45,25 +39,34 @@ export function ProductEdit() {
   const [filesUrl, setFilesUrl] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
+  const [initialized, setInitialized] = useState(false);
 
+  // 상품 정보 가져오기
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     axios.get(`/api/product/view/${id}`).then((res) => {
       setProduct(res.data);
     });
   }, [id]);
 
+  // 파일 정보 가져오기
   useEffect(() => {
-    if (product && product.fileList) {
-      // 파일 목록이 있으면 filesUrl에 해당 URL들을 추가
+    if (product && product.fileList && !initialized) {
+      // 최초 한 번만 파일 목록을 초기화
       const fileUrls = product.fileList.map((file) => file.src);
       setFilesUrl(fileUrls);
       setFiles(product.fileList);
 
-      if (product.fileList && files.length > 0) {
+      if (!mainImage && product.fileList.length > 0) {
         setMainImage(product.fileList[0]);
       }
+      setInitialized(true);
     }
-  }, [product]);
+  }, [product, initialized]);
 
   useEffect(() => {
     if (files.length === 0) {
@@ -73,17 +76,87 @@ export function ProductEdit() {
     }
   }, [files]);
 
+  // 이미지 추가
+  const handleImageUpload = (e) => {
+    const newFiles = Array.from(e.target.files);
+
+    // setFiles((prev) => [...prev, ...newFiles]);
+    // 중복 파일 체크
+    const uniqueFiles = newFiles.filter((newFile) => {
+      return (
+        !files.some((file) => file.name === newFile.name) ||
+        (file.src && file.src.includes(newFile.name))
+      );
+    });
+
+    if (uniqueFiles.length > 0) {
+      setFiles((prev) => [...prev, ...uniqueFiles]);
+      setFilesUrl((prev) => [
+        ...prev,
+        ...uniqueFiles.map((file) => URL.createObjectURL(file)),
+      ]);
+      if (!mainImage && uniqueFiles.length > 0) setMainImage(uniqueFiles[0]);
+    } else {
+      toaster.create({
+        description: "중복된 파일이 있습니다.",
+        type: "warning",
+      });
+    }
+  };
+
+  // 이미지 삭제
+  const handleRemoveImage = (index) => {
+    setFilesUrl((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setRemoveFiles((prev) => [...prev, files[index]?.name]);
+
+    // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
+    if (index === 0 && files.length > 1) {
+      setMainImage(files[1]);
+    } else if (files.length === 1) {
+      setMainImage(null);
+    }
+  };
+
+  // 카테고리
   const handleCategoryChange = (e) =>
     setProduct({ ...product, category: e.target.value });
 
-  const handleButtonClick = (payType) =>
-    setProduct({ ...product, pay: payType });
+  // 상품명
+  const handleProductNameChange = (e) =>
+    setProduct({ ...product, productName: e.target.value });
 
-  const handlePriceChange = (e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) setProduct({ ...product, price: value });
+  // 거래방식
+  const handlePaymentClick = (payType) => {
+    if (payType === "share") {
+      setProduct((prevProduct) => ({ ...prevProduct, pay: payType, price: 0 }));
+    } else {
+      setProduct((prevProduct) => ({ ...prevProduct, pay: payType }));
+    }
   };
 
+  // 가격
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+
+    // 숫자만 허용 및 1000만 원 이하 제한
+    if (/^\d*$/.test(value)) {
+      if (Number(value) <= 10000000) {
+        setProduct((prevProduct) => ({ ...prevProduct, price: value }));
+      } else {
+        toaster.create({
+          description: "가격은 10,000,000원을 초과할 수 없습니다.",
+          type: "warning",
+        });
+      }
+    }
+  };
+
+  // 상품 설명
+  const handleDescriptionChange = (e) =>
+    setProduct({ ...product, description: e.target.value });
+
+  // 거래 장소
   const handleLocationSelect = (location) => {
     setProduct({
       ...product,
@@ -94,14 +167,15 @@ export function ProductEdit() {
 
   const handleSaveClick = () => {
     setProgress(true);
+    const payType = product.price === 0 ? "share" : "sell";
 
     const formData = new FormData();
     formData.append("productId", product.productId);
     formData.append("productName", product.productName);
     formData.append("description", product.description);
-    formData.append("price", product.pay === "share" ? 0 : product.price);
+    formData.append("price", payType === "share" ? 0 : product.price);
     formData.append("category", product.category);
-    formData.append("pay", product.pay);
+    formData.append("pay", payType); // pay 동적 설정
     formData.append("latitude", product.latitude);
     formData.append("longitude", product.longitude);
     formData.append("locationName", product.locationName);
@@ -131,43 +205,6 @@ export function ProductEdit() {
       });
   };
 
-  const handleFileUpload = (e) => {
-    const newFiles = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...newFiles]);
-    // 중복 파일 체크
-    const uniqueFiles = newFiles.filter((newFile) => {
-      return !files.some((file) => file.name === newFile.name);
-    });
-
-    if (uniqueFiles.length > 0) {
-      setFiles((prev) => [...prev, ...uniqueFiles]);
-      setFilesUrl((prev) => [
-        ...prev,
-        ...uniqueFiles.map((file) => URL.createObjectURL(file)),
-      ]);
-      if (!mainImage && uniqueFiles.length > 0) setMainImage(uniqueFiles[0]);
-    } else {
-      toaster.create({
-        description: "중복된 파일이 있습니다.",
-        type: "warning",
-      });
-    }
-  };
-
-  const handleRemoveClick = (index) => {
-    // 클릭한 이미지를 목록에서 제거
-    setFilesUrl((prev) => prev.filter((_, i) => i !== index));
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-    setRemoveFiles((prev) => [...prev, files[index]?.name]);
-
-    // 삭제한 이미지가 대표 이미지라면 mainImage 업데이트
-    if (index === 0 && files.length > 1) {
-      setMainImage(files[1]);
-    } else if (files.length === 1) {
-      setMainImage(null);
-    }
-  };
-
   if (!product) {
     return <Spinner />;
   }
@@ -179,6 +216,7 @@ export function ProductEdit() {
     product.locationName.trim().length > 0
   );
 
+  // 파일 크기 제한
   let fileInputInvalid = false;
   let sumOfFileSize = 0;
   let invalidOneFileSize = false;
@@ -194,188 +232,94 @@ export function ProductEdit() {
   }
 
   return (
-    <Box>
-      <Heading mb={3}>{id}번 상품 수정</Heading>
-      <Stack gap={5}>
-        <Flex alignItems="center">
-          <Box
-            p="10"
-            borderWidth="1px"
-            borderColor="lightgray"
-            borderRadius="10px"
-            onClick={() => fileInputRef.current?.click()}
-            cursor="pointer"
-            textAlign="center"
-          >
-            <input
-              ref={fileInputRef} // input 참조
-              onChange={handleFileUpload}
-              type="file"
-              accept="image/*"
-              multiple
-              style={{ display: "none" }}
-            />
-            <FcAddImage size="30px" />
-          </Box>
+    <ProductFormLayout title={<Heading mb={3}>{id}번 상품 수정</Heading>}>
+      <ProductImageSection
+        fileInputRef={fileInputRef}
+        onFileUpload={handleImageUpload}
+        filesUrl={filesUrl}
+        onRemoveImage={handleRemoveImage}
+        fileInputInvalid={fileInputInvalid}
+      />
 
-          <Box
-            ml={3}
-            display="flex"
-            gap="10px"
-            overflowX="auto"
-            whiteSpace="nowrap"
-            minWidth="100px"
-          >
-            {filesUrl.map((file, index) => (
-              <Box
-                key={index}
-                width="100px"
-                height="100px"
-                border="1px solid lightgray"
-                borderRadius="10px"
-                overflow="hidden"
-                cursor="pointer"
-                display="inline-block"
-                flexShrink={0} // 이미지가 축소되지 않도록 설정s
-                onClick={() => {
-                  handleRemoveClick(index, files[index]);
-                }}
-              >
-                <img
-                  src={file}
-                  alt={`파일 미리보기: ${index}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-            ))}
-          </Box>
-        </Flex>
-        <Text size="xs" mt={-2}>
-          {!fileInputInvalid ? (
-            "가장 처음 이미지가 대표이미지입니다."
-          ) : (
-            <Text color="red">
-              각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
-            </Text>
-          )}
-        </Text>
+      <Separator />
 
-        <Flex gap={3}>
-          <Box minWidth="100px">
-            <Field label={"카테고리"}>
-              <select
-                value={product.category}
-                onChange={handleCategoryChange}
-                style={{
-                  width: "100px",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                }}
+      <ProductNameSection
+        category={product.category}
+        onCategoryChange={handleCategoryChange}
+        productName={product.productName}
+        onProductNameChange={handleProductNameChange}
+      />
+
+      <Separator />
+
+      <ProductPaymentSection
+        pay={product.pay}
+        onPayClick={handlePaymentClick}
+        price={product.price}
+        onPriceChange={handlePriceChange}
+      />
+
+      <Separator />
+
+      <ProductDescriptionSection
+        description={product.description}
+        onDescriptionChange={handleDescriptionChange}
+      />
+
+      <Separator />
+
+      <ProductLocationSection
+        location={{ name: product.locationName }}
+        onModalOpen={() => setIsModalOpen(true)}
+      />
+
+      <MapModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelectLocation={handleLocationSelect}
+        prevLocationName={product.locationName}
+      />
+
+      {hasAccess(product.writer) && (
+        <Box display="flex" w="100%" justifyContent="flex-end">
+          <DialogRoot
+            open={dialogOpen}
+            onOpenChange={(e) => setDialogOpen(e.open)}
+          >
+            <DialogTrigger asChild>
+              <Button
+                w="10%"
+                size="lg"
+                disabled={disabled}
+                colorPalette={"blue"}
               >
-                {categories.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </Box>
-          <Box flex={8}>
-            <Field label={"상품명"}>
-              <Input
-                value={product.productName}
-                onChange={(e) =>
-                  setProduct({ ...product, productName: e.target.value })
-                }
-              />
-            </Field>
-          </Box>
-        </Flex>
-        <Field label={"거래방식"}>
-          <Flex gap={4}>
-            <Button
-              borderRadius="10px"
-              variant={product.pay === "sell" ? "solid" : "outline"} // 판매하기 버튼 스타일
-              onClick={() => handleButtonClick("sell")} // 판매하기 버튼 클릭 시
-            >
-              판매하기
-            </Button>
-            <Button
-              borderRadius="10px"
-              variant={product.pay === "share" ? "solid" : "outline"} // 나눔하기 버튼 스타일
-              onClick={() => handleButtonClick("share")} // 나눔하기 버튼 클릭 시
-            >
-              나눔하기
-            </Button>
-          </Flex>
-        </Field>
-        {product.pay === "sell" && (
-          <InputGroup w={"20%"} flex="1" startElement={<PiCurrencyKrwBold />}>
-            <Input value={product.price} onChange={handlePriceChange} />
-          </InputGroup>
-        )}
-        <Field label={"상품 설명"}>
-          <Textarea
-            placeholder="등록할 상품의 게시글 내용을 작성해주세요."
-            h={150}
-            value={product.description}
-            onChange={(e) =>
-              setProduct({ ...product, description: e.target.value })
-            }
-          />
-        </Field>
-        <Field label={"거래 희망 장소"}>
-          <Input
-            value={product.locationName}
-            onClick={() => setIsModalOpen(true)} // 거래 장소 input 클릭 시 모달 열기
-            readOnly
-          />
-        </Field>
-        <MapModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSelectLocation={handleLocationSelect}
-        />
-        {hasAccess(product.writer) && (
-          <Box>
-            <DialogRoot
-              open={dialogOpen}
-              onOpenChange={(e) => setDialogOpen(e.open)}
-            >
-              <DialogTrigger asChild>
-                <Button disabled={disabled} colorPalette={"blue"}>
+                저장
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>저장 확인</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
+                <p>{product.productId}번 상품 수정하시겠습니까?</p>
+              </DialogBody>
+              <DialogFooter>
+                <DialogActionTrigger>
+                  <Button variant={"outline"}>취소</Button>
+                </DialogActionTrigger>
+
+                <Button
+                  loading={progress}
+                  colorPalette={"blue"}
+                  onClick={handleSaveClick}
+                >
                   저장
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>저장 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>{product.productId}번 상품 수정하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button
-                    loading={progress}
-                    colorPalette={"blue"}
-                    onClick={handleSaveClick}
-                  >
-                    저장
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-          </Box>
-        )}
-      </Stack>
-    </Box>
+              </DialogFooter>
+            </DialogContent>
+          </DialogRoot>
+        </Box>
+      )}
+    </ProductFormLayout>
   );
 }

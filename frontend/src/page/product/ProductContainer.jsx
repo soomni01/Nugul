@@ -81,6 +81,11 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
 
   // 컴포넌트 마운트 시 상품 목록 가져오기
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     const controller = new AbortController();
     setLoading(true);
 
@@ -106,7 +111,6 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
     };
   }, [searchParams, selectedCategory]);
 
-  console.log(productList);
   // 검색 키워드 유지 또는 초기화
   useEffect(() => {
     const nextSearch = { ...search };
@@ -207,7 +211,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         onCategorySelect={handleCategorySelect}
       />
 
-      <Box my={10} display="flex" justifyContent="center">
+      <Box mt={10} mb={2} display="flex" justifyContent="center">
         <HStack w="70%">
           <Input
             size={"lg"}
@@ -225,7 +229,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
       </Box>
       <Flex justify="center" w="100%">
         <HStack
-          w="80%"
+          w="88%"
           display="flex"
           justify="space-between"
           align="center"
@@ -233,7 +237,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         >
           <MenuRoot size="md">
             <MenuTrigger asChild>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" fontWeight="bold">
                 <HiSortAscending />
                 {sortOption === "newest" && "최신순"}
                 {sortOption === "popular" && "인기순"}

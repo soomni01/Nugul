@@ -48,32 +48,7 @@ export function AdminMemberDetail() {
         console.log("구매 내역 데이터:", purchasedRes.data);
 
         setSoldList(soldRes.data);
-
-        // 판매 내역을 오름차순 정렬
-        const sortedSoldList = soldRes.data.sort((a, b) => {
-          // 1. 무료 나눔(가격이 0인 상품)을 먼저 정렬
-          if (a.price === 0 && b.price !== 0) return -1; // a가 무료 나눔이면 a가 먼저
-          if (a.price !== 0 && b.price === 0) return 1; // b가 무료 나눔이면 b가 먼저
-
-          // 2. 판매중인 상품을 그 다음으로 정렬
-          if (!a.purchasedAt && b.purchasedAt) return -1; // a가 판매중이면 a가 먼저
-          if (a.purchasedAt && !b.purchasedAt) return 1; // b가 판매중이면 b가 먼저
-
-          // 3. 판매일자 순으로 정렬 (판매된 상품만)
-          const dateA = new Date(a.purchasedAt);
-          const dateB = new Date(b.purchasedAt);
-          return dateA - dateB;
-        });
-
-        setSoldList(sortedSoldList);
-
-        // 구매 내역을 오름차순 정렬
-        const sortedPurchasedList = purchasedRes.data.sort((a, b) => {
-          const dateA = new Date(a.purchasedAt);
-          const dateB = new Date(b.purchasedAt);
-          return dateA - dateB;
-        });
-        setPurchasedList(sortedPurchasedList);
+        setPurchasedList(purchasedRes.data);
 
         setLoading(false);
       })

@@ -6,24 +6,14 @@ import {
   Image,
   Spacer,
   Spinner,
-  Stack,
   Text,
   Textarea,
+  VStack,
 } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button.jsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { categories } from "../../components/category/CategoryContainer.jsx";
@@ -35,6 +25,21 @@ import { Rating } from "../../components/ui/rating.jsx";
 import { ProductLike } from "../../components/product/ProductLike.jsx";
 import { SlArrowRight } from "react-icons/sl";
 import { getDaysAgo } from "../../components/product/ProductDate.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import {
+  BreadcrumbCurrentLink,
+  BreadcrumbLink,
+  BreadcrumbRoot,
+} from "../../components/ui/breadcrumb.jsx";
 
 export function ProductView() {
   const { productId } = useParams();
@@ -51,6 +56,11 @@ export function ProductView() {
 
   // 상품 정보, 판매자 프로필 이미지, 판매자 평점 병렬 요청
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     const fetchProduct = async () => {
       setLoading(true); // 로딩 시작
       try {
@@ -155,10 +165,19 @@ export function ProductView() {
         buyer: buyer,
       })
       .then((res) => {
-        console.log(res.data);
         const roomId = res.data;
-        navigate("/chat/room/" + roomId);
-      });
+        navigate("/chat", {
+          state: { productId: product.productId, roomId: roomId },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        toaster.create({
+          type: "error",
+          description: "오류 발생",
+        });
+      })
+      .finally(() => {});
   };
 
   // 카카오 맵 길찾기 링크 생성 함수
@@ -202,145 +221,191 @@ export function ProductView() {
   const daysAgo = getDaysAgo(product.createdAt);
 
   return (
-    <Box mb={10}>
-      {(hasAccess(product.writer) || isAdmin) && (
-        <HStack mb={5} justifyContent="flex-end">
-          {hasAccess(product.writer) && (
-            <Button
-              colorPalette={"cyan"}
-              onClick={() => navigate(`/product/edit/${product.productId}`)}
-            >
-              수정
-            </Button>
-          )}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="85vh"
+    >
+      <HStack width="100%" height="90%">
+        <VStack width="45%">
+          <Box w="100%" ml="25%">
+            <BreadcrumbRoot size="lg">
+              <BreadcrumbLink
+                href={
+                  product.pay === "sell"
+                    ? "/product/list"
+                    : "/product/share/list"
+                }
+              >
+                {product.pay === "sell" ? "중고거래" : "나눔"}
+              </BreadcrumbLink>
+              <BreadcrumbLink
+                href={
+                  product.pay === "sell"
+                    ? `/product/list?category=${product.category}&page=1`
+                    : `/product/share/list?category=${product.category}&page=1`
+                }
+              >
+                {categoryLabel}
+              </BreadcrumbLink>
 
-          {(hasAccess(product.writer) || isAdmin) && (
-            <DialogRoot>
-              <DialogTrigger asChild>
-                <Button colorPalette={"red"}>삭제</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>삭제 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  {isAdmin && (
-                    <Box color="red.500" fontSize="sm" mb={2}>
-                      관리자 권한으로 삭제하시겠습니까?
-                    </Box>
-                  )}
-                  {!isAdmin && (
-                    <p>등록한 {product.productId}번 상품을 삭제하시겠습니까?</p>
-                  )}
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
-                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
-                    삭제
+              {/* 상품명 Bread */}
+              <BreadcrumbCurrentLink>
+                {product.productName}
+              </BreadcrumbCurrentLink>
+            </BreadcrumbRoot>
+          </Box>
+          <Swiper
+            slidesPerView={1}
+            loop={true}
+            pagination={{
+              clickable: true,
+            }}
+            navigation={true}
+            modules={[Pagination, Navigation]}
+            className="product-page-swiper"
+          >
+            {product.fileList.length > 0 ? (
+              product.fileList.map((file) => (
+                <SwiperSlide className="product-page-swiper-slide">
+                  <Box>
+                    <Image src={file.src} alt={file.name} />
+                  </Box>
+                </SwiperSlide>
+              ))
+            ) : (
+              <Box>
+                <Image src="/image/default.png" alt="기본 이미지" />
+              </Box>
+            )}
+          </Swiper>
+
+          <HStack w="75%">
+            <Avatar
+              my={3}
+              boxSize="100px"
+              borderRadius="full"
+              fit="cover"
+              src={profileImageUrl || "/image/default.png"}
+            />
+            <Heading size="xl">{product.nickname}</Heading>
+            <Spacer />
+            <Rating
+              colorPalette="yellow"
+              readOnly
+              value={rating}
+              allowHalf
+              size="lg"
+            />
+          </HStack>
+        </VStack>
+
+        <VStack align="flex-start" width="50%" mt={"-5"}>
+          <HStack justifyContent="space-between" w="100%">
+            <Badge size="lg">{categoryLabel}</Badge>
+            <Heading size="3xl">{product.productName}</Heading>
+            <Spacer />
+
+            {(hasAccess(product.writer) || isAdmin) && (
+              <HStack>
+                {hasAccess(product.writer) && (
+                  <Button
+                    size="md"
+                    colorPalette={"cyan"}
+                    onClick={() =>
+                      navigate(`/product/edit/${product.productId}`)
+                    }
+                  >
+                    수정
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-          )}
-        </HStack>
-      )}
-      <Swiper
-        slidesPerView={1}
-        spaceBetween={30}
-        loop={true}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
-        modules={[Pagination, Navigation]}
-        className="product-page-swiper"
-      >
-        {product.fileList.map((file) => (
-          <SwiperSlide className="product-page-swiper-slide">
-            <Box>
-              <Image src={file.src} alt={file.name} />
-            </Box>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+                )}
 
-      <Stack>
-        <HStack>
-          <Avatar
-            my={3}
-            boxSize="80px"
-            borderRadius="full"
-            fit="cover"
-            src={profileImageUrl}
-          />
-          <Heading size="md">판매자: {product.nickname}</Heading>
-          <Spacer />
-          <Rating
-            colorPalette="yellow"
-            readOnly
-            value={rating}
-            allowHalf
-            size="md"
-            mr={5}
-          />
-        </HStack>
+                {(hasAccess(product.writer) || isAdmin) && (
+                  <DialogRoot>
+                    <DialogTrigger asChild>
+                      <Button colorPalette={"red"}>삭제</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>삭제 확인</DialogTitle>
+                      </DialogHeader>
+                      <DialogBody>
+                        {isAdmin && (
+                          <Box color="red.500" fontSize="sm" mb={2}>
+                            관리자 권한으로 삭제하시겠습니까?
+                          </Box>
+                        )}
+                        {!isAdmin && (
+                          <p>{product.productId}번 상품을 삭제하시겠습니까?</p>
+                        )}
+                      </DialogBody>
+                      <DialogFooter>
+                        <DialogActionTrigger>
+                          <Button variant={"outline"}>취소</Button>
+                        </DialogActionTrigger>
+                        <Button
+                          colorPalette={"red"}
+                          onClick={handleDeleteClick}
+                        >
+                          삭제
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </DialogRoot>
+                )}
+              </HStack>
+            )}
+          </HStack>
 
-        <HStack m={2} justifyContent="space-between" w="full">
-          <Heading>{product.productName}</Heading>
-          <Spacer />
-          <Box mr={5}>
+          <Text fontSize="md">{daysAgo}</Text>
+
+          <HStack my={2} w="100%" justifyContent="space-between">
+            <Heading
+              size="2xl"
+              color={product.pay === "sell" ? "gray.600" : undefined}
+            >
+              {product.pay === "sell" ? `${product.price}원` : "나눔"}
+            </Heading>
+            <Spacer />
             <ProductLike
               productId={product.productId}
               initialLike={userLikes.has(product.productId)}
               initialCount={likeData[product.productId] || 0}
               isHorizontal={true}
             />
-          </Box>
-        </HStack>
+            {product.writer !== id && (
+              <Button size="lg" onClick={createChatRoom}>
+                채팅하기
+              </Button>
+            )}
+          </HStack>
 
-        <HStack m={2}>
-          <Box w="fit-content">
-            <Badge size="md" colorScheme="red">
-              {categoryLabel}
-            </Badge>
-          </Box>
-          <Text size="xs">{daysAgo}</Text>
-        </HStack>
+          <Textarea
+            readOnly
+            autoresize
+            value={product.description}
+            minHeight="200px"
+            fontSize="lg"
+          />
 
-        <HStack justifyContent="space-between">
-          <Heading
-            ml={2}
-            color={product.pay === "sell" ? "gray.600" : undefined}
-          >
-            {product.pay === "sell" ? `${product.price}원` : "나눔"}
-          </Heading>
-          {product.writer !== id && (
-            <Button onClick={createChatRoom}>채팅하기</Button>
-          )}
-        </HStack>
+          <HStack mt="4" justifyContent="space-between">
+            <Heading size="md">거래 희망 장소</Heading>
+            <a
+              href={getKakaoLink()}
+              style={{
+                textDecoration: "none",
+              }}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <HStack>
+                <Text fontSize="lg">{product.locationName}</Text>
+                <SlArrowRight />
+              </HStack>
+            </a>
+          </HStack>
 
-        <Textarea readOnly autoresize value={product.description} />
-
-        <HStack mt={3} justifyContent="space-between">
-          <Heading size="md">거래 희망 장소</Heading>
-          <a
-            href={getKakaoLink()}
-            style={{
-              textDecoration: "none",
-            }}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <HStack>
-              <span>{product.locationName}</span>
-              <SlArrowRight />
-            </HStack>
-          </a>
-        </HStack>
-
-        <Box display="flex" justifyContent="center" alignItems="center">
           <Map
             className="map"
             center={
@@ -349,15 +414,18 @@ export function ProductView() {
                 lng: product.longitude,
               }
             }
-            level={3}        
-            style={{ width: "90%", height: "300px" }}
-
+            level={3}
+            style={{
+              width: "80%",
+              height: "240px",
+              marginTop: "-2px",
+            }}
           >
             {markerPosition && <MapMarker position={markerPosition} />}
             <ZoomControl />
           </Map>
-        </Box>
-      </Stack>
+        </VStack>
+      </HStack>
     </Box>
   );
 }

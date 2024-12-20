@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Heading, HStack } from "@chakra-ui/react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ChatListItem } from "../../components/chat/ChatListItem.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
@@ -9,22 +9,22 @@ import { ChatView } from "./ChatView.jsx";
 import { ProductDetail } from "../../components/chat/ProductDetail.jsx";
 
 export function ChatList() {
+  const queryLocation = useLocation();
   const [chatList, setChatList] = useState([]);
   let navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useContext(AuthenticationContext);
-  const [chatRoomId, setChatRoomId] = useState(-1);
+  const [chatRoomId, setChatRoomId] = useState(
+    queryLocation.state?.roomId || -1,
+  );
   const [status, setStatus] = useState("For Sale");
-  const [productId, setProductId] = useState(-1);
+  const [productId, setProductId] = useState(
+    queryLocation.state?.productId || -1,
+  );
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    // 토큰이 없으면 로그인 페이지로 리다이렉트
-    navigate("/");
-  }
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       // 토큰이 없으면 로그인 페이지로 리다이렉트
       navigate("/");
@@ -33,6 +33,7 @@ export function ChatList() {
     if (id) {
       fetch(id);
     }
+
     getChatList();
   }, [searchParams, id, status, navigate]);
 

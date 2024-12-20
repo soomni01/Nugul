@@ -32,8 +32,9 @@ public interface ProductMapper {
             """)
     List<Product> getProductList();
 
+    //     p.status 추가
     @Select("""
-            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, 
+            SELECT  p.product_id, p.product_name, p.price, p.writer, p.category, p.description, p.status,
             p.created_at, p.pay, p.latitude, p.longitude, p.location_name, m.nickname, pf.name as mainImageName
             FROM product p
             LEFT JOIN member m ON p.writer = m.member_id
@@ -226,7 +227,8 @@ public interface ProductMapper {
                         from purchased_record 
                         where product_id = #{productId}
             """)
-    Product checkPurchaseByMemberId(String memberId, String productId); 
+    Product checkPurchaseByMemberId(String memberId, String productId);
+
     @Select("""
             SELECT pay
             FROM product

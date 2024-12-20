@@ -72,7 +72,7 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
       })
       .finally(() => {
         setProgress(false);
-        onClose;
+        onClose();
       });
   };
 
