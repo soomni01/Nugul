@@ -347,7 +347,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     <Box pt={3}>
       <Flex direction="column" w={"99%"} h={"85vh"} overflow={"hidden"}>
         <Box
-          // bg={"blue.300/50"}
           display={"flex"}
           justifyContent={"space-between"}
           p={5}
