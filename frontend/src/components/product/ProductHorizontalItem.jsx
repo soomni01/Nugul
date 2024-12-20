@@ -269,11 +269,11 @@ export function ProductHorizontalItem({
               <Badge>없음</Badge>
             </Box>
           )}
-          <Card.Title mb={2} fontSize="lg" fontWeight="bold">
+          <Card.Title mb={2} ml={1} fontSize="lg" fontWeight="bold">
             {product.productName}
           </Card.Title>
           <HStack justify="space-between">
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="gray.500" ml={1}>
               <HStack>
                 <FaLocationDot />
                 {product.locationName || "장소 정보 없음"}
@@ -289,7 +289,9 @@ export function ProductHorizontalItem({
               </Heading>
             ) : null}
           </HStack>
-          <Card.Description mt={2}>{daysAgo}</Card.Description>
+          <Card.Description mt={2} ml={1}>
+            {daysAgo}
+          </Card.Description>
         </Card.Body>
       </Box>
 
