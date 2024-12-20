@@ -408,31 +408,33 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           </Box>
         </Box>
         <Box
-          h={"85%"}
+          p={3}
+          h={"75%"}
           overflowY={"auto"}
           ref={chatBoxRef}
           onScroll={handleScroll}
         >
           <Box h={"100%"}>
             {message.map((message, index) => (
-              <Box mx={2} my={3} key={index}>
+              <Box my={10} key={index}>
                 <Flex
                   justifyContent={
                     message.sender === id ? "flex-end" : "flex-start"
                   }
                 >
-                  <HStack h={"10%"}>
+                  <HStack h={"10%"} spacing={4}>
                     {message.sender !== id && (
-                      <Avatar size={"sm"} src={imageSrc} />
+                      <Avatar boxSize="60px" src={imageSrc} />
                     )}
                     <Stack
                       mx={2}
-                      spacing={0}
+                      spacing={2}
                       align={message.sender === id ? "flex-end" : "flex-start"}
                     >
                       <Badge
-                        p={1}
+                        p={2}
                         key={index}
+                        fontSize="lg"
                         colorPalette={message.sender === id ? "gray" : "yellow"}
                         alignSelf={
                           message.sender === id ? "flex-end" : "flex-start"
@@ -440,19 +442,16 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                       >
                         {message.content}
                       </Badge>
-                      <p
-                        style={{
-                          fontSize: "8px",
-                          textAlign: message.sender === id ? "right" : "left",
-                          margin: 0, // margin을 0으로 설정
-                          padding: 0, // padding도 0으로 설정
-                          marginTop: "2px", // 메시지와 시간 사이 약간의 간격
-                        }}
+                      <Text
+                        fontSize="xs"
+                        textAlign={message.sender === id ? "right" : "left"}
+                        color="gray.600"
+                        // mt={1}
                       >
                         {message.sentAt === null
                           ? new Date().toLocaleTimeString()
                           : new Date(message.sentAt).toLocaleTimeString()}
-                      </p>
+                      </Text>
                     </Stack>
                     <div ref={scrollRef}></div>
                   </HStack>
@@ -461,11 +460,11 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ))}
           </Box>
         </Box>
-        <HStack>
+        <HStack mb={3}>
           <Field>
             <Input
+              size={"xl"}
               type={"text"}
-              bg={"white"}
               placeholder={"전송할 메시지를 입력하세요"}
               value={clientMessage}
               onKeyDown={handleKeyPress}
@@ -475,8 +474,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             />
           </Field>
           <Button
-            colorPalette={"cyan"}
-            variant={"outline"}
+            size={"xl"}
+            colorPalette={"orange"}
             onClick={() => {
               // 세션의 닉네임
               var client = id;
