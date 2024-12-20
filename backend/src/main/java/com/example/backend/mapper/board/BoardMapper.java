@@ -102,14 +102,14 @@ public interface BoardMapper {
 
     @Select("""
                    SELECT b.board_id, b.title, b.writer AS memberId, m.nickname AS writer,
-                          b.category, b.created_at, COUNT(c.board_id) AS countComment,COUNT(bf.board_id) countFile
+                          b.category, b.created_at, COUNT(DISTINCT c.comment_id) AS countComment,COUNT(DISTINCT bf.board_id,bf.name) countFile
                    FROM board b
                    LEFT JOIN comment c ON b.board_id = c.board_id
             LEFT JOIN board_file bf ON b.board_id = bf.board_id
                    LEFT JOIN member m ON b.writer = m.member_id
                    WHERE b.writer = #{memberId}
                    GROUP BY b.board_id
-                   ORDER BY b.created_at DESC
+                   ORDER BY b.board_id DESC
                    LIMIT #{offset}, 6
             """)
     List<Board> selectByMemberId(String memberId, Integer offset);
