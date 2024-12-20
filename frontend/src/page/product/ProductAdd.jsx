@@ -1,26 +1,19 @@
 import React, { useContext, useRef, useState } from "react";
-import {
-  Box,
-  Flex,
-  HStack,
-  Input,
-  Separator,
-  Spacer,
-  Stack,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Separator } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button.jsx";
-import { InputGroup } from "../../components/ui/input-group.jsx";
-import { PiCurrencyKrwBold } from "react-icons/pi";
-import { FcAddImage } from "react-icons/fc";
 import { MapModal } from "../../components/map/MapModal.jsx";
-import { categories } from "../../components/category/CategoryContainer.jsx";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
-import { IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
+import {
+  ProductDescriptionSection,
+  ProductFormLayout,
+  ProductImageSection,
+  ProductLocationSection,
+  ProductNameSection,
+  ProductPaymentSection,
+} from "../../components/product/ProductFormLayout.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -35,24 +28,10 @@ export function ProductAdd(props) {
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null); // Image Box로 파일 선택하기 위해 input 참조
   const [mainImage, setMainImage] = useState(null);
-  const [detailAddress, setDetailAddress] = useState("");
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
-  // 가격 입력 필터링
-  const handlePriceChange = (e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) setPrice(value);
-  };
-
-  // 버튼 클릭 시 해당 버튼을 표시
-  const handlePayClick = (type) => {
-    setPay(type);
-    if (type === "share") setPrice(0);
-  };
-
-  const handleBoxClick = () => fileInputRef.current?.click();
-
+  // 이미지 업로드
   const handleImageUpload = (e) => {
     const newFiles = Array.from(e.target.files);
 
@@ -76,6 +55,7 @@ export function ProductAdd(props) {
     }
   };
 
+  // 이미지 삭제
   const handleRemoveImage = (index) => {
     setFilesUrl((prev) => prev.filter((_, i) => i !== index));
     setFiles((prev) => {
@@ -85,13 +65,32 @@ export function ProductAdd(props) {
     });
   };
 
+  // 카테고리 선택
+  const handleCategoryChange = (e) => setCategory(e.target.value);
+
+  // 거래 방식 선택
+  const handlePayClick = (type) => {
+    setPay(type);
+    if (type === "share") setPrice(0);
+  };
+
+  // 가격 입력 필터링 (숫자만 허용하고 1000만 원 이하로 제한)
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value) && Number(value) <= 10000000) {
+      setPrice(value);
+    } else if (Number(value) > 10000000) {
+      toaster.create({
+        description: "가격은 10,000,000원을 초과할 수 없습니다.",
+        type: "warning",
+      });
+    }
+  };
+
   // 선택된 장소 처리
   const handleLocationSelect = ({ lat, lng, locationName }) => {
     setLocation({ latitude: lat, longitude: lng, name: locationName });
   };
-
-  // 카테고리 선택
-  const handleCategoryChange = (e) => setCategory(e.target.value);
 
   // 상품 등록 요청
   const handleSave = () => {
@@ -136,6 +135,7 @@ export function ProductAdd(props) {
     location?.name
   );
 
+  // 파일 용량 제한
   let fileInputInvalid = false;
   let sumOfFileSize = 0;
   let invalidOneFileSize = false;
@@ -151,213 +151,62 @@ export function ProductAdd(props) {
   }
 
   return (
-    <Box display="flex" p={5} width="100%">
-      <Stack gap={5} width="100%">
-        <HStack alignItems="flex-start" width="100%">
-          <Text fontSize="lg" fontWeight="bold" textAlign="left" minWidth="15%">
-            상품 이미지
-          </Text>
-          <Spacer />
-          <Box width="85%">
-            <Flex alignItems="center" gap={3} mb={4}>
-              <Box
-                p="16"
-                borderWidth="1px"
-                borderColor="lightgray"
-                borderRadius="10px"
-                onClick={handleBoxClick}
-                cursor="pointer"
-                textAlign="center"
-              >
-                <input
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                />
-                <FcAddImage size="40px" />
-              </Box>
+    <ProductFormLayout>
+      <ProductImageSection
+        fileInputRef={fileInputRef}
+        onFileUpload={handleImageUpload}
+        filesUrl={filesUrl}
+        onRemoveImage={handleRemoveImage}
+        fileInputInvalid={fileInputInvalid}
+      />
 
-              <Box display="flex" gap="10px" overflowX="auto">
-                {filesUrl.map((file, index) => (
-                  <Box
-                    key={index}
-                    width="150px"
-                    height="150px"
-                    border="1px solid lightgray"
-                    borderRadius="10px"
-                    overflow="hidden"
-                    cursor="pointer"
-                    display="inline-block"
-                    flexShrink={0}
-                    onClick={() => handleRemoveImage(index)}
-                  >
-                    <img
-                      src={file}
-                      alt={`파일 미리보기: ${index}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </Box>
-                ))}
-              </Box>
-            </Flex>
+      <Separator />
+      <ProductNameSection
+        category={category}
+        onCategoryChange={handleCategoryChange}
+        productName={productName}
+        onProductNameChange={(e) => setProductName(e.target.value)}
+      />
 
-            {fileInputInvalid && (
-              <Text fontSize="sm" color="red" mb={3}>
-                각 파일은 1MB 이하, 총 용량은 10MB 이하이어야 합니다.
-              </Text>
-            )}
+      <Separator />
 
-            <Text fontSize="sm" color="blue.400" whiteSpace="pre-line">
-              - 가장 처음 이미지가 대표이미지입니다.{"\n"}- 이미지는 상품 등록
-              시 정사각형으로 짤려서 등록됩니다.{"\n"}- 이미지를 클릭하여 삭제할
-              수 있습니다. {"\n"}- 큰 이미지일경우 이미지가 깨지는 경우가 발생할
-              수 있습니다. {"\n"}- 각 파일은 1MB 이하, 총 용량은 10MB 이하이어야
-              합니다.
-            </Text>
-          </Box>
-        </HStack>
+      <ProductPaymentSection
+        pay={pay}
+        onPayClick={handlePayClick}
+        price={price}
+        onPriceChange={handlePriceChange}
+      />
 
-        <Separator />
+      <Separator />
 
-        <HStack alignItems="flex-start">
-          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
-            상품명
-            <span style={{ color: "red" }}>*</span>
-          </Text>
-          <Flex alignItems="center" w="85%" gap={3}>
-            <Box minWidth="100px">
-              <select
-                value={category}
-                onChange={handleCategoryChange}
-                style={{
-                  width: "100px",
-                  padding: "11px",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                }}
-              >
-                {categories.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </Box>
-            <Box width="100%">
-              <Input
-                size="xl"
-                value={productName}
-                placeholder="상품명을 입력하세요"
-                onChange={(e) => setProductName(e.target.value)}
-              />
-            </Box>
-          </Flex>
-        </HStack>
+      <ProductDescriptionSection
+        description={description}
+        onDescriptionChange={(e) => setDescription(e.target.value)}
+      />
 
-        <Separator />
+      <Separator />
 
-        <HStack alignItems="flex-start">
-          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
-            거래 방식
-            <span style={{ color: "red" }}>*</span>
-          </Text>
-          <Flex alignItems="flex-start" w="85%" gap={4} direction="column">
-            <HStack>
-              <Button
-                size="lg"
-                borderRadius="10px"
-                variant={pay === "sell" ? "solid" : "outline"}
-                onClick={() => handlePayClick("sell")}
-              >
-                판매하기
-              </Button>
-              <Button
-                size="lg"
-                borderRadius="10px"
-                variant={pay === "share" ? "solid" : "outline"}
-                onClick={() => handlePayClick("share")}
-              >
-                나눔하기
-              </Button>
-            </HStack>
+      <ProductLocationSection
+        location={location}
+        onModalOpen={() => setIsModalOpen(true)}
+      />
 
-            {pay === "sell" && (
-              <InputGroup
-                w={"20%"}
-                flex="1"
-                startElement={<PiCurrencyKrwBold />}
-              >
-                <Input
-                  value={price}
-                  onChange={handlePriceChange}
-                  placeholder="가격을 입력하세요"
-                />
-              </InputGroup>
-            )}
-          </Flex>
-        </HStack>
+      <MapModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelectLocation={handleLocationSelect}
+      />
 
-        <Separator />
-
-        <HStack alignItems="flex-start">
-          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
-            상품 설명
-            <span style={{ color: "red" }}>*</span>
-          </Text>
-          <Flex alignItems="center" w="85%">
-            <Textarea
-              placeholder="등록할 상품의 게시글 내용을 작성해주세요."
-              fontSize="md"
-              h={150}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Flex>
-        </HStack>
-
-        <Separator />
-
-        <HStack alignItems="flex-start">
-          <Text fontSize="lg" fontWeight="bold" minWidth="15%">
-            거래 장소
-            <span style={{ color: "red" }}>*</span>
-          </Text>
-          <Flex alignItems="center" minWidth="85%">
-            <InputGroup flex="1" endElement={<IoIosArrowForward />}>
-              <Input
-                value={location?.name || ""}
-                onClick={() => setIsModalOpen(true)}
-                placeholder="거래 희망 장소를 추가하세요"
-                readOnly
-              />
-            </InputGroup>
-          </Flex>
-        </HStack>
-
-        <MapModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSelectLocation={handleLocationSelect}
-        />
-
-        <Box display="flex" w="100%" justifyContent="flex-end">
-          <Button
-            w={"10%"}
-            disabled={disabled}
-            loading={progress}
-            onClick={handleSave}
-          >
-            상품 등록
-          </Button>
-        </Box>
-      </Stack>
-    </Box>
+      <Box display="flex" w="100%" justifyContent="flex-end">
+        <Button
+          w={"10%"}
+          disabled={disabled}
+          loading={progress}
+          onClick={handleSave}
+        >
+          상품 등록
+        </Button>
+      </Box>
+    </ProductFormLayout>
   );
 }
