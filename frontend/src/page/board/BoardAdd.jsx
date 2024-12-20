@@ -146,7 +146,11 @@ export function BoardAdd() {
       });
   };
 
-  const disabled = !(title.trim().length > 0 && content.trim().length > 0);
+  const disabled = !(
+    title.trim().length > 0 &&
+    content.trim().length > 0 &&
+    category.trim().length > 0
+  );
 
   const handleFileDelete = (fileName) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
@@ -261,7 +265,7 @@ export function BoardAdd() {
         >
           <Box borderRight="1px solid #ccc" padding="2px">
             <select
-              value={category || "all"}
+              value={category}
               onChange={(e) => setCategory(e.target.value)}
               style={{
                 border: "none",
@@ -271,11 +275,13 @@ export function BoardAdd() {
                 padding: "0 8px",
               }}
             >
-              {BoardCategories.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
+              {BoardCategories.filter((cat) => cat.value !== "all").map(
+                (cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ),
+              )}
             </select>
           </Box>
 
