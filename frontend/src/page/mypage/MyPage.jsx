@@ -43,7 +43,6 @@ export function MyPage() {
   const fileInputRef = useRef(null);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
-
   useEffect(() => {
     if (!id) {
       return;
@@ -166,7 +165,7 @@ export function MyPage() {
                 boxSize="130px"
                 borderRadius="full"
                 fit="cover"
-                src={profileImageUrl}
+                src={profileImageUrl || "/image/default.png"}
               />
             )}
             <Float placement="bottom-center" mb={2}>

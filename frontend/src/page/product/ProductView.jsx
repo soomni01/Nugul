@@ -261,16 +261,9 @@ export function ProductView() {
                 </SwiperSlide>
               ))
             ) : (
-              <Box
-                width="100%"
-                height="auto"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                bg="gray.200"
-                borderRadius="md"
-                aspectRatio="1"
-              ></Box>
+              <Box>
+                <Image src="/image/default.png" alt="기본 이미지" />
+              </Box>
             )}
           </Swiper>
 
@@ -280,7 +273,7 @@ export function ProductView() {
               boxSize="100px"
               borderRadius="full"
               fit="cover"
-              src={profileImageUrl}
+              src={profileImageUrl || "/image/default.png"}
             />
             <Heading size="xl">{product.nickname}</Heading>
             <Spacer />

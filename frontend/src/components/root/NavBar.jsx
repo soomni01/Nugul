@@ -138,7 +138,7 @@ export function Navbar() {
                   <Avatar
                     boxSize="70px"
                     my={2}
-                    src={profileImage}
+                    src={profileImage || "/image/default.png"}
                     name={nickname}
                     variant="outline"
                   />

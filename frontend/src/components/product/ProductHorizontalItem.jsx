@@ -208,7 +208,7 @@ export function ProductHorizontalItem({
 
   const mainImage = product.mainImageName
     ? product.mainImageName
-    : "/image/productItem.png";
+    : "/image/default.png";
 
   console.log(product);
   return (

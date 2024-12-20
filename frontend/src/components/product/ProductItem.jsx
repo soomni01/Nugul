@@ -39,7 +39,7 @@ export function ProductItem({ product, likeCount, isLiked }) {
 
   const mainImage = product.mainImageName
     ? product.mainImageName
-    : "/image/productItem.png";
+    : "/image/default.png";
 
   const isListPage =
     location.pathname.includes("/product/list") ||
