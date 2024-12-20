@@ -38,6 +38,11 @@ export function MainPage() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     setLoading(true);
     axios
       .get("api/product/main")

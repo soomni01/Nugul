@@ -81,6 +81,11 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
 
   // 컴포넌트 마운트 시 상품 목록 가져오기
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     const controller = new AbortController();
     setLoading(true);
 

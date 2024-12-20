@@ -56,6 +56,11 @@ export function ProductView() {
 
   // 상품 정보, 판매자 프로필 이미지, 판매자 평점 병렬 요청
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     const fetchProduct = async () => {
       setLoading(true); // 로딩 시작
       try {

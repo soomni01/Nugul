@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Box, Separator } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button.jsx";
 import { MapModal } from "../../components/map/MapModal.jsx";
@@ -30,6 +30,13 @@ export function ProductAdd(props) {
   const [mainImage, setMainImage] = useState(null);
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
 
   // 이미지 업로드
   const handleImageUpload = (e) => {

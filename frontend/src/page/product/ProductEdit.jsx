@@ -43,6 +43,11 @@ export function ProductEdit() {
 
   // 상품 정보 가져오기
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     axios.get(`/api/product/view/${id}`).then((res) => {
       setProduct(res.data);
     });
