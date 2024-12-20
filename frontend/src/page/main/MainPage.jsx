@@ -85,7 +85,7 @@ export function MainPage() {
 
   return (
     <Box mb={"30px"}>
-      <Image src="/image/testImage.png" w="100%" h="300px" mt="3" />
+      <Image src="/image/MainTest.png" w="100%" h="450px" mt="3" />
       <Separator my={10} />
       <Heading my={3} size={"2xl"}>
         {" "}

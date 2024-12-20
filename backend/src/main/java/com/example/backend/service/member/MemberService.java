@@ -112,10 +112,12 @@ public class MemberService {
             for (Integer productId : likes) {
                 productMapper.deleteLike(productId);
             }
+
             // 문의 내역 지우기
-            List<Inquiry> inquiries = myPageService.getInquiryByMemberId(member.getMemberId());
+            List<Inquiry> inquiries = inquiryService
+                    .getInquiryByMemberId(member.getMemberId());
             for (Inquiry inquiry : inquiries) {
-                myPageService.deleteInquiry(inquiry.getInquiryId());
+                inquiryService.deleteInquiry(inquiry.getInquiryId());
             }
 
             // 쓴 게시물 목록 얻기
@@ -230,10 +232,10 @@ public class MemberService {
 
         // 1. 네이버로부터 액세스 토큰 요청
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
-                + "&client_id=" + clientId
-                + "&client_secret=" + clientSecret
-                + "&code=" + code
-                + "&state=" + state;
+                          + "&client_id=" + clientId
+                          + "&client_secret=" + clientSecret
+                          + "&code=" + code
+                          + "&state=" + state;
 
         Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
 
