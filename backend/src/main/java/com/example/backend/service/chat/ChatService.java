@@ -132,9 +132,10 @@ public class ChatService {
         return mainImageUrl;
     }
 
+    // 이거 false임 삭제 안한상태로 초기화
     public boolean updateDeletedTrue(int roomId, String buyer) {
         int cnt = mapper.updateDeletedTrue(roomId, buyer);
-       
+
         return cnt == 1;
     }
 }

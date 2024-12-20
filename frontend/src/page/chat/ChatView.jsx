@@ -101,10 +101,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       await loadInitialMessages();
       await handleSetData();
 
-      if (chatBoxRef.current) {
-        chatBoxRef.current.scrollTop =
-          chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
-      }
+      // if (chatBoxRef.current) {
+      //   chatBoxRef.current.scrollTop =
+      //     chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
+      // }
     };
 
     initializeData();
@@ -351,8 +351,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       sendMessage(client, message);
     }
   };
-  console.log(reviewComplete);
-  console.log(product);
 
   return (
     <Box>

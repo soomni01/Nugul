@@ -142,16 +142,23 @@ public class MemberService {
             List<ChatRoom> chatRoomList = chatMapper.selectAllChatRoom(member.getMemberId());
             // 참여한 채팅방에서  상대 삭제상태 확인후 ,  참이면 > 메시지 지우고 채팅방 삭제 ,
             for (ChatRoom chatRoom : chatRoomList) {
-                Boolean flag = (chatRoom.getBuyer() != null && chatRoom.getBuyer().equals(member.getMemberId()))
+                //수정
+                boolean flag = member.getMemberId().equals(chatRoom.getBuyer())
                         ? chatRoom.getIswriter_deleted()
-                        : chatRoom.getIsBuyer_deleted();
+                        : member.getMemberId().equals(chatRoom.getWriter())
+                        ? chatRoom.getIsBuyer_deleted()
+                        : false;
+                //수정끝
                 String roomId = chatRoom.getRoomId() + "";
                 if (flag) {
                     chatMapper.deleteChatRoomMessageByRoomId(roomId, member.getMemberId());
                     chatMapper.deleteChatRoomByRoomId(roomId);
                 } else {
-                    // 아니면 내 메시지만 삭제
+                    // 아니면 내 메시지만 삭제 + 상태 변경
                     chatMapper.deleteChatRoomMessageByRoomId(roomId, member.getMemberId());
+                    //수정
+                    chatMapper.updateDeltedByRoomIdAndMemberId(roomId, member.getMemberId());
+                    //수정끝
                 }
             }
             // 해당 아이디의 모든 sender를 널로 변경
@@ -251,10 +258,10 @@ public class MemberService {
 
         // 1. 네이버로부터 액세스 토큰 요청
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
-                          + "&client_id=" + clientId
-                          + "&client_secret=" + clientSecret
-                          + "&code=" + code
-                          + "&state=" + state;
+                + "&client_id=" + clientId
+                + "&client_secret=" + clientSecret
+                + "&code=" + code
+                + "&state=" + state;
 
         Map<String, Object> tokenResponse = restTemplate.getForObject(tokenUrl, Map.class);
 
