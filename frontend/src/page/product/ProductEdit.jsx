@@ -48,6 +48,7 @@ export function ProductEdit() {
   const [filesUrl, setFilesUrl] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     axios.get(`/api/product/view/${id}`).then((res) => {
@@ -56,8 +57,8 @@ export function ProductEdit() {
   }, [id]);
 
   useEffect(() => {
-    if (product && product.fileList) {
-      // 파일 목록이 있으면 filesUrl에 해당 URL들을 추가
+    if (product && product.fileList && !initialized) {
+      // 최초 한 번만 파일 목록을 초기화
       const fileUrls = product.fileList.map((file) => file.src);
       setFilesUrl(fileUrls);
       setFiles(product.fileList);
@@ -65,8 +66,9 @@ export function ProductEdit() {
       if (!mainImage && product.fileList.length > 0) {
         setMainImage(product.fileList[0]);
       }
+      setInitialized(true);
     }
-  }, [product]);
+  }, [product, initialized]);
 
   useEffect(() => {
     if (files.length === 0) {
@@ -136,10 +138,14 @@ export function ProductEdit() {
 
   const handleFileUpload = (e) => {
     const newFiles = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...newFiles]);
+
+    // setFiles((prev) => [...prev, ...newFiles]);
     // 중복 파일 체크
     const uniqueFiles = newFiles.filter((newFile) => {
-      return !files.some((file) => file.name === newFile.name);
+      return (
+        !files.some((file) => file.name === newFile.name) ||
+        (file.src && file.src.includes(newFile.name))
+      );
     });
 
     if (uniqueFiles.length > 0) {
