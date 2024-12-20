@@ -23,9 +23,9 @@ export function ChatList() {
   );
   const token = localStorage.getItem("token");
 
+  console.log("sta", status);
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       // 토큰이 없으면 로그인 페이지로 리다이렉트
       navigate("/");
@@ -34,6 +34,7 @@ export function ChatList() {
     if (id) {
       fetch(id);
     }
+
     getChatList();
   }, [searchParams, id, status, navigate]);
 

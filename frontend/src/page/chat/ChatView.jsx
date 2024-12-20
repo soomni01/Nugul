@@ -106,7 +106,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
     }
-  }, [navigate, purchased, transactionCompleted]);
+  }, [navigate, purchased]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -274,7 +274,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           console.error("응답 데이터에 message가 없습니다:", data); // 'message'가 없을 경우 에러 처리
         }
         setReviewComplete(true);
-        setTransactionCompleted(true);
+        statusControl();
       })
       .catch((e) => {
         // 오류가 발생했을 경우 처리
@@ -288,9 +288,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           console.error("오류 응답에서 message가 없습니다:", e); // 오류 응답에 'message'가 없을 경우 에러 처리
         }
       })
-      .finally(() => {
-        statusControl;
-      }); // 상태 변경 (무조건 실행되는 부분)
+      .finally(() => {}); // 상태 변경 (무조건 실행되는 부분)
   };
 
   //  판매자 인지 확인
@@ -376,7 +374,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 cursor={reviewComplete && "defalut"}
                 onClick={handleSuccessTransaction}
               >
-                {/* Todo거래 완료시 disabled 여부를 결정해주는  isSold 가 상태가 아님 그래서 바로 안 그려진다 */}
                 거래완료
               </Button>
             ) : purchased ? (

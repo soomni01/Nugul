@@ -33,10 +33,6 @@ export function ChatListItem({ chat, onDelete, onClick }) {
       });
   }, []);
 
-  const updatetime = () => {
-    axios.get("/api/chat/message");
-  };
-
   const defaultsrc = "./image/testImage.png";
 
   return (
