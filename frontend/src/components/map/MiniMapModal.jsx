@@ -61,18 +61,19 @@ export const MiniMapModal = ({ isOpen, onClose, product }) => {
                 />
                 <CustomOverlayMap position={markerPosition} yAnchor={2.1}>
                   <HStack
-                    px={3}
-                    pr={7}
-                    w={"100%"} // 100% 너비로 지정
-                    style={{
-                      background: "white",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                      alignItems: "center",
-                      whiteSpace: "nowrap",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                      height: "36px",
-                    }}
+                    className="custom-overlay"
+                    // px={3}
+                    // pr={7}
+                    // w={"100%"} // 100% 너비로 지정
+                    // style={{
+                    //   background: "white",
+                    //   borderRadius: "4px",
+                    //   border: "1px solid #ccc",
+                    //   alignItems: "center",
+                    //   whiteSpace: "nowrap",
+                    //   boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                    //   height: "36px",
+                    // }}
                   >
                     <Text>{product.locationName}</Text>
                     <Image
