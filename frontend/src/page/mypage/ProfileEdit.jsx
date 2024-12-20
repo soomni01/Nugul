@@ -127,6 +127,7 @@ export function ProfileEdit({ id, onCancel, onSave }) {
           </Text>
           <Input defaultValue={id || ""} readOnly width="450px" height="45px" />
         </Flex>
+
         {member?.password && (
           <Flex alignItems="center" mt={3} direction="column">
             <Flex alignItems="center">

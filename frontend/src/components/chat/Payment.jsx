@@ -99,7 +99,9 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
 
   return (
     <div>
-      <Button onClick={requestPay}>결제하기</Button>
+      <Button size="xl" onClick={requestPay}>
+        결제하기
+      </Button>
     </div>
   );
 };
