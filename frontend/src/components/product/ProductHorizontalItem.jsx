@@ -103,14 +103,14 @@ export function ProductHorizontalItem({
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { hasAccess } = useContext(AuthenticationContext);
+  const { hasAccess, id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체";
   const daysAgo = getDaysAgo(product.createdAt);
-  const isSold = product.status === "Sold";
+  const isSold = product.status === "Sold" && product.writer === id;
   const cardStyle = getCardStyle(isSold);
 
   const handleLikeClick = debounce(() => {
@@ -208,7 +208,7 @@ export function ProductHorizontalItem({
 
   const mainImage = product.mainImageName
     ? product.mainImageName
-    : "/image/productItem.png";
+    : "/image/default.png";
 
   console.log(product);
   return (

@@ -29,7 +29,9 @@ import {
   MenuTrigger,
 } from "../../components/ui/menu.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { useNavigate } from "react-router-dom";
 import { BoardsAndComments } from "./BoardsAndComments.jsx";
+
 
 export function MyPage() {
   const { id, nickname, profileImage, updateProfileImage } = useContext(
@@ -39,8 +41,15 @@ export function MyPage() {
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [progress, setProgress] = useState(false);
   const fileInputRef = useRef(null);
+  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+
     if (!id) {
       return;
     }
@@ -156,7 +165,7 @@ export function MyPage() {
                 boxSize="130px"
                 borderRadius="full"
                 fit="cover"
-                src={profileImageUrl}
+                src={profileImageUrl || "/image/default.png"}
               />
             )}
             <Float placement="bottom-center" mb={2}>
