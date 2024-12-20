@@ -40,6 +40,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState({});
   const [reviewText, setReviewText] = useState("후기");
+  const [reviewComplete, setReviewComplete] = useState(false);
+  const [transactionCompleted, setTransactionCompleted] = useState(false);
 
   // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -104,7 +106,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
     }
-  }, [navigate, purchased]);
+  }, [navigate, purchased, transactionCompleted]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -146,6 +148,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }));
     setImageSrc(imageRes.data);
     setPurchased(id == purchaseRes.data.buyerId);
+    // 누르면 >  SOLD로 바꿈
+    setReviewComplete(productRes.data.status === "Sold");
   }
 
   function deletedChatPartnerId(chatPartnerId) {
@@ -269,6 +273,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         } else {
           console.error("응답 데이터에 message가 없습니다:", data); // 'message'가 없을 경우 에러 처리
         }
+        setReviewComplete(true);
+        setTransactionCompleted(true);
       })
       .catch((e) => {
         // 오류가 발생했을 경우 처리
@@ -282,7 +288,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           console.error("오류 응답에서 message가 없습니다:", e); // 오류 응답에 'message'가 없을 경우 에러 처리
         }
       })
-      .finally(statusControl); // 상태 변경 (무조건 실행되는 부분)
+      .finally(() => {
+        statusControl;
+      }); // 상태 변경 (무조건 실행되는 부분)
   };
 
   //  판매자 인지 확인
@@ -363,8 +371,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               <Button
                 className={"ScrollBarContainer"}
                 style={{ marginLeft: "16px" }}
-                colorPalette={"cyan"}
-                disabled={isSold}
+                colorPalette={reviewComplete && "cyan"}
+                isDisabled
+                cursor={reviewComplete && "defalut"}
                 onClick={handleSuccessTransaction}
               >
                 {/* Todo거래 완료시 disabled 여부를 결정해주는  isSold 가 상태가 아님 그래서 바로 안 그려진다 */}
@@ -378,7 +387,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 onComplete={handleTransactionState}
               />
             )}
-            {/* Todo purchase 로직 다시 짜야함*/}
+
             {purchased && (
               <Button onClick={handleOpenReviewModal}>{reviewText}</Button>
             )}

@@ -38,7 +38,6 @@ export function ChatListItem({ chat, onDelete, onClick }) {
   };
 
   const defaultsrc = "./image/testImage.png";
-  console.log(chat);
 
   return (
     <Box variant={"outline"} p={3} onClick={onClick} width={"auto"}>
