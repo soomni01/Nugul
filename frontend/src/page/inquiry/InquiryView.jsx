@@ -3,11 +3,11 @@ import {
   Box,
   Button,
   Flex,
+  Image,
   Input,
   Spinner,
   Text,
   Textarea,
-  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,6 +23,8 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 
 export const InquiryView = () => {
   const [inquiryView, setInquiryView] = useState(null);
@@ -54,9 +56,8 @@ export const InquiryView = () => {
     axios
       .get(`/api/inquiry/comments/${inquiryId}`)
       .then((response) => {
-        if (Array.isArray(response.data)) {
-          setComments(response.data);
-        }
+        console.log("댓글 데이터:", response.data);
+        setComments(response.data);
       })
       .catch((error) => {
         console.error("댓글을 가져오는 중 오류가 발생했습니다:", error);
@@ -85,89 +86,48 @@ export const InquiryView = () => {
   };
 
   useEffect(() => {
-    fetchInquiryView(); // 문의 정보와 댓글을 불러옴
+    fetchInquiryView();
   }, [inquiryId]);
 
   if (loading) return <Spinner />;
 
   return (
     <Box
-      width="64%"
-      // height="700px"
-      mx="auto"
-      mt="36"
       p="5"
+      height="710px"
+      width="950px"
       borderRadius="md"
       boxShadow="0px 10px 30px rgba(0, 0, 0, 0.2)"
       bg="white"
+      top="50px"
+      left="50%"
+      position="relative"
+      transform="translateX(-50%)"
     >
       {inquiryView ? (
         <>
-          {/* 제목 */}
           <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={6}>
-            문의 상세 정보
+            문의 상세 보기
           </Text>
-
-          {/* 문의 상세 정보 */}
-          <Box mb={4}>
-            <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
-                문의 유형
-              </Text>
-              <Input value={inquiryView.category} readOnly width="70%" ml={3} />
-            </Flex>
-
-            <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
-                문의 제목
-              </Text>
-              <Input value={inquiryView.title} readOnly width="70%" ml={3} />
-            </Flex>
-
-            <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
-                작성자
-              </Text>
-              <Input value={nickname} readOnly width="70%" ml={3} />
-            </Flex>
-
-            <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
-                작성 일자
-              </Text>
-              <Input
-                value={new Date(inquiryView.inserted).toLocaleDateString()}
-                readOnly
-                width="70%"
-                ml={3}
-              />
-            </Flex>
-
-            <Flex align="center">
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
-                문의 내용
-              </Text>
-              <Textarea
-                value={inquiryView.content}
-                readOnly
-                width="70%"
-                height="150px"
-                ml={3}
-              />
-            </Flex>
-          </Box>
-
           {/* 버튼 */}
-          <Flex justify="space-between" mt={4}>
-            <Button
-              colorScheme="blue"
+          <Flex justify="end" mt={4}>
+            <Box
               onClick={() => navigate(`/inquiry/edit/${inquiryView.inquiryId}`)}
+              cursor="pointer"
+              mb={4}
+              ml={2}
             >
-              수정
-            </Button>
+              <Image src="/image/InquiryEdit.png" width="30px" height="30px" />
+            </Box>
             <DialogRoot>
               <DialogTrigger asChild>
-                <Button colorScheme="red">삭제</Button>
+                <Box ml={2} cursor="pointer">
+                  <Image
+                    src="/image/InquiryDelete.png"
+                    width="30px"
+                    height="30px"
+                  />
+                </Box>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -188,35 +148,126 @@ export const InquiryView = () => {
             </DialogRoot>
           </Flex>
 
+          {/* 문의 상세 정보 */}
+          <Box mb={4}>
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                문의 유형
+              </Text>
+              <Input
+                value={inquiryView.category}
+                readOnly
+                flex="0 0 17%"
+                ml={3}
+              />
+            </Flex>
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                문의 제목
+              </Text>
+              <Input value={inquiryView.title} readOnly flex="1" ml={3} />
+            </Flex>
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                작성자
+              </Text>
+              <Input value={nickname} readOnly flex="1" ml={3} />
+            </Flex>
+            <Flex align="center" mb={3}>
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                작성 일자
+              </Text>
+              <Input
+                value={new Date(inquiryView.inserted).toLocaleDateString()}
+                readOnly
+                flex="1"
+                ml={3}
+              />
+            </Flex>
+            <Flex align="center">
+              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+                문의 내용
+              </Text>
+              <Textarea
+                value={inquiryView.content}
+                readOnly
+                flex="1"
+                height="150px"
+                ml={3}
+              />
+            </Flex>
+          </Box>
+
           {/* 댓글 */}
           <Box mt={6}>
             {comments.length === 0 ? (
-              <Text>아직 관리자가 답변하지 않았습니다.</Text>
+              <Flex
+                align="center"
+                justify="center"
+                bg="gray.100"
+                p={4}
+                borderRadius="md"
+                boxShadow="sm"
+              >
+                <Text
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="gray.700"
+                  mt={5}
+                  mr={2}
+                >
+                  아직 관리자가 답변하지 않았습니다.
+                </Text>
+              </Flex>
             ) : (
-              <VStack spacing={3}>
+              <Swiper
+                direction="vertical"
+                slidesPerView="auto"
+                freeMode={true}
+                scrollbar={{ draggable: true }}
+                mousewheel={true}
+                modules={[FreeMode, Scrollbar, Mousewheel]}
+                style={{
+                  maxHeight: "175px",
+                  width: "100%",
+                  overflow: "hidden",
+                }}
+              >
                 {comments.map((comment) => (
-                  <Box
+                  <SwiperSlide
                     key={comment.nickname}
-                    borderWidth="1px"
-                    p={3}
-                    borderRadius="md"
-                    width="100%"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
                   >
-                    <Text fontWeight="bold" fontSize="lg">
-                      {comment.nickname}{" "}
-                      <Text
-                        as="span"
-                        color="gray.500"
-                        fontSize="sm"
-                        fontWeight="medium"
-                      >
-                        {new Date(comment.inserted).toLocaleDateString()}
+                    <Box
+                      borderWidth="1px"
+                      p={3}
+                      borderRadius="md"
+                      width="100%"
+                      bg="white"
+                      mb={3}
+                    >
+                      <Text fontWeight="bold" fontSize="lg">
+                        {comment.nickname}
+                        <Text
+                          as="span"
+                          color="gray.500"
+                          fontSize="sm"
+                          fontWeight="medium"
+                          ml={2}
+                        >
+                          {new Date(comment.inserted).toLocaleDateString()}
+                        </Text>
                       </Text>
-                    </Text>
-                    <Text mt={1}>{comment.comment}</Text>
-                  </Box>
+                      <Text mt={1}>{comment.comment}</Text>
+                    </Box>
+                  </SwiperSlide>
                 ))}
-              </VStack>
+              </Swiper>
             )}
           </Box>
         </>

@@ -62,9 +62,16 @@ public interface InquiryMapper {
     int insertcomment(InquiryComment inquirycomment);
 
     @Select("""
-            SELECT id, inquiry_id, admin_id AS member_id, comment, inserted
-            FROM inquiry_comment
-            WHERE inquiry_id = #{inquiryId}
+            SELECT 
+                ic.id, 
+                ic.inquiry_id, 
+                ic.admin_id AS member_id, 
+                m.nickname, 
+                ic.comment, 
+                ic.inserted 
+            FROM inquiry_comment ic
+            JOIN member m ON ic.admin_id = m.member_id
+            WHERE ic.inquiry_id = #{inquiryId}
             """)
     List<InquiryComment> findCommentsByInquiryId(int inquiryId);
 

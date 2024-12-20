@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Input, Text, Textarea } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
@@ -94,51 +94,88 @@ export function InquiryEdit() {
   }
 
   return (
-    <Box mt="20px">
-      <Text fontSize="2xl" fontWeight="bold" mb={4}>
+    <Box
+      p="5"
+      height="710px"
+      width="950px"
+      borderRadius="md"
+      boxShadow="0px 10px 30px rgba(0, 0, 0, 0.2)"
+      bg="white"
+      top="50px"
+      left="50%"
+      position="relative"
+      transform="translateX(-50%)"
+    >
+      <Text fontSize="2xl" fontWeight="bold" mt={5} mb={4} ml={2}>
         문의 수정
       </Text>
       <Box mb={3}>
-        <Field mb={2}>문의 유형</Field>
-        <select
-          name="category"
-          value={inquiry.category}
-          onChange={handleChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #CBD5E0",
-          }}
-        >
-          <option value="">문의 유형 선택</option>
-          <option value="이용 안내">이용 안내</option>
-          <option value="구매 안내">구매 안내</option>
-          <option value="기타 문의">기타 문의</option>
-        </select>
-        <Field mb={2}>제목</Field>
-        <Input name="title" value={inquiry.title} onChange={handleChange} />
-        <Field mb={2}>작성자</Field>
-        <Input value={inquiry.memberId} readOnly />
-        <Field mb={2}>작성 일자</Field>
-        <Input
-          value={new Date(inquiry.inserted).toLocaleDateString()}
-          readOnly
-        />
-        <Field mb={2}>내용</Field>
-        <Textarea
-          name="content"
-          value={inquiry.content}
-          onChange={handleChange}
-        />
+        <Field>
+          <Flex align="center" gap={12} mb={6}>
+            <Text fontSize="md" fontWeight="bold" ml={3}>
+              문의 유형
+            </Text>
+            <select
+              name="category"
+              value={inquiry.category}
+              onChange={handleChange}
+              style={{
+                padding: "8px",
+                borderRadius: "4px",
+                border: "1px solid #CBD5E0",
+                marginLeft: "-5px",
+              }}
+            >
+              {/*<option value="">문의 유형 선택</option>*/}
+              <option value="신고">신고</option>
+              <option value="이용 안내">이용 안내</option>
+              <option value="계정 문의">계정 문의</option>
+              <option value="기타 문의">기타 문의</option>
+            </select>
+          </Flex>
+        </Field>
+        <Flex justify="space-between" align="center" mb={6}>
+          <Text fontSize="md" fontWeight="bold" width="14%" ml={3}>
+            문의 제목
+          </Text>
+          <Input name="title" value={inquiry.title} onChange={handleChange} />
+        </Flex>
+        <Flex justify="space-between" align="center" mb={6}>
+          <Text fontSize="md" fontWeight="bold" width="14%" ml={3}>
+            작성자
+          </Text>
+          <Input value={inquiry.memberId} readOnlywidth="220%" />
+        </Flex>
+        <Flex justify="space-between" align="center" mb={6}>
+          <Text fontSize="md" fontWeight="bold" width="14%" ml={3}>
+            작성 일자
+          </Text>
+          <Input
+            value={new Date(inquiry.inserted).toLocaleDateString()}
+            readOnlywidth="220%"
+          />
+        </Flex>
+        <Flex justify="space-between" align="center">
+          <Text fontSize="md" fontWeight="bold" width="30%" ml={4}>
+            문의 내용
+          </Text>
+          <Textarea
+            name="content"
+            value={inquiry.content}
+            onChange={handleChange}
+            width="220%"
+            height="250px"
+          />
+        </Flex>
       </Box>
       {hasAccess?.(inquiry?.memberId) && (
-        <Box>
+        <Box mt={6}>
           <DialogRoot
             open={dialogOpen}
             onOpenChange={(e) => setDialogOpen(e.open)}
           >
             <DialogTrigger asChild>
-              <Button disabled={isSaveDisabled()} colorPalette={"blue"}>
+              <Button disabled={isSaveDisabled()} colorPalette={"blue"} ml={4}>
                 저장
               </Button>
             </DialogTrigger>
@@ -163,7 +200,7 @@ export function InquiryEdit() {
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
-          <Button variant="outline" onClick={handleCancelClick}>
+          <Button ml={4} variant="outline" onClick={handleCancelClick}>
             취소
           </Button>
         </Box>
