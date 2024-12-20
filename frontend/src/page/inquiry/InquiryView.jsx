@@ -158,23 +158,23 @@ export const InquiryView = () => {
                 value={inquiryView.category}
                 readOnly
                 flex="0 0 17%"
-                ml={3}
+                ml={-20}
               />
             </Flex>
             <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+              <Text fontSize="md" fontWeight="bold" width="10%" ml={3}>
                 문의 제목
               </Text>
               <Input value={inquiryView.title} readOnly flex="1" ml={3} />
             </Flex>
             <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+              <Text fontSize="md" fontWeight="bold" width="10%" ml={3}>
                 작성자
               </Text>
               <Input value={nickname} readOnly flex="1" ml={3} />
             </Flex>
             <Flex align="center" mb={3}>
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+              <Text fontSize="md" fontWeight="bold" width="10%" ml={3}>
                 작성 일자
               </Text>
               <Input
@@ -185,7 +185,7 @@ export const InquiryView = () => {
               />
             </Flex>
             <Flex align="center">
-              <Text fontSize="md" fontWeight="bold" width="20%" ml={3}>
+              <Text fontSize="md" fontWeight="bold" width="10%" ml={3}>
                 문의 내용
               </Text>
               <Textarea
