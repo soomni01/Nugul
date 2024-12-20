@@ -225,7 +225,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
       </Box>
       <Flex justify="center" w="100%">
         <HStack
-          w="90%"
+          w="88%"
           display="flex"
           justify="space-between"
           align="center"
@@ -233,7 +233,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         >
           <MenuRoot size="md">
             <MenuTrigger asChild>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" fontWeight="bold">
                 <HiSortAscending />
                 {sortOption === "newest" && "최신순"}
                 {sortOption === "popular" && "인기순"}
