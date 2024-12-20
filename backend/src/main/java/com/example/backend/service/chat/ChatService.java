@@ -96,7 +96,8 @@ public class ChatService {
             int messageCountMemberId = mapper.countMessageByRoomIdAndMemberId(roomId, memberId);
             if (messageCountMemberId != 0) {
                 int cnt = mapper.deleteChatRoomMessageByRoomId(roomId, memberId);
-                return cnt == 1;
+                // 내가 센 메시지 갯수와 전체 갯수가 같으면 , true
+                return cnt == messageCountMemberId;
             } else {
                 return true;
             }
@@ -117,7 +118,9 @@ public class ChatService {
 
     public boolean noOneDeleted(String roomId) {
         boolean noOneDeleted = mapper.checkNoOneDeleted(roomId);
+
         int cnt = mapper.countMessageByRoomId(roomId);
+        System.out.println("cnt = " + cnt);
 
 
         //메시지 갯수도 0이고 ,삭제도 안했음 > 즉 메시지를 작성한적이없음

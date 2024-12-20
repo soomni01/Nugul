@@ -167,7 +167,7 @@ public interface ChatMapper {
     @Select("""
                 SELECT 
                     CASE
-                        WHEN iswriter_deleted = FALSE AND isbuyer_deleted = FALSE THEN TRUE
+                        WHEN iswriter_deleted = 0 AND isbuyer_deleted = 0 THEN TRUE
                         ELSE FALSE
                     END AS both_true
                 FROM chatroom
