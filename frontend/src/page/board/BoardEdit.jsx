@@ -1,9 +1,7 @@
 import {
   Box,
-  Card,
-  FormatNumber,
+  Flex,
   HStack,
-  Icon,
   Image,
   Input,
   Spinner,
@@ -29,7 +27,19 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { Switch } from "../../components/ui/switch.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { CiFileOn } from "react-icons/ci";
+
+// 미리보기 이미지 생성 함수
+const generatePreviewFiles = (files) => {
+  const previewList = files.map((file) => {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+      reader.onload = () => resolve({ name: file.name, src: reader.result });
+      reader.readAsDataURL(file);
+    });
+  });
+
+  return Promise.all(previewList);
+};
 
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
@@ -53,6 +63,7 @@ export function BoardEdit() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
+  const [previewFiles, setPreviewFiles] = useState([]);
 
   const modules = {
     toolbar: [
@@ -68,9 +79,7 @@ export function BoardEdit() {
     ],
   };
 
-  const { id, isAuthenticated, hasAccess, nickname } = useContext(
-    AuthenticationContext,
-  );
+  const { id, isAuthenticated, hasAccess } = useContext(AuthenticationContext);
 
   const { boardId } = useParams();
   const navigate = useNavigate();
@@ -86,32 +95,28 @@ export function BoardEdit() {
         const boardData = res.data;
         setBoard(boardData);
 
-        // 2. 작성자 확인
+        // 작성자 확인
         const isWriter = String(boardData.memberId) === String(id);
 
-        // 3. 작성자가 아니라면 처리
+        // 작성자가 아니라면 처리
         if (!isWriter) {
           if (!isAuthenticated) {
-            // 비로그인 상태
             toaster.create({
               type: "error",
               description: "로그인이 필요합니다. 로그인 후 수정할 수 있습니다.",
             });
             navigate("/"); // 로그인 페이지로 리디렉션
           } else {
-            // 로그인했지만 작성자가 아닌 경우
             navigate("/board/list"); // 목록 페이지로 리디렉션
           }
-          return; // 더 이상 실행하지 않도록 종료
+          return;
         }
-
-        // 4. 작성자일 경우 정상적인 처리 추가
       })
       .catch(() => {
         console.log("게시물 조회 실패");
-        navigate("/board/list"); // 오류 발생 시 목록 페이지로 리디렉션
+        navigate("/board/list");
       });
-  }, [boardId, id, isAuthenticated, navigate]); // id, isAuthenticated가 변경될 때마다 실행
+  }, [boardId, id, isAuthenticated, navigate]);
 
   const handleRemoveSwitchClick = (checked, fileName) => {
     if (checked) {
@@ -120,10 +125,44 @@ export function BoardEdit() {
       setRemoveFiles(removeFiles.filter((f) => f !== fileName));
     }
   };
-  console.log("지울파일목록", removeFiles);
+
+  const handleFileInputChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    // 기존 업로드 파일과 통합
+    const filteredFiles = files.filter(
+      (file) =>
+        !uploadFiles.some((uploadedFile) => uploadedFile.name === file.name),
+    );
+
+    if (filteredFiles.length < files.length) {
+      toaster.create({
+        type: "warning",
+        description: "중복된 파일은 제외되었습니다.",
+      });
+    }
+
+    setUploadFiles((prev) => [...prev, ...filteredFiles]);
+
+    // 미리보기 이미지 생성
+    generatePreviewFiles(filteredFiles).then((previews) => {
+      setPreviewFiles((prev) => [...prev, ...previews]);
+    });
+  };
+
+  const handlePreviewImageClick = (index) => {
+    setPreviewFiles(previewFiles.filter((_, i) => i !== index));
+    setUploadFiles(uploadFiles.filter((_, i) => i !== index));
+  };
 
   const handleSaveClick = () => {
     setProgress(true);
+
+    // 기존 파일과 삭제할 파일 업데이트
+    const remainingFiles = board.fileList.filter(
+      (file) => !removeFiles.includes(file.name),
+    );
+
     axios
       .putForm("/api/board/boardUpdate", {
         boardId: board.boardId,
@@ -131,9 +170,11 @@ export function BoardEdit() {
         content: board.content,
         removeFiles,
         uploadFiles,
+        remainingFiles,
       })
       .finally(() => {
-        setProgress(true);
+        setProgress(false);
+        setDialogOpen(false);
       })
       .then((res) => res.data)
       .then((data) => {
@@ -149,10 +190,6 @@ export function BoardEdit() {
           type: message.type,
           description: message.text,
         });
-      })
-      .finally(() => {
-        setProgress(false);
-        setDialogOpen(false);
       });
   };
 
@@ -177,57 +214,52 @@ export function BoardEdit() {
         <ReactQuill
           style={{
             width: "100%",
-            height: "400px", // 자동 크기 조정
-            maxHeight: "auto", // 최대 높이 설정
-            marginBottom: "20px", // 여백 조정
+            height: "400px",
+            maxHeight: "auto",
+            marginBottom: "20px",
+            fontSize: "16px",
           }}
           placeholder="본문 내용을 수정하세요"
-          value={board.content} // 수정된 내용을 반영
+          value={board.content}
           onChange={(content) => setBoard({ ...board, content })}
-          modules={modules} // 툴바 설정
+          modules={modules}
         />
         <ImageView
           files={board.fileList}
           onRemoveSwitchClick={handleRemoveSwitchClick}
         />
         <Box>
-          <Box>
-            <input
-              onChange={(e) => setUploadFiles(e.target.files)}
-              type={"file"}
-              multiple
-              accept={"image/*"}
-            />
-          </Box>
-          <Box>
-            {Array.from(uploadFiles).map((file) => (
-              <Card.Root size={"sm"}>
-                <Card.Body>
-                  <HStack>
-                    <Text
-                      css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
-                      fontWeight={"bold"}
-                      me={"auto"}
-                      truncate
-                    >
-                      <Icon>
-                        <CiFileOn />
-                      </Icon>
+          <input
+            onChange={handleFileInputChange}
+            type={"file"}
+            multiple
+            accept={"image/*"}
+          />
+        </Box>
 
-                      {file.name}
-                    </Text>
-                    <Text>
-                      <FormatNumber
-                        value={file.size}
-                        notation={"compact"}
-                        compactDisplay="short"
-                      ></FormatNumber>
-                    </Text>
-                  </HStack>
-                </Card.Body>
-              </Card.Root>
+        <Box>
+          <Flex wrap="wrap" gap={4}>
+            {previewFiles.map((preview, index) => (
+              <Box
+                key={preview.name}
+                border="1px solid #ccc"
+                borderRadius="8px"
+                p={2}
+                cursor="pointer"
+                onClick={() => handlePreviewImageClick(index)}
+              >
+                <Image
+                  src={preview.src}
+                  alt={preview.name}
+                  boxSize="100px"
+                  objectFit="cover"
+                />
+                <Text mt={2} isTruncated>
+                  {preview.name}
+                </Text>
+              </Box>
             ))}
-          </Box>
+          </Flex>
         </Box>
         {hasAccess(board.memberId) && (
           <Box>
