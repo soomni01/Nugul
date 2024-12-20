@@ -32,7 +32,6 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { useNavigate } from "react-router-dom";
 import { BoardsAndComments } from "./BoardsAndComments.jsx";
 
-
 export function MyPage() {
   const { id, nickname, profileImage, updateProfileImage } = useContext(
     AuthenticationContext,
@@ -139,19 +138,22 @@ export function MyPage() {
   };
 
   return (
-    <Flex direction="row" mt={5}>
+    <Flex direction="row">
       {/* 왼쪽 메뉴 */}
       <Box
-        width="30%"
-        p={10}
-        borderRight="1px"
+        width="23%"
+        height="825px"
+        p={16}
+        mt={-2}
         borderColor="gray.200"
-        bgColor="gray.100"
+        bgColor="gray"
       >
         <VStack align="stretch" spacing={4}>
-          <Heading m={5} align="center">
-            마이페이지
-          </Heading>
+          <Flex justifyContent="center" alignItems="center">
+            <Heading mb={7} size="3xl" fontWeight="bold">
+              MyPage
+            </Heading>
+          </Flex>
           <Box
             display="flex"
             flexDirection="column"
@@ -168,7 +170,7 @@ export function MyPage() {
                 src={profileImageUrl || "/image/default.png"}
               />
             )}
-            <Float placement="bottom-center" mb={2}>
+            <Float placement="bottom-center">
               <Box position="relative">
                 <MenuRoot>
                   <MenuTrigger asChild>
@@ -199,13 +201,16 @@ export function MyPage() {
             </Float>
           </Box>
           <Stack display="flex" alignItems="center">
-            <Text ali>{nickname}</Text>
+            <Text ali fontSize="xl" fontWeight="bold" mt={5}>
+              {nickname}
+            </Text>
             <Rating
               colorPalette="yellow"
               readOnly
               value={rating}
               allowHalf
-              size="md"
+              size="lg"
+              mt={1}
               mb={5}
             />
           </Stack>
@@ -217,13 +222,23 @@ export function MyPage() {
             }
             colorScheme="teal"
             onClick={() => handleTabClick("profile")}
+            size="xl"
           >
             내 정보
+          </Button>
+          <Button
+            variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
+            colorScheme="teal"
+            onClick={() => handleTabClick("boardsAndComments")}
+            size="xl"
+          >
+            내가 쓴 글
           </Button>
           <Button
             variant={activeTab === "wishlist" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("wishlist")}
+            size="xl"
           >
             관심 목록
           </Button>
@@ -231,6 +246,7 @@ export function MyPage() {
             variant={activeTab === "sold" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("sold")}
+            size="xl"
           >
             판매 상품
           </Button>
@@ -238,6 +254,7 @@ export function MyPage() {
             variant={activeTab === "purchased" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("purchased")}
+            size="xl"
           >
             구매 상품
           </Button>
@@ -245,6 +262,7 @@ export function MyPage() {
             variant={activeTab === "budget" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("budget")}
+            size="xl"
           >
             가계부
           </Button>
@@ -252,15 +270,9 @@ export function MyPage() {
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("review")}
+            size="xl"
           >
             후기
-          </Button>
-          <Button
-            variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
-            colorScheme="teal"
-            onClick={() => handleTabClick("boardsAndComments")}
-          >
-            내 게시물과 댓글
           </Button>
         </VStack>
       </Box>
