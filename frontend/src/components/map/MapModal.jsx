@@ -140,7 +140,7 @@ export const MapModal = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Input
-                    placeholder={prevLocationName}
+                    placeholder={prevLocationName || "장소명을 입력하세요"}
                     size="sm"
                     minLength={3} // 최소 길이 설정
                     value={customLocationName || ""}
