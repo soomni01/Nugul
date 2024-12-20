@@ -243,6 +243,11 @@ export function BoardList() {
           value={search.keyword}
           placeholder="검색 하세요"
           onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearchClick();
+            }
+          }}
         />
         <Button onClick={handleSearchClick}>검색</Button>
       </HStack>
