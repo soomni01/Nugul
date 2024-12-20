@@ -23,12 +23,12 @@ export function Inquiry() {
     }
   }, []);
 
-  // 문의 목록 페이지로 이동하는 함수
+  // 문의 내역으로 이동
   const handleNavigateToList = () => {
     navigate("/inquiry/myList");
   };
 
-  // 클릭 시 호출되는 함수로, 사용자 입력 데이터를 서버에 저장 요청
+  // 클릭 시 사용자 입력 데이터를 서버에 저장 요청
   const handleSaveClick = () => {
     const inquiryData = {
       title: title,
@@ -49,7 +49,7 @@ export function Inquiry() {
             type: message.type,
             description: message.text,
           });
-          handleNavigateToList(); // 저장 후 문의 목록 페이지로 이동
+          handleNavigateToList();
         }
       })
       .catch((e) => {
@@ -64,6 +64,10 @@ export function Inquiry() {
       .finally(() => {
         setProgress(false);
       });
+  };
+
+  const handleCancelClick = () => {
+    navigate(-1);
   };
 
   return (
@@ -143,16 +147,19 @@ export function Inquiry() {
           value={savedData ? savedData.content : content}
           onChange={(e) => setContent(e.target.value)}
           width="220%"
-          height="250px"
+          height="230px"
           readOnly={savedData !== null}
         />
       </Flex>
 
       {/* 저장 버튼이 savedData가 없을 때만 표시 */}
       {!savedData && (
-        <Flex justify="flex-end" mt={3}>
+        <Flex justify="flex-end" mt={5}>
           <Button onClick={handleSaveClick} isLoading={progress}>
             저장
+          </Button>
+          <Button ml={4} variant="outline" onClick={handleCancelClick}>
+            취소
           </Button>
         </Flex>
       )}
