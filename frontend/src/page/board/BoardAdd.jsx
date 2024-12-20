@@ -146,11 +146,7 @@ export function BoardAdd() {
       });
   };
 
-  const disabled = !(
-    title.trim().length > 0 &&
-    content.trim().length > 0 &&
-    category.trim().length > 0
-  );
+  const disabled = !(title.trim().length > 0 && content.trim().length > 0);
 
   const handleFileDelete = (fileName) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
@@ -276,11 +272,7 @@ export function BoardAdd() {
               }}
             >
               {BoardCategories.map((cat) => (
-                <option
-                  key={cat.value}
-                  value={cat.value}
-                  disabled={cat.value === "all"}
-                >
+                <option key={cat.value} value={cat.value}>
                   {cat.label}
                 </option>
               ))}
