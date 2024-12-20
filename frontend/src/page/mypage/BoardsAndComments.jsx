@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { TfiWrite } from "react-icons/tfi";
-import { LuFolder } from "react-icons/lu";
 import {
   Badge,
   Box,
   Flex,
-  Heading,
   HStack,
+  Image,
   Spinner,
   Text,
   VStack,
@@ -115,8 +113,16 @@ export function BoardsAndComments() {
           borderBottom={activeTab === "posts" ? "2px solid teal" : "none"}
           _hover={{ cursor: "pointer", color: "teal.500" }}
         >
-          <TfiWrite style={{ marginRight: "8px" }} />
-          작성한 게시물
+          <Flex alignItems="center">
+            <Image
+              src="/image/MyBoardList.png"
+              alt="게시물 아이콘"
+              width={6}
+              height={6}
+              style={{ marginRight: "8px" }}
+            />
+            <Text fontWeight="bold">작성한 게시물</Text>
+          </Flex>
         </Box>
         <Box
           as="button"
@@ -125,23 +131,29 @@ export function BoardsAndComments() {
           borderBottom={activeTab === "comments" ? "2px solid teal" : "none"}
           _hover={{ cursor: "pointer", color: "teal.500" }}
         >
-          <LuFolder style={{ marginRight: "8px" }} />
-          작성한 댓글
+          <Flex alignItems="center">
+            <Image
+              src="/image/MyCommentList.png"
+              alt="게시물 아이콘"
+              width={6}
+              height={6}
+              style={{ marginRight: "8px" }}
+            />
+            <Text fontWeight="bold">작성한 댓글</Text>
+          </Flex>
         </Box>
       </HStack>
 
       {/* 게시물 정보 */}
       {activeTab === "posts" && (
         <Box>
-          <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
-            작성한 게시물
-          </Heading>
           {boards.length > 0 ? (
             <VStack spacing={4} align="start" mb={6}>
               {boards.map((board) => (
                 <Box
                   key={board.boardId}
-                  p={4}
+                  p={3}
+                  mb={3}
                   border="1px"
                   borderRadius="md"
                   borderColor="gray.200"
@@ -154,17 +166,23 @@ export function BoardsAndComments() {
                     <Box>
                       <Text fontWeight="bold">
                         {board.title}
-                        <Badge variant="subtle" colorScheme="green">
+                        <Badge variant="subtle" colorScheme="green" ml={2}>
                           <FaCommentDots />
                           {board.countComment}
                         </Badge>
-                        <Badge variant={"subtle"} colorPalette={"gray"}>
+                        <Badge variant={"subtle"} colorPalette={"gray"} ml={2}>
                           <FaImages />
                           {board.countFile}
                         </Badge>
                       </Text>
-                      <Text fontSize="sm" color="gray.500">
-                        {getCategoryLabel(board.category)} | {board.createdAt}
+                      <Text fontSize="md" color="gray.500" mt={2}>
+                        {getCategoryLabel(board.category)}{" "}
+                        {board.category === "all" && (
+                          <Text as="span" color="teal.500" fontWeight="bold">
+                            전체
+                          </Text>
+                        )}
+                        | {board.createdAt}
                       </Text>
                     </Box>
                   </Flex>
@@ -196,9 +214,6 @@ export function BoardsAndComments() {
       {/* 댓글 정보 */}
       {activeTab === "comments" && (
         <Box>
-          <Heading as="h3" mb={4} fontSize="xl" color="teal.500">
-            작성한 댓글
-          </Heading>
           {comments.length > 0 ? (
             <Box as="ul" pl={0}>
               {comments.map((comment) => {
