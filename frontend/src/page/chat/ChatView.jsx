@@ -41,7 +41,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [product, setProduct] = useState({});
   const [reviewText, setReviewText] = useState("후기");
   const [reviewComplete, setReviewComplete] = useState(false);
-  const [transactionCompleted, setTransactionCompleted] = useState(false);
 
   // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -106,7 +105,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
     }
-  }, [navigate, purchased]);
+  }, [navigate]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -180,6 +179,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   // 초기 메세지 로딩
   const loadInitialMessages = async () => {
     setIsloading(true);
+    console.log("실행");
     try {
       const response = await axios.get(
         `/api/chat/view/${realChatRoomId}/messages`,
@@ -245,6 +245,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.9;
 
     if (chatBox.scrollTop < reach) {
+      console.log("실행");
       // 스크롤 끝 점에서 로드
       await loadPreviousMessage();
     }
