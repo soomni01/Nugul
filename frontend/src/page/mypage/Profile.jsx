@@ -1,4 +1,4 @@
-import { Box, Input, Spinner, Stack } from "@chakra-ui/react";
+import { Box, Flex, Input, Spinner, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
@@ -97,28 +97,94 @@ export function Profile({ onEditClick }) {
   }
 
   return (
-    <Box>
-      <h3>회원 정보</h3>
+    <Box
+      border="1px solid gray"
+      borderRadius="8px"
+      p={5}
+      width="800px"
+      height="550px"
+      boxShadow="md"
+      bgColor="gray.50"
+      mt={28}
+      ml="auto"
+      mr="auto"
+    >
+      <Text fontSize="2xl" fontWeight="bold" textAlign="center" mt={5} mb={5}>
+        내 정보
+      </Text>
       <Stack gap={5}>
-        <Field label={"아이디"}>
-          <Input readOnly value={id} />
-        </Field>
+        <Flex alignItems="center" mt={8}>
+          <Text
+            fontWeight="bold"
+            whiteSpace="nowrap"
+            mr={4}
+            ml={20}
+            width="100px"
+            textAlign="right"
+          >
+            아이디
+          </Text>
+          <Input readOnly value={id} width="450px" height="45px" />
+        </Flex>
         {member.password && (
-          <Field label={"암호"}>
-            <Input readOnly value={member.password} />
-          </Field>
+          <Flex alignItems="center" mt={3}>
+            <Text
+              fontWeight="bold"
+              whiteSpace="nowrap"
+              mr={4}
+              ml={20}
+              width="100px"
+              textAlign="right"
+            >
+              비밀번호
+            </Text>
+            <Input
+              readOnly
+              value={member.password}
+              width="450px"
+              height="45px"
+            />
+          </Flex>
         )}
-        <Field label={"별명"}>
-          <Input readOnly value={member.nickname} />
-        </Field>
-        <Field label={"가입일시"}>
-          <Input type={"date"} readOnly value={member.inserted.split("T")[0]} />
-        </Field>
-        <Box>
-          <Button onClick={onEditClick}>수정</Button>
+        <Flex alignItems="center" mt={3}>
+          <Text
+            fontWeight="bold"
+            whiteSpace="nowrap"
+            mr={4}
+            ml={20}
+            width="100px"
+            textAlign="right"
+          >
+            닉네임
+          </Text>
+          <Input readOnly value={member.nickname} width="450px" height="45px" />
+        </Flex>
+        <Flex alignItems="center" mt={3}>
+          <Text
+            fontWeight="bold"
+            whiteSpace="nowrap"
+            mr={4}
+            ml={20}
+            width="100px"
+            textAlign="right"
+          >
+            가입 일자
+          </Text>
+          <Input
+            type="date"
+            readOnly
+            value={member.inserted.split("T")[0]}
+            width="450px"
+            height="45px"
+          />
+        </Flex>
+        <Flex justifyContent="center" mt={5}>
+          <Button onClick={onEditClick} colorScheme="blue" mr={4} mb={6}>
+            수정
+          </Button>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorPalette={"red"}>탈퇴</Button>
+              <Button colorScheme="red">탈퇴</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -127,9 +193,9 @@ export function Profile({ onEditClick }) {
               <DialogBody>
                 <Stack gap={5}>
                   {member.password ? (
-                    <Field label={"암호"}>
+                    <Field>
                       <Input
-                        placeholder={"암호를 입력해주세요."}
+                        placeholder={"비밀번호를 입력해 주세요."}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
@@ -137,7 +203,7 @@ export function Profile({ onEditClick }) {
                   ) : (
                     <Field label={"이메일"}>
                       <Input
-                        placeholder={"이메일을 입력해주세요."}
+                        placeholder={"이메일을 입력해 주세요."}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
@@ -147,15 +213,15 @@ export function Profile({ onEditClick }) {
               </DialogBody>
               <DialogFooter>
                 <DialogActionTrigger>
-                  <Button variant={"outline"}>취소</Button>
+                  <Button variant="outline">취소</Button>
                 </DialogActionTrigger>
-                <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                <Button colorScheme="red" onClick={handleDeleteClick}>
                   탈퇴
                 </Button>
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
-        </Box>
+        </Flex>
       </Stack>
     </Box>
   );
