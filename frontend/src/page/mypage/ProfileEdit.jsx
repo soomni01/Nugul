@@ -22,45 +22,66 @@ export function ProfileEdit({ id, onCancel, onSave }) {
   const [nickname, setNickName] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState(null); // 닉네임 유효성 상태 (null: 확인 안됨, true: 중복 아님, false: 중복)
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const passwordRegEx =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,50}$/;
 
-  useEffect(() => {
-    axios.get(`/api/member/${id}`).then((res) => {
-      setMember(res.data);
-      setPassword(res.data.password);
-      setNickName(res.data.nickname);
-    });
-  }, []);
+  // 데이터 로딩 함수
+  const loadMemberData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`/api/member/${id}`);
+      const memberData = response.data;
+      setMember(memberData);
+      setPassword(memberData.password || "");
+      setNickName(memberData.nickname || "");
+    } catch (error) {
+      toaster.create({
+        type: "error",
+        description: "회원 정보를 불러오는데 실패했습니다.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleSaveClick = () => {
-    axios
-      .put(`/api/member/update`, {
+  // 컴포넌트 마운트 시 데이터 로딩
+  useEffect(() => {
+    if (id) {
+      loadMemberData();
+    }
+  }, [id]);
+
+  const handleSaveClick = async () => {
+    try {
+      await axios.put(`/api/member/update`, {
         memberId: id,
         password,
         nickname,
         oldPassword,
-      }) // 서버로 수정 요청
-      .then(() => {
-        toaster.create({
-          type: "success",
-          description: "수정이 완료되었습니다.",
-        });
-        onSave();
-      })
-      .catch((err) =>
-        toaster.create({
-          type: "error",
-          description: "내 정보 수정 중 오류가 발생했습니다.",
-        }),
-      )
-      .finally();
+      });
+
+      toaster.create({
+        type: "success",
+        description: "수정이 완료되었습니다.",
+      });
+
+      // 저장 후 데이터 리로드
+      await loadMemberData();
+      onSave();
+      setOpen(false);
+    } catch (error) {
+      toaster.create({
+        type: "error",
+        description: "내 정보 수정 중 오류가 발생했습니다.",
+      });
+    }
   };
 
   const handleNickNameCheckClick = () => {
     if (!nickname || nickname === member?.nickname) {
-      return; // 닉네임이 비어있으면 중복 확인을 하지 않음
+      return;
     }
     axios
       .get("/api/member/check", { params: { nickname } })
@@ -72,12 +93,16 @@ export function ProfileEdit({ id, onCancel, onSave }) {
 
   const isPasswordValid = passwordRegEx.test(password);
 
+  if (isLoading) {
+    return <Box>로딩 중...</Box>;
+  }
+
   return (
     <Box>
       <h3>프로필 수정</h3>
       <Stack gap={5}>
         <Field readOnly label={"아이디"}>
-          <Input defaultValue={member?.memberId || ""} />
+          <Input defaultValue={id || ""} />
         </Field>
         {member?.password && (
           <Field label={"암호"}>
