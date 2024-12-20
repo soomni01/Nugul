@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { TbLock, TbLockCheck } from "react-icons/tb";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
+import { PasswordInput } from "../../components/ui/password-input.jsx";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
@@ -214,7 +215,7 @@ export function MemberSignup() {
               >
                 <TbLock />
               </Button>
-              <Input
+              <PasswordInput
                 size={"xl"}
                 type="password"
                 value={password}
@@ -250,7 +251,7 @@ export function MemberSignup() {
               >
                 <TbLockCheck />
               </Button>
-              <Input
+              <PasswordInput
                 size={"xl"}
                 type="password"
                 placeholder="비밀번호 확인"
