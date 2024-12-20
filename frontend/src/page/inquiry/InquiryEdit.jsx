@@ -24,6 +24,13 @@ export function InquiryEdit() {
   const { hasAccess } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
   // 문의 내역에서 문의 상세 보는 데이터 로드
   useEffect(() => {
     const fetchInquiry = async () => {

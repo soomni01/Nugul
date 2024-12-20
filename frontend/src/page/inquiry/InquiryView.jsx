@@ -34,6 +34,13 @@ export const InquiryView = () => {
   const { inquiryId } = useParams();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
   // 문의 상세 정보를 불러오는 함수
   const fetchInquiryView = () => {
     setLoading(true);
