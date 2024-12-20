@@ -4,7 +4,7 @@ import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { Button } from "@chakra-ui/react";
 
-const Payment = ({ chatRoom, onComplete }) => {
+const Payment = ({ chatRoom, onComplete, statusControl }) => {
   const [product, setProduct] = useState({});
   const { id, nickname } = useContext(AuthenticationContext);
 
@@ -74,7 +74,8 @@ const Payment = ({ chatRoom, onComplete }) => {
               )
               .finally(() => {
                 // 결제시 purchased 바꿔서 리렌더
-                onComplete();
+                // onComplete();
+                statusControl();
               });
 
             // 결제 성공 알림

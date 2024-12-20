@@ -295,7 +295,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
   const isSold = chatRoom.status === "Sold";
-  const viewText = isSold === true ? "후기 작성하기" : "거래완료";
 
   const removeChatRoom = (roomId, id) => {
     axios
@@ -331,6 +330,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   // 결제 후 바로 후기로 리렌더
   const handleTransactionState = () => {
+    statusControl();
     setPurchased(true);
   };
   const handleKeyPress = (e) => {
@@ -382,6 +382,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ) : (
               <Payment
                 chatRoom={chatRoom}
+                statusControl={statusControl}
                 onComplete={handleTransactionState}
               />
             )}
