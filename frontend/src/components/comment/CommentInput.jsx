@@ -20,9 +20,12 @@ export function CommentInput({ boardId, onSaveClick }) {
               : "로그인 후 댓글을 남겨주세요."
           }
           onChange={(e) => setComment(e.target.value)}
+          h="112px" // 높이 110px 설정
+          border="1px solid" // 테두리 추가
+          borderColor="gray.300" // 테두리 색상 설정
         />
         <Button
-          h={55}
+          h={"110px"}
           disabled={!isAuthenticated || !comment.trim()}
           onClick={() => {
             setComment("");
@@ -30,6 +33,8 @@ export function CommentInput({ boardId, onSaveClick }) {
           }}
           variant={"surface"}
           colorPalette={"blue"}
+          borderColor="gray.300" // 테두리 색상 설정
+          ml={0.5}
         >
           <IoIosSend />
         </Button>

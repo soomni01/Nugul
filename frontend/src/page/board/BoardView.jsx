@@ -10,6 +10,8 @@ import { BoardCategoryContainer } from "../../components/category/BoardCategoryC
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import styled from "@emotion/styled";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
 
 export function BoardView() {
   const { boardId } = useParams();
@@ -76,9 +78,7 @@ export function BoardView() {
     setSelectedCategory(categoryValue);
     if (categoryValue === "all") {
       navigate(`/board/list`); // "전체" 카테고리로 이동
-      console.log("선택된 카테고리:", categoryValue); // 상태 변경 전 출력
     } else {
-      console.log("선택된 카테고리:", categoryValue);
       navigate(`/board/list?category=${categoryValue}`); // 선택된 카테고리로 이동
     }
   };
@@ -92,6 +92,7 @@ export function BoardView() {
     };
     setImageSizes(newImageSizes);
   };
+
   return (
     <Box mb={10}>
       {/* 카테고리 선택 */}
@@ -127,35 +128,44 @@ export function BoardView() {
             }}
           />
 
-          {/* 이미지 표시 */}
+          {/* 이미지 슬라이드 */}
           {board.fileList && (
-            <Box>
-              {board.fileList.map((file, index) => (
-                <Box
-                  key={file.name}
-                  border="1px solid black"
-                  m={3}
-                  overflow="hidden"
-                  maxW="100%"
-                  maxH="100%"
-                  width={`${imageSizes[index]?.width || 1000}px`} // 이미지 크기 동적으로 설정
-                  height={`${imageSizes[index]?.height || 0}px`} // 이미지 크기 동적으로 설정
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <img
-                    src={file.src}
-                    alt={file.name}
-                    onLoad={(e) => handleImageLoad(index, e)} // 이미지 로드 시 크기 계산
-                    style={{
-                      width: "100%", // Box에 맞게 크기 조정
-                      height: "100%", // Box에 맞게 크기 조정
-                      objectFit: "cover", // 비율 유지하며 꽉 채우기
-                    }}
-                  />
-                </Box>
-              ))}
+            <Box m={"0"}>
+              <Swiper
+                spaceBetween={30}
+                slidesPerView={1}
+                navigation={true}
+                pagination={{ clickable: true }}
+                loop={true}
+                modules={[Pagination, Navigation]}
+              >
+                {board.fileList.map((file, index) => (
+                  <SwiperSlide key={file.name}>
+                    <Box
+                      m={"0 auto"}
+                      overflow="hidden"
+                      maxW="100%"
+                      width="400px" // 고정된 이미지 너비
+                      height="400px" // 고정된 이미지 높이
+                      display="flex"
+                      justifyContent="center" // 가로 가운데 정렬
+                      alignItems="center" // 세로 가운데 정렬
+                      position="relative" // 이미지가 제대로 중앙에 배치되도록 위치 설정
+                    >
+                      <img
+                        src={file.src}
+                        alt={file.name}
+                        onLoad={(e) => handleImageLoad(index, e)} // 이미지 로드 시 크기 계산
+                        style={{
+                          maxWidth: "100%", // Box에 맞게 가로 크기 조정
+                          maxHeight: "100%", // Box에 맞게 세로 크기 조정
+                          objectFit: "contain", // 비율 유지하며 중앙에 배치
+                        }}
+                      />
+                    </Box>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </Box>
           )}
 

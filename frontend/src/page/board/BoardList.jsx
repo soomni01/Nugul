@@ -11,11 +11,7 @@ import {
 } from "../../components/ui/pagination.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
-import { FaCommentDots } from "react-icons/fa";
-import {
-  BoardCategories,
-  BoardCategoryContainer,
-} from "../../components/category/BoardCategoryContainer.jsx";
+import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
 import { FaImages } from "react-icons/fa6";
 
 export function BoardList() {
@@ -156,13 +152,6 @@ export function BoardList() {
                 <Table.ColumnHeader textAlign="center">
                   작성자
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>
-                <Table.ColumnHeader
-                  display={{ base: "none", md: "table-cell" }}
-                  textAlign="center"
-                >
-                  카테고리
-                </Table.ColumnHeader>
                 <Table.ColumnHeader
                   display={{ base: "none", md: "table-cell" }}
                   textAlign="center"
@@ -189,21 +178,6 @@ export function BoardList() {
                     )}
                   </Table.Cell>
                   <Table.Cell textAlign="center">{board.writer}</Table.Cell>
-                  <Table.Cell textAlign="center">
-                    {board.countComment > 0 && (
-                      <Badge variant={"subtle"} colorPalette={"green"}>
-                        <FaCommentDots />
-                        {board.countComment}
-                      </Badge>
-                    )}
-                  </Table.Cell>
-                  <Table.Cell
-                    display={{ base: "none", md: "table-cell" }}
-                    textAlign="center"
-                  >
-                    {BoardCategories.find((cat) => cat.value === board.category)
-                      ?.label || board.category}
-                  </Table.Cell>
                   <Table.Cell
                     display={{ base: "none", md: "table-cell" }}
                     textAlign="center"
@@ -253,6 +227,11 @@ export function BoardList() {
           value={search.keyword}
           placeholder="검색 하세요"
           onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearchClick();
+            }
+          }}
         />
         <Button onClick={handleSearchClick}>검색</Button>
       </HStack>

@@ -22,6 +22,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
+import { FaImages } from "react-icons/fa6";
 
 export function BoardsAndComments() {
   const { id } = useContext(AuthenticationContext);
@@ -95,6 +96,10 @@ export function BoardsAndComments() {
     navigate(`/board/boardView/${boardId}`);
   };
 
+  function formatDate(dateString) {
+    return dateString.split("T")[0]; // "T"를 기준으로 날짜만 추출
+  }
+
   if (loading) {
     return <Spinner />;
   }
@@ -152,6 +157,10 @@ export function BoardsAndComments() {
                         <Badge variant="subtle" colorScheme="green">
                           <FaCommentDots />
                           {board.countComment}
+                        </Badge>
+                        <Badge variant={"subtle"} colorPalette={"gray"}>
+                          <FaImages />
+                          {board.countFile}
                         </Badge>
                       </Text>
                       <Text fontSize="sm" color="gray.500">
@@ -217,7 +226,7 @@ export function BoardsAndComments() {
                       </Text>
                       <Text fontSize="sm" color="gray.500" mb={1}>
                         {getCategoryLabel(comment.boardCategory)} |{" "}
-                        {comment.boardInserted}
+                        {formatDate(comment.boardInserted)}
                       </Text>
                     </Box>
                     <Text bg="skyblue" p={2} borderRadius="md" fontSize="sm">

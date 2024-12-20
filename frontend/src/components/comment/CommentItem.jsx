@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Heading, Textarea } from "@chakra-ui/react";
+import { Box, Flex, Heading, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
 import { useContext, useState } from "react";
 import {
@@ -12,8 +12,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
-import { CiEdit, CiSaveDown1, CiTrash } from "react-icons/ci";
-import { FaUndo } from "react-icons/fa";
+import { CiEdit, CiTrash } from "react-icons/ci";
 
 function DeleteButton({ onClick }) {
   const [open, setOpen] = useState(false);
@@ -69,7 +68,7 @@ function EditButton({ isEditing, onSaveClick, onCancelClick, onEditClick }) {
           >
             저장
           </Button>
-          <Button variant={"outline"} onClick={onCancelClick}>
+          <Button variant={"outline"} size={"sm"} onClick={onCancelClick}>
             취소
           </Button>
         </>
@@ -97,67 +96,68 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
     setIsEditing(true); // 수정 모드로 전환
   };
 
-  return (
-    <Card.Root
-      border={"1px solid black"}
-      mt={5}
-      maxWidth={"600px"} // 최대 너비를 설정
-      width={"100%"} // 부모에 맞추되 최대값까지
-      mx={"auto"} // 중앙 정렬 (가로 마진 auto)
-      height={"auto"}
-    >
-      <Card.Header>
-        <Flex justify={"space-between"}>
-          <Heading size={"md"}>{comment.nickname}</Heading>
-          <Heading size={"sm"}>{comment.inserted}</Heading>
-        </Flex>
-      </Card.Header>
+  function formatDate(dateString) {
+    return dateString.split("T")[0]; // "T"를 기준으로 날짜만 추출
+  }
 
-      <Card.Body>
-        {isEditing ? (
-          <Textarea
-            value={editedComment}
-            onChange={(e) => setEditedComment(e.target.value)}
-          />
-        ) : (
-          <Box css={{ whiteSpace: "pre" }}>{comment.comment}</Box>
-        )}
-      </Card.Body>
+  return (
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      p={2}
+      mt={2}
+      Width="100%"
+      mx="auto"
+      bg="white"
+      shadow="sm"
+    >
+      <Flex
+        justify="space-between"
+        mb={3}
+        pb={0}
+        borderBottom="1px solid"
+        borderColor="gray.200"
+        width="calc(100% + 18px)" // 부모 패딩 보정
+        height={"30px"}
+        bg="skyblue"
+        ml="-9px" // 부모 좌측 패딩 보정
+        mt={"-8px"}
+        borderTopRadius="lg"
+        alignItems="center" // 수직 중앙 정렬
+      >
+        <Heading size="sm" ml="10px">
+          {comment.nickname}
+        </Heading>
+        <Heading size="sm" mr="10px" color="gray.500">
+          {formatDate(comment.inserted)}
+        </Heading>
+      </Flex>
+
+      {isEditing ? (
+        <Textarea
+          value={editedComment}
+          onChange={(e) => setEditedComment(e.target.value)}
+          mb={2}
+        />
+      ) : (
+        <Box whiteSpace="pre-line" mb={2}>
+          {comment.comment}
+        </Box>
+      )}
 
       {hasAccess(comment.memberId) && (
-        <Card.Footer css={{ justifyContent: "flex-end" }}>
-          {!isEditing ? (
-            <>
-              <EditButton
-                isEditing={isEditing}
-                onSaveClick={handleSaveClick}
-                onCancelClick={handleCancelClick}
-                onEditClick={handleEditClick}
-              />
-              <DeleteButton onClick={() => onDeleteClick(comment.commentId)} />
-            </>
-          ) : (
-            <>
-              <Button
-                colorPalette={"purple"}
-                size={"sm"}
-                variant={"subtle"}
-                onClick={handleSaveClick}
-              >
-                <CiSaveDown1 />
-              </Button>
-              <Button
-                colorPalette={"red"}
-                size={"sm"}
-                variant={"subtle"}
-                onClick={handleCancelClick}
-              >
-                <FaUndo />
-              </Button>
-            </>
+        <Flex justify="flex-end" gap={2}>
+          <EditButton
+            isEditing={isEditing}
+            onSaveClick={handleSaveClick}
+            onCancelClick={handleCancelClick}
+            onEditClick={handleEditClick}
+          />
+          {!isEditing && (
+            <DeleteButton onClick={() => onDeleteClick(comment.commentId)} />
           )}
-        </Card.Footer>
+        </Flex>
       )}
-    </Card.Root>
+    </Box>
   );
 }

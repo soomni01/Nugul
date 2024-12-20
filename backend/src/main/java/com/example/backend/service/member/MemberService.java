@@ -158,9 +158,6 @@ public class MemberService {
             chatMapper.updateSenderIdNull(member.getMemberId());
             // chatroom에서  buyer 일경우와 writer의 경우 , null로 변경하고 삭제 true
             chatMapper.updateBuyerIdOrWriterIdNull(member.getMemberId());
-            // 채팅방 삭제 끝
-
-
             cnt = mapper.deleteById(member.getMemberId());
         }
         System.out.println("Remove result: " + (cnt == 1 ? "Success" : "Failure"));
