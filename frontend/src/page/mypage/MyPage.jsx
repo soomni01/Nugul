@@ -222,6 +222,7 @@ export function MyPage() {
             }
             colorScheme="teal"
             onClick={() => handleTabClick("profile")}
+            fontWeight="bold"
             size="xl"
           >
             내 정보
@@ -230,6 +231,7 @@ export function MyPage() {
             variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("boardsAndComments")}
+            fontWeight="bold"
             size="xl"
           >
             내가 쓴 글
@@ -238,6 +240,7 @@ export function MyPage() {
             variant={activeTab === "wishlist" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("wishlist")}
+            fontWeight="bold"
             size="xl"
           >
             관심 목록
@@ -246,6 +249,7 @@ export function MyPage() {
             variant={activeTab === "sold" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("sold")}
+            fontWeight="bold"
             size="xl"
           >
             판매 상품
@@ -254,6 +258,7 @@ export function MyPage() {
             variant={activeTab === "purchased" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("purchased")}
+            fontWeight="bold"
             size="xl"
           >
             구매 상품
@@ -262,6 +267,7 @@ export function MyPage() {
             variant={activeTab === "budget" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("budget")}
+            fontWeight="bold"
             size="xl"
           >
             가계부
@@ -270,6 +276,7 @@ export function MyPage() {
             variant={activeTab === "review" ? "solid" : "ghost"}
             colorScheme="teal"
             onClick={() => handleTabClick("review")}
+            fontWeight="bold"
             size="xl"
           >
             후기
