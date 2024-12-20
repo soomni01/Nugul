@@ -207,7 +207,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
         onCategorySelect={handleCategorySelect}
       />
 
-      <Box my={10} display="flex" justifyContent="center">
+      <Box mt={10} mb={2} display="flex" justifyContent="center">
         <HStack w="70%">
           <Input
             size={"lg"}
