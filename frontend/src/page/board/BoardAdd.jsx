@@ -1,7 +1,6 @@
 import {
   Box,
   Card,
-  Flex,
   FormatNumber,
   HStack,
   Icon,
@@ -59,22 +58,20 @@ export function BoardAdd() {
     "background",
   ];
 
-  // CSS로 기본 글씨 크기 고정
   const editorStyles = {
     width: "100%",
-    height: "400px", // 자동 크기 조정
-    maxHeight: "auto", // 최대 높이 설정
-    marginBottom: "20px", // 여백 조정
-    lineHeight: "1.0", // 줄 간격 설정
+    height: "400px",
+    maxHeight: "auto",
+    marginBottom: "20px",
+    lineHeight: "1.0",
   };
 
   const navigate = useNavigate();
 
-  // 권한 없을 떄
   if (!isAuthenticated) {
     return (
       <Box
-        border="1px solid red"
+        //border="1px solid red"
         borderRadius="12px"
         p={8}
         textAlign="center"
@@ -99,11 +96,7 @@ export function BoardAdd() {
             >
               회원가입
             </Button>
-            <Button
-              colorScheme="teal"
-              size="lg"
-              onClick={() => navigate("/")} // 로그인 페이지로 이동
-            >
+            <Button colorScheme="teal" size="lg" onClick={() => navigate("/")}>
               로그인
             </Button>
           </Stack>
@@ -111,8 +104,6 @@ export function BoardAdd() {
       </Box>
     );
   }
-
-  //console.log(files);
 
   const handleListClick = () => {
     navigate("/board/list");
@@ -130,12 +121,10 @@ export function BoardAdd() {
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
-
         toaster.create({
           description: message.text,
           type: message.type,
         });
-
         navigate(`/board/boardView/${data.data.boardId}`);
       })
       .catch((e) => {
@@ -163,30 +152,28 @@ export function BoardAdd() {
     category.trim().length > 0
   );
 
-  // 파일 삭제 핸들러
   const handleFileDelete = (fileName) => {
-    // 파일 삭제 후 목록 갱신
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
-
-    // 미리 보기 삭제 후 목록 갱신
     setFilePreviews((prevPreviews) =>
       prevPreviews.filter((preview) => preview.name !== fileName),
     );
-
-    return updatedFiles; // 파일 목록 업데이트
   };
 
-  // 파일 변경 처리 (중복 방지)
+  const handlePreviewDelete = (fileName) => {
+    setFilePreviews((prevPreviews) =>
+      prevPreviews.filter((preview) => preview.name !== fileName),
+    );
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
+  };
+
   const handleFileChange = (e) => {
-    const newFiles = Array.from(e.target.files); // 새로운 파일들
-    // 기존 파일 목록에서 파일 이름이 중복되지 않도록 필터링
+    const newFiles = Array.from(e.target.files);
     const uniqueFiles = newFiles.filter(
       (newFile) =>
         !files.some((existingFile) => existingFile.name === newFile.name),
     );
-    // 새로운 파일 목록을 기존 파일 목록에 추가
     setFiles((prevFiles) => [...prevFiles, ...uniqueFiles]);
-    // 파일 미리보기 생성
+
     const newPreviews = uniqueFiles.map((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -195,36 +182,35 @@ export function BoardAdd() {
           { name: file.name, preview: reader.result },
         ]);
       };
-      reader.readAsDataURL(file); // 이미지 파일을 읽어들임
+      reader.readAsDataURL(file);
       return { name: file.name, preview: reader.result };
     });
   };
 
-  // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
   let sumOfFileSize = 0;
-  let invalidOneFileSize = false; // 한 파일이라도 1MB을 넘는지?
+  let invalidOneFileSize = false;
+
   for (const file of files) {
     sumOfFileSize += file.size;
     if (file.size > 1024 * 1024) {
       invalidOneFileSize = true;
     }
     filesList.push(
-      <Card.Root size={"sm"}>
+      <Card.Root size={"sm"} key={file.name}>
         <Card.Body>
           <HStack>
             <Text
-              css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
+              color={file.size > 1024 * 1024 ? "red" : "black"}
               fontWeight={"bold"}
               me={"auto"}
               truncate
-              onClick={() => handleFileDelete(file.name)} // 파일 이름을 클릭하면 삭제
-              style={{ cursor: "pointer" }} // 커서 모양을 포인터로 변경하여 클릭 가능하도록 스타일 추가
+              onClick={() => handleFileDelete(file.name)}
+              style={{ cursor: "pointer" }}
             >
               <Icon>
                 <CiFileOn />
               </Icon>
-
               {file.name}
             </Text>
             <Text>
@@ -232,7 +218,7 @@ export function BoardAdd() {
                 value={file.size}
                 notation={"compact"}
                 compactDisplay="short"
-              ></FormatNumber>
+              />
             </Text>
           </HStack>
         </Card.Body>
@@ -241,18 +227,26 @@ export function BoardAdd() {
   }
 
   const filePreviewsList = filePreviews.map((filePreview) => (
-    <Box key={filePreview.name} mb={2}>
+    <Box
+      key={filePreview.name}
+      mb={2}
+      onClick={() => handlePreviewDelete(filePreview.name)}
+    >
       <img
         src={filePreview.preview}
         alt={filePreview.name}
-        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+        style={{
+          width: "100px",
+          height: "100px",
+          objectFit: "cover",
+          cursor: "pointer",
+        }}
       />
       <Text>{filePreview.name}</Text>
     </Box>
   ));
 
   let fileInputInvalid = false;
-
   if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
     fileInputInvalid = true;
   }
@@ -277,8 +271,8 @@ export function BoardAdd() {
                 border: "none",
                 outline: "none",
                 fontSize: "14px",
-                height: "30px", // 높이 조정
-                padding: "0 8px", // 패딩 조정
+                height: "30px",
+                padding: "0 8px",
               }}
             >
               {BoardCategories.map((cat) => (
@@ -297,70 +291,53 @@ export function BoardAdd() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="카테고리 고르고 후 제목을 입력하세요"
-            padding="0 8px" // 패딩을 줄여서 높이 조정
-            fontSize="14px" // 폰트 크기 조정
-            height="30px" // 높이 조정
-            style={{ border: "none" }}
+            padding="0 8px"
+            fontSize="14px"
+            height="30px"
+            style={{ border: "none", outline: "none", width: "100%" }}
           />
         </Box>
 
         <ReactQuill
-          style={{
-            ...editorStyles,
-            fontSize: "16px",
-          }} // 기본 스타일 적용
+          style={editorStyles}
           value={content}
-          onChange={(content) => setContent(content)}
-          disabled={disabled}
-          modules={modules} // 툴바 및 모듈 설정
-          formats={formats} // 사용 가능한 서식 제한
-          placeholder="본문 내용을 입력하세요"
+          onChange={setContent}
+          modules={modules}
+          formats={formats}
         />
 
-        <Box mt={2}>
-          {" "}
-          {/* 마진 값 조정 */}
-          <Field
-            helperText={"총 10MB, 한 파일은 1MB 이내로 선택하세요."}
-            invalid={fileInputInvalid}
-            errorText={"선택된 파일의 용량이 초과되었습니다."}
-          >
-            <input
-              onChange={handleFileChange}
+        <Box>
+          <Field>
+            <Input
               type="file"
-              accept="image/*"
               multiple
-              style={{
-                fontSize: "14px",
-                height: "30px", // 파일 입력의 높이 조정
-                marginTop: "30px", // 상단 여백 조정
-              }}
+              accept="image/*"
+              onChange={handleFileChange}
+              mt={2}
+              css={{ border: "none" }}
             />
-            <Box>
-              <Flex wrap="wrap" gap={4}>
-                {filesList}
-              </Flex>
-            </Box>
-            <Box>
-              <Flex wrap="wrap" gap={4}>
-                {filePreviewsList}
-              </Flex>
-            </Box>
+            <Stack mt={2}>{filePreviewsList}</Stack>
           </Field>
         </Box>
 
-        <Box mt={4}>
-          <HStack justify="flex-end" spacing={4}>
-            <Button
-              disabled={disabled}
-              loading={progress}
-              onClick={handleSaveClick}
-            >
-              저장
-            </Button>
-            <Button onClick={handleListClick}>글쓰기 취소</Button>
-          </HStack>
-        </Box>
+        <HStack justify="space-between">
+          <Button
+            colorScheme="blue"
+            variant="outline"
+            onClick={handleListClick}
+            size="sm"
+          >
+            목록으로
+          </Button>
+          <Button
+            colorScheme="teal"
+            onClick={handleSaveClick}
+            size="sm"
+            disabled={disabled || progress}
+          >
+            저장하기
+          </Button>
+        </HStack>
       </Stack>
     </Box>
   );
