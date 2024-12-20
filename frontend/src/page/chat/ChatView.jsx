@@ -152,7 +152,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     setImageSrc(imageRes.data);
     setPurchased(id == purchaseRes.data.buyerId);
     // 누르면 >  SOLD로 바꿈
-    setReviewComplete(productRes.data.status === "Sold");
+    setReviewComplete(purchaseRes.data.reviewStatus === "completed");
   }
 
   function deletedChatPartnerId(chatPartnerId) {
@@ -329,6 +329,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const handleReviewComplete = (productId) => {
     // 이떄 상태가 바뀌는거니까
     setReviewText("거래 완료 ");
+    setReviewComplete(true);
     setIsModalOpen(false);
   };
 
@@ -345,6 +346,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       sendMessage(client, message);
     }
   };
+  console.log(reviewComplete);
+  console.log(product);
 
   return (
     <Box>
@@ -377,7 +380,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 style={{ marginLeft: "16px" }}
                 colorPalette={reviewComplete && "cyan"}
                 isDisabled
-                cursor={reviewComplete && "defalut"}
+                cursor={reviewComplete && "default"}
                 onClick={reviewComplete ? null : handleSuccessTransaction}
               >
                 거래완료
@@ -394,16 +397,13 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
             {purchased && (
               <Button
-                onClick={
-                  product.reviewStatus === "uncompleted"
-                    ? handleOpenReviewModal
-                    : null
-                }
-                disabled={product.reviewStatus === "uncompleted" ? false : true}
+                onClick={reviewComplete ? null : handleOpenReviewModal}
+                isDisabled
+                colorPalette={reviewComplete && "cyan"}
+                cursor={reviewComplete && "default"}
+                // disabled={reviewComplete ? true : false}
               >
-                {product.reviewStatus === "uncompleted"
-                  ? "후기작성하기"
-                  : "작성완료"}
+                {reviewComplete ? "작성완료" : "후기작성하기"}
               </Button>
             )}
             <DialogCompo
