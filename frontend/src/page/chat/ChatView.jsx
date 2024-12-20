@@ -156,7 +156,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     if (purchased === false) {
       setPurchased(id == purchaseRes.data.buyerId);
     }
-    // 누르면 >  SOLD로 바꿈
     setReviewComplete(purchaseRes.data.reviewStatus === "completed");
   }
 
@@ -242,7 +241,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     } finally {
       console.log("실행 여부");
       const chatBox = chatBoxRef.current;
-      const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.4;
+      const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.2;
       chatBoxRef.current.scrollTop = reach;
       setPage((prev) => prev + 1);
       setIsloading(false);
