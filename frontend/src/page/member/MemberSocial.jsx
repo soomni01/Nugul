@@ -29,11 +29,6 @@ export function MemberSocial() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-    }
-
     // 닉네임 중복 체크
     if (newNickname) {
       handleNickNameCheckClick(newNickname);
