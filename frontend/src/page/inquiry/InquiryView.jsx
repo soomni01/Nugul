@@ -201,19 +201,12 @@ export const InquiryView = () => {
           {/* 댓글 */}
           <Box mt={6}>
             {comments.length === 0 ? (
-              <Flex
-                align="center"
-                justify="center"
-                bg="gray.100"
-                p={4}
-                borderRadius="md"
-                boxShadow="sm"
-              >
+              <Flex align="center" justify="center">
                 <Text
                   fontSize="lg"
                   fontWeight="bold"
                   color="gray.700"
-                  mt={5}
+                  mt={16}
                   mr={2}
                 >
                   아직 관리자가 답변하지 않았습니다.

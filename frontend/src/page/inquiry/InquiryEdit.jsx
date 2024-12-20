@@ -169,13 +169,13 @@ export function InquiryEdit() {
         </Flex>
       </Box>
       {hasAccess?.(inquiry?.memberId) && (
-        <Box mt={6}>
+        <Box mt={6} display="flex" justifyContent={"flex-end"}>
           <DialogRoot
             open={dialogOpen}
             onOpenChange={(e) => setDialogOpen(e.open)}
           >
             <DialogTrigger asChild>
-              <Button disabled={isSaveDisabled()} colorPalette={"blue"} ml={4}>
+              <Button disabled={isSaveDisabled()} colorPalette={"black"} ml={4}>
                 저장
               </Button>
             </DialogTrigger>
@@ -192,7 +192,7 @@ export function InquiryEdit() {
                 </DialogActionTrigger>
                 <Button
                   loading={progress}
-                  colorPalette={"blue"}
+                  colorPalette={"black"}
                   onClick={handleSaveClick}
                 >
                   저장
