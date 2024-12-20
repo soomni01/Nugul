@@ -1,23 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {
-  CustomOverlayMap,
-  Map,
-  MapMarker,
-  ZoomControl,
-} from "react-kakao-maps-sdk";
+import React, {useEffect, useState} from "react";
+import {CustomOverlayMap, Map, MapMarker, ZoomControl,} from "react-kakao-maps-sdk";
 import "./ViewMap.css";
-import {
-  Box,
-  Group,
-  Heading,
-  Input,
-  ListItem,
-  ListRoot,
-} from "@chakra-ui/react";
-import { Field } from "../../components/ui/field.jsx";
-import { Button } from "../../components/ui/button.jsx";
-import { IoSearchOutline } from "react-icons/io5";
-import { MdLocalPhone } from "react-icons/md";
+import {Box, Group, Heading, Input, ListItem, ListRoot,} from "@chakra-ui/react";
+import {Field} from "../../components/ui/field.jsx";
+import {Button} from "../../components/ui/button.jsx";
+import {IoSearchOutline} from "react-icons/io5";
+import {MdLocalPhone} from "react-icons/md";
+import {useNavigate} from "react-router-dom";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -33,8 +22,16 @@ function ViewMap() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [sameKeyword, setSameKeyword] = useState(false);
+  const navigate = useNavigate();
 
   const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
 
   useEffect(() => {
     if (currCategory) {
@@ -53,7 +50,7 @@ function ViewMap() {
       ps.categorySearch(
         currCategory,
         (result) => setCategorySearchResultList(result),
-        { useMapBounds: true },
+        {useMapBounds: true},
       );
     } else {
       setCategorySearchResultList([]);
@@ -103,7 +100,7 @@ function ViewMap() {
         <div className={"listItem"}>
           <Heading>{data.place_name}</Heading>
           <span>{data.address_name}</span>
-          <hr />
+          <hr/>
           <MdLocalPhone
             size={"16px"}
             style={{
@@ -207,13 +204,13 @@ function ViewMap() {
       display={"flex"}
       w={"100%"}
       className={"map_wrap"}
-      style={{ position: "relative" }}
+      style={{position: "relative"}}
     >
       <Map
         className="map"
-        center={{ lat: 33.450701, lng: 126.570667 }}
+        center={{lat: 33.450701, lng: 126.570667}}
         level={3}
-        style={{ width: "100%", height: "100vh" }}
+        style={{width: "100%", height: "100vh"}}
         onCreate={setMap}
       >
         <Box
@@ -249,18 +246,18 @@ function ViewMap() {
             </Field>
 
             <Button onClick={() => handleSearch(locationName)}>
-              <IoSearchOutline />
+              <IoSearchOutline/>
             </Button>
           </Group>
 
           {listItem.length > 0 && (
             <>
               <Heading
-                style={{ borderBottom: "1px solid gray", marginTop: "10px" }}
+                style={{borderBottom: "1px solid gray", marginTop: "10px"}}
               >
                 검색결과
               </Heading>
-              <ListRoot listStyle={"none"} style={{ overflowY: "auto" }}>
+              <ListRoot listStyle={"none"} style={{overflowY: "auto"}}>
                 {listItem.map((item, index) => (
                   <ListItem
                     key={index}
@@ -284,14 +281,14 @@ function ViewMap() {
           return (
             <MapMarker
               key={index}
-              position={{ lat: item.y, lng: item.x }}
+              position={{lat: item.y, lng: item.x}}
               image={{
                 src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
-                size: { width: 27, height: 28 },
+                size: {width: 27, height: 28},
                 options: {
-                  spriteSize: { width: 72, height: 208 },
-                  spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
-                  offset: { x: 11, y: 28 },
+                  spriteSize: {width: 72, height: 208},
+                  spriteOrigin: {x: 46, y: categoryImageNumber * 36},
+                  offset: {x: 11, y: 28},
                 },
               }}
               onClick={() => {
@@ -304,7 +301,7 @@ function ViewMap() {
         {isoverlayOpen && selectedPlace && (
           <CustomOverlayMap
             onCreate={setCustomOverlay}
-            position={{ lat: selectedPlace.y, lng: selectedPlace.x }}
+            position={{lat: selectedPlace.y, lng: selectedPlace.x}}
           >
             {makePlaceInfo(selectedPlace)}
           </CustomOverlayMap>
@@ -315,12 +312,12 @@ function ViewMap() {
           return (
             <MapMarker
               key={item.id || i}
-              position={{ lat: item.y, lng: item.x }}
+              position={{lat: item.y, lng: item.x}}
               onClick={() => displayPlaceInfo(item)}
             ></MapMarker>
           );
         })}
-        <ZoomControl />
+        <ZoomControl/>
       </Map>
       <ul id="category" style={{}}>
         <li
