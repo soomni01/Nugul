@@ -23,7 +23,6 @@ export function ChatList() {
   );
   const token = localStorage.getItem("token");
 
-  console.log("sta", status);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {

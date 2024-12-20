@@ -74,8 +74,8 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
               )
               .finally(() => {
                 // 결제시 purchased 바꿔서 리렌더
-                // onComplete();
-                statusControl();
+                onComplete();
+                // statusControl();
               });
 
             // 결제 성공 알림
@@ -95,6 +95,7 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
       },
     );
   };
+  console.log(onComplete);
 
   return (
     <div>

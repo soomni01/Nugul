@@ -105,7 +105,11 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       chatBoxRef.current.scrollTop =
         chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
     }
-  }, [navigate]);
+    // return () => {
+    //   // 정리 작업 수행
+    //   setPage(1);
+    // };
+  }, [navigate, purchased]);
 
   async function handleSetData() {
     // 전체 데이터 가져오는 코드
@@ -179,7 +183,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   // 초기 메세지 로딩
   const loadInitialMessages = async () => {
     setIsloading(true);
-    console.log("실행");
     try {
       const response = await axios.get(
         `/api/chat/view/${realChatRoomId}/messages`,
@@ -232,6 +235,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     } catch (error) {
       console.log("이전 메시지 로딩 중 오류 ", error, page);
     } finally {
+      console.log("실행 여부");
       const chatBox = chatBoxRef.current;
       const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.4;
       chatBoxRef.current.scrollTop = reach;
@@ -330,6 +334,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   // 결제 후 바로 후기로 리렌더
   const handleTransactionState = () => {
+    console.log("실행");
     statusControl();
     setPurchased(true);
   };
@@ -373,7 +378,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 colorPalette={reviewComplete && "cyan"}
                 isDisabled
                 cursor={reviewComplete && "defalut"}
-                onClick={handleSuccessTransaction}
+                onClick={reviewComplete ? null : handleSuccessTransaction}
               >
                 거래완료
               </Button>
@@ -388,7 +393,18 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             )}
 
             {purchased && (
-              <Button onClick={handleOpenReviewModal}>{reviewText}</Button>
+              <Button
+                onClick={
+                  product.reviewStatus === "uncompleted"
+                    ? handleOpenReviewModal
+                    : null
+                }
+                disabled={product.reviewStatus === "uncompleted" ? false : true}
+              >
+                {product.reviewStatus === "uncompleted"
+                  ? "후기작성하기"
+                  : "작성완료"}
+              </Button>
             )}
             <DialogCompo
               roomId={realChatRoomId}
