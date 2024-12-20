@@ -163,6 +163,7 @@ export function MemberSignup() {
                 _hover={{ bg: "transparent" }}
                 size={"xl"}
                 cursor={"default"}
+                tabIndex={-1}
               >
                 <MdOutlineEmail />
               </Button>
@@ -209,6 +210,7 @@ export function MemberSignup() {
                 _hover={{ bg: "transparent" }}
                 size={"xl"}
                 cursor={"default"}
+                tabIndex={-1}
               >
                 <TbLock />
               </Button>
@@ -244,6 +246,7 @@ export function MemberSignup() {
                 _hover={{ bg: "transparent" }}
                 size={"xl"}
                 cursor={"default"}
+                tabIndex={-1}
               >
                 <TbLockCheck />
               </Button>
@@ -272,6 +275,7 @@ export function MemberSignup() {
                 _hover={{ bg: "transparent" }}
                 size={"xl"}
                 cursor={"default"}
+                tabIndex={-1}
               >
                 <FaRegUser />
               </Button>

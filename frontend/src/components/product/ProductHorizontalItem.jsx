@@ -103,14 +103,14 @@ export function ProductHorizontalItem({
   const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { hasAccess } = useContext(AuthenticationContext);
+  const { hasAccess, id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체";
   const daysAgo = getDaysAgo(product.createdAt);
-  const isSold = product.status === "Sold";
+  const isSold = product.status === "Sold" && product.writer === id;
   const cardStyle = getCardStyle(isSold);
 
   const handleLikeClick = debounce(() => {
@@ -208,7 +208,7 @@ export function ProductHorizontalItem({
 
   const mainImage = product.mainImageName
     ? product.mainImageName
-    : "/image/productItem.png";
+    : "/image/default.png";
 
   console.log(product);
   return (
@@ -269,11 +269,11 @@ export function ProductHorizontalItem({
               <Badge>없음</Badge>
             </Box>
           )}
-          <Card.Title mb={2} fontSize="lg" fontWeight="bold">
+          <Card.Title mb={2} ml={1} fontSize="lg" fontWeight="bold">
             {product.productName}
           </Card.Title>
           <HStack justify="space-between">
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="gray.500" ml={1}>
               <HStack>
                 <FaLocationDot />
                 {product.locationName || "장소 정보 없음"}
@@ -289,7 +289,9 @@ export function ProductHorizontalItem({
               </Heading>
             ) : null}
           </HStack>
-          <Card.Description mt={2}>{daysAgo}</Card.Description>
+          <Card.Description mt={2} ml={1}>
+            {daysAgo}
+          </Card.Description>
         </Card.Body>
       </Box>
 

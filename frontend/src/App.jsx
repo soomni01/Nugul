@@ -21,14 +21,15 @@ import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import { MyPage } from "./page/mypage/MyPage.jsx";
-import { Inquiry } from "./page/inquiry/Inquiry.jsx";
-import { InquiryView } from "./page/mypage/InquiryView.jsx";
-import { InquiryEdit } from "./page/mypage/InquiryEdit.jsx";
 import ViewMap from "./page/map/ViewMap.jsx";
 import AuthenticationProvider from "./components/context/AuthenticationProvider.jsx";
 import { MemberSocial } from "./page/member/MemberSocial.jsx";
 import { KakaoOauth } from "./components/social/KakaoOauth.jsx";
 import { NaverOauth } from "./components/social/NaverOauth.jsx";
+import { InquiryList } from "./page/inquiry/InquiryList.jsx";
+import { InquiryView } from "./page/inquiry/InquiryView.jsx";
+import { InquiryEdit } from "./page/inquiry/InquiryEdit.jsx";
+import { Inquiry } from "./page/inquiry/Inquiry.jsx";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {
@@ -58,10 +59,6 @@ const router = createBrowserRouter([
         element: <MemberSignup />,
       },
       {
-        path: "inquiry",
-        element: <Inquiry />,
-      },
-      {
         path: "myPage",
         element: <MyPage />,
       },
@@ -70,11 +67,19 @@ const router = createBrowserRouter([
         element: <MyPage />,
       },
       {
-        path: "myPage/:inquiryId",
+        path: "inquiry",
+        element: <Inquiry />,
+      },
+      {
+        path: "inquiry/myList",
+        element: <InquiryList />,
+      },
+      {
+        path: "/inquiry/myList/:inquiryId",
         element: <InquiryView />,
       },
       {
-        path: "myPage/:inquiryId/edit",
+        path: "/inquiry/edit/:inquiryId",
         element: <InquiryEdit />,
       },
       {

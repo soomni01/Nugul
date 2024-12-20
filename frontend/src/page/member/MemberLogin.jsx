@@ -133,6 +133,7 @@ export function MemberLogin() {
               _hover={{ bg: "transparent" }}
               size={"xl"}
               cursor={"default"}
+              tabIndex={-1}
             >
               <TbLock />
             </Button>

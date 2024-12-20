@@ -140,7 +140,7 @@ export function AdminInquiryList() {
           <select value={search.type} onChange={handleSearchTypeChange}>
             <option value="all">전체</option>
             <option value="category">문의 유형</option>
-            <option value="title">제목</option>
+            <option value="title">문의 제목</option>
             <option value="member">작성자</option>
           </select>
         </Flex>

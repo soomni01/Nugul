@@ -32,7 +32,7 @@ export function CategoryContainer({ selectedCategory, onCategorySelect }) {
               boxSize="100%" // 이미지 크기를 Box에 맞게 설정
             />
           </Box>
-          <Text>{category.label}</Text>
+          <Text fontWeight="bold">{category.label}</Text>
         </Box>
       ))}
     </HStack>
