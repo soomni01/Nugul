@@ -18,7 +18,6 @@ export function BoardView() {
   const [board, setBoard] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [imageSizes, setImageSizes] = useState([]); // 이미지 크기 상태 배열 추가
-  const { isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
   const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
@@ -47,10 +46,6 @@ export function BoardView() {
       setSelectedCategory(res.data.category || "all");
     });
   }, [boardId]);
-
-  if (!isAuthenticated) {
-    return navigate("/");
-  }
 
   // 게시글이 로딩 중일 때 Spinner 표시
   if (!board) {
