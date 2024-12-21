@@ -178,7 +178,7 @@ export function BoardEdit() {
         boardId: board.boardId,
         title: board.title,
         content: board.content,
-        catgory: board.catgory,
+        category: board.category,
         removeFiles,
         uploadFiles,
         remainingFiles,
@@ -193,6 +193,7 @@ export function BoardEdit() {
           type: data.message.type,
           description: data.message.text,
         });
+        console.log(board);
         navigate(`/board/boardView/${boardId}`);
       })
       .catch((e) => {
@@ -217,13 +218,17 @@ export function BoardEdit() {
       <h3>{boardId}번 게시물 수정</h3>
       <hr />
       <Stack gap={5}>
-        <Box>
-          <Box>
+        <Box
+          border="1px solid #ccc"
+          borderRadius="4px"
+          display="flex"
+          alignItems="center"
+          p={1}
+        >
+          <Box borderRight="1px solid #ccc" padding="2px">
             <select
               value={board.category} // board.category로 수정
-              onChange={(e) =>
-                setBoard((prev) => ({ ...prev, category: e.target.value }))
-              }
+              onChange={(e) => setBoard({ ...board, category: e.target.value })}
               style={{
                 border: "none",
                 outline: "none",

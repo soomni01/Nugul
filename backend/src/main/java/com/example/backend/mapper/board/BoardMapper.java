@@ -40,7 +40,10 @@ public interface BoardMapper {
     @Update("""
             UPDATE board
             SET title=#{title}, 
-                content=#{content}
+                content=#{content},
+                category=#{category}
+            
+            
             WHERE board_id = #{boardId}
             """)
     int update(Board board);
