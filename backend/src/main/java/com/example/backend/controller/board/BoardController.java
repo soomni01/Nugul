@@ -24,6 +24,7 @@ public class BoardController {
     final CommentService commentService;
 
     @GetMapping("/boardsAndComments/{memberId}")
+    @PreAuthorize("isAuthenticated()")
     public Map<String, Object> getBoardsAndComments(@PathVariable String memberId,
                                                     @RequestParam(value = "boardPages", defaultValue = "1") Integer boardPages,
                                                     @RequestParam(value = "commentPages", defaultValue = "1") Integer commentPages) {
@@ -101,6 +102,7 @@ public class BoardController {
     }
 
     @GetMapping("boardView/{boardId}")
+    @PreAuthorize("isAuthenticated()")
     public Board boardView(@PathVariable int boardId) {
         return service.get(boardId);
     }

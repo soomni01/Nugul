@@ -27,6 +27,13 @@ export function BoardList() {
   const { isAuthenticated } = useContext(AuthenticationContext);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
     axios
       .get("/api/board/list", {
