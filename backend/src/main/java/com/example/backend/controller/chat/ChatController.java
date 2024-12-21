@@ -27,7 +27,7 @@ public class ChatController {
 
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
 
         // 보낸 메시지 저장시킬 방 번호 입력
