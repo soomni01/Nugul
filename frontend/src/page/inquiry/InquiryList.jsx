@@ -24,6 +24,7 @@ export function InquiryList({ onRowClick }) {
   const { nickname } = useContext(AuthenticationContext);
   const itemsPerPage = 10;
   const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthenticationContext);
 
   // 문의 내역 데이터 로드
   useEffect(() => {
@@ -43,6 +44,9 @@ export function InquiryList({ onRowClick }) {
     fetchInquiries();
   }, []);
 
+  if (!isAuthenticated) {
+    return navigate("/");
+  }
   // 페이지네이션 관련 데이터
   const totalPages = Math.ceil(inquiryList.length / itemsPerPage);
   const paginatedInquiries = inquiryList.slice(
