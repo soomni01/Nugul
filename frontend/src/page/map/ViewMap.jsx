@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   CustomOverlayMap,
   Map,
@@ -18,6 +18,8 @@ import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdLocalPhone } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -33,6 +35,8 @@ function ViewMap() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [sameKeyword, setSameKeyword] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthenticationContext);
 
   const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
 
@@ -88,6 +92,10 @@ function ViewMap() {
       setPlaceSearchResultList([]);
     }
   }, [placeKeyword, sameKeyword]);
+
+  if (!isAuthenticated) {
+    return navigate("/");
+  }
 
   // 같은 이름 다시 검색해도  >  맵 이동하도록 변경
   function handleSearch(locationname) {
