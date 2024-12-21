@@ -222,10 +222,11 @@ export function ProductView() {
 
   return (
     <Box
+      mt="5%"
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height="85vh"
+      height="70vh"
     >
       <HStack width="100%" height="90%">
         <VStack width="45%">
@@ -360,7 +361,7 @@ export function ProductView() {
 
           <Text fontSize="md">{daysAgo}</Text>
 
-          <HStack my={2} w="100%" justifyContent="space-between">
+          <HStack my={0} w="100%" justifyContent="space-between">
             <Heading
               size="2xl"
               color={product.pay === "sell" ? "gray.600" : undefined}
@@ -389,7 +390,7 @@ export function ProductView() {
             fontSize="lg"
           />
 
-          <HStack mt="4" justifyContent="space-between">
+          <HStack display="flex" w="100%" mt="4" justifyContent="space-between">
             <Heading size="md">거래 희망 장소</Heading>
             <a
               href={getKakaoLink()}
@@ -416,7 +417,7 @@ export function ProductView() {
             }
             level={3}
             style={{
-              width: "80%",
+              width: "100%",
               height: "240px",
               marginTop: "-2px",
             }}

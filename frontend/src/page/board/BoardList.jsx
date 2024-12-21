@@ -32,7 +32,6 @@ export function BoardList() {
       navigate("/");
     }
   }, []);
-
   useEffect(() => {
     const controller = new AbortController();
     axios
@@ -42,18 +41,38 @@ export function BoardList() {
       })
       .then((res) => res.data)
       .then((data) => {
+        // 카테고리가 선택되었을 때 해당 카테고리에 맞는 게시물만 필터링
         const filteredList = data.list.filter(
           (board) =>
             selectedCategory === "all" || board.category === selectedCategory,
         );
         setBoardList(filteredList);
-        setCount(data.count); // 전체 게시물 수
+        setCount(data.count); // 총 게시물 수는 전체가 필요하므로 필터링하지 않음
       });
 
     return () => {
       controller.abort();
     };
-  }, [searchParams, selectedCategory]);
+  }, [searchParams, selectedCategory]); // selectedCategory 추가
+
+  useEffect(() => {
+    const nextSearch = { ...search };
+    if (searchParams.get("searchType")) {
+      nextSearch.type = searchParams.get("searchType");
+    } else {
+      nextSearch.type = "all";
+    }
+    if (searchParams.get("searchKeyword")) {
+      nextSearch.keyword = searchParams.get("searchKeyword");
+    } else {
+      nextSearch.keyword = "";
+    }
+    setSearch(nextSearch);
+    const selectedCategory = searchParams.get("category");
+    if (selectedCategory) {
+      setSelectedCategory(selectedCategory);
+    }
+  }, [searchParams]);
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);

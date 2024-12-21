@@ -25,6 +25,13 @@ export function InquiryList({ onRowClick }) {
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
   // 문의 내역 데이터 로드
   useEffect(() => {
     const fetchInquiries = async () => {

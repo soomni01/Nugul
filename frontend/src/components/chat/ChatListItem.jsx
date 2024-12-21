@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom";
-import { Badge, Box, Card, HStack, Image } from "@chakra-ui/react";
+import { Box, Card, HStack, Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export function ChatListItem({ chat, onDelete, onClick }) {
   const [productImage, setProductImage] = useState({ src: "", name: "" });
-  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -28,49 +26,51 @@ export function ChatListItem({ chat, onDelete, onClick }) {
             );
           }
         } else {
-          console.error("fileList가 존재하지 않거나 비어 있습니다.");
+          // console.error("fileList가 존재하지 않거나 비어 있습니다.");
         }
       });
   }, []);
 
-  const defaultsrc = "./image/testImage.png";
+  const defaultsrc = "./image/default.png";
+  const productStatus = chat.status === "Sold" ? "subtle" : "elevated";
 
   return (
-    <Box variant={"outline"} p={3} onClick={onClick} width={"auto"}>
+    <Box p={3} onClick={onClick}>
       <Card.Root
-        className={chat.status === "Sold" ? "overlay" : ""}
-        flex
-        Direction="row"
-        maxH={"200px"}
-        _hover={{
-          borderColor: "gray",
-        }}
+        variant={productStatus}
+        filter={chat.status === "Sold" ? "brightness(0.8)" : "none"}
+        cursor="pointer"
+        width={"100%"}
       >
         <HStack>
           <Image
-            objectFit={"cover"}
-            maxW={"100px"}
+            p={3}
+            minWidth="120px"
+            maxWidth="120px"
+            display="flex"
+            flexShrink={0}
+            aspectRatio="1"
             src={productImage.src || defaultsrc}
             alt={productImage.name}
+            filter={chat.status === "Sold" ? "brightness(0.7)" : "none"}
           />
           <Box>
-            <Card.Body>
+            <Card.Body pl={0} pt={2}>
               <Card.Title>
-                <h3> 상품명: {chat.productName} </h3>
+                <Text
+                  fontSize="lg"
+                  isTruncated
+                  noOfLines={1}
+                  whiteSpace="nowrap"
+                >
+                  {chat.productName}
+                </Text>
               </Card.Title>
-              <HStack mt="4">
-                <Badge> 닉네임 : {chat.nickname}</Badge>
-              </HStack>
             </Card.Body>
-            <Card.Footer>
-              {/*<Button*/}
-              {/*  variant={"outline"}*/}
-              {/*  onClick={() => {*/}
-              {/*    navigate(`/chat/room/${chat.roomId}`);*/}
-              {/*  }}*/}
-              {/*>*/}
-              {/*  대화하러 가기*/}
-              {/*</Button>*/}
+            <Card.Footer pl={0}>
+              <Text fontSize="md" isTruncated noOfLines={1} whiteSpace="nowrap">
+                {chat.nickname != null ? chat.nickname : "탈퇴한 회원"}
+              </Text>
             </Card.Footer>
           </Box>
         </HStack>

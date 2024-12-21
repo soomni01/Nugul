@@ -131,6 +131,7 @@ public class BoardController {
     }
 
     @GetMapping("list")
+    @PreAuthorize("isAuthenticated()")
     public Map<String, Object> list(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "searchType", defaultValue = "all") String searchType,

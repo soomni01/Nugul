@@ -1,4 +1,4 @@
-import { Box, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
@@ -22,45 +22,66 @@ export function ProfileEdit({ id, onCancel, onSave }) {
   const [nickname, setNickName] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState(null); // 닉네임 유효성 상태 (null: 확인 안됨, true: 중복 아님, false: 중복)
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const passwordRegEx =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,50}$/;
 
-  useEffect(() => {
-    axios.get(`/api/member/${id}`).then((res) => {
-      setMember(res.data);
-      setPassword(res.data.password);
-      setNickName(res.data.nickname);
-    });
-  }, []);
+  // 데이터 로딩 함수
+  const loadMemberData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`/api/member/${id}`);
+      const memberData = response.data;
+      setMember(memberData);
+      setPassword(memberData.password || "");
+      setNickName(memberData.nickname || "");
+    } catch (error) {
+      toaster.create({
+        type: "error",
+        description: "회원 정보를 불러오는데 실패했습니다.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleSaveClick = () => {
-    axios
-      .put(`/api/member/update`, {
+  // 컴포넌트 마운트 시 데이터 로딩
+  useEffect(() => {
+    if (id) {
+      loadMemberData();
+    }
+  }, [id]);
+
+  const handleSaveClick = async () => {
+    try {
+      await axios.put(`/api/member/update`, {
         memberId: id,
         password,
         nickname,
         oldPassword,
-      }) // 서버로 수정 요청
-      .then(() => {
-        toaster.create({
-          type: "success",
-          description: "수정이 완료되었습니다.",
-        });
-        onSave();
-      })
-      .catch((err) =>
-        toaster.create({
-          type: "error",
-          description: "내 정보 수정 중 오류가 발생했습니다.",
-        }),
-      )
-      .finally();
+      });
+
+      toaster.create({
+        type: "success",
+        description: "수정이 완료되었습니다.",
+      });
+
+      // 저장 후 데이터 리로드
+      await loadMemberData();
+      onSave();
+      setOpen(false);
+    } catch (error) {
+      toaster.create({
+        type: "error",
+        description: "내 정보 수정 중 오류가 발생했습니다.",
+      });
+    }
   };
 
   const handleNickNameCheckClick = () => {
     if (!nickname || nickname === member?.nickname) {
-      return; // 닉네임이 비어있으면 중복 확인을 하지 않음
+      return;
     }
     axios
       .get("/api/member/check", { params: { nickname } })
@@ -72,78 +93,148 @@ export function ProfileEdit({ id, onCancel, onSave }) {
 
   const isPasswordValid = passwordRegEx.test(password);
 
+  if (isLoading) {
+    return <Box>로딩 중...</Box>;
+  }
+
   return (
-    <Box>
-      <h3>프로필 수정</h3>
+    <Box
+      border="1px solid gray"
+      borderRadius="8px"
+      p={5}
+      width="800px"
+      height="550px"
+      boxShadow="md"
+      bgColor="gray.50"
+      mt={28}
+      ml="auto"
+      mr="auto"
+    >
+      <Text fontSize="2xl" fontWeight="bold" textAlign="center" mt={5} mb={5}>
+        내 정보 수정
+      </Text>
       <Stack gap={5}>
-        <Field readOnly label={"아이디"}>
-          <Input defaultValue={member?.memberId || ""} />
-        </Field>
+        <Flex alignItems="center" mt={8}>
+          <Text
+            fontWeight="bold"
+            whiteSpace="nowrap"
+            mr={4}
+            ml={20}
+            width="100px"
+            textAlign="right"
+          >
+            아이디
+          </Text>
+          <Input defaultValue={id || ""} readOnly width="450px" height="45px" />
+        </Flex>
+
         {member?.password && (
-          <Field label={"암호"}>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              isInvalid={!isPasswordValid}
-              placeholder={
-                "비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다."
-              }
-            />
+          <Flex alignItems="center" mt={3} direction="column">
+            <Flex alignItems="center">
+              <Text
+                fontWeight="bold"
+                whiteSpace="nowrap"
+                mr={4}
+                ml={-8}
+                width="100px"
+                textAlign="right"
+              >
+                비밀번호
+              </Text>
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                isInvalid={!isPasswordValid}
+                width="450px"
+                height="45px"
+              />
+            </Flex>
             {password && !isPasswordValid && (
-              <Text fontSize="sm" color="red.500">
-                비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.
+              <Text fontSize="sm" color="red.500" mt={2} ml={6}>
+                비밀번호는 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다.
               </Text>
             )}
-          </Field>
+          </Flex>
         )}
-        <Field label={"별명"}>
-          <HStack w="100%">
-            <Input
-              value={nickname}
-              onChange={(e) => setNickName(e.target.value)} // 닉네임 값 변경
-              borderColor={nickNameCheck === false ? "red.500" : "gray.300"} // 중복일 때 빨간색 테두리
-            />
-            <Button
-              onClick={handleNickNameCheckClick}
-              variant={"outline"}
-              disabled={!nickname} // 닉네임이 비어있으면 버튼 비활성화
-            >
-              중복 확인
-            </Button>
-          </HStack>
-          {nickNameCheck !== null && (
-            <Text
-              fontSize="sm"
-              color={nickNameCheck ? "green.500" : "red.500"} // 중복 아닐 때 초록색, 중복일 때 빨간색
-            >
-              {nickNameCheck
-                ? "사용 가능한 별명입니다."
-                : "이미 사용 중인 별명입니다."}
-            </Text>
-          )}
-        </Field>
+        {member?.nickname && (
+          <Flex alignItems="center" mt={2} direction="column">
+            <Flex alignItems="center">
+              <Text
+                fontWeight="bold"
+                whiteSpace="nowrap"
+                mr={4}
+                ml={-7}
+                width="100px"
+                textAlign="right"
+              >
+                닉네임
+              </Text>
+              <Input
+                value={nickname}
+                onChange={(e) => setNickName(e.target.value)}
+                borderColor={nickNameCheck === false ? "red.500" : "gray.300"}
+                width="350px"
+                height="45px"
+                mr={2}
+              />
+              <Button
+                onClick={handleNickNameCheckClick}
+                variant={"outline"}
+                disabled={!nickname}
+              >
+                중복 확인
+              </Button>
+            </Flex>
 
-        <Field label={"가입일시"}>
+            {nickNameCheck !== null && (
+              <Text
+                fontSize="sm"
+                color={nickNameCheck ? "green.500" : "red.500"}
+                mt={2}
+                mr={195}
+              >
+                {nickNameCheck
+                  ? "사용 가능한 닉네임입니다."
+                  : "이미 사용 중인 닉네임입니다."}
+              </Text>
+            )}
+          </Flex>
+        )}
+        <Flex alignItems="center" mt={2}>
+          <Text
+            fontWeight="bold"
+            whiteSpace="nowrap"
+            mr={4}
+            ml={20}
+            width="100px"
+            textAlign="right"
+          >
+            가입 일자
+          </Text>
           <Input
-            type={"date"}
+            type="date"
             readOnly
             value={member?.inserted ? member.inserted.split("T")[0] : ""}
+            width="450px"
+            height="45px"
           />
-        </Field>
-        <Box>
+        </Flex>
+        <Box display="flex" justifyContent="center" alignItems="center">
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorPalette={"blue"}>저장</Button>
+              <Button colorPalette={"black"} mt={3} mr={4}>
+                저장
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>회원 정보 변경 확인</DialogTitle>
+                <DialogTitle>내 정보 변경 확인</DialogTitle>
               </DialogHeader>
               <DialogBody>
                 <Stack gap={5}>
-                  <Field label={"기존 암호"}>
+                  <Field>
                     <Input
-                      placeholder={"기존 암호를 입력해주세요."}
+                      placeholder={"기존 비밀번호를 입력해 주세요."}
                       value={oldPassword}
                       onChange={(e) => {
                         setOldPassword(e.target.value);
@@ -156,13 +247,13 @@ export function ProfileEdit({ id, onCancel, onSave }) {
                 <DialogActionTrigger>
                   <Button variant={"outline"}>취소</Button>
                 </DialogActionTrigger>
-                <Button colorPalette={"blue"} onClick={handleSaveClick}>
+                <Button colorPalette={"black"} onClick={handleSaveClick}>
                   저장
                 </Button>
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
-          <Button onClick={onCancel} variant={"outline"}>
+          <Button onClick={onCancel} variant={"outline"} mt={3}>
             취소
           </Button>
         </Box>

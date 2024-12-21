@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -68,9 +68,16 @@ export function BoardAdd() {
 
   const navigate = useNavigate();
 
-  if (!isAuthenticated) {
-    return navigate("/");
-  }
+  /*if (!isAuthenticated) {
+        return navigate("/");
+      }*/
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
 
   const handleListClick = () => {
     navigate("/board/list");

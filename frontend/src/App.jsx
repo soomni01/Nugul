@@ -9,7 +9,6 @@ import { AdminInquiryDetail } from "./page/admin/AdminInquiryDetail.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import { ChatList } from "./page/chat/ChatList.jsx";
-import { ChatView } from "./page/chat/ChatView.jsx";
 import { ProductList } from "./page/product/ProductList.jsx";
 import { ProductShareList } from "./page/product/ProductShareList.jsx";
 import { ProductAdd } from "./page/product/ProductAdd.jsx";
@@ -85,10 +84,6 @@ const router = createBrowserRouter([
       {
         path: "chat",
         element: <ChatList />,
-      },
-      {
-        path: "chat/room/:roomId",
-        element: <ChatView />,
       },
       {
         path: "product/list",

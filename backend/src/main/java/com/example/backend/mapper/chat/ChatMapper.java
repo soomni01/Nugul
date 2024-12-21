@@ -167,7 +167,7 @@ public interface ChatMapper {
     @Select("""
                 SELECT 
                     CASE
-                        WHEN iswriter_deleted = FALSE AND isbuyer_deleted = FALSE THEN TRUE
+                        WHEN iswriter_deleted = 0 AND isbuyer_deleted = 0 THEN TRUE
                         ELSE FALSE
                     END AS both_true
                 FROM chatroom
@@ -224,4 +224,18 @@ public interface ChatMapper {
                             where roomId=#{roomId} and buyer=#{buyer}
             """)
     int updateDeletedTrue(int roomId, String buyer);
+
+    @Update("""
+                update chatroom
+                set isbuyer_deleted = CASE 
+                        WHEN buyer = #{memberId} THEN 1 
+                        ELSE isbuyer_deleted 
+                    END,
+                    iswriter_deleted = CASE 
+                        WHEN writer = #{memberId} THEN 1 
+                        ELSE iswriter_deleted 
+                    END
+                where roomid = #{roomId}
+            """)
+    int updateDeltedByRoomIdAndMemberId(String roomId, String memberId);
 }
