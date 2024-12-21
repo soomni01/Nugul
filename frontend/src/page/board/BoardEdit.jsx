@@ -27,6 +27,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { Switch } from "../../components/ui/switch.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { BoardCategories } from "../../components/category/BoardCategoryContainer.jsx";
 
 // 미리보기 이미지 생성 함수
 const generatePreviewFiles = (files) => {
@@ -177,6 +178,7 @@ export function BoardEdit() {
         boardId: board.boardId,
         title: board.title,
         content: board.content,
+        catgory: board.catgory,
         removeFiles,
         uploadFiles,
         remainingFiles,
@@ -215,11 +217,34 @@ export function BoardEdit() {
       <h3>{boardId}번 게시물 수정</h3>
       <hr />
       <Stack gap={5}>
-        <Input
-          value={board.title}
-          placeholder="제목을 수정하세요"
-          onChange={(e) => setBoard({ ...board, title: e.target.value })}
-        />
+        <Box>
+          <Box>
+            <select
+              value={board.category} // board.category로 수정
+              onChange={(e) =>
+                setBoard((prev) => ({ ...prev, category: e.target.value }))
+              }
+              style={{
+                border: "none",
+                outline: "none",
+                fontSize: "14px",
+                height: "30px",
+                padding: "0 8px",
+              }}
+            >
+              {BoardCategories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </Box>
+          <Input
+            value={board.title}
+            placeholder="제목을 수정하세요"
+            onChange={(e) => setBoard({ ...board, title: e.target.value })}
+          />
+        </Box>
         <ReactQuill
           style={{
             width: "100%",
