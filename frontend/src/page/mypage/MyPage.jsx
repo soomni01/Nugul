@@ -142,7 +142,7 @@ export function MyPage() {
       {/* 왼쪽 메뉴 */}
       <Box
         width="23%"
-        height="825px"
+        height="828px"
         p={16}
         mt={-2}
         borderColor="gray.200"
