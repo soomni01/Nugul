@@ -117,8 +117,8 @@ export function BoardsAndComments() {
             <Image
               src="/image/MyBoardList.png"
               alt="게시물 아이콘"
-              width={6}
-              height={6}
+              width={4}
+              height={4}
               style={{ marginRight: "8px" }}
             />
             <Text fontWeight="bold">작성한 게시물</Text>
@@ -135,8 +135,8 @@ export function BoardsAndComments() {
             <Image
               src="/image/MyCommentList.png"
               alt="게시물 아이콘"
-              width={6}
-              height={6}
+              width={4}
+              height={4}
               style={{ marginRight: "8px" }}
             />
             <Text fontWeight="bold">작성한 댓글</Text>
