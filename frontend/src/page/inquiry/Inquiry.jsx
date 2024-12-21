@@ -30,6 +30,14 @@ export function Inquiry() {
 
   // 클릭 시 사용자 입력 데이터를 서버에 저장 요청
   const handleSaveClick = () => {
+    if (!category) {
+      toaster.create({
+        type: "warning",
+        description: "문의 유형을 선택해 주세요.",
+      });
+      return;
+    }
+
     const inquiryData = {
       title: title,
       content: content,
