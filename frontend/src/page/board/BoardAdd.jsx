@@ -275,6 +275,11 @@ export function BoardAdd() {
               mt={2}
               css={{ border: "none" }}
             />
+            {fileInputInvalid && (
+              <Text color="red" mt={2}>
+                파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다.
+              </Text>
+            )}
             <Stack mt={2}>{filePreviewsList}</Stack>
           </Field>
         </Box>
@@ -292,7 +297,7 @@ export function BoardAdd() {
             colorScheme="teal"
             onClick={handleSaveClick}
             size="sm"
-            disabled={disabled || progress}
+            disabled={disabled || progress || fileInputInvalid} // 파일 크기 초과시 저장 불가
           >
             저장하기
           </Button>
