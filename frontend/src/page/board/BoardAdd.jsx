@@ -256,7 +256,6 @@ export function BoardAdd() {
       mt={8}
       position="relative"
     >
-      <hr />
       <Stack gap={4}>
         <Box
           border="1px solid #ccc"
