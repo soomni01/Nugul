@@ -135,7 +135,7 @@ export function BoardList() {
         onCategorySelect={handleCategorySelect}
       />
 
-      <HStack justify="center" mt={8} mb={8} minHeight="50px" spacing={4}>
+      <HStack justify="center" mt={4} minHeight="50px">
         <Box>
           <select
             value={search.type}
@@ -143,7 +143,7 @@ export function BoardList() {
           >
             <option value={"all"}>전체</option>
             <option value={"title"}>제목</option>
-            <option value={"writer"}>작성자</option>
+            <option value={"content"}>본문</option>
           </select>
         </Box>
         <Input
@@ -195,7 +195,7 @@ export function BoardList() {
                   <Table.Cell textAlign="center">
                     {board.title}
                     {board.countFile > 0 && (
-                      <Badge variant={"subtle"} colorPalette={"gray"}>
+                      <Badge variant={"subtle"} colorPalette={"gray"} ml={2}>
                         <FaImages />
                         {board.countFile}
                       </Badge>
