@@ -211,7 +211,7 @@ export function BoardEdit() {
   );
 
   return (
-    <Box border="1px solid #ccc" borderRadius="8px" p={2}>
+    <Box border="1px solid #ccc" borderRadius="8px" p={2} m={2}>
       <h3>{boardId}번 게시물 수정</h3>
       <hr />
       <Stack gap={5}>
