@@ -64,6 +64,7 @@ export function BoardEdit() {
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
+  const [fileInputInvalid, setFileInputInvalid] = useState(false);
 
   const modules = {
     toolbar: [
@@ -135,12 +136,20 @@ export function BoardEdit() {
         !uploadFiles.some((uploadedFile) => uploadedFile.name === file.name),
     );
 
+    // 파일 크기 체크 (10MB 초과 체크)
+    const invalidFiles = filteredFiles.filter(
+      (file) => file.size > 10 * 1024 * 1024,
+    ); // 10MB 초과
+
     if (filteredFiles.length < files.length) {
       toaster.create({
         type: "warning",
         description: "중복된 파일은 제외되었습니다.",
       });
     }
+
+    // 파일 크기 제한 초과 여부 설정
+    setFileInputInvalid(invalidFiles.length > 0);
 
     setUploadFiles((prev) => [...prev, ...filteredFiles]);
 
@@ -235,6 +244,14 @@ export function BoardEdit() {
             multiple
             accept={"image/*"}
           />
+          <Text color="gray" mt={2}>
+            최대 10MB 까지 업로드할 수 있습니다.
+          </Text>
+          {fileInputInvalid && (
+            <Text color="red" mt={2}>
+              파일 크기가 너무 큽니다. 최대 10MB 까지 업로드할 수 있습니다.
+            </Text>
+          )}
         </Box>
 
         <Box>
