@@ -71,7 +71,6 @@ export function BoardAdd() {
   if (!isAuthenticated) {
     return (
       <Box
-        //border="1px solid red"
         borderRadius="12px"
         p={8}
         textAlign="center"
@@ -227,6 +226,8 @@ export function BoardAdd() {
       key={filePreview.name}
       mb={2}
       onClick={() => handlePreviewDelete(filePreview.name)}
+      display="inline-block"
+      mr={4} // 이미지를 옆으로 정렬하기 위해 마진을 추가
     >
       <img
         src={filePreview.preview}
@@ -238,7 +239,6 @@ export function BoardAdd() {
           cursor: "pointer",
         }}
       />
-      <Text>{filePreview.name}</Text>
     </Box>
   ));
 
@@ -248,8 +248,14 @@ export function BoardAdd() {
   }
 
   return (
-    <Box border="1px solid #ccc" borderRadius="8px" p={2}>
-      <h3>게시글 쓰기</h3>
+    <Box
+      height="750px"
+      border="1px solid #ccc"
+      borderRadius="8px"
+      p={10}
+      mt={8}
+      position="relative"
+    >
       <hr />
       <Stack gap={4}>
         <Box
@@ -282,7 +288,7 @@ export function BoardAdd() {
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="카테고리 고르고 후 제목을 입력하세요"
+            placeholder="카테고리를 선택 후 제목을 작성해 주세요."
             padding="0 8px"
             fontSize="14px"
             height="30px"
@@ -305,32 +311,42 @@ export function BoardAdd() {
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              mt={2}
+              mt={6}
+              ml={-3}
               css={{ border: "none" }}
             />
-            <Stack mt={2}>{filePreviewsList}</Stack>
+            {/* 파일 미리보기만 표시, 파일명은 표시하지 않음 */}
+            <Box display="flex" flexWrap="wrap" mt={2}>
+              {filePreviewsList}
+            </Box>
           </Field>
         </Box>
-
-        <HStack justify="space-between">
-          <Button
-            colorScheme="blue"
-            variant="outline"
-            onClick={handleListClick}
-            size="sm"
-          >
-            목록으로
-          </Button>
-          <Button
-            colorScheme="teal"
-            onClick={handleSaveClick}
-            size="sm"
-            disabled={disabled || progress}
-          >
-            저장하기
-          </Button>
-        </HStack>
       </Stack>
+
+      <HStack
+        justify="flex-end"
+        spacing={4}
+        position="absolute"
+        bottom="20px"
+        right="20px"
+      >
+        <Button
+          colorScheme="teal"
+          onClick={handleSaveClick}
+          size="lg"
+          disabled={disabled || progress}
+        >
+          저장
+        </Button>
+        <Button
+          colorScheme="blue"
+          variant="outline"
+          onClick={handleListClick}
+          size="lg"
+        >
+          취소
+        </Button>
+      </HStack>
     </Box>
   );
 }
