@@ -166,7 +166,7 @@ export function BoardsAndComments() {
                     <Box>
                       <Text fontWeight="bold" ml={0.5}>
                         {board.title}
-                        <Badge variant={"subtle"} colorPalette="red" ml={2}>
+                        <Badge variant={"subtle"} colorPalette="gray" ml={2}>
                           <FaImages />
                           {board.countFile}
                         </Badge>
