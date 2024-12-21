@@ -214,10 +214,15 @@ export function BoardEdit() {
   );
 
   return (
-    <Box border="1px solid #ccc" borderRadius="8px" p={2} m={2}>
-      <h3>{boardId}번 게시물 수정</h3>
-      <hr />
-      <Stack gap={5}>
+    <Box
+      height="750px"
+      border="1px solid #ccc"
+      borderRadius="8px"
+      p={10}
+      mt={8}
+      position="relative"
+    >
+      <Stack gap={4}>
         <Box
           border="1px solid #ccc"
           borderRadius="4px"
@@ -244,10 +249,15 @@ export function BoardEdit() {
               ))}
             </select>
           </Box>
+
           <Input
             value={board.title}
-            placeholder="제목을 수정하세요"
             onChange={(e) => setBoard({ ...board, title: e.target.value })}
+            placeholder="제목을 입력해 주세요."
+            padding="0 8px"
+            fontSize="14px"
+            height="30px"
+            style={{ border: "none", outline: "none", width: "100%" }}
           />
         </Box>
         <ReactQuill
@@ -285,6 +295,7 @@ export function BoardEdit() {
         </Box>
 
         <Box>
+          {/* 미리보기 이미지 영역 */}
           <Flex wrap="wrap" gap={4}>
             {previewFiles.map((preview, index) => (
               <Box
@@ -305,47 +316,51 @@ export function BoardEdit() {
               </Box>
             ))}
           </Flex>
-        </Box>
-        {hasAccess(board.memberId) && (
-          <Box>
-            <DialogRoot
-              open={dialogOpen}
-              onOpenChange={(e) => setDialogOpen(e.open)}
-            >
-              <DialogTrigger asChild>
-                <Button
-                  disabled={disabled}
-                  colorPalette={"cyan"}
-                  variant={"outline"}
-                >
-                  저장
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>저장 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>{board.boardId}번 게시물을 수정하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
+
+          {/* 저장 및 취소 버튼 */}
+          {hasAccess(board.memberId) && (
+            <Box mt={6} display="flex" justifyContent="flex-end">
+              <DialogRoot
+                open={dialogOpen}
+                onOpenChange={(e) => setDialogOpen(e.open)}
+              >
+                <DialogTrigger asChild>
                   <Button
-                    loading={progress}
-                    colorPalette={"blue"}
-                    onClick={handleSaveClick}
+                    disabled={disabled}
+                    colorPalette={"cyan"}
+                    variant={"outline"}
                   >
                     저장
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-          </Box>
-        )}
-        <Box>
-          <Button onClick={handleViewClick}>수정 취소</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>저장 확인</DialogTitle>
+                  </DialogHeader>
+                  <DialogBody>
+                    <p>{board.boardId}번 게시물을 수정하시겠습니까?</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogActionTrigger>
+                      <Button variant={"outline"}>취소</Button>
+                    </DialogActionTrigger>
+                    <Button
+                      loading={progress}
+                      colorPalette={"blue"}
+                      onClick={handleSaveClick}
+                    >
+                      저장
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </DialogRoot>
+
+              {/* 취소 버튼 */}
+              <Button ml={4} variant="outline" onClick={handleViewClick}>
+                취소
+              </Button>
+            </Box>
+          )}
         </Box>
       </Stack>
     </Box>
