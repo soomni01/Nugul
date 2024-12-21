@@ -59,7 +59,7 @@ export function PurchasedItems() {
 
   return (
     <Box>
-      <HStack alignItems="center" mb={3}>
+      <HStack alignItems="center">
         <Heading size="xl" mt={2} ml={3}>
           나의 구매 상품
         </Heading>
@@ -71,7 +71,7 @@ export function PurchasedItems() {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        mt={5}
+        mt={7}
         ml={2}
       >
         {purchasedList.length > 0 ? (

@@ -41,7 +41,7 @@ export function SoldItems() {
   }
   return (
     <Box>
-      <HStack alignItems="center" mb={3}>
+      <HStack alignItems="center">
         <Heading size="xl" mt={2} ml={3}>
           나의 판매 상품
         </Heading>
@@ -53,7 +53,7 @@ export function SoldItems() {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        mt={5}
+        mt={7}
         ml={2}
       >
         {soldList.length > 0 ? (
