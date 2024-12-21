@@ -283,11 +283,11 @@ export function ProductHorizontalItem({
             </Text>
             {value === "purchased" ? (
               <Heading size="xs" mr={2}>
-                판매자 : {product.nickname || "알 수 없음"}
+                판매자 : {product.nickname || "탈퇴한 회원"}
               </Heading>
             ) : value === "sell" && isSold ? (
               <Heading size="xs" mr={2}>
-                구매자 : {product.buyerNickname || "알 수 없음"}
+                구매자 : {product.buyerNickname || "탈퇴한 회원"}
               </Heading>
             ) : null}
           </HStack>
