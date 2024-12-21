@@ -1,5 +1,13 @@
 import React, { useContext, useState } from "react";
-import { Box, Button, Heading, HStack, Text, Textarea } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Text,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
 import { IoClose } from "react-icons/io5";
 import { Field } from "../ui/field.jsx";
 import { Rating } from "../ui/rating.jsx";
@@ -19,15 +27,15 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
   const RatingText = (rating) => {
     switch (rating) {
       case 1:
-        return "별로예요";
+        return "별로예요.";
       case 2:
-        return "그저 그래요";
+        return "그저 그래요.";
       case 3:
-        return "괜찮아요";
+        return "괜찮아요.";
       case 4:
-        return "좋아요";
+        return "좋아요.";
       case 5:
-        return "최고예요";
+        return "최고예요.";
       default:
         return "";
     }
@@ -83,8 +91,8 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
           <IoClose />
         </button>
         <div className="content">
-          <Heading>{nickname}님, 거래가 어떠셨나요?</Heading>
-          <HStack>
+          <Heading textAlign="center">{nickname}님, 거래가 어떠셨나요?</Heading>
+          <VStack align="center" justify="center">
             <Rating
               m={5}
               value={rating}
@@ -93,11 +101,14 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
               colorPalette="yellow"
               onValueChange={(e) => setRating(e.value)}
             />
-            <Text>{RatingText(rating)}</Text>
-          </HStack>
+            <Text mt={-3} mb={8}>
+              {RatingText(rating)}
+            </Text>
+          </VStack>
+
           <Box>
             <HStack gap="10">
-              <Text>상품명 : {product.productName}</Text>
+              <Text ml={1}>상품명 : {product.productName}</Text>
               {product.price === 0 ? (
                 <HStack gap={1}>나눔</HStack>
               ) : (
@@ -106,8 +117,10 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
             </HStack>
           </Box>
           <HStack justify="space-between" mr={3}>
-            <Text my="3">판매자 : {product.nickname}</Text>
-            <Text>구매일자 : {product.purchasedAt.split("T")[0]}</Text>
+            <Text my="3" ml={1}>
+              판매자 : {product.nickname}
+            </Text>
+            <Text mr={-2}>구매일자 : {product.purchasedAt.split("T")[0]}</Text>
           </HStack>
           <Field label={""}>
             <Textarea
@@ -117,7 +130,7 @@ export function ReviewModal({ isOpen, onClose, product, onComplete }) {
             />
           </Field>
           <HStack justify="space-between" mt={5}>
-            <Text color="gray" textStyle="xs">
+            <Text color="gray" textStyle="sm" mb={2} ml={1}>
               작성하신 후기는 판매자에게 전달됩니다.
             </Text>
             <Button loading={progress} onClick={sendReviewClick}>

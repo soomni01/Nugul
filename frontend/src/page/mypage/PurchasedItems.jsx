@@ -60,15 +60,19 @@ export function PurchasedItems() {
   return (
     <Box>
       <HStack alignItems="center" mb={3}>
-        <Heading size="lg">내가 구매한 상품</Heading>
-        <Text>총 {purchasedList.length}건</Text>
+        <Heading size="xl" mt={2} ml={3}>
+          나의 구매 상품
+        </Heading>
+        <Text mt={2}>총 {purchasedList.length}건</Text>
       </HStack>
       <Box
-        height="70vh"
+        height="72vh"
         overflow="hidden"
         display="flex"
         alignItems="center"
         justifyContent="center"
+        mt={5}
+        ml={2}
       >
         {purchasedList.length > 0 ? (
           <Swiper
