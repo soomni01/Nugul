@@ -98,6 +98,7 @@ public interface MyPageMapper {
                     </if>
                         AND review_status = 'completed'
                 </where>
+            ORDER BY r.created_at DESC
             </script>
             """)
     List<Review> getReviews(String memberId, String role);
@@ -108,7 +109,7 @@ public interface MyPageMapper {
             WHERE seller_id = #{id};
             """)
     Double getRating(String id);
-    
+
     @Select("""
             SELECT profile_image
             FROM member
