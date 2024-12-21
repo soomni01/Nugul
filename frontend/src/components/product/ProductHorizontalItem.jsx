@@ -316,7 +316,7 @@ export function ProductHorizontalItem({
           />
         ) : pageType === "purchased" ? (
           <Box display="flex" alignItems="center">
-            <Text fontSize="xs" color="gray.500" mr={3} mt={5}>
+            <Text fontSize="xs" color="gray.500" mr={3} mt={4}>
               구매 일자 : {product.purchasedAt.split("T")[0]}
             </Text>
             {product.reviewStatus === "completed" ? (
