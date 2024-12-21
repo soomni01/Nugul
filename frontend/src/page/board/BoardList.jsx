@@ -1,4 +1,13 @@
-import { Badge, Box, Flex, HStack, Input, Table } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Flex,
+  HStack,
+  Input,
+  Stack,
+  Table,
+  Text,
+} from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
@@ -25,6 +34,7 @@ export function BoardList() {
   });
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
+
   useEffect(() => {
     const controller = new AbortController();
     axios
@@ -34,38 +44,56 @@ export function BoardList() {
       })
       .then((res) => res.data)
       .then((data) => {
-        // 카테고리가 선택되었을 때 해당 카테고리에 맞는 게시물만 필터링
         const filteredList = data.list.filter(
           (board) =>
             selectedCategory === "all" || board.category === selectedCategory,
         );
         setBoardList(filteredList);
-        setCount(data.count); // 총 게시물 수는 전체가 필요하므로 필터링하지 않음
+        setCount(data.count); // 전체 게시물 수
       });
 
     return () => {
       controller.abort();
     };
-  }, [searchParams, selectedCategory]); // selectedCategory 추가
+  }, [searchParams, selectedCategory]);
 
-  useEffect(() => {
-    const nextSearch = { ...search };
-    if (searchParams.get("searchType")) {
-      nextSearch.type = searchParams.get("searchType");
-    } else {
-      nextSearch.type = "all";
-    }
-    if (searchParams.get("searchKeyword")) {
-      nextSearch.keyword = searchParams.get("searchKeyword");
-    } else {
-      nextSearch.keyword = "";
-    }
-    setSearch(nextSearch);
-    const selectedCategory = searchParams.get("category");
-    if (selectedCategory) {
-      setSelectedCategory(selectedCategory);
-    }
-  }, [searchParams]);
+  // 로그인되지 않은 경우에 게시물 리스트를 표시하지 않음
+  if (!isAuthenticated) {
+    return (
+      <Box
+        //border="1px solid red"
+        borderRadius="12px"
+        p={8}
+        textAlign="center"
+        maxWidth="450px"
+        mx="auto"
+        mt={16}
+        boxShadow="lg"
+      >
+        <Box>
+          <Text fontSize="3xl" color="red.600" fontWeight="bold" mb={6}>
+            권한이 없습니다.
+          </Text>
+          <Text color="gray.700" fontSize="lg" mb={8}>
+            글을 작성하려면 로그인하거나 회원가입이 필요합니다.
+          </Text>
+          <Stack direction="row" spacing={6} justify="center" mb={4}>
+            <Button
+              colorScheme="blue"
+              variant="outline"
+              size="lg"
+              onClick={() => navigate("/member/signup")}
+            >
+              회원가입
+            </Button>
+            <Button colorScheme="teal" size="lg" onClick={() => navigate("/")}>
+              로그인
+            </Button>
+          </Stack>
+        </Box>
+      </Box>
+    );
+  }
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
