@@ -225,7 +225,7 @@ export function BoardEdit() {
             width: "100%",
             height: "400px",
             maxHeight: "auto",
-            marginBottom: "20px",
+            marginBottom: "40px",
             fontSize: "16px",
           }}
           placeholder="본문 내용을 수정하세요"
@@ -244,7 +244,7 @@ export function BoardEdit() {
             multiple
             accept={"image/*"}
           />
-          <Text color="gray" mt={2}>
+          <Text color="gray" mt={"4px"}>
             최대 10MB 까지 업로드할 수 있습니다.
           </Text>
           {fileInputInvalid && (
@@ -271,9 +271,7 @@ export function BoardEdit() {
                   boxSize="100px"
                   objectFit="cover"
                 />
-                <Text mt={2} isTruncated>
-                  {preview.name}
-                </Text>
+                <Text isTruncated>{preview.name}</Text>
               </Box>
             ))}
           </Flex>
