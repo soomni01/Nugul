@@ -27,6 +27,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { Switch } from "../../components/ui/switch.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { BoardCategories } from "../../components/category/BoardCategoryContainer.jsx";
 
 // 미리보기 이미지 생성 함수
 const generatePreviewFiles = (files) => {
@@ -64,6 +65,7 @@ export function BoardEdit() {
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
+  const [fileInputInvalid, setFileInputInvalid] = useState(false);
 
   const modules = {
     toolbar: [
@@ -135,12 +137,20 @@ export function BoardEdit() {
         !uploadFiles.some((uploadedFile) => uploadedFile.name === file.name),
     );
 
+    // 파일 크기 체크 (10MB 초과 체크)
+    const invalidFiles = filteredFiles.filter(
+      (file) => file.size > 10 * 1024 * 1024,
+    ); // 10MB 초과
+
     if (filteredFiles.length < files.length) {
       toaster.create({
         type: "warning",
         description: "중복된 파일은 제외되었습니다.",
       });
     }
+
+    // 파일 크기 제한 초과 여부 설정
+    setFileInputInvalid(invalidFiles.length > 0);
 
     setUploadFiles((prev) => [...prev, ...filteredFiles]);
 
@@ -168,6 +178,7 @@ export function BoardEdit() {
         boardId: board.boardId,
         title: board.title,
         content: board.content,
+        category: board.category,
         removeFiles,
         uploadFiles,
         remainingFiles,
@@ -182,6 +193,7 @@ export function BoardEdit() {
           type: data.message.type,
           description: data.message.text,
         });
+        console.log(board);
         navigate(`/board/boardView/${boardId}`);
       })
       .catch((e) => {
@@ -202,21 +214,48 @@ export function BoardEdit() {
   );
 
   return (
-    <Box border="1px solid #ccc" borderRadius="8px" p={2}>
+    <Box border="1px solid #ccc" borderRadius="8px" p={2} m={2}>
       <h3>{boardId}번 게시물 수정</h3>
       <hr />
       <Stack gap={5}>
-        <Input
-          value={board.title}
-          placeholder="제목을 수정하세요"
-          onChange={(e) => setBoard({ ...board, title: e.target.value })}
-        />
+        <Box
+          border="1px solid #ccc"
+          borderRadius="4px"
+          display="flex"
+          alignItems="center"
+          p={1}
+        >
+          <Box borderRight="1px solid #ccc" padding="2px">
+            <select
+              value={board.category} // board.category로 수정
+              onChange={(e) => setBoard({ ...board, category: e.target.value })}
+              style={{
+                border: "none",
+                outline: "none",
+                fontSize: "14px",
+                height: "30px",
+                padding: "0 8px",
+              }}
+            >
+              {BoardCategories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </Box>
+          <Input
+            value={board.title}
+            placeholder="제목을 수정하세요"
+            onChange={(e) => setBoard({ ...board, title: e.target.value })}
+          />
+        </Box>
         <ReactQuill
           style={{
             width: "100%",
             height: "400px",
             maxHeight: "auto",
-            marginBottom: "20px",
+            marginBottom: "40px",
             fontSize: "16px",
           }}
           placeholder="본문 내용을 수정하세요"
@@ -235,6 +274,14 @@ export function BoardEdit() {
             multiple
             accept={"image/*"}
           />
+          <Text color="gray" mt={"4px"}>
+            최대 10MB 까지 업로드할 수 있습니다.
+          </Text>
+          {fileInputInvalid && (
+            <Text color="red" mt={2}>
+              파일 크기가 너무 큽니다. 최대 10MB 까지 업로드할 수 있습니다.
+            </Text>
+          )}
         </Box>
 
         <Box>
@@ -254,9 +301,7 @@ export function BoardEdit() {
                   boxSize="100px"
                   objectFit="cover"
                 />
-                <Text mt={2} isTruncated>
-                  {preview.name}
-                </Text>
+                <Text isTruncated>{preview.name}</Text>
               </Box>
             ))}
           </Flex>
