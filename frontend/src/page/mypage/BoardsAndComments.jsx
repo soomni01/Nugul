@@ -164,15 +164,15 @@ export function BoardsAndComments() {
                 >
                   <Flex justify="space-between" align="center">
                     <Box>
-                      <Text fontWeight="bold">
+                      <Text fontWeight="bold" ml={0.5}>
                         {board.title}
-                        <Badge variant="subtle" colorScheme="green" ml={2}>
-                          <FaCommentDots />
-                          {board.countComment}
-                        </Badge>
-                        <Badge variant={"subtle"} colorPalette={"gray"} ml={2}>
+                        <Badge variant={"subtle"} colorPalette="red" ml={2}>
                           <FaImages />
                           {board.countFile}
+                        </Badge>
+                        <Badge variant="subtle" colorPalette="green" ml={2}>
+                          <FaCommentDots />
+                          {board.countComment}
                         </Badge>
                       </Text>
                       <Text fontSize="md" color="gray.500" mt={2}>
@@ -190,7 +190,7 @@ export function BoardsAndComments() {
               ))}
             </VStack>
           ) : (
-            <Text color="gray.500">
+            <Text color="gray.500" fontWeight="bold" ml={3}>
               작성한 게시물이 없습니다. 첫 게시물을 작성해 보세요!
             </Text>
           )}
@@ -201,7 +201,7 @@ export function BoardsAndComments() {
               pageSize={6}
               page={boardPage}
             >
-              <HStack>
+              <HStack justify="center" mt={6}>
                 <PaginationPrevTrigger />
                 <PaginationItems />
                 <PaginationNextTrigger />
@@ -236,15 +236,23 @@ export function BoardsAndComments() {
                     onClick={() => handleCommentClick(comment.boardId)}
                   >
                     <Box>
-                      <Text fontSize="sm" color="gray.500" mb={1}>
+                      <Text fontSize="md" color="gray.500" mt={-2} mb={1.5} myt>
                         <strong>{comment.boardTitle}</strong>
                       </Text>
-                      <Text fontSize="sm" color="gray.500" mb={1}>
+                      <Text fontSize="md" color="gray.500" mb={2}>
                         {getCategoryLabel(comment.boardCategory)} |{" "}
                         {formatDate(comment.boardInserted)}
                       </Text>
                     </Box>
-                    <Text bg="skyblue" p={2} borderRadius="md" fontSize="sm">
+                    <Text
+                      bg="#E6FFFF"
+                      p={2}
+                      borderRadius="md"
+                      fontSize="sm"
+                      maxHeight="35px" // 최대 높이를 50px로 설정
+                      overflowY="auto"
+                      mb={-7}
+                    >
                       {comment.comment}
                     </Text>
                   </Box>
@@ -252,7 +260,9 @@ export function BoardsAndComments() {
               })}
             </Box>
           ) : (
-            <Text color="gray.500">작성한 댓글이 없습니다.</Text>
+            <Text color="gray.500" fontWeight="bold" ml={3}>
+              작성한 댓글이 없습니다.
+            </Text>
           )}
           {comments.length > 0 && (
             <PaginationRoot
@@ -261,7 +271,7 @@ export function BoardsAndComments() {
               pageSize={6}
               page={commentPage}
             >
-              <HStack>
+              <HStack justify="center" mt={6}>
                 <PaginationPrevTrigger />
                 <PaginationItems />
                 <PaginationNextTrigger />
