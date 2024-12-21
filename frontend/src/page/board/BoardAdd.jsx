@@ -69,8 +69,8 @@ export function BoardAdd() {
   const navigate = useNavigate();
 
   /*if (!isAuthenticated) {
-        return navigate("/");
-      }*/
+                        return navigate("/");
+                      }*/
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -221,6 +221,10 @@ export function BoardAdd() {
     fileInputInvalid = true;
   }
 
+  const fileSizeMessage = fileInputInvalid
+    ? "파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다."
+    : "최대 10MB까지 업로드 가능합니다.";
+
   return (
     <Box border="1px solid #ccc" borderRadius="8px" p={2}>
       <h3>게시글 쓰기</h3>
@@ -282,12 +286,12 @@ export function BoardAdd() {
               mt={2}
               css={{ border: "none" }}
             />
-            {fileInputInvalid && (
-              <Text color="red" mt={2}>
-                파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다.
-              </Text>
-            )}
-            <Stack mt={2}>{filePreviewsList}</Stack>
+            <Text color={fileInputInvalid ? "red" : "gray"} mt={2}>
+              {fileSizeMessage}
+            </Text>
+            <HStack mt={2} spacing={2} wrap="wrap">
+              {filePreviewsList}
+            </HStack>
           </Field>
         </Box>
 
@@ -304,7 +308,7 @@ export function BoardAdd() {
             colorScheme="teal"
             onClick={handleSaveClick}
             size="sm"
-            disabled={disabled || progress || fileInputInvalid} // 파일 크기 초과시 저장 불가
+            disabled={disabled || progress}
           >
             저장하기
           </Button>
