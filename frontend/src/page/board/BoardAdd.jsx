@@ -69,8 +69,8 @@ export function BoardAdd() {
   const navigate = useNavigate();
 
   /*if (!isAuthenticated) {
-                        return navigate("/");
-                      }*/
+                                                    return navigate("/");
+                                                  }*/
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -269,7 +269,7 @@ export function BoardAdd() {
         </Box>
 
         <ReactQuill
-          style={editorStyles}
+          style={{ ...editorStyles, marginBottom: "50px" }}
           value={content}
           onChange={setContent}
           modules={modules}
