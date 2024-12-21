@@ -48,11 +48,6 @@ export function BoardList() {
     };
   }, [searchParams, selectedCategory]);
 
-  // 로그인되지 않은 경우에 게시물 리스트를 표시하지 않음
-  if (!isAuthenticated) {
-    return navigate("/");
-  }
-
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
 
