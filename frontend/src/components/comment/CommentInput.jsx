@@ -23,6 +23,14 @@ export function CommentInput({ boardId, onSaveClick }) {
           h="112px" // 높이 110px 설정
           border="1px solid" // 테두리 추가
           borderColor="gray.300" // 테두리 색상 설정
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              // Shift + Enter는 줄바꿈을 허용하고, Enter는 줄바꿈을 방지
+              e.preventDefault();
+              onSaveClick(comment);
+              setComment(""); // 저장 후 댓글 비우기
+            }
+          }}
         />
         <Button
           h={"110px"}
