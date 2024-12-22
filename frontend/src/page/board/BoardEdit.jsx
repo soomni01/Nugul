@@ -45,15 +45,24 @@ const generatePreviewFiles = (files) => {
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
     <Box>
-      {files.map((file) => (
-        <HStack key={file.name}>
-          <Switch
-            colorPalette={"red"}
-            onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
-          />
-          <Image border={"1px solid black"} m={5} src={file.src} />
-        </HStack>
-      ))}
+      <HStack spacing={4} wrap="wrap">
+        {files.map((file) => (
+          <Box key={file.name} display="flex" alignItems="center">
+            <Switch
+              colorPalette={"red"}
+              onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
+            />
+            <Image
+              border={"1px solid black"}
+              m={5}
+              src={file.src}
+              width="120px" // 원하는 이미지 크기 설정
+              height="120px" // 원하는 이미지 크기 설정
+              objectFit="cover" // 비율 유지하면서 크기 맞추기
+            />
+          </Box>
+        ))}
+      </HStack>
     </Box>
   );
 }
@@ -66,7 +75,6 @@ export function BoardEdit() {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
   const [fileInputInvalid, setFileInputInvalid] = useState(false);
-
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -80,37 +88,35 @@ export function BoardEdit() {
       ["clean"],
     ],
   };
-
-  const { id, isAuthenticated, hasAccess } = useContext(AuthenticationContext);
-
   const { boardId } = useParams();
   const navigate = useNavigate();
+  const { id, isAuthenticated, hasAccess } = useContext(AuthenticationContext);
 
   const handleViewClick = () => {
     navigate(`/board/boardView/${boardId}`);
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    // id가 존재하지 않으면 액세스를 체크하지 않도록 설정
+    if (!id) {
+      return; // id가 없으면 게시물 조회를 하지 않음
+    }
     axios
       .get(`/api/board/boardView/${boardId}`)
       .then((res) => {
         const boardData = res.data;
         setBoard(boardData);
 
-        // 작성자 확인
-        const isWriter = String(boardData.memberId) === String(id);
-
-        // 작성자가 아니라면 처리
-        if (!isWriter) {
-          if (!isAuthenticated) {
-            toaster.create({
-              type: "error",
-              description: "로그인이 필요합니다. 로그인 후 수정할 수 있습니다.",
-            });
-            navigate("/"); // 로그인 페이지로 리디렉션
-          } else {
-            navigate("/board/list"); // 목록 페이지로 리디렉션
-          }
+        // 예시: 게시물 작성자와 현재 로그인한 사용자가 같은지 확인
+        if (!hasAccess(boardData.memberId)) {
+          navigate("/board/list"); // 작성자가 아니라면 목록 페이지로 리디렉션
           return;
         }
       })
@@ -118,7 +124,7 @@ export function BoardEdit() {
         console.log("게시물 조회 실패");
         navigate("/board/list");
       });
-  }, [boardId, id, isAuthenticated, navigate]);
+  }, [boardId, id, navigate]);
 
   const handleRemoveSwitchClick = (checked, fileName) => {
     if (checked) {
@@ -131,7 +137,7 @@ export function BoardEdit() {
   const handleFileInputChange = (e) => {
     const files = Array.from(e.target.files);
 
-    // 기존 업로드 파일과 통합
+    // 기존 업로드 파일과 새로 추가된 파일을 결합
     const filteredFiles = files.filter(
       (file) =>
         !uploadFiles.some((uploadedFile) => uploadedFile.name === file.name),
@@ -263,12 +269,11 @@ export function BoardEdit() {
         <ReactQuill
           style={{
             width: "100%",
-            height: "400px",
+            height: "330px",
             maxHeight: "auto",
             marginBottom: "40px",
             fontSize: "16px",
           }}
-          placeholder="본문 내용을 수정하세요"
           value={board.content}
           onChange={(content) => setBoard({ ...board, content })}
           modules={modules}
@@ -285,7 +290,7 @@ export function BoardEdit() {
             accept={"image/*"}
           />
           <Text color="gray" mt={"4px"}>
-            최대 10MB 까지 업로드할 수 있습니다.
+            ※ 최대 10MB 까지 업로드할 수 있습니다.
           </Text>
           {fileInputInvalid && (
             <Text color="red" mt={2}>
@@ -354,8 +359,6 @@ export function BoardEdit() {
                   </DialogFooter>
                 </DialogContent>
               </DialogRoot>
-
-              {/* 취소 버튼 */}
               <Button ml={4} variant="outline" onClick={handleViewClick}>
                 취소
               </Button>
