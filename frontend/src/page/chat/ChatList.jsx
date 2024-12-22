@@ -179,9 +179,6 @@ export function ChatList() {
               onDelete={() => removeChatRoom(chatRoomId, id)}
             />
           )}
-          {/*{productId === -1 ? null : (*/}
-          {/*  <ProductDetail key={productId} productId={productId} />*/}
-          {/*)}*/}
         </Box>
       </HStack>
     </Box>
