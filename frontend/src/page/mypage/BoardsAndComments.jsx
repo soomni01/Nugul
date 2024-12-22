@@ -239,7 +239,7 @@ export function BoardsAndComments() {
                       </Text>
                     </Box>
                     <Text
-                      bg="#E6FFFF"
+                      bg="gray.100"
                       p={2}
                       borderRadius="md"
                       fontSize="sm"
