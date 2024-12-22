@@ -13,6 +13,7 @@ import { Field } from "../../components/ui/field.jsx";
 import { LuSend } from "react-icons/lu";
 import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 import { Avatar } from "../../components/ui/avatar.jsx";
+import { ProductDetailDrawer } from "../../components/chat/ProductDetailDrawer.jsx";
 
 export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
@@ -363,9 +364,24 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           </Box>
 
           <Box>
-            <Button w={"100%"} mb={5} mr={0}>
-              상품 정보 보기
-            </Button>
+            {!product.productId ? (
+              <Button
+                variant={"unstyled"} // 기본 스타일 제거
+                cursor="default" // 커서 변경 방지
+                bg="gray.200"
+                w={"100%"}
+                mb={5}
+                mr={0}
+              >
+                삭제된 상품
+              </Button>
+            ) : (
+              <ProductDetailDrawer product={product}>
+                <Button w={"100%"} mb={5} mr={0}>
+                  상품 정보 보기
+                </Button>
+              </ProductDetailDrawer>
+            )}
             <Flex>
               {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
               {isSeller ? (

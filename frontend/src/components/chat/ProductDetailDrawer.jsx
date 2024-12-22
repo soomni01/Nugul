@@ -72,7 +72,7 @@ export const ProductDetailDrawer = ({ product, children }) => {
               alt={fileName}
             />
           </Box>
-          <Text my={5} fontSize={"2xl"} fontWeight={"bold"}>
+          <Text my={3} fontSize={"2xl"} fontWeight={"bold"}>
             {product.price === 0 ? "나눔" : `${product.price}원`}
           </Text>
           <HStack alignItems="flex-start" my={3}>
@@ -89,11 +89,9 @@ export const ProductDetailDrawer = ({ product, children }) => {
               value={product.description}
               readOnly
               cursor="default"
-              focusVisible={{ outline: "none" }}
-              autoFocus={false}
             />
           </HStack>
-          <Box display="flex" justifyContent="space-between">
+          <Box my={3} display="flex" justifyContent="space-between">
             <Text fontSize={"md"} fontWeight={"bold"}>
               거래장소
             </Text>
