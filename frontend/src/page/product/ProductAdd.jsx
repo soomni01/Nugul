@@ -102,16 +102,17 @@ export function ProductAdd(props) {
   // 상품 등록 요청
   const handleSave = () => {
     setProgress(true);
+    const payType = price === 0 ? "share" : "sell";
 
     const formData = new FormData();
     formData.append("productName", productName);
     formData.append("description", description);
-    formData.append("price", price);
+    formData.append("price", payType === "share" ? 0 : price);
     formData.append("category", category);
     formData.append("latitude", location?.latitude || "");
     formData.append("longitude", location?.longitude || "");
     formData.append("locationName", location?.name || "");
-    formData.append("pay", pay);
+    formData.append("pay", payType);
     formData.append("writer", id);
 
     if (mainImage) formData.append("mainImageName", mainImage.name);
