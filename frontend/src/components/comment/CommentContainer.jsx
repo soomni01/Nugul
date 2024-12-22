@@ -115,7 +115,7 @@ export function CommentContainer({ boardId }) {
               <FaCommentDots />
             </Icon>
           </Text>
-          <Text fontSize={"xl"}>{commentList.length}</Text>
+          <Text fontSize={"xl"}>{count}</Text>
         </HStack>
 
         <CommentInput boardId={boardId} onSaveClick={handleSaveClick} />
