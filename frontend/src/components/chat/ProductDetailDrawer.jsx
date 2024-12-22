@@ -12,6 +12,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer.jsx";
 import {
+  Badge,
   Box,
   Button,
   HStack,
@@ -24,6 +25,7 @@ import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { SlArrowRight } from "react-icons/sl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import { categories } from "../category/CategoryContainer.jsx";
 
 export const ProductDetailDrawer = ({ product, children }) => {
   const fileName = product.fileList?.[0]?.name;
@@ -48,6 +50,10 @@ export const ProductDetailDrawer = ({ product, children }) => {
     return <Spinner />;
   }
 
+  const categoryLabel =
+    categories.find((category) => category.value === product.category)?.label ||
+    "전체";
+
   return (
     <DrawerRoot size={"lg"}>
       <DrawerBackdrop />
@@ -55,9 +61,12 @@ export const ProductDetailDrawer = ({ product, children }) => {
       <DrawerContent offset="4" rounded="md">
         <DrawerHeader>
           <DrawerTitle>
-            <Text fontSize={"2xl"} ml={"-1"}>
-              {product.productName}
-            </Text>
+            <HStack>
+              <Badge size="lg">{categoryLabel}</Badge>
+              <Text fontSize={"2xl"} ml={"-1"}>
+                {product.productName}
+              </Text>
+            </HStack>
             <Text mt={1} fontSize={"xl"}>
               {product.nickname}
             </Text>
