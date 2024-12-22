@@ -5,6 +5,7 @@ import {
   HStack,
   Icon,
   Input,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -28,6 +29,7 @@ export function BoardAdd() {
   const [files, setFiles] = useState([]);
   const [filePreviews, setFilePreviews] = useState([]); // 미리보기 저장
   const [progress, setProgress] = useState(false);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   const modules = {
     toolbar: [
@@ -68,16 +70,27 @@ export function BoardAdd() {
 
   const navigate = useNavigate();
 
-  /*if (!isAuthenticated) {
-                                                    return navigate("/");
-                                                  }*/
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
+    } else {
+      setLoading(false); // 로딩 완료
     }
-  }, []);
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
 
   const handleListClick = () => {
     navigate("/board/list");
