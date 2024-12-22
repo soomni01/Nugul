@@ -355,7 +355,14 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
           borderBottom={"1px solid gray"}
         >
           <Box>
-            <Text mb={8} fontSize={"2xl"} fontWeight={"bold"}>
+            <Text
+              mb={8}
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
               {chatRoom.productName}
             </Text>
             <Text fontSize={"xl"} fontWeight={"bold"}>
