@@ -22,6 +22,8 @@ import {
 } from "@chakra-ui/react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { SlArrowRight } from "react-icons/sl";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
 
 export const ProductDetailDrawer = ({ product, children }) => {
   const fileName = product.fileList?.[0]?.name;
@@ -63,14 +65,30 @@ export const ProductDetailDrawer = ({ product, children }) => {
         </DrawerHeader>
         <DrawerBody>
           <Box display="flex" flexDirection="column" alignItems="center">
-            <Image
-              w={"250px"}
-              h={"100%"}
-              aspectRatio={1}
-              objectFit="cover"
-              src={fileSrc || defaultsrc}
-              alt={fileName}
-            />
+            <Swiper
+              slidesPerView={1}
+              loop={true}
+              pagination={{
+                clickable: true,
+              }}
+              navigation={true}
+              modules={[Pagination, Navigation]}
+              className="product-detail-swiper"
+            >
+              {product.fileList.length > 0 ? (
+                product.fileList.map((file) => (
+                  <SwiperSlide className="product-detail-swiper-slide">
+                    <Box>
+                      <Image src={file.src} alt={file.name} />
+                    </Box>
+                  </SwiperSlide>
+                ))
+              ) : (
+                <Box>
+                  <Image src="/image/default.png" alt="기본 이미지" />
+                </Box>
+              )}
+            </Swiper>
           </Box>
           <Text my={3} fontSize={"2xl"} fontWeight={"bold"}>
             {product.price === 0 ? "나눔" : `${product.price}원`}

@@ -412,7 +412,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                   isDisabled
                   colorPalette={reviewComplete && "cyan"}
                   cursor={reviewComplete && "default"}
-                  // disabled={reviewComplete ? true : false}
                 >
                   {reviewComplete ? "작성완료" : "후기작성하기"}
                 </Button>
