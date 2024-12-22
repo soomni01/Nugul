@@ -91,26 +91,26 @@ export function BoardEdit() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    // id가 존재하지 않으면 액세스를 체크하지 않도록 설정
+    if (!id) {
+      return; // id가 없으면 게시물 조회를 하지 않음
+    }
     axios
       .get(`/api/board/boardView/${boardId}`)
       .then((res) => {
         const boardData = res.data;
         setBoard(boardData);
+        console.log(boardData);
 
-        // 작성자 확인
-        const isWriter = String(boardData.memberId) === String(id);
-
-        // 작성자가 아니라면 처리
-        if (!isWriter) {
-          if (!isAuthenticated) {
-            toaster.create({
-              type: "error",
-              description: "로그인이 필요합니다. 로그인 후 수정할 수 있습니다.",
-            });
-            navigate("/"); // 로그인 페이지로 리디렉션
-          } else {
-            navigate("/board/list"); // 목록 페이지로 리디렉션
-          }
+        if (!hasAccess(boardData.memberId)) {
+          navigate("/board/list"); // 작성자가 아니라면 목록 페이지로 리디렉션
           return;
         }
       })
@@ -118,7 +118,7 @@ export function BoardEdit() {
         console.log("게시물 조회 실패");
         navigate("/board/list");
       });
-  }, [boardId, id, isAuthenticated, navigate]);
+  }, [boardId, id, navigate]);
 
   const handleRemoveSwitchClick = (checked, fileName) => {
     if (checked) {
