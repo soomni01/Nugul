@@ -227,10 +227,17 @@ export function ProductView() {
       justifyContent="center"
       alignItems="center"
       height="70vh"
+      minWidth="50%"
     >
-      <HStack width="100%" height="90%">
-        <VStack width="45%">
-          <Box w="100%" ml="25%">
+      <HStack
+        width="100%"
+        height="90%"
+        flexDirection={{ base: "column", md: "row" }} // 반응형으로 방향 변경
+        alignItems="center" // 작은 화면에서 콘텐츠를 중앙 정렬
+        spacing={{ base: 6, md: 0 }} // 수직 간격 추가"
+      >
+        <VStack width={{ base: "100%", md: "45%" }}>
+          <Box w="100%" ml={{ base: 0, md: "25%" }} minWidth="50%">
             <BreadcrumbRoot size="lg">
               <BreadcrumbLink
                 href={
@@ -282,7 +289,7 @@ export function ProductView() {
             )}
           </Swiper>
 
-          <HStack w="75%">
+          <HStack width={{ base: "100%", md: "75%" }}>
             <Avatar
               my={3}
               boxSize="100px"
@@ -302,10 +309,21 @@ export function ProductView() {
           </HStack>
         </VStack>
 
-        <VStack align="flex-start" width="50%" mt={"-5"}>
+        <VStack
+          align="flex-start"
+          width={{ base: "100%", md: "50%" }}
+          spacing={4} // 수직 간격 추가}
+        >
           <HStack justifyContent="space-between" w="100%">
             <Badge size="lg">{categoryLabel}</Badge>
-            <Heading size="3xl">{product.productName}</Heading>
+            <Heading
+              size="3xl"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {product.productName}
+            </Heading>
             <Spacer />
 
             {(hasAccess(product.writer) || isAdmin) && (
@@ -363,23 +381,28 @@ export function ProductView() {
 
           <HStack my={0} w="100%" justifyContent="space-between">
             <Heading
-              size="2xl"
+              size={{ base: "xl", md: "2xl" }}
               color={product.pay === "sell" ? "gray.600" : undefined}
             >
               {product.pay === "sell" ? `${product.price}원` : "나눔"}
             </Heading>
-            <Spacer />
-            <ProductLike
-              productId={product.productId}
-              initialLike={userLikes.has(product.productId)}
-              initialCount={likeData[product.productId] || 0}
-              isHorizontal={true}
-            />
-            {product.writer !== id && (
-              <Button size="lg" onClick={createChatRoom}>
-                채팅하기
-              </Button>
-            )}
+            <HStack mt={{ base: 0, md: 0 }} justifyContent="center">
+              <Spacer display={{ base: "none", md: "block" }} />
+              <ProductLike
+                productId={product.productId}
+                initialLike={userLikes.has(product.productId)}
+                initialCount={likeData[product.productId] || 0}
+                isHorizontal={true}
+              />
+              {product.writer !== id && (
+                <Button
+                  size={{ base: "sm", md: "lg" }}
+                  onClick={createChatRoom}
+                >
+                  채팅하기
+                </Button>
+              )}
+            </HStack>
           </HStack>
 
           <Textarea
@@ -387,11 +410,12 @@ export function ProductView() {
             autoresize
             value={product.description}
             minHeight="200px"
-            fontSize="lg"
+            fontSize={{ base: "md", md: "lg" }}
+            mt={{ base: 4, md: 6 }}
           />
 
           <HStack display="flex" w="100%" mt="4" justifyContent="space-between">
-            <Heading size="md">거래 희망 장소</Heading>
+            <Heading size={{ base: "sm", md: "md" }}>거래 희망 장소</Heading>
             <a
               href={getKakaoLink()}
               style={{
@@ -401,7 +425,9 @@ export function ProductView() {
               rel="noreferrer"
             >
               <HStack>
-                <Text fontSize="lg">{product.locationName}</Text>
+                <Text fontSize={{ base: "sm", md: "lg" }}>
+                  {product.locationName}
+                </Text>
                 <SlArrowRight />
               </HStack>
             </a>
