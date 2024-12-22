@@ -36,7 +36,7 @@ export function BoardsAndComments() {
 
   const getCategoryLabel = (value) => {
     const category = BoardCategories.find((cat) => cat.value === value);
-    return category ? category.label : value;
+    return category ? category.label : "전체"; // 카테고리가 없으면 "전체" 반환
   };
 
   useEffect(() => {
@@ -175,14 +175,8 @@ export function BoardsAndComments() {
                           {board.countComment}
                         </Badge>
                       </Text>
-                      <Text fontSize="md" color="gray.500" mt={2}>
-                        {getCategoryLabel(board.category)}{" "}
-                        {board.category === "all" && (
-                          <Text as="span" color="teal.500" fontWeight="bold">
-                            전체
-                          </Text>
-                        )}
-                        | {board.createdAt}
+                      <Text fontSize="sm" color="gray.500">
+                        {getCategoryLabel(board.category)} | {board.createdAt}
                       </Text>
                     </Box>
                   </Flex>
