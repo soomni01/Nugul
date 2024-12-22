@@ -36,7 +36,7 @@ export function BoardsAndComments() {
 
   const getCategoryLabel = (value) => {
     const category = BoardCategories.find((cat) => cat.value === value);
-    return category ? category.label : value;
+    return category ? category.label : "전체"; // 카테고리가 없으면 "전체" 반환
   };
 
   useEffect(() => {
