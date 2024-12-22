@@ -422,7 +422,18 @@ export function ProductView() {
               marginTop: "-2px",
             }}
           >
-            {markerPosition && <MapMarker position={markerPosition} />}
+            {markerPosition && (
+              <MapMarker
+                position={markerPosition}
+                image={{
+                  src: "/image/MapMarker2.png",
+                  size: {
+                    width: 33,
+                    height: 36,
+                  },
+                }}
+              />
+            )}
             <ZoomControl />
           </Map>
         </VStack>
