@@ -146,7 +146,7 @@ export function MyPage() {
         p={16}
         mt={-2}
         borderColor="gray.200"
-        bgColor="gray"
+        bgColor="#fff5e8"
       >
         <VStack align="stretch" spacing={4}>
           <Flex justifyContent="center" alignItems="center">
@@ -215,68 +215,93 @@ export function MyPage() {
             />
           </Stack>
           <Button
-            variant={
+            bg={
               activeTab === "profile" || activeTab === "editProfile"
-                ? "solid"
-                : "ghost"
+                ? "#c3ad90"
+                : "transparent"
             }
-            colorScheme="teal"
+            color={
+              activeTab === "profile" || activeTab === "editProfile"
+                ? "white"
+                : "#c3ad90"
+            }
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("profile")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             내 정보
           </Button>
           <Button
-            variant={activeTab === "boardsAndComments" ? "solid" : "ghost"}
-            colorScheme="teal"
+            bg={activeTab === "boardsAndComments" ? "#c3ad90" : "transparent"}
+            color={activeTab === "boardsAndComments" ? "white" : "#c3ad90"}
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("boardsAndComments")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             내가 쓴 글
           </Button>
           <Button
-            variant={activeTab === "wishlist" ? "solid" : "ghost"}
-            colorScheme="teal"
+            bg={activeTab === "wishlist" ? "#c3ad90" : "transparent"}
+            color={activeTab === "wishlist" ? "white" : "#c3ad90"}
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("wishlist")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             관심 목록
           </Button>
           <Button
-            variant={activeTab === "sold" ? "solid" : "ghost"}
-            colorScheme="teal"
+            bg={activeTab === "sold" ? "#c3ad90" : "transparent"}
+            color={activeTab === "sold" ? "white" : "#c3ad90"}
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("sold")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             판매 상품
           </Button>
           <Button
-            variant={activeTab === "purchased" ? "solid" : "ghost"}
-            colorScheme="teal"
+            bg={activeTab === "purchased" ? "#c3ad90" : "transparent"}
+            color={activeTab === "purchased" ? "white" : "#c3ad90"}
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("purchased")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             구매 상품
           </Button>
           <Button
-            variant={activeTab === "budget" ? "solid" : "ghost"}
-            colorScheme="teal"
+            bg={activeTab === "budget" ? "#c3ad90" : "transparent"}
+            color={activeTab === "budget" ? "white" : "#c3ad90"}
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("budget")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             가계부
           </Button>
           <Button
-            variant={activeTab === "review" ? "solid" : "ghost"}
-            colorScheme="teal"
+            bg={activeTab === "review" ? "#c3ad90" : "transparent"}
+            color={activeTab === "review" ? "white" : "#c3ad90"}
+            _hover={{ bg: "#e2d7c0" }}
+            _active={{ bg: "#b2997c" }}
             onClick={() => handleTabClick("review")}
             fontWeight="bold"
+            borderRadius="full"
             size="xl"
           >
             후기
