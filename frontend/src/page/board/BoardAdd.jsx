@@ -81,13 +81,8 @@ export function BoardAdd() {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <Spinner size="xl" />
+      <Box>
+        <Spinner />
       </Box>
     );
   }
