@@ -105,7 +105,7 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
       borderWidth="1px"
       borderRadius="lg"
       p={2}
-      mt={2}
+      mt={5}
       Width="100%"
       mx="auto"
       bg="white"
@@ -118,21 +118,20 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
         borderBottom="1px solid"
         borderColor="gray.200"
         width="calc(100% + 18px)" // 부모 패딩 보정
-        height={"30px"}
-        bg="skyblue"
+        height={"40px"}
+        bg="gray.100"
         ml="-9px" // 부모 좌측 패딩 보정
         mt={"-8px"}
         borderTopRadius="lg"
         alignItems="center" // 수직 중앙 정렬
       >
-        <Heading size="sm" ml="10px">
-          {comment.nickname}
-        </Heading>
-        <Heading size="sm" mr="10px" color="gray.500">
-          {formatDate(comment.inserted)}
-        </Heading>
+        <Flex align="center" ml={3}>
+          <Heading size="md">{comment.nickname}</Heading>
+          <Heading size="md" color="gray.500" ml={2}>
+            {formatDate(comment.inserted)}
+          </Heading>
+        </Flex>
       </Flex>
-
       {isEditing ? (
         <Textarea
           value={editedComment}
@@ -144,7 +143,6 @@ export function CommentItem({ comment, onDeleteClick, onEditClick }) {
           {comment.comment}
         </Box>
       )}
-
       {hasAccess(comment.memberId) && (
         <Flex justify="flex-end" gap={2}>
           <EditButton
