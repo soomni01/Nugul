@@ -420,7 +420,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                   colorPalette={reviewComplete && "cyan"}
                   cursor={reviewComplete && "default"}
                 >
-                  {reviewComplete ? "작성완료" : "후기작성하기"}
+                  {reviewComplete ? "작성 완료" : "후기 작성"}
                 </Button>
               )}
               <DialogCompo
