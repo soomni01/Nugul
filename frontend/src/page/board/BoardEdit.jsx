@@ -49,12 +49,13 @@ function ImageView({ files, onRemoveSwitchClick }) {
         {files.map((file) => (
           <Box key={file.name} display="flex" alignItems="center">
             <Switch
+              mr={2}
               colorPalette={"red"}
               onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
             />
             <Image
-              border={"1px solid black"}
-              m={5}
+              m={3}
+              ml={2}
               src={file.src}
               width="120px" // 원하는 이미지 크기 설정
               height="120px" // 원하는 이미지 크기 설정
@@ -324,7 +325,18 @@ export function BoardEdit() {
 
           {/* 저장 및 취소 버튼 */}
           {hasAccess(board.memberId) && (
-            <Box mt={6} display="flex" justifyContent="flex-end">
+            <Box
+              position="absolute"
+              bottom="0" // 부모 박스의 하단에 고정
+              right="0" // 오른쪽에 위치
+              width="auto" // 길이를 자동으로 조정
+              bg="white"
+              py={4}
+              px={6}
+              display="flex"
+              justifyContent="flex-end"
+              zIndex={1} // zIndex 값을 설정하여 다른 요소와 겹치지 않게
+            >
               <DialogRoot
                 open={dialogOpen}
                 onOpenChange={(e) => setDialogOpen(e.open)}

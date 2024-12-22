@@ -148,7 +148,7 @@ export function BoardList() {
         </Box>
         <Input
           value={search.keyword}
-          placeholder="검색어를 입력하세요."
+          placeholder="검색어를 입력해 주세요."
           onChange={(e) => setSearch({ ...search, keyword: e.target.value })}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
