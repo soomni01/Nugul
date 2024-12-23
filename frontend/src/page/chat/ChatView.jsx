@@ -102,7 +102,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     };
 
     initializeData();
-  }, [navigate]); // 초기 데이터 로드를 위한 useEffect
+  }, []); // 초기 데이터 로드를 위한 useEffect
 
   useEffect(() => {
     handleSetData();
