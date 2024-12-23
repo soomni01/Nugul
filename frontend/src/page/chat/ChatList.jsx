@@ -36,13 +36,12 @@ export function ChatList() {
     if (id) {
       fetch(id);
     }
-
     getChatList();
   }, [searchParams, id, status, navigate]);
 
   useEffect(() => {
     const local = localStorage.getItem("LocalChatRoomId");
-    console.log(local === null);
+    console.log(local !== null);
     if (local !== null) {
       setChatRoomId(local);
     }
