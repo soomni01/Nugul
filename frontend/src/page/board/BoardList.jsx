@@ -159,7 +159,10 @@ export function BoardList() {
             }
           }}
           width="60%"
+          mt={6}
         />
+        <Button mt={6} onClick={handleSearchClick}>
+          검색
         <Button
           onClick={handleSearchClick}
           color={fontColor}
@@ -170,12 +173,12 @@ export function BoardList() {
           <LuSearch />
         </Button>
       </HStack>
-
       {boardList.length > 0 ? (
         <Box>
-          <Flex justifyContent="flex-end" alignItems="center" mb={6}>
+          <Flex justifyContent="flex-end" alignItems="center">
             {isAuthenticated && (
               <Button
+                mb={4}
                 size="xl"
                 onClick={handleWriteClick}
                 color={fontColor}

@@ -318,7 +318,7 @@ export function MemberSignup() {
             회원가입
           </Button>
         </Flex>
-        <Box textAlign="end" mt={3}>
+        <Box textAlign="end" mt={3} mb={62}>
           <Link to="/">로그인</Link>
         </Box>
       </Box>

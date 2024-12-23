@@ -229,7 +229,7 @@ export function BoardEdit() {
       border="1px solid #ccc"
       borderRadius="8px"
       p={10}
-      mt={8}
+      mt={7}
       position="relative"
     >
       <Stack gap={4}>

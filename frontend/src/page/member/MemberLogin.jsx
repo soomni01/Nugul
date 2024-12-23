@@ -176,7 +176,7 @@ export function MemberLogin() {
         <Box textAlign="end" mt={3}>
           <Link to="/member/signup">회원가입</Link>
         </Box>
-        <HStack display="flex" justifyContent="center" mb={30}>
+        <HStack display="flex" justifyContent="center" mb={90}>
           <KakaoLogin />
           <NaverLogin />
         </HStack>

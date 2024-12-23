@@ -19,8 +19,9 @@ export function BoardCategoryContainer({ selectedCategory, onCategorySelect }) {
           _hover={{ bg: primaryColor }}
           borderRadius="full"
           fontSize="lg"
+          h="45px"
+          mx={1.5}
           fontWeight="bold"
-          h="50px"
           color={fontColor}
         >
           {category.label}
