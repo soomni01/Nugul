@@ -35,6 +35,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { EmptyState } from "../ui/empty-state.jsx";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -105,6 +106,7 @@ export function ProductHorizontalItem({
   const [isProcessing, setIsProcessing] = useState(false);
   const { hasAccess, id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const { primaryColor, fontColor, buttonColor } = useTheme();
 
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
@@ -242,6 +244,7 @@ export function ProductHorizontalItem({
           alignItems="center"
           justifyContent="center"
           maxW="150px"
+          width="150px"
           height="150px"
           borderRadius="md"
         >
@@ -262,13 +265,27 @@ export function ProductHorizontalItem({
         <Card.Body p={3}>
           {product.productId != null ? (
             <Box w="fit-content">
-              <Badge colorPalette="teal" ml={1} mb={2}>
+              <Badge
+                style={{
+                  backgroundColor: primaryColor,
+                  filter: "brightness(90%)",
+                }}
+                ml={1}
+                mb={2}
+              >
                 {categoryLabel}
               </Badge>
             </Box>
           ) : (
             <Box>
-              <Badge>없음</Badge>
+              <Badge
+                style={{
+                  backgroundColor: primaryColor,
+                  filter: "brightness(90%)",
+                }}
+              >
+                없음
+              </Badge>
             </Box>
           )}
           <Card.Title mb={2} ml={1} fontSize="lg" fontWeight="bold">
@@ -315,25 +332,40 @@ export function ProductHorizontalItem({
             likeTooltipOpen={likeTooltipOpen}
           />
         ) : pageType === "purchased" ? (
-          <Box display="flex" alignItems="center">
+          <Box
+            variant={"unstyled"}
+            display="flex"
+            alignItems="center"
+            cursor="default"
+          >
             <Text fontSize="xs" color="gray.500" mr={3} mt={4}>
               구매 일자 : {product.purchasedAt.split("T")[0]}
             </Text>
             {product.reviewStatus === "completed" ? (
               <Button
-                colorPalette="cyan"
                 size="xs"
                 isDisabled
                 cursor="default"
                 mt={4}
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                style={{ filter: "brightness(85%)" }} // 기본 색상을 85% 밝기로 조정
+                _hover={{ style: { filter: "brightness(70%)" } }} // Hover 시 70% 밝기로 조정
               >
                 작성 완료
               </Button>
             ) : (
               <Button
                 onClick={() => handleReviewClick(product.productId)}
+                isDisabled
                 size="xs"
                 mt={4}
+                color={fontColor}
+                fontWeight="bold"
+                bg={`${buttonColor}AA`}
+                style={{ filter: "brightness(120%)" }}
+                _hover={{ bg: buttonColor }}
               >
                 후기 작성
               </Button>

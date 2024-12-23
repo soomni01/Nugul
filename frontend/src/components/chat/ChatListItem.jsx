@@ -54,7 +54,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
             alt={productImage.name}
             filter={chat.status === "Sold" ? "brightness(0.7)" : "none"}
           />
-          <Box width="calc(100% - 130px)">
+          <Box width="calc(300px - 130px)" overflow="hidden">
             <Card.Body px={0} pt={2}>
               <Card.Title>
                 <Text
@@ -62,6 +62,7 @@ export function ChatListItem({ chat, onDelete, onClick }) {
                   whiteSpace="nowrap"
                   overflow="hidden"
                   textOverflow="ellipsis"
+                  isTruncated
                 >
                   {chat.productName}
                 </Text>

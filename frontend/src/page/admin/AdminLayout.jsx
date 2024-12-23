@@ -10,10 +10,12 @@ import {
 import { Outlet, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function AdminLayout() {
   const { isAdmin } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const { buttonColor, loginColor } = useTheme();
 
   // 로그아웃 처리: 토큰을 제거하고 홈 화면으로 이동함
   function logout() {
@@ -57,7 +59,7 @@ export function AdminLayout() {
       </HStack>
       <Box
         w="250px"
-        bg="gray"
+        bg={buttonColor}
         color="white"
         p={5}
         position="fixed"
@@ -75,9 +77,9 @@ export function AdminLayout() {
             onClick={() => navigate("/main")}
             variant={location.pathname === "/main" ? "solid" : "ghost"}
             color={location.pathname === "/main" ? "white" : "black"} // 선택된 버튼 색상 변경
-            bg={location.pathname === "/main" ? "#A6A6A6" : "transparent"}
+            bg={location.pathname === "/main" ? "#91684A" : "transparent"}
             _hover={{
-              bg: location.pathname === "/main" ? "#A6A6A6" : "#A6A6A6",
+              bg: location.pathname === "/main" ? "#91684A" : "#91684A",
             }}
             justifyContent="flex-start"
             w="100%"
@@ -93,11 +95,11 @@ export function AdminLayout() {
             variant={location.pathname === "/admin/members" ? "solid" : "ghost"}
             color={location.pathname === "/admin/members" ? "white" : "black"}
             bg={
-              location.pathname === "/admin/members" ? "#A6A6A6" : "transparent"
+              location.pathname === "/admin/members" ? "#91684A" : "transparent"
             }
             _hover={{
               bg:
-                location.pathname === "/admin/members" ? "#A6A6A6" : "#A6A6A6",
+                location.pathname === "/admin/members" ? "#91684A" : "#91684A",
             }}
             justifyContent="flex-start"
             w="100%"
@@ -116,14 +118,14 @@ export function AdminLayout() {
             color={location.pathname === "/admin/inquiries" ? "white" : "black"}
             bg={
               location.pathname === "/admin/inquiries"
-                ? "#A6A6A6"
+                ? "#91684A"
                 : "transparent"
             }
             _hover={{
               bg:
                 location.pathname === "/admin/inquiries"
-                  ? "#A6A6A6"
-                  : "#A6A6A6",
+                  ? "#91684A"
+                  : "#91684A",
             }}
             justifyContent="flex-start"
             w="100%"

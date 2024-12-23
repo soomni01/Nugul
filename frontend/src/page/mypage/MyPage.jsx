@@ -31,6 +31,7 @@ import {
 import { toaster } from "../../components/ui/toaster.jsx";
 import { useNavigate } from "react-router-dom";
 import { BoardsAndComments } from "./BoardsAndComments.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function MyPage() {
   const { id, nickname, profileImage, updateProfileImage } = useContext(
@@ -42,6 +43,7 @@ export function MyPage() {
   const fileInputRef = useRef(null);
   const [selectedInquiryId, setSelectedInquiryId] = useState(null);
   const navigate = useNavigate();
+  const { primaryColor, buttonColor, fontColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -137,17 +139,59 @@ export function MyPage() {
       });
   };
 
+  const TAB_ITEMS = [
+    {
+      id: "profile",
+      label: "내 정보",
+      matches: (activeTab) =>
+        activeTab === "profile" || activeTab === "editProfile",
+    },
+    {
+      id: "boardsAndComments",
+      label: "내가 쓴 글",
+    },
+    {
+      id: "wishlist",
+      label: "관심 목록",
+    },
+    {
+      id: "sold",
+      label: "판매 상품",
+    },
+    {
+      id: "purchased",
+      label: "구매 상품",
+    },
+    {
+      id: "budget",
+      label: "가계부",
+    },
+    {
+      id: "review",
+      label: "후기",
+    },
+  ];
+
+  // 탭 버튼 컴포넌트
+  const TabButton = ({ isActive, onClick, children }) => (
+    <Button
+      backgroundColor={isActive ? buttonColor : "transparent"}
+      color={isActive ? "white" : fontColor}
+      _hover={{ backgroundColor: buttonColor }}
+      _active={{ backgroundColor: buttonColor }}
+      onClick={onClick}
+      fontWeight="bold"
+      borderRadius="full"
+      size="xl"
+    >
+      {children}
+    </Button>
+  );
+
   return (
     <Flex direction="row">
       {/* 왼쪽 메뉴 */}
-      <Box
-        width="23%"
-        height="828px"
-        p={16}
-        mt={-2}
-        borderColor="gray.200"
-        bgColor="#fff5e8"
-      >
+      <Box width="23%" height="828px" p={16} mt={-2} bgColor={primaryColor}>
         <VStack align="stretch" spacing={4}>
           <Flex justifyContent="center" alignItems="center">
             <Heading mb={7} size="3xl" fontWeight="bold">
@@ -174,12 +218,7 @@ export function MyPage() {
               <Box position="relative">
                 <MenuRoot>
                   <MenuTrigger asChild>
-                    <Button
-                      size="xs"
-                      rounded="full"
-                      colorPalette="orange"
-                      variant="solid"
-                    >
+                    <Button size="xs" rounded="full" variant="solid">
                       <TbMoodEdit />
                     </Button>
                   </MenuTrigger>
@@ -214,98 +253,19 @@ export function MyPage() {
               mb={5}
             />
           </Stack>
-          <Button
-            bg={
-              activeTab === "profile" || activeTab === "editProfile"
-                ? "#c3ad90"
-                : "transparent"
-            }
-            color={
-              activeTab === "profile" || activeTab === "editProfile"
-                ? "white"
-                : "#c3ad90"
-            }
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("profile")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            내 정보
-          </Button>
-          <Button
-            bg={activeTab === "boardsAndComments" ? "#c3ad90" : "transparent"}
-            color={activeTab === "boardsAndComments" ? "white" : "#c3ad90"}
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("boardsAndComments")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            내가 쓴 글
-          </Button>
-          <Button
-            bg={activeTab === "wishlist" ? "#c3ad90" : "transparent"}
-            color={activeTab === "wishlist" ? "white" : "#c3ad90"}
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("wishlist")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            관심 목록
-          </Button>
-          <Button
-            bg={activeTab === "sold" ? "#c3ad90" : "transparent"}
-            color={activeTab === "sold" ? "white" : "#c3ad90"}
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("sold")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            판매 상품
-          </Button>
-          <Button
-            bg={activeTab === "purchased" ? "#c3ad90" : "transparent"}
-            color={activeTab === "purchased" ? "white" : "#c3ad90"}
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("purchased")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            구매 상품
-          </Button>
-          <Button
-            bg={activeTab === "budget" ? "#c3ad90" : "transparent"}
-            color={activeTab === "budget" ? "white" : "#c3ad90"}
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("budget")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            가계부
-          </Button>
-          <Button
-            bg={activeTab === "review" ? "#c3ad90" : "transparent"}
-            color={activeTab === "review" ? "white" : "#c3ad90"}
-            _hover={{ bg: "#e2d7c0" }}
-            _active={{ bg: "#b2997c" }}
-            onClick={() => handleTabClick("review")}
-            fontWeight="bold"
-            borderRadius="full"
-            size="xl"
-          >
-            후기
-          </Button>
+          <VStack align="stretch" spacing={4}>
+            {TAB_ITEMS.map((tab) => (
+              <TabButton
+                key={tab.id}
+                isActive={
+                  tab.matches ? tab.matches(activeTab) : activeTab === tab.id
+                }
+                onClick={() => handleTabClick(tab.id)}
+              >
+                {tab.label}
+              </TabButton>
+            ))}
+          </VStack>
         </VStack>
       </Box>
 

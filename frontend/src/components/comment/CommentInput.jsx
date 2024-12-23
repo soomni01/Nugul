@@ -3,10 +3,12 @@ import { Button } from "../ui/button.jsx";
 import { useContext, useState } from "react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { IoIosSend } from "react-icons/io";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export function CommentInput({ boardId, onSaveClick }) {
   const [comment, setComment] = useState("");
   const { isAuthenticated } = useContext(AuthenticationContext);
+  const { fontColor, buttonColor } = useTheme();
 
   return (
     <Box>
@@ -41,7 +43,10 @@ export function CommentInput({ boardId, onSaveClick }) {
           }}
           variant={"surface"}
           colorPalette={"blue"}
-          borderColor="gray.300" // 테두리 색상 설정
+          color={fontColor}
+          fontWeight="bold"
+          bg={buttonColor}
+          _hover={{ bg: `${buttonColor}AA` }}
         >
           <IoIosSend />
         </Button>

@@ -40,6 +40,7 @@ import {
   BreadcrumbLink,
   BreadcrumbRoot,
 } from "../../components/ui/breadcrumb.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProductView() {
   const { productId } = useParams();
@@ -51,6 +52,7 @@ export function ProductView() {
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [rating, setRating] = useState(0.0);
   const navigate = useNavigate();
+  const { primaryColor, buttonColor, fontColor, loginColor } = useTheme();
 
   const { hasAccess, isAdmin, id } = useContext(AuthenticationContext);
 
@@ -315,7 +317,15 @@ export function ProductView() {
           spacing={4} // 수직 간격 추가}
         >
           <HStack justifyContent="space-between" w="100%">
-            <Badge size="lg">{categoryLabel}</Badge>
+            <Badge
+              size="lg"
+              style={{
+                backgroundColor: primaryColor,
+                filter: "brightness(90%)",
+              }}
+            >
+              {categoryLabel}
+            </Badge>
             <Heading
               size="3xl"
               whiteSpace="nowrap"
@@ -330,11 +340,16 @@ export function ProductView() {
               <HStack>
                 {hasAccess(product.writer) && (
                   <Button
-                    size="md"
+                    size="lg"
                     colorPalette={"cyan"}
                     onClick={() =>
                       navigate(`/product/edit/${product.productId}`)
                     }
+                    color={fontColor}
+                    fontWeight="bold"
+                    bg={`${buttonColor}AA`}
+                    style={{ filter: "brightness(120%)" }}
+                    _hover={{ bg: `${buttonColor}AA` }}
                   >
                     수정
                   </Button>
@@ -343,7 +358,16 @@ export function ProductView() {
                 {(hasAccess(product.writer) || isAdmin) && (
                   <DialogRoot>
                     <DialogTrigger asChild>
-                      <Button colorPalette={"red"}>삭제</Button>
+                      <Button
+                        colorPalette={"red"}
+                        size={"lg"}
+                        color={fontColor}
+                        fontWeight="bold"
+                        bg={buttonColor}
+                        style={{ filter: "brightness(85%)" }}
+                      >
+                        삭제
+                      </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
@@ -356,7 +380,7 @@ export function ProductView() {
                           </Box>
                         )}
                         {!isAdmin && (
-                          <p>{product.productId}번 상품을 삭제하시겠습니까?</p>
+                          <p>{product.productName} 상품을 삭제하시겠습니까?</p>
                         )}
                       </DialogBody>
                       <DialogFooter>
@@ -364,8 +388,10 @@ export function ProductView() {
                           <Button variant={"outline"}>취소</Button>
                         </DialogActionTrigger>
                         <Button
-                          colorPalette={"red"}
                           onClick={handleDeleteClick}
+                          color={fontColor}
+                          fontWeight="bold"
+                          bg={buttonColor}
                         >
                           삭제
                         </Button>
@@ -398,6 +424,10 @@ export function ProductView() {
                 <Button
                   size={{ base: "sm", md: "lg" }}
                   onClick={createChatRoom}
+                  color={fontColor}
+                  fontWeight="bold"
+                  bg={buttonColor}
+                  _hover={{ bg: `${buttonColor}AA` }}
                 >
                   채팅하기
                 </Button>

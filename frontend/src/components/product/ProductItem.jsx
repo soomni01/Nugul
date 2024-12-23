@@ -8,12 +8,13 @@ import { getDaysAgo } from "./ProductDate.jsx";
 import { ProductLike } from "./ProductLike.jsx";
 import { MiniMapModal } from "../../components/map/MiniMapModal.jsx";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export function ProductItem({ product, likeCount, isLiked }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { primaryColor } = useTheme();
   const categoryLabel =
     categories.find((category) => category.value === product.category)?.label ||
     "전체"; // 기본값 설정
@@ -63,7 +64,14 @@ export function ProductItem({ product, likeCount, isLiked }) {
         />
         <Card.Body gap="2" px="3" pt="3" mb={0} pb={3}>
           <HStack justify="space-between" w="100%">
-            <Badge mt="-5" size={"lg"}>
+            <Badge
+              mt="-5"
+              size={"lg"}
+              style={{
+                backgroundColor: primaryColor,
+                filter: "brightness(90%)",
+              }}
+            >
               {categoryLabel}
             </Badge>
             <ProductLike

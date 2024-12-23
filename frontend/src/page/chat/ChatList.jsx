@@ -9,6 +9,7 @@ import { ChatView } from "./ChatView.jsx";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
 import { EmptyState } from "../../components/ui/empty-state.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ChatList() {
   const queryLocation = useLocation();
@@ -23,7 +24,7 @@ export function ChatList() {
   const [productId, setProductId] = useState(
     queryLocation.state?.productId || -1,
   );
-  const token = localStorage.getItem("token");
+  const { fontColor, buttonColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -93,6 +94,9 @@ export function ChatList() {
           h="100%"
           flexShrink={0}
           overflow="hidden"
+          style={{
+            transition: "width 0.3s ease-in-out", // 부드러운 전환 효과
+          }}
         >
           <HStack w={"100%"} gap={3} mb={3} align="center">
             <Button
@@ -101,7 +105,12 @@ export function ChatList() {
                 setChatRoomId(-1);
                 setProductId(-1);
                 setSearchParams({ type: "all" });
+                setStatus("For Sale");
               }}
+              color={fontColor}
+              fontWeight="bold"
+              bg={status === "For Sale" ? buttonColor : `${buttonColor}AA`}
+              _hover={{ bg: buttonColor }}
             >
               전체
             </Button>
@@ -111,7 +120,12 @@ export function ChatList() {
                 setChatRoomId(-1);
                 setProductId(-1);
                 setSearchParams({ type: "buy" });
+                setStatus("Buy");
               }}
+              color={fontColor}
+              fontWeight="bold"
+              bg={status === "Buy" ? buttonColor : `${buttonColor}AA`}
+              _hover={{ bg: buttonColor }}
             >
               구매
             </Button>
@@ -121,7 +135,12 @@ export function ChatList() {
                 setChatRoomId(-1);
                 setProductId(-1);
                 setSearchParams({ type: "sell" });
+                setStatus("Sell");
               }}
+              color={fontColor}
+              fontWeight="bold"
+              bg={status === "Sell" ? buttonColor : `${buttonColor}AA`}
+              _hover={{ bg: buttonColor }}
             >
               판매
             </Button>

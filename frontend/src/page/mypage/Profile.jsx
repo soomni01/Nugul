@@ -18,6 +18,7 @@ import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { kakaoUnlink } from "../../components/social/KakaoLogin.jsx";
 import { naverUnlink } from "../../components/social/NaverLogin.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 // 카카오 계정 연결 해제 함수 추가
 
@@ -29,6 +30,7 @@ export function Profile({ onEditClick }) {
   const [loading, setLoading] = useState(false);
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const { fontColor, buttonColor } = useTheme();
 
   useEffect(() => {
     if (!id) {
@@ -179,12 +181,20 @@ export function Profile({ onEditClick }) {
           />
         </Flex>
         <Flex justifyContent="center" mt={5}>
-          <Button onClick={onEditClick} colorScheme="blue" mr={4} mb={6}>
+          <Button
+            onClick={onEditClick}
+            mr={4}
+            mb={6}
+            color={fontColor}
+            fontWeight="bold"
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
+          >
             수정
           </Button>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorScheme="red">탈퇴</Button>
+              <Button bg="red.600">탈퇴</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -215,7 +225,7 @@ export function Profile({ onEditClick }) {
                 <DialogActionTrigger>
                   <Button variant="outline">취소</Button>
                 </DialogActionTrigger>
-                <Button colorScheme="red" onClick={handleDeleteClick}>
+                <Button bg="red.600" onClick={handleDeleteClick}>
                   탈퇴
                 </Button>
               </DialogFooter>

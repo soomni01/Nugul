@@ -13,15 +13,24 @@ import {
 } from "../ui/dialog.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { CiEdit, CiTrash } from "react-icons/ci";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 function DeleteButton({ onClick }) {
   const [open, setOpen] = useState(false);
+  const { fontColor, buttonColor } = useTheme();
 
   return (
     <>
       <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
         <DialogTrigger asChild>
-          <Button colorPalette={"red"} size={"sm"} variant={"subtle"}>
+          <Button
+            color={fontColor}
+            fontWeight="bold"
+            bg={buttonColor}
+            style={{ filter: "brightness(85%)" }}
+            size={"sm"}
+            variant={"subtle"}
+          >
             <CiTrash />
           </Button>
         </DialogTrigger>
@@ -36,7 +45,13 @@ function DeleteButton({ onClick }) {
             <DialogActionTrigger>
               <Button variant={"outline"}>취소</Button>
             </DialogActionTrigger>
-            <Button colorPalette={"red"} onClick={onClick}>
+            <Button
+              color={fontColor}
+              fontWeight="bold"
+              bg={buttonColor}
+              _hover={{ bg: `${buttonColor}AA` }}
+              onClick={onClick}
+            >
               삭제
             </Button>
           </DialogFooter>
@@ -47,11 +62,15 @@ function DeleteButton({ onClick }) {
 }
 
 function EditButton({ isEditing, onSaveClick, onCancelClick, onEditClick }) {
+  const { buttonColor, fontColor } = useTheme();
   return (
     <>
       {!isEditing ? (
         <Button
-          colorPalette={"purple"}
+          fontWeight="bold"
+          bg={`${buttonColor}AA`}
+          style={{ filter: "brightness(120%)" }}
+          _hover={{ bg: `${buttonColor}AA` }}
           size={"sm"}
           variant={"subtle"}
           onClick={onEditClick}

@@ -32,6 +32,7 @@ import {
   MenuTrigger,
 } from "../../components/ui/menu.jsx";
 import { HiSortAscending } from "react-icons/hi";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [productList, setProductList] = useState([]);
@@ -44,6 +45,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
+  const { fontColor, buttonColor } = useTheme();
 
   // 카테고리 값 가져오기
   const categoryParam = searchParams.get("category");
@@ -222,14 +224,18 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
             }
             onKeyDown={handleKeyDown}
           />
-          <IconButton aria-label="Search database">
-            <LuSearch onClick={handleSearchClick} />
+          <IconButton
+            aria-label="Search database"
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
+          >
+            <LuSearch onClick={handleSearchClick} color={fontColor} />
           </IconButton>
         </HStack>
       </Box>
       <Flex justify="center" w="100%">
         <HStack
-          w="88%"
+          w="90%"
           display="flex"
           justify="space-between"
           align="center"
@@ -263,8 +269,11 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
           </MenuRoot>
           <Button
             onClick={() => navigate(addProductRoute)}
-            colorScheme="teal"
             size="xl"
+            color={fontColor}
+            fontWeight="bold"
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
           >
             판매하기
           </Button>

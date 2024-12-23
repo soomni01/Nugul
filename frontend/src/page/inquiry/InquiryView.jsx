@@ -25,6 +25,7 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Scrollbar } from "swiper/modules";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export const InquiryView = () => {
   const [inquiryView, setInquiryView] = useState(null);
@@ -33,6 +34,7 @@ export const InquiryView = () => {
   const { nickname } = useContext(AuthenticationContext);
   const { inquiryId } = useParams();
   const navigate = useNavigate();
+  const { fontColor, buttonColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -147,7 +149,14 @@ export const InquiryView = () => {
                   <DialogActionTrigger>
                     <Button variant="outline">취소</Button>
                   </DialogActionTrigger>
-                  <Button colorScheme="red" onClick={handleDeleteClick}>
+                  <Button
+                    colorScheme="red"
+                    onClick={handleDeleteClick}
+                    color={fontColor}
+                    fontWeight="bold"
+                    bg={buttonColor}
+                    _hover={{ bg: `${buttonColor}AA` }}
+                  >
                     삭제
                   </Button>
                 </DialogFooter>
