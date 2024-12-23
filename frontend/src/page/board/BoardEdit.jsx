@@ -28,6 +28,7 @@ import { Switch } from "../../components/ui/switch.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { BoardCategories } from "../../components/category/BoardCategoryContainer.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 // 미리보기 이미지 생성 함수
 const generatePreviewFiles = (files) => {
@@ -92,6 +93,7 @@ export function BoardEdit() {
   const { boardId } = useParams();
   const navigate = useNavigate();
   const { id, isAuthenticated, hasAccess } = useContext(AuthenticationContext);
+  const { fontColor, buttonColor } = useTheme();
 
   const handleViewClick = () => {
     navigate(`/board/boardView/${boardId}`);
@@ -344,8 +346,11 @@ export function BoardEdit() {
                 <DialogTrigger asChild>
                   <Button
                     disabled={disabled}
-                    colorPalette={"cyan"}
-                    variant={"outline"}
+                    size="xl"
+                    color={fontColor}
+                    fontWeight="bold"
+                    bg={buttonColor}
+                    _hover={{ bg: `${buttonColor}AA` }}
                   >
                     저장
                   </Button>
@@ -363,15 +368,23 @@ export function BoardEdit() {
                     </DialogActionTrigger>
                     <Button
                       loading={progress}
-                      colorPalette={"blue"}
                       onClick={handleSaveClick}
+                      color={fontColor}
+                      fontWeight="bold"
+                      bg={buttonColor}
+                      _hover={{ bg: `${buttonColor}AA` }}
                     >
                       저장
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </DialogRoot>
-              <Button ml={4} variant="outline" onClick={handleViewClick}>
+              <Button
+                ml={4}
+                size="xl"
+                variant="outline"
+                onClick={handleViewClick}
+              >
                 취소
               </Button>
             </Box>

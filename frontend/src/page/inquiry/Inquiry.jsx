@@ -5,6 +5,7 @@ import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function Inquiry() {
   const [title, setTitle] = useState("");
@@ -15,6 +16,7 @@ export function Inquiry() {
   const { id, nickname } = useContext(AuthenticationContext);
   const currentDate = new Date().toLocaleDateString();
   const navigate = useNavigate();
+  const { buttonColor, fontColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -163,7 +165,14 @@ export function Inquiry() {
       {/* 저장 버튼이 savedData가 없을 때만 표시 */}
       {!savedData && (
         <Flex justify="flex-end" mt={5}>
-          <Button onClick={handleSaveClick} isLoading={progress}>
+          <Button
+            onClick={handleSaveClick}
+            isLoading={progress}
+            color={fontColor}
+            fontWeight="bold"
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
+          >
             저장
           </Button>
           <Button ml={4} variant="outline" onClick={handleCancelClick}>

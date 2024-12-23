@@ -24,6 +24,7 @@ import {
   ProductNameSection,
   ProductPaymentSection,
 } from "../../components/product/ProductFormLayout.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProductEdit() {
   const { id } = useParams();
@@ -40,6 +41,7 @@ export function ProductEdit() {
   const [mainImage, setMainImage] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
   const [initialized, setInitialized] = useState(false);
+  const { fontColor, buttonColor } = useTheme();
 
   // 상품 정보 가져오기
   useEffect(() => {
@@ -161,6 +163,8 @@ export function ProductEdit() {
     setProduct({
       ...product,
       locationName: location.locationName,
+      latitude: location.lat,
+      longitude: location.lng,
       markerPosition: { lat: location.lat, lng: location.lng }, // 마커 위치
     });
   };
@@ -180,6 +184,8 @@ export function ProductEdit() {
     formData.append("longitude", product.longitude);
     formData.append("locationName", product.locationName);
 
+    console.log(product.latitude);
+    console.log(product.longitude);
     if (mainImage) formData.append("mainImageName", mainImage.name);
     files.forEach((file) => formData.append("uploadFiles[]", file));
     removeFiles.forEach((fileName) =>
@@ -291,7 +297,10 @@ export function ProductEdit() {
                 w="10%"
                 size="lg"
                 disabled={disabled}
-                colorPalette={"blue"}
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                _hover={{ bg: `${buttonColor}AA` }}
               >
                 저장
               </Button>
@@ -310,8 +319,11 @@ export function ProductEdit() {
 
                 <Button
                   loading={progress}
-                  colorPalette={"blue"}
                   onClick={handleSaveClick}
+                  color={fontColor}
+                  fontWeight="bold"
+                  bg={buttonColor}
+                  _hover={{ bg: `${buttonColor}AA` }}
                 >
                   저장
                 </Button>

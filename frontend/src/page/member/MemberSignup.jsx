@@ -9,6 +9,7 @@ import { TbLock, TbLockCheck } from "react-icons/tb";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function MemberSignup() {
   const [memberId, setMemberId] = useState("");
@@ -20,6 +21,7 @@ export function MemberSignup() {
   const [rePassword, setRePassword] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
+  const { loginColor } = useTheme();
 
   const emailRegEx =
     /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,8}$/;
@@ -307,7 +309,12 @@ export function MemberSignup() {
           </Field>
         </Stack>
         <Flex justifyContent="center" gap={4} mt={10}>
-          <Button onClick={handleSaveClick} disabled={disabled} w={"100%"}>
+          <Button
+            bg={loginColor}
+            onClick={handleSaveClick}
+            disabled={disabled}
+            w={"100%"}
+          >
             회원가입
           </Button>
         </Flex>

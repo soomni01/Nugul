@@ -3,10 +3,13 @@ import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { Box, Button, Spinner } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 const Payment = ({ chatRoom, onComplete, statusControl }) => {
   const [price, setPrice] = useState(null);
   const { id, nickname } = useContext(AuthenticationContext);
+  const { fontColor, buttonColor } = useTheme();
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
@@ -90,6 +93,8 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
                 onComplete();
                 // statusControl();
               });
+            // 시연을 위해 결제 완료시 localStorage에 상태 저장
+            localStorage.setItem(`payment_${chatRoom.roomId}`, "completed");
 
             // 결제 성공 알림
             toaster.create({
@@ -108,7 +113,7 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
       },
     );
   };
-  console.log(onComplete);
+  // console.log(onComplete);
 
   // 가격이 0이면 결제 버튼을 렌더링하지 않음
   if (price === 0) {
@@ -122,7 +127,14 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
 
   return (
     <div>
-      <Button size="xl" onClick={requestPay}>
+      <Button
+        size="xl"
+        onClick={requestPay}
+        color={fontColor}
+        fontWeight="bold"
+        bg={buttonColor}
+        _hover={{ bg: `${buttonColor}AA` }}
+      >
         결제하기
       </Button>
     </div>

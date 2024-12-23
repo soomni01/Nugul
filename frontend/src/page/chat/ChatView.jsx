@@ -14,6 +14,7 @@ import { LuSend } from "react-icons/lu";
 import { ReviewModal } from "../../components/review/ReviewModal.jsx";
 import { Avatar } from "../../components/ui/avatar.jsx";
 import { ProductDetailDrawer } from "../../components/chat/ProductDetailDrawer.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const scrollRef = useRef(null);
@@ -35,6 +36,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [reviewText, setReviewText] = useState("후기");
   const [reviewComplete, setReviewComplete] = useState(false);
   const [transactionComplete, setTransactionComplete] = useState(false);
+  const { fontColor, buttonColor } = useTheme();
 
   // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -342,7 +344,36 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }
   };
 
-  console.log(product);
+  // 시연을 위해 결제 완료시 localStorage에 상태 불러오기
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (
+        event.key === `payment_${realChatRoomId}` &&
+        event.newValue === "completed"
+      ) {
+        setPurchased(true);
+        setTransactionComplete(true);
+        statusControl();
+
+        // 값을 초기화하여 storage 이벤트 명시적 발생
+        localStorage.setItem(`payment_${realChatRoomId}`, "");
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [realChatRoomId]);
+
+  useEffect(() => {
+    // 상태 변경 후 스토리지 삭제
+    if (purchased) {
+      localStorage.removeItem(`payment_${realChatRoomId}`);
+    }
+  }, [purchased]);
+
   return (
     <Box pt={3}>
       <Flex direction="column" w={"99%"} h={"85vh"} overflow={"hidden"}>
@@ -383,47 +414,61 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               </Button>
             ) : (
               <ProductDetailDrawer product={product}>
-                <Button w={"100%"} mb={5} mr={0}>
+                <Button w={"100%"} mb={5} mr={0} variant="subtle">
                   상품 정보 보기
                 </Button>
               </ProductDetailDrawer>
             )}
             <Flex>
-              {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
-              {isSeller ? (
-                <Button
-                  size={"xl"}
-                  className={"ScrollBarContainer"}
-                  colorPalette={transactionComplete && "cyan"}
-                  isDisabled
-                  cursor={transactionComplete && "default"}
-                  onClick={
-                    transactionComplete ? null : handleSuccessTransaction
-                  }
-                >
-                  거래완료
+              {isloading ? (
+                <Button size={"xl"} isDisabled cursor="default" bg="gray.200">
+                  로딩 중...
                 </Button>
-              ) : purchased ? (
-                <></>
               ) : (
-                <Payment
-                  chatRoom={chatRoom}
-                  statusControl={statusControl}
-                  onComplete={handleTransactionState}
-                />
+                <>
+                  {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
+                  {isSeller ? (
+                    <Button
+                      size={"xl"}
+                      className={"ScrollBarContainer"}
+                      colorPalette={transactionComplete && "black"}
+                      bg={transactionComplete ? "#F09319" : ""} // 파스텔 노랑색 배경
+                      isDisabled
+                      cursor={transactionComplete && "default"}
+                      onClick={
+                        transactionComplete ? null : handleSuccessTransaction
+                      }
+                    >
+                      거래완료
+                    </Button>
+                  ) : purchased ? (
+                    <></>
+                  ) : (
+                    <Payment
+                      chatRoom={chatRoom}
+                      statusControl={statusControl}
+                      onComplete={handleTransactionState}
+                    />
+                  )}
+
+                  {purchased && (
+                    <Button
+                      size={"xl"}
+                      onClick={reviewComplete ? null : handleOpenReviewModal}
+                      isDisabled
+                      colorPalette={reviewComplete && "cyan"}
+                      cursor={reviewComplete && "default"}
+                      color={fontColor}
+                      fontWeight="bold"
+                      bg={buttonColor}
+                      _hover={{ bg: `${buttonColor}AA` }}
+                    >
+                      {reviewComplete ? "작성 완료" : "후기 작성"}
+                    </Button>
+                  )}
+                </>
               )}
 
-              {purchased && (
-                <Button
-                  size={"xl"}
-                  onClick={reviewComplete ? null : handleOpenReviewModal}
-                  isDisabled
-                  colorPalette={reviewComplete && "cyan"}
-                  cursor={reviewComplete && "default"}
-                >
-                  {reviewComplete ? "작성 완료" : "후기 작성"}
-                </Button>
-              )}
               <DialogCompo
                 roomId={realChatRoomId}
                 onDelete={onDelete || (() => removeChatRoom(roomId, id))}
@@ -506,6 +551,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               var message = clientMessage;
               sendMessage(client, message);
             }}
+            color={fontColor}
+            fontWeight="bold"
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
           >
             <LuSend />
           </Button>
