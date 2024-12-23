@@ -114,6 +114,8 @@ export function BoardEdit() {
       .then((res) => {
         const boardData = res.data;
         setBoard(boardData);
+        console.log(boardData);
+
 
         // 예시: 게시물 작성자와 현재 로그인한 사용자가 같은지 확인
         if (!hasAccess(boardData.memberId)) {
@@ -221,6 +223,7 @@ export function BoardEdit() {
   );
 
   return (
+
     <Box
       height="750px"
       border="1px solid #ccc"
@@ -256,7 +259,6 @@ export function BoardEdit() {
               ))}
             </select>
           </Box>
-
           <Input
             value={board.title}
             onChange={(e) => setBoard({ ...board, title: e.target.value })}

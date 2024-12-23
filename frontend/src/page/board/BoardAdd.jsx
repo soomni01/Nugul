@@ -5,10 +5,11 @@ import {
   HStack,
   Icon,
   Input,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,7 @@ export function BoardAdd() {
   const [files, setFiles] = useState([]);
   const [filePreviews, setFilePreviews] = useState([]); // 미리보기 저장
   const [progress, setProgress] = useState(false);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   const modules = {
     toolbar: [
@@ -68,41 +70,13 @@ export function BoardAdd() {
 
   const navigate = useNavigate();
 
-  if (!isAuthenticated) {
-    return (
-      <Box
-        borderRadius="12px"
-        p={8}
-        textAlign="center"
-        maxWidth="450px"
-        mx="auto"
-        mt={16}
-        boxShadow="lg"
-      >
-        <Box>
-          <Text fontSize="3xl" color="red.600" fontWeight="bold" mb={6}>
-            권한이 없습니다.
-          </Text>
-          <Text color="gray.700" fontSize="lg" mb={8}>
-            글을 작성하려면 로그인하거나 회원가입이 필요합니다.
-          </Text>
-          <Stack direction="row" spacing={6} justify="center" mb={4}>
-            <Button
-              colorScheme="blue"
-              variant="outline"
-              size="lg"
-              onClick={() => navigate("/member/signup")}
-            >
-              회원가입
-            </Button>
-            <Button colorScheme="teal" size="lg" onClick={() => navigate("/")}>
-              로그인
-            </Button>
-          </Stack>
-        </Box>
-      </Box>
-    );
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
 
   const handleListClick = () => {
     navigate("/board/list");
@@ -247,6 +221,10 @@ export function BoardAdd() {
     fileInputInvalid = true;
   }
 
+  const fileSizeMessage = fileInputInvalid
+    ? "파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다."
+    : "최대 10MB까지 업로드 가능합니다.";
+
   return (
     <Box
       height="750px"
@@ -296,7 +274,7 @@ export function BoardAdd() {
         </Box>
 
         <ReactQuill
-          style={editorStyles}
+          style={{ ...editorStyles, marginBottom: "50px" }}
           value={content}
           onChange={setContent}
           modules={modules}
@@ -316,7 +294,12 @@ export function BoardAdd() {
             />
             {/* 파일 미리보기만 표시, 파일명은 표시하지 않음 */}
             <Box display="flex" flexWrap="wrap" mt={2}>
+                  <Text color={fileInputInvalid ? "red" : "gray"} mt={2}>
+              {fileSizeMessage}
+            </Text>
+//             <HStack mt={2} spacing={2} wrap="wrap">
               {filePreviewsList}
+//             </HStack>
             </Box>
           </Field>
         </Box>

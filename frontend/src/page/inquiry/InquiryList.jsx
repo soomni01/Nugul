@@ -49,7 +49,6 @@ export function InquiryList({ onRowClick }) {
     };
     fetchInquiries();
   }, []);
-
   // 페이지네이션 관련 데이터
   const totalPages = Math.ceil(inquiryList.length / itemsPerPage);
   const paginatedInquiries = inquiryList.slice(

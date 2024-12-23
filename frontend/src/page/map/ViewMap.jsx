@@ -34,6 +34,7 @@ function ViewMap() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [sameKeyword, setSameKeyword] = useState(false);
+  const navigate = useNavigate();
   useNavigate();
 
   const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
