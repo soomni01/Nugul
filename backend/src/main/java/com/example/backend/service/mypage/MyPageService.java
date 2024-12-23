@@ -41,7 +41,7 @@ public class MyPageService {
         // S3 URL을 기반으로 메인 이미지 경로 설정
         for (Product product : likesList) {
             if (product.getMainImageName() != null) {
-                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                String mainImageUrl = STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}";
                 product.setMainImageName(mainImageUrl);
             }
         }
@@ -56,7 +56,7 @@ public class MyPageService {
         // S3 URL을 기반으로 메인 이미지 경로 설정
         for (Product product : soldProductsList) {
             if (product.getMainImageName() != null) {
-                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                String mainImageUrl = STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}";
                 product.setMainImageName(mainImageUrl);
             }
         }
@@ -71,7 +71,7 @@ public class MyPageService {
         // S3 URL을 기반으로 메인 이미지 경로 설정
         for (Product product : purchasedProductsList) {
             if (product.getMainImageName() != null) {
-                String mainImageUrl = STR."\{imageSrcPrefix}/\{product.getProductId()}/\{product.getMainImageName()}";
+                String mainImageUrl = STR."\{imageSrcPrefix}/product/\{product.getProductId()}/\{product.getMainImageName()}";
                 product.setMainImageName(mainImageUrl);
             }
         }

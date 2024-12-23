@@ -157,8 +157,9 @@ public interface ProductMapper {
             """)
     List<Product> selectShareProducts(Integer limit);
 
-    @Delete("""
-            DELETE FROM purchased_record
+    @Update("""
+            UPDATE purchased_record
+            SET product_id = NULL
             WHERE product_id = #{productId}
             """)
     int deletePurchasedRecord(Integer productId);

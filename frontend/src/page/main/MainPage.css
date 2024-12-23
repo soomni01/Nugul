@@ -88,3 +88,32 @@
     object-fit: cover; /* 이미지가 비율을 유지하면서 꽉 채워짐 */
 }
 
+/* 상품 페이지 swiper */
+.product-detail-swiper {
+    width: 50%;
+    height: auto;
+    background-color: #f8f9fa;
+    aspect-ratio: 1;
+    background-image: url('../../../../public/image/default.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.product-detail-swiper-slide {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+}
+
+.product-detail-swiper-slide img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover; /* 이미지가 비율을 유지하면서 꽉 채워짐 */
+}
+
