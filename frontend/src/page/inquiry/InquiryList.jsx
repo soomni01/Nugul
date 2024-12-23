@@ -16,6 +16,7 @@ import { FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function InquiryList({ onRowClick }) {
   const [inquiryList, setInquiryList] = useState([]);
@@ -24,6 +25,7 @@ export function InquiryList({ onRowClick }) {
   const { nickname } = useContext(AuthenticationContext);
   const itemsPerPage = 10;
   const navigate = useNavigate();
+  const { primaryColor, buttonColor, fontColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -95,6 +97,10 @@ export function InquiryList({ onRowClick }) {
           height="120%"
           colorScheme="blue"
           onClick={() => navigate("/inquiry")}
+          color={fontColor}
+          fontWeight="bold"
+          bg={`${buttonColor}AA`}
+          _hover={{ bg: `${buttonColor}AA` }}
         >
           문의하기
         </Button>
@@ -102,7 +108,12 @@ export function InquiryList({ onRowClick }) {
       <Box pt={4} display="flex" justifyContent="center">
         <Table.Root interactive>
           <TableHeader>
-            <TableRow style={{ backgroundColor: "#EAEAEA" }}>
+            <TableRow
+              style={{
+                backgroundColor: primaryColor,
+                filter: "brightness(95%)",
+              }}
+            >
               <TableColumnHeader
                 style={{
                   ...cellStyle,
