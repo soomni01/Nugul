@@ -157,15 +157,20 @@ export function BoardList() {
             }
           }}
           width="60%"
+          mt={6}
         />
-        <Button onClick={handleSearchClick}>검색</Button>
+        <Button mt={6} onClick={handleSearchClick}>
+          검색
+        </Button>
       </HStack>
 
       {boardList.length > 0 ? (
         <Box>
-          <Flex justifyContent="flex-end" alignItems="center" mb={6}>
+          <Flex justifyContent="flex-end" alignItems="center">
             {isAuthenticated && (
-              <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+              <Button mb={4} onClick={handleWriteClick}>
+                게시물 쓰기
+              </Button>
             )}
           </Flex>
           <hr />

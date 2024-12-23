@@ -16,7 +16,8 @@ export function BoardCategoryContainer({ selectedCategory, onCategorySelect }) {
           _focus={{ boxShadow: "none" }}
           borderRadius="full"
           fontSize="lg"
-          h="50px"
+          h="45px"
+          mx={1.5}
         >
           {category.label}
         </Button>
