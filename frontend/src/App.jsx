@@ -29,6 +29,7 @@ import { InquiryList } from "./page/inquiry/InquiryList.jsx";
 import { InquiryView } from "./page/inquiry/InquiryView.jsx";
 import { InquiryEdit } from "./page/inquiry/InquiryEdit.jsx";
 import { Inquiry } from "./page/inquiry/Inquiry.jsx";
+import "./fonts/index.css";
 
 // Axios 인터셉터 설정
 axios.interceptors.request.use(function (config) {

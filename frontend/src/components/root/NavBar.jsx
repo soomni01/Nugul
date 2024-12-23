@@ -106,7 +106,12 @@ export function Navbar() {
                 productType === "sell")
             }
           >
-            <Heading>중고거래</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              중고거래
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/product/share/list")}
@@ -118,7 +123,12 @@ export function Navbar() {
                 productType === "share")
             }
           >
-            <Heading>나눔</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              나눔
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/board/list")}
@@ -128,19 +138,34 @@ export function Navbar() {
               "/board/boardAdd",
             ].some((path) => location.pathname.startsWith(path))}
           >
-            <Heading>게시판</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              게시판
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/chat")}
             isActive={location.pathname === "/chat"}
           >
-            <Heading>채팅</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              채팅
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/map")}
             isActive={location.pathname === "/map"}
           >
-            <Heading>지도</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              지도
+            </Heading>
           </NavbarItem>
         </Flex>
 
