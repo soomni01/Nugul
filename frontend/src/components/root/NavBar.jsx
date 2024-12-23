@@ -14,6 +14,7 @@ function NavbarItem({ children, isActive, ...rest }) {
         paddingX: "20px",
         paddingY: "10px",
         borderRadius: "20px",
+        whiteSpace: "nowrap",
       }}
       bgColor={isActive ? "blue.300" : "transparent"}
       _hover={{
