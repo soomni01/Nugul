@@ -43,13 +43,17 @@ export function ChatList() {
     const local = localStorage.getItem("LocalChatRoomId");
     console.log(local !== null);
     if (local !== null) {
+      console.log("실행");
       setChatRoomId(local);
     }
   }, []);
 
   useEffect(() => {
     return () => {
-      localStorage.removeItem("LocalChatRoomId");
+      // /chat으로 시작하지 않는 경로로 이동할 때만 localStorage 삭제
+      if (!location.pathname.startsWith("chat")) {
+        localStorage.removeItem("LocalChatRoomId");
+      }
     };
   }, [location]);
 
@@ -112,8 +116,8 @@ export function ChatList() {
             <Button
               w="30%"
               onClick={() => {
-                setChatRoomId(-1);
-                setProductId(-1);
+                // setChatRoomId(-1);
+                // setProductId(-1);
                 setSearchParams({ type: "all" });
               }}
             >
@@ -122,8 +126,8 @@ export function ChatList() {
             <Button
               w="30%"
               onClick={() => {
-                setChatRoomId(-1);
-                setProductId(-1);
+                // setChatRoomId(-1);
+                // setProductId(-1);
                 setSearchParams({ type: "buy" });
               }}
             >
@@ -132,8 +136,8 @@ export function ChatList() {
             <Button
               w="30%"
               onClick={() => {
-                setChatRoomId(-1);
-                setProductId(-1);
+                // setChatRoomId(-1);
+                // setProductId(-1);
                 setSearchParams({ type: "sell" });
               }}
             >

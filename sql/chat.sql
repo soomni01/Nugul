@@ -7,3 +7,5 @@ CREATE TABLE chat
     product_id  INT REFERENCES product (product_id),
     sent_at     DATE DEFAULT CURRENT_DATE
 );
+
+
