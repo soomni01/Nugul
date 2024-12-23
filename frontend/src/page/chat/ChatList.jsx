@@ -42,7 +42,10 @@ export function ChatList() {
 
   useEffect(() => {
     const local = localStorage.getItem("LocalChatRoomId");
-    setChatRoomId(local);
+    console.log(local === null);
+    if (local !== null) {
+      setChatRoomId(local);
+    }
   }, []);
 
   function getChatList() {
