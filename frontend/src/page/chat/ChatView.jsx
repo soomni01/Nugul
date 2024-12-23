@@ -342,7 +342,36 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }
   };
 
-  console.log(product);
+  // 시연을 위해 결제 완료시 localStorage에 상태 불러오기
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (
+        event.key === `payment_${realChatRoomId}` &&
+        event.newValue === "completed"
+      ) {
+        setPurchased(true);
+        setTransactionComplete(true);
+        statusControl();
+
+        // 값을 초기화하여 storage 이벤트 명시적 발생
+        localStorage.setItem(`payment_${realChatRoomId}`, "");
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [realChatRoomId]);
+
+  useEffect(() => {
+    // 상태 변경 후 스토리지 삭제
+    if (purchased) {
+      localStorage.removeItem(`payment_${realChatRoomId}`);
+    }
+  }, [purchased]);
+
   return (
     <Box pt={3}>
       <Flex direction="column" w={"99%"} h={"85vh"} overflow={"hidden"}>

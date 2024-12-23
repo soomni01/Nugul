@@ -77,6 +77,8 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
                 onComplete();
                 // statusControl();
               });
+            // 시연을 위해 결제 완료시 localStorage에 상태 저장
+            localStorage.setItem(`payment_${chatRoom.roomId}`, "completed");
 
             // 결제 성공 알림
             toaster.create({
@@ -95,7 +97,7 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
       },
     );
   };
-  console.log(onComplete);
+  // console.log(onComplete);
 
   return (
     <div>
