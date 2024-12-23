@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProfileEdit({ id, onCancel, onSave }) {
   const [member, setMember] = useState(null);
@@ -23,6 +24,7 @@ export function ProfileEdit({ id, onCancel, onSave }) {
   const [nickNameCheck, setNickNameCheck] = useState(null); // 닉네임 유효성 상태 (null: 확인 안됨, true: 중복 아님, false: 중복)
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { fontColor, buttonColor } = useTheme();
 
   const passwordRegEx =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,50}$/;
@@ -222,7 +224,15 @@ export function ProfileEdit({ id, onCancel, onSave }) {
         <Box display="flex" justifyContent="center" alignItems="center">
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorPalette={"black"} mt={3} mr={4}>
+              <Button
+                colorPalette={"black"}
+                mt={3}
+                mr={4}
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                _hover={{ bg: `${buttonColor}AA` }}
+              >
                 저장
               </Button>
             </DialogTrigger>
@@ -247,7 +257,13 @@ export function ProfileEdit({ id, onCancel, onSave }) {
                 <DialogActionTrigger>
                   <Button variant={"outline"}>취소</Button>
                 </DialogActionTrigger>
-                <Button colorPalette={"black"} onClick={handleSaveClick}>
+                <Button
+                  color={fontColor}
+                  fontWeight="bold"
+                  bg={buttonColor}
+                  _hover={{ bg: `${buttonColor}AA` }}
+                  onClick={handleSaveClick}
+                >
                   저장
                 </Button>
               </DialogFooter>

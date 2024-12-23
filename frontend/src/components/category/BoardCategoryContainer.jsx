@@ -1,6 +1,9 @@
 import { Button, HStack } from "@chakra-ui/react";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export function BoardCategoryContainer({ selectedCategory, onCategorySelect }) {
+  const { primaryColor, secondaryColor, fontColor } = useTheme();
+
   return (
     <HStack my={5} w="70%" justify="center" mx="auto">
       {BoardCategories.map((category) => (
@@ -8,15 +11,18 @@ export function BoardCategoryContainer({ selectedCategory, onCategorySelect }) {
           key={category.value}
           flex="1"
           variant="outline"
-          colorScheme="blue"
+          colorScheme={primaryColor}
           onClick={() => onCategorySelect(category.value)}
-          bg={selectedCategory === category.value ? "blue.100" : "transparent"}
-          _hover={{ bg: "blue.50" }}
-          _active={{ bg: "blue.200" }}
-          _focus={{ boxShadow: "none" }}
+          bg={
+            selectedCategory === category.value ? primaryColor : "transparent"
+          }
+          _hover={{ bg: primaryColor }}
           borderRadius="full"
           fontSize="lg"
-          h="50px"
+          h="45px"
+          mx={1.5}
+          fontWeight="bold"
+          color={fontColor}
         >
           {category.label}
         </Button>

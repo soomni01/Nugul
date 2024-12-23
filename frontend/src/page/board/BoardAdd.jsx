@@ -19,6 +19,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { CiFileOn } from "react-icons/ci";
 import { Field } from "../../components/ui/field.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function BoardAdd() {
   const { isAuthenticated, logout } = useContext(AuthenticationContext);
@@ -29,6 +30,7 @@ export function BoardAdd() {
   const [filePreviews, setFilePreviews] = useState([]); // 미리보기 저장
   const [progress, setProgress] = useState(false);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const { fontColor, buttonColor } = useTheme();
 
   const modules = {
     toolbar: [
@@ -221,7 +223,7 @@ export function BoardAdd() {
 
   const fileSizeMessage = fileInputInvalid
     ? "파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다."
-    : "최대 10MB까지 업로드 가능합니다.";
+    : "※ 최대 10MB까지 업로드 가능합니다.";
 
   return (
     <Box
@@ -229,7 +231,7 @@ export function BoardAdd() {
       border="1px solid #ccc"
       borderRadius="8px"
       p={10}
-      mt={8}
+      mt={7}
       position="relative"
     >
       <Stack gap={4}>
@@ -286,19 +288,26 @@ export function BoardAdd() {
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              mt={6}
+              mt={-2}
               ml={-3}
               css={{ border: "none" }}
             />
             {/* 파일 미리보기만 표시, 파일명은 표시하지 않음 */}
             <Box display="flex" flexWrap="wrap" mt={2}>
-              <HStack mt={2} spacing={2} wrap="wrap">
+              <HStack mt={-2} mb={5} spacing={2} wrap="wrap">
                 {filePreviewsList}
               </HStack>
-              <Text color={fileInputInvalid ? "red" : "gray"} mt={2}>
-                {fileSizeMessage}
-              </Text>
             </Box>
+            <Text
+              color={fileInputInvalid ? "red" : "gray"}
+              fontSize="sm"
+              mt={-4}
+              position="absolute" // 위치 고정
+              bottom={0} // 부모의 하단에 고정
+              left={0} // 왼쪽에 정렬
+            >
+              {fileSizeMessage}
+            </Text>
           </Field>
         </Box>
       </Stack>
@@ -315,12 +324,17 @@ export function BoardAdd() {
           onClick={handleSaveClick}
           size="lg"
           disabled={disabled || progress}
+          color={fontColor}
+          fontWeight="bold"
+          bg={buttonColor}
+          _hover={{ bg: `${buttonColor}AA` }}
         >
           저장
         </Button>
         <Button
           colorScheme="blue"
           variant="outline"
+          fontWeight="bold"
           onClick={handleListClick}
           size="lg"
         >

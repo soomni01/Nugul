@@ -22,6 +22,7 @@ import "react-quill/dist/quill.snow.css";
 import styled from "@emotion/styled";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function BoardView() {
   const [boardView, setBoardView] = useState(null);
@@ -32,6 +33,7 @@ export function BoardView() {
   const navigate = useNavigate();
   const { hasAccess } = useContext(AuthenticationContext);
   const location = useLocation(); // URL에서 쿼리 파라미터를 읽기 위해 사용
+  const { fontColor, buttonColor } = useTheme();
 
   const StyledQuill = styled(ReactQuill)`
     .ql-container {
@@ -172,7 +174,13 @@ export function BoardView() {
                       <DialogActionTrigger>
                         <Button variant="outline">취소</Button>
                       </DialogActionTrigger>
-                      <Button colorScheme="red" onClick={handleDeleteClick}>
+                      <Button
+                        color={fontColor}
+                        fontWeight="bold"
+                        bg={buttonColor}
+                        _hover={{ bg: `${buttonColor}AA` }}
+                        onClick={handleDeleteClick}
+                      >
                         삭제
                       </Button>
                     </DialogFooter>

@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function InquiryEdit() {
   const [inquiry, setInquiry] = useState(null);
@@ -23,6 +24,7 @@ export function InquiryEdit() {
   const { inquiryId } = useParams();
   const { hasAccess } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const { buttonColor, fontColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -182,7 +184,15 @@ export function InquiryEdit() {
             onOpenChange={(e) => setDialogOpen(e.open)}
           >
             <DialogTrigger asChild>
-              <Button disabled={isSaveDisabled()} colorPalette={"black"} ml={4}>
+              <Button
+                disabled={isSaveDisabled()}
+                colorPalette={"black"}
+                ml={4}
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                _hover={{ bg: `${buttonColor}AA` }}
+              >
                 저장
               </Button>
             </DialogTrigger>

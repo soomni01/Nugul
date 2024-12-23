@@ -19,6 +19,7 @@ import { Button } from "../../components/ui/button.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdLocalPhone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 function ViewMap() {
   const [map, setMap] = useState(null);
@@ -35,7 +36,7 @@ function ViewMap() {
   const [pagination, setPagination] = useState(null);
   const [sameKeyword, setSameKeyword] = useState(false);
   const navigate = useNavigate();
-  useNavigate();
+  const { fontColor, buttonColor } = useTheme();
 
   const [placeSearchResultList, setPlaceSearchResultList] = useState([]);
 
@@ -258,7 +259,13 @@ function ViewMap() {
               />
             </Field>
 
-            <Button onClick={() => handleSearch(locationName)}>
+            <Button
+              onClick={() => handleSearch(locationName)}
+              color={fontColor}
+              fontWeight="bold"
+              bg={buttonColor}
+              _hover={{ bg: `${buttonColor}AA` }}
+            >
               <IoSearchOutline />
             </Button>
           </Group>

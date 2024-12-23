@@ -13,6 +13,8 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { BoardCategoryContainer } from "../../components/category/BoardCategoryContainer.jsx";
 import { FaImages } from "react-icons/fa6";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
+import { LuSearch } from "react-icons/lu";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -25,7 +27,7 @@ export function BoardList() {
   });
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
-  const [loading, setLoading] = useState(true);
+  const { fontColor, buttonColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -157,15 +159,35 @@ export function BoardList() {
             }
           }}
           width="60%"
+          mt={6}
         />
-        <Button onClick={handleSearchClick}>검색</Button>
+        <Button mt={6} onClick={handleSearchClick}>
+          검색
+        <Button
+          onClick={handleSearchClick}
+          color={fontColor}
+          fontWeight="bold"
+          bg={buttonColor}
+          _hover={{ bg: `${buttonColor}AA` }}
+        >
+          <LuSearch />
+        </Button>
       </HStack>
-
       {boardList.length > 0 ? (
         <Box>
-          <Flex justifyContent="flex-end" alignItems="center" mb={6}>
+          <Flex justifyContent="flex-end" alignItems="center">
             {isAuthenticated && (
-              <Button onClick={handleWriteClick}>게시물 쓰기</Button>
+              <Button
+                mb={4}
+                size="xl"
+                onClick={handleWriteClick}
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                _hover={{ bg: `${buttonColor}AA` }}
+              >
+                게시물 쓰기
+              </Button>
             )}
           </Flex>
           <hr />

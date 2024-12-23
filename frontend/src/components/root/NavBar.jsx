@@ -6,18 +6,22 @@ import { kakaoLogout } from "../social/KakaoLogin.jsx";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu.jsx";
 import { Avatar } from "../ui/avatar.jsx";
 import axios from "axios";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 function NavbarItem({ children, isActive, ...rest }) {
+  const { buttonColor } = useTheme();
+
   return (
     <Box
       css={{
         paddingX: "20px",
         paddingY: "10px",
         borderRadius: "20px",
+        whiteSpace: "nowrap",
       }}
-      bgColor={isActive ? "blue.300" : "transparent"}
+      bgColor={isActive ? buttonColor : "transparent"}
       _hover={{
-        bgColor: "blue.300",
+        bgColor: buttonColor,
         cursor: "pointer",
       }}
       {...rest}
@@ -31,8 +35,8 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [productType, setProductType] = useState(null);
-
   const { id, nickname, profileImage } = useContext(AuthenticationContext);
+  const { primaryColor } = useTheme();
 
   useEffect(() => {
     const pathParts = location.pathname.split("/");
@@ -71,20 +75,13 @@ export function Navbar() {
     }
   };
   return (
-    <Box background="gray.100" borderBottom={"1px solid"}>
+    <Box background={"white"}>
       <Flex justify="space-between" align="center" width="100%">
-        {/*  /!* 왼쪽: HOME *!/*/}
-        {/*  <Flex>*/}
-        {/*    <NavbarItem ml={10} onClick={() => handleNavigation("/main")}>*/}
-        {/*      <Heading size="3xl">너굴마켓</Heading>*/}
-        {/*    </NavbarItem>*/}
-        {/*  </Flex>*/}
-
         <Flex align="center">
           <Button
             onClick={() => handleNavigation("/main")}
             bg="transparent"
-            _hover={{ bg: "gray.100" }} // 호버 효과
+            _hover={{ bg: "transparent" }} // 호버 효과
             p={0} // 버튼 안 여백 제거
           >
             <Image
@@ -92,17 +89,13 @@ export function Navbar() {
               alt="메인으로 이동"
               maxWidth="130px" // 너비 제한
               maxHeight="100px" // 높이 제한
-              ml={5}
+              ml={6}
             />
           </Button>
-          <NavbarItem
-            ml={5}
-            onClick={() => handleNavigation("/main")}
-          ></NavbarItem>
         </Flex>
 
         {/* 가운데: 중고거래, 나눔, 게시판, 지도 */}
-        <Flex justify="center" flex="1" gap={3} mr={10}>
+        <Flex justify="center" flex="1" gap={3} mr={32}>
           <NavbarItem
             onClick={() => handleNavigation("/product/list")}
             isActive={
@@ -113,7 +106,12 @@ export function Navbar() {
                 productType === "sell")
             }
           >
-            <Heading>중고거래</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              중고거래
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/product/share/list")}
@@ -125,7 +123,12 @@ export function Navbar() {
                 productType === "share")
             }
           >
-            <Heading>나눔</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              나눔
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/board/list")}
@@ -135,24 +138,39 @@ export function Navbar() {
               "/board/boardAdd",
             ].some((path) => location.pathname.startsWith(path))}
           >
-            <Heading>게시판</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              게시판
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/chat")}
             isActive={location.pathname === "/chat"}
           >
-            <Heading>채팅</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              채팅
+            </Heading>
           </NavbarItem>
           <NavbarItem
             onClick={() => handleNavigation("/map")}
             isActive={location.pathname === "/map"}
           >
-            <Heading>지도</Heading>
+            <Heading
+              fontFamily="Ownglyph_ParkDaHyun, sans-serif"
+              fontSize="3xl"
+            >
+              지도
+            </Heading>
           </NavbarItem>
         </Flex>
 
         <Flex align="center" justify="center" gap={3} mr={10}>
-          <NavbarItem p={0}>
+          <NavbarItem p={0} _hover={{ bg: "transparent", cursor: "pointer" }}>
             <MenuRoot>
               <MenuTrigger asChild>
                 <Box>

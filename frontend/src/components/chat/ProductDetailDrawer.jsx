@@ -26,19 +26,19 @@ import { SlArrowRight } from "react-icons/sl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { categories } from "../category/CategoryContainer.jsx";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export const ProductDetailDrawer = ({ product, children }) => {
   const fileName = product.fileList?.[0]?.name;
   const fileSrc = product.fileList?.[0]?.src;
   const defaultsrc = "./image/default.png";
-  console.log(product);
+  const { fontColor, buttonColor } = useTheme();
 
   const markerPosition = {
     lat: product.latitude,
     lng: product.longitude,
   };
 
-  console.log(markerPosition);
   // 카카오 맵 길찾기 링크 생성 함수
   const getKakaoLink = () => {
     return `https://map.kakao.com/link/to/${encodeURIComponent(
@@ -165,7 +165,14 @@ export const ProductDetailDrawer = ({ product, children }) => {
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>
-            <Button>닫기</Button>
+            <Button
+              color={fontColor}
+              fontWeight="bold"
+              bg={buttonColor}
+              _hover={{ bg: `${buttonColor}AA` }}
+            >
+              닫기
+            </Button>
           </DrawerActionTrigger>
         </DrawerFooter>
         <DrawerCloseTrigger />
