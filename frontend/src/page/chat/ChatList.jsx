@@ -24,6 +24,7 @@ export function ChatList() {
     queryLocation.state?.productId || -1,
   );
   const token = localStorage.getItem("token");
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -38,6 +39,11 @@ export function ChatList() {
 
     getChatList();
   }, [searchParams, id, status, navigate]);
+
+  useEffect(() => {
+    const local = localStorage.getItem("LocalChatRoomId");
+    setChatRoomId(local);
+  }, []);
 
   function getChatList() {
     axios
