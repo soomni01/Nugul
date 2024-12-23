@@ -34,27 +34,27 @@ export const MapModal = ({
   if (!isOpen) return null; // 모달이 닫혀 있으면 렌더링하지 않음
 
   const handleMapClick = (_target, mouseEvent) => {
-    // mouseEvent 객체에서 latLng 가져오기
+    console.log(mouseEvent);
     const clickedPosition = mouseEvent.latLng;
     setMarkerPosition({
       lat: clickedPosition.getLat(),
       lng: clickedPosition.getLng(),
     });
-    console.log(markerPosition);
   };
 
   const handleOkButton = () => {
-    if (markerPosition && customLocationName) {
+    // markerPosition이 없거나 customLocationName이 비어 있으면 경고 메시지 표시
+    if (!markerPosition || !customLocationName) {
+      toaster.create({
+        title: `위치와 장소를 입력해주세요`,
+        type: "warning",
+      });
+    } else {
       onSelectLocation({
         ...markerPosition,
         locationName: customLocationName,
       });
       onClose(); // 모달 닫기
-    } else {
-      toaster.create({
-        title: `위치와 장소를 입력해주세요`,
-        type: "warning",
-      });
     }
   };
 

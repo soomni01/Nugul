@@ -163,6 +163,8 @@ export function ProductEdit() {
     setProduct({
       ...product,
       locationName: location.locationName,
+      latitude: location.lat,
+      longitude: location.lng,
       markerPosition: { lat: location.lat, lng: location.lng }, // 마커 위치
     });
   };
@@ -182,6 +184,8 @@ export function ProductEdit() {
     formData.append("longitude", product.longitude);
     formData.append("locationName", product.locationName);
 
+    console.log(product.latitude);
+    console.log(product.longitude);
     if (mainImage) formData.append("mainImageName", mainImage.name);
     files.forEach((file) => formData.append("uploadFiles[]", file));
     removeFiles.forEach((fileName) =>
@@ -315,8 +319,11 @@ export function ProductEdit() {
 
                 <Button
                   loading={progress}
-                  colorPalette={"blue"}
                   onClick={handleSaveClick}
+                  color={fontColor}
+                  fontWeight="bold"
+                  bg={buttonColor}
+                  _hover={{ bg: `${buttonColor}AA` }}
                 >
                   저장
                 </Button>
