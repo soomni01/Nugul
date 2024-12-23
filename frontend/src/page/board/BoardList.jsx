@@ -162,7 +162,7 @@ export function BoardList() {
 
       {boardList.length > 0 ? (
         <Box>
-          <Flex justifyContent="flex-end" alignItems="center" mt={-10} mb={6}>
+          <Flex justifyContent="flex-end" alignItems="center" mb={6}>
             {isAuthenticated && (
               <Button onClick={handleWriteClick}>게시물 쓰기</Button>
             )}
