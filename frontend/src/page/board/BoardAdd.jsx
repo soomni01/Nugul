@@ -221,7 +221,7 @@ export function BoardAdd() {
 
   const fileSizeMessage = fileInputInvalid
     ? "파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다."
-    : "최대 10MB까지 업로드 가능합니다.";
+    : "※ 최대 10MB까지 업로드 가능합니다.";
 
   return (
     <Box
@@ -286,19 +286,26 @@ export function BoardAdd() {
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              mt={6}
+              mt={-2}
               ml={-3}
               css={{ border: "none" }}
             />
             {/* 파일 미리보기만 표시, 파일명은 표시하지 않음 */}
             <Box display="flex" flexWrap="wrap" mt={2}>
-              <HStack mt={2} spacing={2} wrap="wrap">
+              <HStack mt={-2} mb={5} spacing={2} wrap="wrap">
                 {filePreviewsList}
               </HStack>
-              <Text color={fileInputInvalid ? "red" : "gray"} mt={2}>
-                {fileSizeMessage}
-              </Text>
             </Box>
+            <Text
+              color={fileInputInvalid ? "red" : "gray"}
+              fontSize="sm"
+              mt={-4}
+              position="absolute" // 위치 고정
+              bottom={0} // 부모의 하단에 고정
+              left={0} // 왼쪽에 정렬
+            >
+              {fileSizeMessage}
+            </Text>
           </Field>
         </Box>
       </Stack>
