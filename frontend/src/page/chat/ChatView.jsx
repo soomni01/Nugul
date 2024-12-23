@@ -33,6 +33,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [product, setProduct] = useState({});
   const [reviewText, setReviewText] = useState("후기");
   const [reviewComplete, setReviewComplete] = useState(false);
+  const [transactionComplete, setTransactionComplete] = useState(false);
 
   // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -148,6 +149,9 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     if (purchased === false) {
       setPurchased(id == purchaseRes.data.buyerId);
     }
+    //판매자
+    setTransactionComplete(productRes.data.status === "Sold");
+    // 구매자
     setReviewComplete(purchaseRes.data.reviewStatus === "completed");
   }
 
@@ -251,12 +255,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }
   };
 
-  // 채팅방 나가기서  클라이어트 끊기
-  function leaveRoom() {
-    // stompClient.onDisconnect();
-    // navigate("chat");
-  }
-
   // 거래 완료
   const handleSuccessTransaction = () => {
     axios
@@ -274,7 +272,8 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         } else {
           console.error("응답 데이터에 message가 없습니다:", data); // 'message'가 없을 경우 에러 처리
         }
-        setReviewComplete(true);
+        // setReviewComplete(true);
+        setTransactionComplete(true);
         statusControl();
       })
       .catch((e) => {
@@ -294,7 +293,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   //  판매자 인지 확인
   const isSeller = chatRoom.writer === id;
-  const isSold = chatRoom.status === "Sold";
 
   const removeChatRoom = (roomId, id) => {
     axios
@@ -343,6 +341,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }
   };
 
+  console.log(product);
   return (
     <Box pt={3}>
       <Flex direction="column" w={"99%"} h={"85vh"} overflow={"hidden"}>
@@ -373,10 +372,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 <Button
                   size={"xl"}
                   className={"ScrollBarContainer"}
-                  colorPalette={reviewComplete && "cyan"}
+                  colorPalette={transactionComplete && "cyan"}
                   isDisabled
-                  cursor={reviewComplete && "default"}
-                  onClick={reviewComplete ? null : handleSuccessTransaction}
+                  cursor={transactionComplete && "default"}
+                  onClick={
+                    transactionComplete ? null : handleSuccessTransaction
+                  }
                 >
                   거래완료
                 </Button>
