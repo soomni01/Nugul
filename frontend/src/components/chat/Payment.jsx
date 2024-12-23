@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
-import { Button } from "@chakra-ui/react";
+import { Box, Button, Spinner } from "@chakra-ui/react";
 
 const Payment = ({ chatRoom, onComplete, statusControl }) => {
-  const [product, setProduct] = useState({});
+  const [price, setPrice] = useState(null);
   const { id, nickname } = useContext(AuthenticationContext);
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
@@ -16,14 +16,27 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
     iamport.src = "http://cdn.iamport.kr/js/iamport.payment-1.1.7.js";
     document.head.appendChild(jquery);
     document.head.appendChild(iamport);
+
+    // 상품 정보 가져오기
+    const ProductData = async () => {
+      const productId = chatRoom.productId; // 현재 채팅방의 상품 ID
+      const res = await axios.get(`/api/product/view/${productId}`); // 상품 API 호출
+      const product = res.data; // 응답 받은 데이터에서 상품 정보 추출
+
+      // 가격만 상태로 저장
+      setPrice(product.price);
+    };
+
+    ProductData(); // 상품 정보를 비동기로 가져옴
+
+    // cleanup 함수: 컴포넌트가 언마운트될 때 스크립트 제거
     return () => {
       document.head.removeChild(jquery);
       document.head.removeChild(iamport);
     };
-  }, []);
+  }, [chatRoom.productId]); // `chatRoom.productId`가 변경될 때마다 실행
 
   const requestPay = async () => {
-    // 상품 정보 가져오기
     const productId = chatRoom.productId;
     const res = await axios.get(`/api/product/view/${productId}`);
     const product = res.data;
@@ -96,6 +109,16 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
     );
   };
   console.log(onComplete);
+
+  // 가격이 0이면 결제 버튼을 렌더링하지 않음
+  if (price === 0) {
+    return <Box ml={11}></Box>;
+  }
+
+  // 가격이 null일 때 로딩 중 스피너 표시
+  if (price === null) {
+    return <Spinner size="md" />;
+  }
 
   return (
     <div>
