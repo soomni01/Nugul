@@ -21,6 +21,7 @@ import {
   PaginationRoot,
 } from "../../components/ui/pagination.jsx";
 import { FaImages } from "react-icons/fa6";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function BoardsAndComments() {
   const { id } = useContext(AuthenticationContext);
@@ -33,6 +34,7 @@ export function BoardsAndComments() {
   const [boardPage, setBoardPage] = useState(1); // 초기값은 1
   const [commentPage, setCommentPage] = useState(1); // 초기값은 1
   const [activeTab, setActiveTab] = useState("posts"); // 기본값은 'posts'
+  const { primaryColor } = useTheme();
 
   const getCategoryLabel = (value) => {
     const category = BoardCategories.find((cat) => cat.value === value);
@@ -110,8 +112,8 @@ export function BoardsAndComments() {
           as="button"
           onClick={() => handleTabChange("posts")}
           p={4}
-          borderBottom={activeTab === "posts" ? "2px solid teal" : "none"}
-          _hover={{ cursor: "pointer", color: "teal.500" }}
+          borderBottom={activeTab === "posts" ? "2px solid black" : "none"}
+          _hover={{ cursor: "pointer", color: "gray.500" }}
         >
           <Flex alignItems="center">
             <Image
@@ -128,8 +130,8 @@ export function BoardsAndComments() {
           as="button"
           onClick={() => handleTabChange("comments")}
           p={4}
-          borderBottom={activeTab === "comments" ? "2px solid teal" : "none"}
-          _hover={{ cursor: "pointer", color: "teal.500" }}
+          borderBottom={activeTab === "comments" ? "2px solid black" : "none"}
+          _hover={{ cursor: "pointer", color: "gray.500" }}
         >
           <Flex alignItems="center">
             <Image
@@ -166,11 +168,25 @@ export function BoardsAndComments() {
                     <Box>
                       <Text fontWeight="bold" ml={0.5}>
                         {board.title}
-                        <Badge variant={"subtle"} colorPalette="gray" ml={2}>
+                        <Badge
+                          variant={"subtle"}
+                          style={{
+                            backgroundColor: primaryColor,
+                            filter: "brightness(90%)",
+                          }}
+                          ml={2}
+                        >
                           <FaImages />
                           {board.countFile}
                         </Badge>
-                        <Badge variant="subtle" colorPalette="green" ml={2}>
+                        <Badge
+                          variant="subtle"
+                          style={{
+                            backgroundColor: primaryColor,
+                            filter: "brightness(90%)",
+                          }}
+                          ml={2}
+                        >
                           <FaCommentDots />
                           {board.countComment}
                         </Badge>
