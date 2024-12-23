@@ -241,6 +241,7 @@ export function BoardsAndComments() {
                     borderRadius="md"
                     borderColor="gray.200"
                     w="100%"
+                    h="130px"
                     bg="gray.50"
                     cursor="pointer"
                     onClick={() => handleCommentClick(comment.boardId)}
