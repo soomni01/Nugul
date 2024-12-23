@@ -3,7 +3,6 @@ import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { Box, Button, Spinner } from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react";
 import { useTheme } from "../context/ThemeProvider.jsx";
 
 const Payment = ({ chatRoom, onComplete, statusControl }) => {

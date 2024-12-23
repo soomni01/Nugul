@@ -161,8 +161,8 @@ export function BoardList() {
           width="60%"
           mt={6}
         />
-        <Button mt={6} onClick={handleSearchClick}>
-          검색
+        {/*<Button mt={6} onClick={handleSearchClick}>*/}
+        {/*  검색*/}
         <Button
           onClick={handleSearchClick}
           color={fontColor}
