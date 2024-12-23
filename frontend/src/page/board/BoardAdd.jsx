@@ -19,6 +19,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { CiFileOn } from "react-icons/ci";
 import { Field } from "../../components/ui/field.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function BoardAdd() {
   const { isAuthenticated, logout } = useContext(AuthenticationContext);
@@ -29,6 +30,7 @@ export function BoardAdd() {
   const [filePreviews, setFilePreviews] = useState([]); // 미리보기 저장
   const [progress, setProgress] = useState(false);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const { fontColor, buttonColor } = useTheme();
 
   const modules = {
     toolbar: [
@@ -315,12 +317,17 @@ export function BoardAdd() {
           onClick={handleSaveClick}
           size="lg"
           disabled={disabled || progress}
+          color={fontColor}
+          fontWeight="bold"
+          bg={buttonColor}
+          _hover={{ bg: `${buttonColor}AA` }}
         >
           저장
         </Button>
         <Button
           colorScheme="blue"
           variant="outline"
+          fontWeight="bold"
           onClick={handleListClick}
           size="lg"
         >
