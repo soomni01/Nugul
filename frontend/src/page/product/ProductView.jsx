@@ -340,11 +340,15 @@ export function ProductView() {
               <HStack>
                 {hasAccess(product.writer) && (
                   <Button
-                    size="md"
+                    size="lg"
                     colorPalette={"cyan"}
                     onClick={() =>
                       navigate(`/product/edit/${product.productId}`)
                     }
+                    color={fontColor}
+                    fontWeight="bold"
+                    bg={`${buttonColor}AA`}
+                    _hover={{ bg: `${buttonColor}AA` }}
                   >
                     수정
                   </Button>
@@ -353,7 +357,15 @@ export function ProductView() {
                 {(hasAccess(product.writer) || isAdmin) && (
                   <DialogRoot>
                     <DialogTrigger asChild>
-                      <Button colorPalette={"red"}>삭제</Button>
+                      <Button
+                        colorPalette={"red"}
+                        size={"lg"}
+                        color={fontColor}
+                        fontWeight="bold"
+                        bg={buttonColor}
+                      >
+                        삭제
+                      </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
@@ -366,7 +378,7 @@ export function ProductView() {
                           </Box>
                         )}
                         {!isAdmin && (
-                          <p>{product.productId}번 상품을 삭제하시겠습니까?</p>
+                          <p>{product.productName} 상품을 삭제하시겠습니까?</p>
                         )}
                       </DialogBody>
                       <DialogFooter>
@@ -374,8 +386,10 @@ export function ProductView() {
                           <Button variant={"outline"}>취소</Button>
                         </DialogActionTrigger>
                         <Button
-                          colorPalette={"red"}
                           onClick={handleDeleteClick}
+                          color={fontColor}
+                          fontWeight="bold"
+                          bg={buttonColor}
                         >
                           삭제
                         </Button>

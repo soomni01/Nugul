@@ -11,6 +11,7 @@ import { Box, Button, Group, HStack, Input } from "@chakra-ui/react";
 import { toaster } from "../ui/toaster.jsx";
 import { LuSearch } from "react-icons/lu";
 import { Field } from "../ui/field.jsx";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export const MapModal = ({
   isOpen,
@@ -22,6 +23,7 @@ export const MapModal = ({
   const [locationName, setLocationName] = useState(null);
   const [customLocationName, setCustomLocationName] = useState(null);
   const [map, setMap] = useState(null);
+  const { primaryColor, buttonColor, fontColor } = useTheme();
 
   useEffect(() => {
     if (isOpen) {
@@ -102,7 +104,13 @@ export const MapModal = ({
                   }
                 }}
               />
-              <Button onClick={handleSearch}>
+              <Button
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                _hover={{ bg: `${buttonColor}AA` }}
+                onClick={handleSearch}
+              >
                 <LuSearch />
               </Button>
             </Group>
@@ -159,6 +167,10 @@ export const MapModal = ({
             className="confirm-button"
             onClick={handleOkButton}
             isDisabled={!markerPosition || !customLocationName}
+            color={fontColor}
+            fontWeight="bold"
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
           >
             장소 설정
           </Button>

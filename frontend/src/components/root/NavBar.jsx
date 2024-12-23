@@ -75,7 +75,7 @@ export function Navbar() {
     }
   };
   return (
-    <Box background={primaryColor}>
+    <Box background={"white"}>
       <Flex justify="space-between" align="center" width="100%">
         {/*  /!* 왼쪽: HOME *!/*/}
         {/*  <Flex>*/}
