@@ -28,7 +28,7 @@ export function MemberLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const authentication = useContext(AuthenticationContext);
-  const { buttonColor } = useTheme();
+  const { loginColor } = useTheme();
 
   const handleLoginClick = () => {
     let isValid = true;
@@ -168,7 +168,7 @@ export function MemberLogin() {
           </Group>
         </Stack>
         <Box display="flex" mt={5}>
-          <Button bg={buttonColor} w={"100%"} onClick={handleLoginClick}>
+          <Button bg={loginColor} w={"100%"} onClick={handleLoginClick}>
             로그인
           </Button>
         </Box>

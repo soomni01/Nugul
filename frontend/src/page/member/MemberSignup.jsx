@@ -21,7 +21,7 @@ export function MemberSignup() {
   const [rePassword, setRePassword] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
-  const { buttonColor } = useTheme();
+  const { loginColor } = useTheme();
 
   const emailRegEx =
     /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,8}$/;
@@ -310,7 +310,7 @@ export function MemberSignup() {
         </Stack>
         <Flex justifyContent="center" gap={4} mt={10}>
           <Button
-            bg={buttonColor}
+            bg={loginColor}
             onClick={handleSaveClick}
             disabled={disabled}
             w={"100%"}

@@ -28,7 +28,7 @@ export function MemberSocial() {
   const [nicknameCheckMessage, setNickNameCheckMessage] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
-  const { buttonColor } = useTheme();
+  const { loginColor } = useTheme();
 
   useEffect(() => {
     // 닉네임 중복 체크
@@ -209,7 +209,7 @@ export function MemberSocial() {
             w={"99%"}
             onClick={handleSaveClick}
             disabled={disabled}
-            bg={buttonColor}
+            bg={loginColor}
           >
             회원가입
           </Button>

@@ -9,7 +9,7 @@ import axios from "axios";
 import { useTheme } from "../context/ThemeProvider.jsx";
 
 function NavbarItem({ children, isActive, ...rest }) {
-  const { secondaryColor } = useTheme();
+  const { buttonColor } = useTheme();
 
   return (
     <Box
@@ -19,9 +19,9 @@ function NavbarItem({ children, isActive, ...rest }) {
         borderRadius: "20px",
         whiteSpace: "nowrap",
       }}
-      bgColor={isActive ? secondaryColor : "transparent"}
+      bgColor={isActive ? buttonColor : "transparent"}
       _hover={{
-        bgColor: secondaryColor,
+        bgColor: buttonColor,
         cursor: "pointer",
       }}
       {...rest}
@@ -75,7 +75,7 @@ export function Navbar() {
     }
   };
   return (
-    <Box background={primaryColor} borderBottom={"1px solid"}>
+    <Box background={primaryColor}>
       <Flex justify="space-between" align="center" width="100%">
         {/*  /!* 왼쪽: HOME *!/*/}
         {/*  <Flex>*/}
