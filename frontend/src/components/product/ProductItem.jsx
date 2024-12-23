@@ -56,7 +56,6 @@ export function ProductItem({ product, likeCount, isLiked }) {
       >
         <Image
           width="100%"
-          height="300px"
           height={isListPage ? "300px" : "250px"}
           objectFit="cover"
           src={mainImage}
