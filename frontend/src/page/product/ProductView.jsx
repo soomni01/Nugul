@@ -168,8 +168,9 @@ export function ProductView() {
       })
       .then((res) => {
         const roomId = res.data;
+        localStorage.setItem("LocalChatRoomId", roomId);
         navigate("/chat", {
-          state: { productId: product.productId, roomId: roomId },
+          state: { productId: product.productId },
         });
       })
       .catch((e) => {
