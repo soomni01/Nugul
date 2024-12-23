@@ -3,10 +3,12 @@ import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { Button } from "@chakra-ui/react";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 const Payment = ({ chatRoom, onComplete, statusControl }) => {
   const [product, setProduct] = useState({});
   const { id, nickname } = useContext(AuthenticationContext);
+  const { fontColor, buttonColor } = useTheme();
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
@@ -101,7 +103,14 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
 
   return (
     <div>
-      <Button size="xl" onClick={requestPay}>
+      <Button
+        size="xl"
+        onClick={requestPay}
+        color={fontColor}
+        fontWeight="bold"
+        bg={buttonColor}
+        _hover={{ bg: `${buttonColor}AA` }}
+      >
         결제하기
       </Button>
     </div>

@@ -332,7 +332,12 @@ export function ProductHorizontalItem({
             likeTooltipOpen={likeTooltipOpen}
           />
         ) : pageType === "purchased" ? (
-          <Box display="flex" alignItems="center" cursor="default">
+          <Box
+            variant={"unstyled"}
+            display="flex"
+            alignItems="center"
+            cursor="default"
+          >
             <Text fontSize="xs" color="gray.500" mr={3} mt={4}>
               구매 일자 : {product.purchasedAt.split("T")[0]}
             </Text>

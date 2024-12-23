@@ -26,11 +26,13 @@ import { SlArrowRight } from "react-icons/sl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { categories } from "../category/CategoryContainer.jsx";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export const ProductDetailDrawer = ({ product, children }) => {
   const fileName = product.fileList?.[0]?.name;
   const fileSrc = product.fileList?.[0]?.src;
   const defaultsrc = "./image/default.png";
+  const { fontColor, buttonColor } = useTheme();
 
   const markerPosition = {
     lat: product.latitude,
@@ -163,7 +165,14 @@ export const ProductDetailDrawer = ({ product, children }) => {
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>
-            <Button>닫기</Button>
+            <Button
+              color={fontColor}
+              fontWeight="bold"
+              bg={buttonColor}
+              _hover={{ bg: `${buttonColor}AA` }}
+            >
+              닫기
+            </Button>
           </DrawerActionTrigger>
         </DrawerFooter>
         <DrawerCloseTrigger />
