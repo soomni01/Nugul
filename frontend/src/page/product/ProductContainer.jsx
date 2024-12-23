@@ -45,7 +45,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
   const [likeData, setLikeData] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
   const navigate = useNavigate();
-  const { primaryColor, secondaryColor, fontColor } = useTheme();
+  const { fontColor, buttonColor } = useTheme();
 
   // 카테고리 값 가져오기
   const categoryParam = searchParams.get("category");
@@ -226,8 +226,8 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
           />
           <IconButton
             aria-label="Search database"
-            bg={secondaryColor}
-            _hover={{ bg: `${secondaryColor}AA` }}
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
           >
             <LuSearch onClick={handleSearchClick} color={fontColor} />
           </IconButton>
@@ -235,7 +235,7 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
       </Box>
       <Flex justify="center" w="100%">
         <HStack
-          w="88%"
+          w="90%"
           display="flex"
           justify="space-between"
           align="center"
@@ -272,8 +272,8 @@ export function ProductListContainer({ apiEndpoint, pay, addProductRoute }) {
             size="xl"
             color={fontColor}
             fontWeight="bold"
-            bg={secondaryColor}
-            _hover={{ bg: `${secondaryColor}AA` }}
+            bg={buttonColor}
+            _hover={{ bg: `${buttonColor}AA` }}
           >
             판매하기
           </Button>

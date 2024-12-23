@@ -40,6 +40,7 @@ import {
   BreadcrumbLink,
   BreadcrumbRoot,
 } from "../../components/ui/breadcrumb.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProductView() {
   const { productId } = useParams();
@@ -51,6 +52,7 @@ export function ProductView() {
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [rating, setRating] = useState(0.0);
   const navigate = useNavigate();
+  const { primaryColor, buttonColor, fontColor } = useTheme();
 
   const { hasAccess, isAdmin, id } = useContext(AuthenticationContext);
 
@@ -315,7 +317,15 @@ export function ProductView() {
           spacing={4} // 수직 간격 추가}
         >
           <HStack justifyContent="space-between" w="100%">
-            <Badge size="lg">{categoryLabel}</Badge>
+            <Badge
+              size="lg"
+              style={{
+                backgroundColor: primaryColor,
+                filter: "brightness(90%)",
+              }}
+            >
+              {categoryLabel}
+            </Badge>
             <Heading
               size="3xl"
               whiteSpace="nowrap"
@@ -398,6 +408,10 @@ export function ProductView() {
                 <Button
                   size={{ base: "sm", md: "lg" }}
                   onClick={createChatRoom}
+                  color={fontColor}
+                  fontWeight="bold"
+                  bg={buttonColor}
+                  _hover={{ bg: `${buttonColor}AA` }}
                 >
                   채팅하기
                 </Button>

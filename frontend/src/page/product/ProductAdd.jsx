@@ -14,6 +14,7 @@ import {
   ProductNameSection,
   ProductPaymentSection,
 } from "../../components/product/ProductFormLayout.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProductAdd(props) {
   const [pay, setPay] = useState("sell"); // 상태를 하나로 설정
@@ -30,6 +31,7 @@ export function ProductAdd(props) {
   const [mainImage, setMainImage] = useState(null);
   const { id } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const { fontColor, buttonColor } = useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -208,9 +210,14 @@ export function ProductAdd(props) {
       <Box display="flex" w="100%" justifyContent="flex-end">
         <Button
           w={"10%"}
+          size={"xl"}
           disabled={disabled}
           loading={progress}
           onClick={handleSave}
+          color={fontColor}
+          fontWeight="bold"
+          bg={buttonColor}
+          _hover={{ bg: `${buttonColor}AA` }}
         >
           상품 등록
         </Button>

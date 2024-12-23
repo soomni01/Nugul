@@ -14,6 +14,7 @@ import { InputGroup } from "../../components/ui/input-group.jsx";
 import { PiCurrencyKrwBold } from "react-icons/pi";
 import { IoIosArrowForward } from "react-icons/io";
 import { categories } from "../category/CategoryContainer.jsx";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export function ProductFormLayout({ children, title }) {
   return (
@@ -157,6 +158,7 @@ export function ProductPaymentSection({
   price,
   onPriceChange,
 }) {
+  const { primaryColor, buttonColor, fontColor } = useTheme();
   return (
     <HStack alignItems="flex-start">
       <Text fontSize="lg" fontWeight="bold" minWidth="15%">
@@ -170,6 +172,13 @@ export function ProductPaymentSection({
             borderRadius="10px"
             variant={pay === "sell" ? "solid" : "outline"}
             onClick={() => onPayClick("sell")}
+            bg={pay === "sell" ? buttonColor : "transparent"}
+            _hover={{
+              bg: pay === "sell" ? `${buttonColor}AA` : "gray.100",
+            }}
+            color={pay === "sell" ? fontColor : "gray.600"}
+            fontWeight="bold"
+            border={pay === "sell" ? "none" : `1px solid gray.400`}
           >
             판매하기
           </Button>
@@ -178,6 +187,13 @@ export function ProductPaymentSection({
             borderRadius="10px"
             variant={pay === "share" ? "solid" : "outline"}
             onClick={() => onPayClick("share")}
+            bg={pay === "share" ? buttonColor : "transparent"}
+            _hover={{
+              bg: pay === "share" ? `${buttonColor}AA` : "gray.100",
+            }}
+            color={pay === "share" ? fontColor : "gray.600"}
+            fontWeight="bold"
+            border={pay === "share" ? "none" : `1px solid gray.400`}
           >
             나눔하기
           </Button>

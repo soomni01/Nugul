@@ -24,6 +24,7 @@ import {
   ProductNameSection,
   ProductPaymentSection,
 } from "../../components/product/ProductFormLayout.jsx";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function ProductEdit() {
   const { id } = useParams();
@@ -40,6 +41,7 @@ export function ProductEdit() {
   const [mainImage, setMainImage] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
   const [initialized, setInitialized] = useState(false);
+  const { fontColor, buttonColor } = useTheme();
 
   // 상품 정보 가져오기
   useEffect(() => {
@@ -291,7 +293,10 @@ export function ProductEdit() {
                 w="10%"
                 size="lg"
                 disabled={disabled}
-                colorPalette={"blue"}
+                color={fontColor}
+                fontWeight="bold"
+                bg={buttonColor}
+                _hover={{ bg: `${buttonColor}AA` }}
               >
                 저장
               </Button>
