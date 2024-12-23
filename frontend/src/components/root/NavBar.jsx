@@ -6,8 +6,11 @@ import { kakaoLogout } from "../social/KakaoLogin.jsx";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu.jsx";
 import { Avatar } from "../ui/avatar.jsx";
 import axios from "axios";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 function NavbarItem({ children, isActive, ...rest }) {
+  const { secondaryColor } = useTheme();
+
   return (
     <Box
       css={{
@@ -16,9 +19,9 @@ function NavbarItem({ children, isActive, ...rest }) {
         borderRadius: "20px",
         whiteSpace: "nowrap",
       }}
-      bgColor={isActive ? "blue.300" : "transparent"}
+      bgColor={isActive ? secondaryColor : "transparent"}
       _hover={{
-        bgColor: "blue.300",
+        bgColor: secondaryColor,
         cursor: "pointer",
       }}
       {...rest}
@@ -32,8 +35,8 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [productType, setProductType] = useState(null);
-
   const { id, nickname, profileImage } = useContext(AuthenticationContext);
+  const { primaryColor } = useTheme();
 
   useEffect(() => {
     const pathParts = location.pathname.split("/");
@@ -72,7 +75,7 @@ export function Navbar() {
     }
   };
   return (
-    <Box background="gray.100" borderBottom={"1px solid"}>
+    <Box background={primaryColor} borderBottom={"1px solid"}>
       <Flex justify="space-between" align="center" width="100%">
         {/*  /!* 왼쪽: HOME *!/*/}
         {/*  <Flex>*/}
@@ -85,7 +88,7 @@ export function Navbar() {
           <Button
             onClick={() => handleNavigation("/main")}
             bg="transparent"
-            _hover={{ bg: "gray.100" }} // 호버 효과
+            _hover={{ bg: "transparent" }} // 호버 효과
             p={0} // 버튼 안 여백 제거
           >
             <Image
@@ -96,10 +99,6 @@ export function Navbar() {
               ml={5}
             />
           </Button>
-          <NavbarItem
-            ml={5}
-            onClick={() => handleNavigation("/main")}
-          ></NavbarItem>
         </Flex>
 
         {/* 가운데: 중고거래, 나눔, 게시판, 지도 */}
@@ -153,7 +152,7 @@ export function Navbar() {
         </Flex>
 
         <Flex align="center" justify="center" gap={3} mr={10}>
-          <NavbarItem p={0}>
+          <NavbarItem p={0} _hover={{ bg: "transparent", cursor: "pointer" }}>
             <MenuRoot>
               <MenuTrigger asChild>
                 <Box>

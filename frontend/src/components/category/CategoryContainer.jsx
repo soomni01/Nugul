@@ -1,6 +1,9 @@
 import { Box, HStack, Image, Text } from "@chakra-ui/react";
+import { useTheme } from "../context/ThemeProvider.jsx";
 
 export function CategoryContainer({ selectedCategory, onCategorySelect }) {
+  const { primaryColor } = useTheme();
+
   return (
     <HStack my={5} spacing={0} w="100%" justifyContent="center">
       {categories.map((category) => (
@@ -8,8 +11,10 @@ export function CategoryContainer({ selectedCategory, onCategorySelect }) {
           key={category.value}
           textAlign="center"
           onClick={() => onCategorySelect(category.value)}
-          bg={selectedCategory === category.value ? "gray.200" : "transparent"}
-          _hover={{ cursor: "pointer", bg: "gray.100" }}
+          bg={
+            selectedCategory === category.value ? primaryColor : "transparent"
+          }
+          _hover={{ cursor: "pointer", bg: primaryColor }}
           p={3}
           borderRadius="full"
           justifyContent="center"
