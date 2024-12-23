@@ -48,6 +48,12 @@ export function ChatList() {
     }
   }, []);
 
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("LocalChatRoomId");
+    };
+  }, [location]);
+
   function getChatList() {
     axios
       .get("/api/chat/list", {
