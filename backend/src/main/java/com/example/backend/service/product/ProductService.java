@@ -103,24 +103,27 @@ public class ProductService {
     // 상품 1개의 정보 가져오기
     public Product getProductView(Integer productId) {
         Product product = mapper.selectById(productId);
-        String mainImageName = product.getMainImageName();
-        List<String> fileNameList = mapper.selectFilesByProductId(productId);
+        // 널 아닐 때만 실행되도록 변경
+        if (product != null) {
+            String mainImageName = product.getMainImageName();
+            List<String> fileNameList = mapper.selectFilesByProductId(productId);
 
-        // MainImageName과 일치하는 파일명을 앞에 오도록 정렬
-        List<ProductFile> fileSrcList = fileNameList.stream()
-                .sorted((name1, name2) -> {
-                    if (name1.equals(mainImageName)) {
-                        return -1; // MainImageName을 리스트의 앞에 배치
-                    } else if (name2.equals(mainImageName)) {
-                        return 1;
-                    }
-                    return 0;
-                })
-                .map(name -> new ProductFile(name, String.format("%s/product/%s/%s", imageSrcPrefix, productId, name)))
-                .toList();
-
-        product.setFileList(fileSrcList);
-        return product;
+            // MainImageName과 일치하는 파일명을 앞에 오도록 정렬
+            List<ProductFile> fileSrcList = fileNameList.stream()
+                    .sorted((name1, name2) -> {
+                        if (name1.equals(mainImageName)) {
+                            return -1; // MainImageName을 리스트의 앞에 배치
+                        } else if (name2.equals(mainImageName)) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    .map(name -> new ProductFile(name, String.format("%s/product/%s/%s", imageSrcPrefix, productId, name)))
+                    .toList();
+            product.setFileList(fileSrcList);
+            return product;
+        }
+        return new Product();
     }
 
     // 상품 삭제하기
