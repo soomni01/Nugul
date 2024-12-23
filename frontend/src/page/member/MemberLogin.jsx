@@ -20,6 +20,7 @@ import { KakaoLogin } from "../../components/social/KakaoLogin.jsx";
 import { NaverLogin } from "../../components/social/NaverLogin.jsx";
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLock } from "react-icons/tb";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function MemberLogin() {
   const [memberId, setMemberId] = useState("");
@@ -27,6 +28,7 @@ export function MemberLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const authentication = useContext(AuthenticationContext);
+  const { buttonColor } = useTheme();
 
   const handleLoginClick = () => {
     let isValid = true;
@@ -166,7 +168,7 @@ export function MemberLogin() {
           </Group>
         </Stack>
         <Box display="flex" mt={5}>
-          <Button w={"100%"} onClick={handleLoginClick}>
+          <Button bg={buttonColor} w={"100%"} onClick={handleLoginClick}>
             로그인
           </Button>
         </Box>

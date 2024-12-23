@@ -18,6 +18,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { ToggleTip } from "../../components/ui/toggle-tip.jsx";
 import { LuInfo } from "react-icons/lu";
+import { useTheme } from "../../components/context/ThemeProvider.jsx";
 
 export function MemberSocial() {
   const location = useLocation();
@@ -27,6 +28,7 @@ export function MemberSocial() {
   const [nicknameCheckMessage, setNickNameCheckMessage] = useState("");
   const [nicknameCheck, setNickNameCheck] = useState(false);
   const navigate = useNavigate();
+  const { buttonColor } = useTheme();
 
   useEffect(() => {
     // 닉네임 중복 체크
@@ -92,8 +94,16 @@ export function MemberSocial() {
       display="flex"
       alignItems="center"
       justifyContent="center"
+      flexDirection="column"
       height="100vh"
     >
+      <Box mb={10}>
+        <Image
+          src="/image/MainLogo.png"
+          maxWidth="230px" // 너비 제한
+          maxHeight="100px" // 높이 제한
+        />
+      </Box>
       <Box>
         <Text
           justifyContent="center"
@@ -199,6 +209,7 @@ export function MemberSocial() {
             w={"99%"}
             onClick={handleSaveClick}
             disabled={disabled}
+            bg={buttonColor}
           >
             회원가입
           </Button>

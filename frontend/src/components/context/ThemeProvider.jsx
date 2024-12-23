@@ -3,9 +3,10 @@ import React, { createContext, useContext } from "react";
 // 대표 고정 색상 정의
 const theme = {
   primaryColor: "#FFF0DC", // 네브바, 버튼
-  secondaryColor: "#F0BB78",
-  tertiaryColor: "#914F1E",
+  secondaryColor: "#ECB176",
+  tertiaryColor: "#A67B5B",
   fontColor: "#493628",
+  buttonColor: "#6F4E37",
 };
 
 export const ThemeContext = createContext(null);
