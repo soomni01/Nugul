@@ -52,7 +52,7 @@ export function ProductView() {
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [rating, setRating] = useState(0.0);
   const navigate = useNavigate();
-  const { primaryColor, buttonColor, fontColor } = useTheme();
+  const { primaryColor, buttonColor, fontColor, loginColor } = useTheme();
 
   const { hasAccess, isAdmin, id } = useContext(AuthenticationContext);
 
@@ -348,6 +348,7 @@ export function ProductView() {
                     color={fontColor}
                     fontWeight="bold"
                     bg={`${buttonColor}AA`}
+                    style={{ filter: "brightness(120%)" }}
                     _hover={{ bg: `${buttonColor}AA` }}
                   >
                     수정
@@ -363,6 +364,7 @@ export function ProductView() {
                         color={fontColor}
                         fontWeight="bold"
                         bg={buttonColor}
+                        style={{ filter: "brightness(85%)" }}
                       >
                         삭제
                       </Button>
