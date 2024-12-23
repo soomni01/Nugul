@@ -139,7 +139,7 @@ export function BoardList() {
       />
 
       <HStack justify="center" mt={4} minHeight="50px">
-        <Box>
+        <Box mt={6}>
           <select
             value={search.type}
             onChange={(e) => setSearch({ ...search, type: e.target.value })}
@@ -161,14 +161,13 @@ export function BoardList() {
           width="60%"
           mt={6}
         />
-        {/*<Button mt={6} onClick={handleSearchClick}>*/}
-        {/*  검색*/}
         <Button
           onClick={handleSearchClick}
           color={fontColor}
           fontWeight="bold"
           bg={buttonColor}
           _hover={{ bg: `${buttonColor}AA` }}
+          mt={6}
         >
           <LuSearch />
         </Button>
