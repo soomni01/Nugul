@@ -5,7 +5,6 @@ import {
   HStack,
   Icon,
   Input,
-  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -76,7 +75,6 @@ export function BoardAdd() {
       navigate("/");
     }
   }, [navigate]);
-
 
   const handleListClick = () => {
     navigate("/board/list");
@@ -294,12 +292,12 @@ export function BoardAdd() {
             />
             {/* 파일 미리보기만 표시, 파일명은 표시하지 않음 */}
             <Box display="flex" flexWrap="wrap" mt={2}>
-                  <Text color={fileInputInvalid ? "red" : "gray"} mt={2}>
-              {fileSizeMessage}
-            </Text>
-//             <HStack mt={2} spacing={2} wrap="wrap">
-              {filePreviewsList}
-//             </HStack>
+              <HStack mt={2} spacing={2} wrap="wrap">
+                {filePreviewsList}
+              </HStack>
+              <Text color={fileInputInvalid ? "red" : "gray"} mt={2}>
+                {fileSizeMessage}
+              </Text>
             </Box>
           </Field>
         </Box>
