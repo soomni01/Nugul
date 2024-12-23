@@ -73,13 +73,6 @@ export function Navbar() {
   return (
     <Box background="gray.100" borderBottom={"1px solid"}>
       <Flex justify="space-between" align="center" width="100%">
-        {/*  /!* 왼쪽: HOME *!/*/}
-        {/*  <Flex>*/}
-        {/*    <NavbarItem ml={10} onClick={() => handleNavigation("/main")}>*/}
-        {/*      <Heading size="3xl">너굴마켓</Heading>*/}
-        {/*    </NavbarItem>*/}
-        {/*  </Flex>*/}
-
         <Flex align="center">
           <Button
             onClick={() => handleNavigation("/main")}
@@ -92,7 +85,7 @@ export function Navbar() {
               alt="메인으로 이동"
               maxWidth="130px" // 너비 제한
               maxHeight="100px" // 높이 제한
-              ml={5}
+              ml={6}
             />
           </Button>
           <NavbarItem
@@ -102,7 +95,7 @@ export function Navbar() {
         </Flex>
 
         {/* 가운데: 중고거래, 나눔, 게시판, 지도 */}
-        <Flex justify="center" flex="1" gap={3} mr={10}>
+        <Flex justify="center" flex="1" gap={3} mr={32}>
           <NavbarItem
             onClick={() => handleNavigation("/product/list")}
             isActive={
