@@ -116,7 +116,6 @@ export function BoardEdit() {
         setBoard(boardData);
         console.log(boardData);
 
-
         // 예시: 게시물 작성자와 현재 로그인한 사용자가 같은지 확인
         if (!hasAccess(boardData.memberId)) {
           navigate("/board/list"); // 작성자가 아니라면 목록 페이지로 리디렉션
@@ -223,13 +222,12 @@ export function BoardEdit() {
   );
 
   return (
-
     <Box
       height="750px"
       border="1px solid #ccc"
       borderRadius="8px"
       p={10}
-      mt={8}
+      mt={7}
       position="relative"
     >
       <Stack gap={4}>
