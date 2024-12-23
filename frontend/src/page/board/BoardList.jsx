@@ -1,4 +1,12 @@
-import { Badge, Box, Flex, HStack, Input, Table } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Flex,
+  HStack,
+  Input,
+  Spinner,
+  Table,
+} from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
@@ -25,13 +33,17 @@ export function BoardList() {
   });
   const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
+    } else {
+      setLoading(false); // 로딩 완료
     }
-  }, []);
+  }, [navigate]);
+
   useEffect(() => {
     const controller = new AbortController();
     axios
@@ -73,6 +85,14 @@ export function BoardList() {
       setSelectedCategory(selectedCategory);
     }
   }, [searchParams]);
+
+  if (loading) {
+    return (
+      <Box>
+        <Spinner />
+      </Box>
+    );
+  }
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
   const page = Number(pageParam);
