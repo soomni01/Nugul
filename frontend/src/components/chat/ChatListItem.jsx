@@ -35,14 +35,14 @@ export function ChatListItem({ chat, onDelete, onClick }) {
   const productStatus = chat.status === "Sold" ? "subtle" : "elevated";
 
   return (
-    <Box p={3} onClick={onClick}>
+    <Box p={3} onClick={onClick} w={"100%"}>
       <Card.Root
         variant={productStatus}
         filter={chat.status === "Sold" ? "brightness(0.8)" : "none"}
         cursor="pointer"
         width={"100%"}
       >
-        <HStack>
+        <HStack spacing={0} width={"100%"}>
           <Image
             p={3}
             minWidth="120px"
@@ -54,14 +54,14 @@ export function ChatListItem({ chat, onDelete, onClick }) {
             alt={productImage.name}
             filter={chat.status === "Sold" ? "brightness(0.7)" : "none"}
           />
-          <Box>
-            <Card.Body pl={0} pt={2}>
+          <Box width="calc(100% - 130px)">
+            <Card.Body px={0} pt={2}>
               <Card.Title>
                 <Text
                   fontSize="lg"
-                  isTruncated
-                  noOfLines={1}
                   whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
                 >
                   {chat.productName}
                 </Text>

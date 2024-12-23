@@ -85,8 +85,8 @@ export function MainPage() {
 
   return (
     <Box mb={"30px"}>
-      <Image src="/image/MainTest.png" w="100%" h="450px" mt="3" />
-      <Separator my={10} />
+      <Image src="/image/MainImage2.png" w="100%" h="450px" mt={-2} />
+      <Separator />
       <Heading my={3} size={"2xl"}>
         {" "}
         카테고리별 상품 찾기

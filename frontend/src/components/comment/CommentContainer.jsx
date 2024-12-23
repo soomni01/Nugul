@@ -108,14 +108,15 @@ export function CommentContainer({ boardId }) {
     <Box>
       <Stack gap={5}>
         <HStack>
-          <Heading fontSize={"2xl"}>댓글</Heading>
-
+          <Heading fontSize={"2xl"} ml={1}>
+            댓글
+          </Heading>
           <Text fontSize={"xl"}>
-            <Icon>
+            <Icon mb={1}>
               <FaCommentDots />
             </Icon>
           </Text>
-          <Text fontSize={"xl"}>{count}</Text>
+          <Text fontSize={"xl"}>{count}개</Text>
         </HStack>
 
         <CommentInput boardId={boardId} onSaveClick={handleSaveClick} />

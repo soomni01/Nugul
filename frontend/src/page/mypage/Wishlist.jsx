@@ -43,16 +43,20 @@ export function Wishlist() {
 
   return (
     <Box>
-      <HStack alignItems="center" mb={3}>
-        <Heading size="lg">관심 목록</Heading>
-        <Text>총 {productList.length}건</Text>
+      <HStack alignItems="center">
+        <Heading size="xl" mt={2} ml={3}>
+          관심 목록
+        </Heading>
+        <Text mt={2}>총 {productList.length}건</Text>
       </HStack>
       <Box
-        height="70vh"
+        height="74vh"
         overflow="hidden"
         display="flex"
         alignItems="center"
         justifyContent="center"
+        mt={5}
+        ml={2}
       >
         {productList.length > 0 ? (
           <Swiper

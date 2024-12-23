@@ -42,8 +42,6 @@ public interface BoardMapper {
             SET title=#{title}, 
                 content=#{content},
                 category=#{category}
-            
-            
             WHERE board_id = #{boardId}
             """)
     int update(Board board);

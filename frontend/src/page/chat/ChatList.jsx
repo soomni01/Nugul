@@ -83,13 +83,16 @@ export function ChatList() {
 
   return (
     <Box h="85vh" overflow="hidden">
-      <HStack w="100%" h="100vh" spacing={0}>
+      <HStack h="100vh" spacing={0}>
         <VStack
-          w="20%"
+          minWidth="300px"
+          maxWidth="20%"
           p={5}
           borderRight="1px solid"
           borderColor="gray.300"
           h="100%"
+          flexShrink={0}
+          overflow="hidden"
         >
           <HStack w={"100%"} gap={3} mb={3} align="center">
             <Button
@@ -126,7 +129,7 @@ export function ChatList() {
 
           <Box
             height="80vh"
-            overflow="hidden"
+            width="100%"
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -167,7 +170,7 @@ export function ChatList() {
           </Box>
         </VStack>
 
-        <Box w="100%" h="100%">
+        <Box w="100%" h="100%" flex={1}>
           {chatRoomId === -1 ? null : (
             <ChatView
               zIndex={1}
@@ -179,9 +182,6 @@ export function ChatList() {
               onDelete={() => removeChatRoom(chatRoomId, id)}
             />
           )}
-          {/*{productId === -1 ? null : (*/}
-          {/*  <ProductDetail key={productId} productId={productId} />*/}
-          {/*)}*/}
         </Box>
       </HStack>
     </Box>

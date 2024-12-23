@@ -41,16 +41,20 @@ export function SoldItems() {
   }
   return (
     <Box>
-      <HStack alignItems="center" mb={3}>
-        <Heading size="lg">내가 판매한 상품</Heading>
-        <Text>총 {soldList.length}건</Text>
+      <HStack alignItems="center">
+        <Heading size="xl" mt={2} ml={3}>
+          나의 판매 상품
+        </Heading>
+        <Text mt={2}>총 {soldList.length}건</Text>
       </HStack>
       <Box
-        height="70vh"
+        height="72vh"
         overflow="hidden"
         display="flex"
         alignItems="center"
         justifyContent="center"
+        mt={7}
+        ml={2}
       >
         {soldList.length > 0 ? (
           <Swiper

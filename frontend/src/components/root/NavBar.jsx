@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Image } from "@chakra-ui/react";
 import { AuthenticationContext } from "../context/AuthenticationProvider.jsx";
 import { useContext, useEffect, useState } from "react";
 import { kakaoLogout } from "../social/KakaoLogin.jsx";
@@ -73,15 +73,36 @@ export function Navbar() {
   return (
     <Box background="gray.100" borderBottom={"1px solid"}>
       <Flex justify="space-between" align="center" width="100%">
-        {/* 왼쪽: HOME */}
-        <Flex>
-          <NavbarItem ml={10} onClick={() => handleNavigation("/main")}>
-            <Heading size="3xl">너굴마켓</Heading>
-          </NavbarItem>
+        {/*  /!* 왼쪽: HOME *!/*/}
+        {/*  <Flex>*/}
+        {/*    <NavbarItem ml={10} onClick={() => handleNavigation("/main")}>*/}
+        {/*      <Heading size="3xl">너굴마켓</Heading>*/}
+        {/*    </NavbarItem>*/}
+        {/*  </Flex>*/}
+
+        <Flex align="center">
+          <Button
+            onClick={() => handleNavigation("/main")}
+            bg="transparent"
+            _hover={{ bg: "gray.100" }} // 호버 효과
+            p={0} // 버튼 안 여백 제거
+          >
+            <Image
+              src="/image/MainLogo.png"
+              alt="메인으로 이동"
+              maxWidth="130px" // 너비 제한
+              maxHeight="100px" // 높이 제한
+              ml={5}
+            />
+          </Button>
+          <NavbarItem
+            ml={5}
+            onClick={() => handleNavigation("/main")}
+          ></NavbarItem>
         </Flex>
 
         {/* 가운데: 중고거래, 나눔, 게시판, 지도 */}
-        <Flex justify="center" flex="1" gap={3}>
+        <Flex justify="center" flex="1" gap={3} mr={10}>
           <NavbarItem
             onClick={() => handleNavigation("/product/list")}
             isActive={

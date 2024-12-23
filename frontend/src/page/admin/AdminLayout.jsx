@@ -8,7 +8,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 
 export function AdminLayout() {
@@ -22,11 +22,16 @@ export function AdminLayout() {
   }
 
   // // 관리자가 아니면 리디렉션 처리
-  useEffect(() => {
-    if (!isAdmin) {
-      navigate("/");
-    }
-  }, [isAdmin, navigate]);
+  // useEffect(() => {
+  //   if (!isAdmin) {
+  //     navigate("/");
+  //   }
+  // }, [isAdmin, navigate]);
+
+  // 관리자가 아니면 아무것도 렌더링하지 않음
+  if (!isAdmin) {
+    return null; // 페이지를 렌더링하지 않음
+  }
 
   return (
     <Flex direction="column" minH="100vh">
