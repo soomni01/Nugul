@@ -23,7 +23,7 @@ import java.util.Map;
 public class ChatController {
     private final ChatService chatService;
 
-//
+
 
     @MessageMapping("/{roomId}") // send/{roomId} 이렇게 넘어오는거임
     @SendTo("/room/{roomId}")

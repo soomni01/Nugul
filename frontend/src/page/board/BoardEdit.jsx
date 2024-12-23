@@ -27,6 +27,7 @@ import { AuthenticationContext } from "../../components/context/AuthenticationPr
 import { Switch } from "../../components/ui/switch.jsx";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { BoardCategories } from "../../components/category/BoardCategoryContainer.jsx";
 
 // 미리보기 이미지 생성 함수
 const generatePreviewFiles = (files) => {
@@ -44,15 +45,25 @@ const generatePreviewFiles = (files) => {
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
     <Box>
-      {files.map((file) => (
-        <HStack key={file.name}>
-          <Switch
-            colorPalette={"red"}
-            onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
-          />
-          <Image border={"1px solid black"} m={5} src={file.src} />
-        </HStack>
-      ))}
+      <HStack spacing={4} wrap="wrap">
+        {files.map((file) => (
+          <Box key={file.name} display="flex" alignItems="center">
+            <Switch
+              mr={2}
+              colorPalette={"red"}
+              onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
+            />
+            <Image
+              m={3}
+              ml={2}
+              src={file.src}
+              width="120px" // 원하는 이미지 크기 설정
+              height="120px" // 원하는 이미지 크기 설정
+              objectFit="cover" // 비율 유지하면서 크기 맞추기
+            />
+          </Box>
+        ))}
+      </HStack>
     </Box>
   );
 }
@@ -64,7 +75,7 @@ export function BoardEdit() {
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
-
+  const [fileInputInvalid, setFileInputInvalid] = useState(false);
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -78,37 +89,35 @@ export function BoardEdit() {
       ["clean"],
     ],
   };
-
-  const { id, isAuthenticated, hasAccess } = useContext(AuthenticationContext);
-
   const { boardId } = useParams();
   const navigate = useNavigate();
+  const { id, isAuthenticated, hasAccess } = useContext(AuthenticationContext);
 
   const handleViewClick = () => {
     navigate(`/board/boardView/${boardId}`);
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    // id가 존재하지 않으면 액세스를 체크하지 않도록 설정
+    if (!id) {
+      return; // id가 없으면 게시물 조회를 하지 않음
+    }
     axios
       .get(`/api/board/boardView/${boardId}`)
       .then((res) => {
         const boardData = res.data;
         setBoard(boardData);
 
-        // 작성자 확인
-        const isWriter = String(boardData.memberId) === String(id);
-
-        // 작성자가 아니라면 처리
-        if (!isWriter) {
-          if (!isAuthenticated) {
-            toaster.create({
-              type: "error",
-              description: "로그인이 필요합니다. 로그인 후 수정할 수 있습니다.",
-            });
-            navigate("/"); // 로그인 페이지로 리디렉션
-          } else {
-            navigate("/board/list"); // 목록 페이지로 리디렉션
-          }
+        // 예시: 게시물 작성자와 현재 로그인한 사용자가 같은지 확인
+        if (!hasAccess(boardData.memberId)) {
+          navigate("/board/list"); // 작성자가 아니라면 목록 페이지로 리디렉션
           return;
         }
       })
@@ -116,7 +125,7 @@ export function BoardEdit() {
         console.log("게시물 조회 실패");
         navigate("/board/list");
       });
-  }, [boardId, id, isAuthenticated, navigate]);
+  }, [boardId, id, navigate]);
 
   const handleRemoveSwitchClick = (checked, fileName) => {
     if (checked) {
@@ -129,11 +138,16 @@ export function BoardEdit() {
   const handleFileInputChange = (e) => {
     const files = Array.from(e.target.files);
 
-    // 기존 업로드 파일과 통합
+    // 기존 업로드 파일과 새로 추가된 파일을 결합
     const filteredFiles = files.filter(
       (file) =>
         !uploadFiles.some((uploadedFile) => uploadedFile.name === file.name),
     );
+
+    // 파일 크기 체크 (10MB 초과 체크)
+    const invalidFiles = filteredFiles.filter(
+      (file) => file.size > 10 * 1024 * 1024,
+    ); // 10MB 초과
 
     if (filteredFiles.length < files.length) {
       toaster.create({
@@ -141,6 +155,9 @@ export function BoardEdit() {
         description: "중복된 파일은 제외되었습니다.",
       });
     }
+
+    // 파일 크기 제한 초과 여부 설정
+    setFileInputInvalid(invalidFiles.length > 0);
 
     setUploadFiles((prev) => [...prev, ...filteredFiles]);
 
@@ -168,6 +185,7 @@ export function BoardEdit() {
         boardId: board.boardId,
         title: board.title,
         content: board.content,
+        category: board.category,
         removeFiles,
         uploadFiles,
         remainingFiles,
@@ -182,6 +200,7 @@ export function BoardEdit() {
           type: data.message.type,
           description: data.message.text,
         });
+        console.log(board);
         navigate(`/board/boardView/${boardId}`);
       })
       .catch((e) => {
@@ -202,24 +221,60 @@ export function BoardEdit() {
   );
 
   return (
-    <Box border="1px solid #ccc" borderRadius="8px" p={2}>
-      <h3>{boardId}번 게시물 수정</h3>
-      <hr />
-      <Stack gap={5}>
-        <Input
-          value={board.title}
-          placeholder="제목을 수정하세요"
-          onChange={(e) => setBoard({ ...board, title: e.target.value })}
-        />
+    <Box
+      height="750px"
+      border="1px solid #ccc"
+      borderRadius="8px"
+      p={10}
+      mt={8}
+      position="relative"
+    >
+      <Stack gap={4}>
+        <Box
+          border="1px solid #ccc"
+          borderRadius="4px"
+          display="flex"
+          alignItems="center"
+          p={1}
+        >
+          <Box borderRight="1px solid #ccc" padding="2px">
+            <select
+              value={board.category} // board.category로 수정
+              onChange={(e) => setBoard({ ...board, category: e.target.value })}
+              style={{
+                border: "none",
+                outline: "none",
+                fontSize: "14px",
+                height: "30px",
+                padding: "0 8px",
+              }}
+            >
+              {BoardCategories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </Box>
+
+          <Input
+            value={board.title}
+            onChange={(e) => setBoard({ ...board, title: e.target.value })}
+            placeholder="제목을 입력해 주세요."
+            padding="0 8px"
+            fontSize="14px"
+            height="30px"
+            style={{ border: "none", outline: "none", width: "100%" }}
+          />
+        </Box>
         <ReactQuill
           style={{
             width: "100%",
-            height: "400px",
+            height: "330px",
             maxHeight: "auto",
-            marginBottom: "20px",
+            marginBottom: "40px",
             fontSize: "16px",
           }}
-          placeholder="본문 내용을 수정하세요"
           value={board.content}
           onChange={(content) => setBoard({ ...board, content })}
           modules={modules}
@@ -235,9 +290,18 @@ export function BoardEdit() {
             multiple
             accept={"image/*"}
           />
+          <Text color="gray" mt={"4px"}>
+            ※ 최대 10MB 까지 업로드할 수 있습니다.
+          </Text>
+          {fileInputInvalid && (
+            <Text color="red" mt={2}>
+              파일 크기가 너무 큽니다. 최대 10MB 까지 업로드할 수 있습니다.
+            </Text>
+          )}
         </Box>
 
         <Box>
+          {/* 미리보기 이미지 영역 */}
           <Flex wrap="wrap" gap={4}>
             {previewFiles.map((preview, index) => (
               <Box
@@ -254,53 +318,64 @@ export function BoardEdit() {
                   boxSize="100px"
                   objectFit="cover"
                 />
-                <Text mt={2} isTruncated>
-                  {preview.name}
-                </Text>
+                <Text isTruncated>{preview.name}</Text>
               </Box>
             ))}
           </Flex>
-        </Box>
-        {hasAccess(board.memberId) && (
-          <Box>
-            <DialogRoot
-              open={dialogOpen}
-              onOpenChange={(e) => setDialogOpen(e.open)}
+
+          {/* 저장 및 취소 버튼 */}
+          {hasAccess(board.memberId) && (
+            <Box
+              position="absolute"
+              bottom="0" // 부모 박스의 하단에 고정
+              right="0" // 오른쪽에 위치
+              width="auto" // 길이를 자동으로 조정
+              bg="white"
+              py={4}
+              px={6}
+              display="flex"
+              justifyContent="flex-end"
+              zIndex={1} // zIndex 값을 설정하여 다른 요소와 겹치지 않게
             >
-              <DialogTrigger asChild>
-                <Button
-                  disabled={disabled}
-                  colorPalette={"cyan"}
-                  variant={"outline"}
-                >
-                  저장
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>저장 확인</DialogTitle>
-                </DialogHeader>
-                <DialogBody>
-                  <p>{board.boardId}번 게시물을 수정하시겠습니까?</p>
-                </DialogBody>
-                <DialogFooter>
-                  <DialogActionTrigger>
-                    <Button variant={"outline"}>취소</Button>
-                  </DialogActionTrigger>
+              <DialogRoot
+                open={dialogOpen}
+                onOpenChange={(e) => setDialogOpen(e.open)}
+              >
+                <DialogTrigger asChild>
                   <Button
-                    loading={progress}
-                    colorPalette={"blue"}
-                    onClick={handleSaveClick}
+                    disabled={disabled}
+                    colorPalette={"cyan"}
+                    variant={"outline"}
                   >
                     저장
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </DialogRoot>
-          </Box>
-        )}
-        <Box>
-          <Button onClick={handleViewClick}>수정 취소</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>저장 확인</DialogTitle>
+                  </DialogHeader>
+                  <DialogBody>
+                    <p>{board.boardId}번 게시물을 수정하시겠습니까?</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogActionTrigger>
+                      <Button variant={"outline"}>취소</Button>
+                    </DialogActionTrigger>
+                    <Button
+                      loading={progress}
+                      colorPalette={"blue"}
+                      onClick={handleSaveClick}
+                    >
+                      저장
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </DialogRoot>
+              <Button ml={4} variant="outline" onClick={handleViewClick}>
+                취소
+              </Button>
+            </Box>
+          )}
         </Box>
       </Stack>
     </Box>

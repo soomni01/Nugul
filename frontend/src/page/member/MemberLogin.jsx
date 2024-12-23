@@ -1,4 +1,12 @@
-import { Box, Group, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Group,
+  HStack,
+  Image,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useContext, useState } from "react";
 import { Button } from "../../components/ui/button.jsx";
@@ -95,7 +103,16 @@ export function MemberLogin() {
       alignItems="center"
       justifyContent="center"
       height="100vh"
+      flexDirection="column" // 세로 정렬
     >
+      {/* 메인 로고 이미지 추가 (위치 수정 필요) */}
+      <Box mb={10}>
+        <Image
+          src="/image/MainLogo.png"
+          maxWidth="230px" // 너비 제한
+          maxHeight="100px" // 높이 제한
+        />
+      </Box>
       <Box>
         <Text
           fontSize="2xl"
@@ -157,7 +174,7 @@ export function MemberLogin() {
         <Box textAlign="end" mt={3}>
           <Link to="/member/signup">회원가입</Link>
         </Box>
-        <HStack display="flex" justifyContent="center">
+        <HStack display="flex" justifyContent="center" mb={30}>
           <KakaoLogin />
           <NaverLogin />
         </HStack>

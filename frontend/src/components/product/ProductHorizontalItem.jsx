@@ -134,8 +134,8 @@ export function ProductHorizontalItem({
         toaster.create({
           type: "warning",
           description: newLikedState
-            ? "관심 상품에서 삭제했습니다."
-            : "관심 상품에 추가했습니다.",
+            ? "관심 목록에서 삭제했습니다."
+            : "관심 목록에 추가했습니다.",
         });
         console.log(product.productId);
         onRemove(product.productId); // 관심 목록에서 제거 또는 추가
@@ -262,7 +262,9 @@ export function ProductHorizontalItem({
         <Card.Body p={3}>
           {product.productId != null ? (
             <Box w="fit-content">
-              <Badge colorScheme="teal">{categoryLabel}</Badge>
+              <Badge colorPalette="teal" ml={1} mb={2}>
+                {categoryLabel}
+              </Badge>
             </Box>
           ) : (
             <Box>
@@ -280,16 +282,16 @@ export function ProductHorizontalItem({
               </HStack>
             </Text>
             {value === "purchased" ? (
-              <Heading size="xs">
-                판매자: {product.nickname || "알 수 없음"}
+              <Heading size="xs" mr={2}>
+                판매자 : {product.nickname || "탈퇴한 회원"}
               </Heading>
             ) : value === "sell" && isSold ? (
-              <Heading size="xs">
-                구매자: {product.buyerNickname || "알 수 없음"}
+              <Heading size="xs" mr={2}>
+                구매자 : {product.buyerNickname || "탈퇴한 회원"}
               </Heading>
             ) : null}
           </HStack>
-          <Card.Description mt={2} ml={1}>
+          <Card.Description mt={2} ml={1.5}>
             {daysAgo}
           </Card.Description>
         </Card.Body>
@@ -314,27 +316,41 @@ export function ProductHorizontalItem({
           />
         ) : pageType === "purchased" ? (
           <Box display="flex" alignItems="center">
-            <Text fontSize="xs" color="gray.500" mr={2}>
-              구매 일자: {formatDate(product.purchasedAt)}
+            <Text fontSize="xs" color="gray.500" mr={3} mt={4}>
+              구매 일자 : {product.purchasedAt.split("T")[0]}
             </Text>
             {product.reviewStatus === "completed" ? (
-              <Button colorPalette="cyan" size="xs" isDisabled cursor="default">
+              <Button
+                colorPalette="cyan"
+                size="xs"
+                isDisabled
+                cursor="default"
+                mt={4}
+              >
                 작성 완료
               </Button>
             ) : (
               <Button
                 onClick={() => handleReviewClick(product.productId)}
                 size="xs"
+                mt={4}
               >
                 후기 작성
               </Button>
+              // <Image
+              //   src="/image/Review.png"
+              //   alt="Home Icon"
+              //   boxSize="30px"
+              //   mt={3}
+              //   onClick={() => handleReviewClick(product.productId)}
+              // />
             )}
           </Box>
         ) : (
           <Box display="flex" alignItems="center">
             {product.purchasedAt && (
-              <Text fontSize="xs" color="gray.500" mr={2}>
-                판매 일자: {product.purchasedAt.split("T")[0]}
+              <Text fontSize="xs" color="gray.500" mt={0.5} mr={2}>
+                판매 일자 : {product.purchasedAt.split("T")[0]}
               </Text>
             )}
             <DeleteDialog
@@ -347,7 +363,7 @@ export function ProductHorizontalItem({
         )}
       </Button>
 
-      <Box position="absolute" bottom={2} right={2}>
+      <Box position="absolute" bottom={3} right={2}>
         <Text fontSize="md" fontWeight="bold">
           <HStack gap={1}>
             {/* 결제 상태 추가 */}
@@ -355,12 +371,15 @@ export function ProductHorizontalItem({
               <Image
                 src="/image/Kakaopay.png"
                 alt="Kakaopay Icon"
-                width="60px"
+                width="55px"
                 height="auto"
+                mr={1}
               />
             )}
             {product.pay !== "share" && <PiCurrencyKrwBold />}
-            {product.pay === "share" ? "나눔" : product.price}
+            <Text fontWeight="bold" mr={3}>
+              {product.pay === "share" ? "나눔" : product.price}
+            </Text>
           </HStack>
         </Text>
       </Box>

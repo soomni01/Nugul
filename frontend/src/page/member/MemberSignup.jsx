@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Flex, Group, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Group, Image, Input, Stack, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
@@ -139,6 +139,10 @@ export function MemberSignup() {
         maxWidth="500px"
         margin="0 auto"
       >
+        {/* 메인 로고 이미지 추가 (위치 수정 필요) */}
+        <Box mb={8} display="flex" justifyContent="center">
+          <Image src="/image/MainLogo.png" maxWidth="230px" maxHeight="100px" />
+        </Box>
         <Text
           fontSize="2xl"
           fontWeight="bold"
