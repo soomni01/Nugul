@@ -101,9 +101,8 @@ public class MemberService {
         Member db = mapper.selectById(member.getMemberId());
         if (db != null) {
 
-            // 쓴 상품 목록 얻기
+            // 본인이 올린 상품 목록 얻기
             List<Integer> products = productMapper.getProductId(member.getMemberId());
-
 
             // 각 상품 지우기
             for (Integer productId : products) {
@@ -123,12 +122,17 @@ public class MemberService {
                 inquiryService.deleteInquiry(inquiry.getInquiryId());
             }
 
+            // 본인 댓글 삭제
+            commentMapper.deleteByMemberId(member.getMemberId());
+
             // 쓴 게시물 목록 얻기
             List<Integer> boards = boardMapper.boardByMemberId(member.getMemberId());
-            // 회원의 댓글 삭제 (게시물 외 개인 댓글)
-            commentMapper.deleteByMemberId(member.getMemberId());
             for (Integer boardId : boards) {
-                // 게시물에 연결된 파일 목록 가져오기
+
+                // 해당 게시물에 댓글 삭제
+                commentMapper.deleteByBoardId(boardId);
+
+                // 해딩 게시물에 연결된 파일 목록 가져오기
                 List<String> fileNames = boardMapper.selectFilesByBoardId(boardId);
 
                 // DB에서 파일 삭제
