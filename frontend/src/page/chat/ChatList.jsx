@@ -35,9 +35,6 @@ export function ChatList() {
       navigate("/");
     }
 
-    if (id) {
-      fetch(id);
-    }
     getChatList();
   }, [searchParams, id, status, navigate]);
 
