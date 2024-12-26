@@ -12,6 +12,10 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
 
   // 제이쿼리와 아임포트 스크립트를 추가하는 useEffect
   useEffect(() => {
+    // chatRoom과 productId 유효성 검사
+    if (!chatRoom || !chatRoom.productId) {
+      return; // chatRoom 도는 productId가 없으면 중단
+    }
     const jquery = document.createElement("script");
     jquery.src = "http://code.jquery.com/jquery-1.12.4.min.js";
     const iamport = document.createElement("script");
