@@ -50,36 +50,36 @@ export const categories = [
   {
     label: "전체",
     value: "all",
-    imageUrl: "../../public/image/category/all.png",
+    imageUrl: "/image/category/all.png",
   },
   {
     label: "의류",
     value: "clothes",
-    imageUrl: "../../public/image/category/clothes.png",
+    imageUrl: "/image/category/clothes.png",
   },
   {
     label: "잡화",
     value: "miscellaneous",
-    imageUrl: "../../public/image/category/miscellaneous.png",
+    imageUrl: "/image/category/miscellaneous.png",
   },
   {
     label: "식품",
     value: "food",
-    imageUrl: "../../public/image/category/food.png",
+    imageUrl: "/image/category/food.png",
   },
   {
     label: "뷰티",
     value: "beauty",
-    imageUrl: "../../public/image/category/beauty.png",
+    imageUrl: "/image/category/beauty.png",
   },
   {
     label: "디지털 기기",
     value: "digital",
-    imageUrl: "../../public/image/category/digital.png",
+    imageUrl: "/image/category/digital.png",
   },
   {
     label: "쿠폰",
     value: "coupon",
-    imageUrl: "../../public/image/category/coupon.png",
+    imageUrl: "/image/category/coupon.png",
   },
 ];

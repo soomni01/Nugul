@@ -65,7 +65,7 @@
     height: auto;
     background-color: #f8f9fa;
     aspect-ratio: 1;
-    background-image: url('../../../../public/image/default.png');
+    background-image: url('/image/default.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -94,7 +94,7 @@
     height: auto;
     background-color: #f8f9fa;
     aspect-ratio: 1;
-    background-image: url('../../../../public/image/default.png');
+    background-image: url('/image/default.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
