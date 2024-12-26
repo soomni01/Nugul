@@ -22,6 +22,8 @@ export function KakaoOauth() {
 
   // 카카오 서버로 토큰 요청
   const requestKakaoToken = async (code) => {
+    const BASE_URL = import.meta.env.VITE_APP_SERVER_URL.replace(/\/+$/, "");
+
     try {
       const response = await fetch("https://kauth.kakao.com/oauth/token", {
         method: "POST",
@@ -31,7 +33,7 @@ export function KakaoOauth() {
         body: new URLSearchParams({
           grant_type: "authorization_code",
           client_id: import.meta.env.VITE_KAKAO_REST_KEY,
-          redirect_uri: "http://localhost:5173/oauth/kakao",
+          redirect_uri: `${BASE_URL}/oauth/kakao`,
           code: code,
         }),
       });

@@ -4,7 +4,8 @@ import axios from "axios";
 
 export function NaverLogin() {
   const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_KEY;
-  const REDIRECT_URI = "http://localhost:5173/oauth/naver";
+  const BASE_URL = import.meta.env.VITE_APP_SERVER_URL.replace(/\/+$/, "");
+  const REDIRECT_URI = `${BASE_URL}/oauth/naver`;
   const STATE = Math.random().toString(36).substring(2);
   const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}&autoLogin=false&forceLogin=true`;
 
@@ -17,7 +18,7 @@ export function NaverLogin() {
       <Image
         boxSize="50px"
         onClick={handleNaverLogin}
-        src="../../../public/image/NaverLogin.png"
+        src="/image/NaverLogin.png"
         cursor="pointer"
       />
     </>

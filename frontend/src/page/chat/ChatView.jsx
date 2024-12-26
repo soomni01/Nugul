@@ -37,6 +37,10 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [reviewComplete, setReviewComplete] = useState(false);
   const [transactionComplete, setTransactionComplete] = useState(false);
   const { fontColor, buttonColor } = useTheme();
+  const BASE_URL = import.meta.env.VITE_APP_SERVER_URL.replace(
+    /^http/,
+    "ws",
+  ).replace(/\/+$/, "");
 
   // 경로에 따라서  받아줄 변수를 다르게 설정
   let realChatRoomId = chatRoomId ? chatRoomId : roomId;
@@ -44,7 +48,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   //  stomp 객체 생성 및, 연결
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8080/wschat",
+      brokerURL: `${BASE_URL}/wschat`,
       connectHeaders: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
