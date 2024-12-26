@@ -44,7 +44,7 @@ const Payment = ({ chatRoom, onComplete, statusControl }) => {
     const product = res.data;
 
     const { IMP } = window;
-    IMP.init("imp27532056");
+    IMP.init("imp42577807");
 
     // 결제 요청
     IMP.request_pay(
