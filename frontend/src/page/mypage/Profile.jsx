@@ -46,6 +46,18 @@ export function Profile({ onEditClick }) {
 
   async function handleDeleteClick() {
     try {
+      // 소셜 로그인 사용자의 경우 이메일 검증 추가
+      if (!member.password) {
+        if (email !== id) {
+          // id가 이메일이므로 비교
+          toaster.create({
+            type: "error",
+            description: "가입된 이메일과 일치하지 않습니다.",
+          });
+          return;
+        }
+      }
+
       // 서버 회원 삭제 요청
       const response = await axios.delete("/api/member/remove", {
         data: { memberId: id, password },
