@@ -378,6 +378,13 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     }
   }, [purchased]);
 
+  // 메시지 하나씩 밀려서 덜 보이는 오류 해결
+  useEffect(() => {
+    if (chatBoxRef.current && message.length > 0) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [message]); // message 배열이 변경될 때마다 실행
+
   return (
     <Box pt={3}>
       <Flex direction="column" w={"99%"} h={"85vh"} overflow={"hidden"}>
@@ -480,14 +487,14 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             </Flex>
           </Box>
         </Box>
+
         <Box
-          p={3}
-          h={"75%"}
+          flex="1"
           overflowY={"auto"}
           ref={chatBoxRef}
           onScroll={handleScroll}
         >
-          <Box h={"100%"}>
+          <Box p={3}>
             {message.map((message, index) => (
               <Box my={10} key={index}>
                 <Flex
@@ -533,7 +540,15 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
             ))}
           </Box>
         </Box>
-        <HStack mb={3}>
+
+        <HStack
+          p={3}
+          spacing={3}
+          position="sticky"
+          bottom={0}
+          bg="white"
+          zIndex={1}
+        >
           <Field>
             <Input
               size={"xl"}
