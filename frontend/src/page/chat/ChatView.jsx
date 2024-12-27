@@ -407,7 +407,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                 variant={"unstyled"} // 기본 스타일 제거
                 cursor="default" // 커서 변경 방지
                 bg="gray.200"
-                w={"100%"}
+                w="190px"
                 mb={5}
                 mr={0}
               >
@@ -415,12 +415,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               </Button>
             ) : (
               <ProductDetailDrawer product={product}>
-                <Button w={"100%"} mb={5} mr={0} variant="subtle">
+                <Button w={"180px"} mb={5} mr={0} variant="subtle">
                   상품 정보 보기
                 </Button>
               </ProductDetailDrawer>
             )}
-            <Flex>
+            <Flex justifyContent="flex-end">
               {isLoading ? (
                 <Button size={"xl"} isDisabled cursor="default" bg="gray.200">
                   로딩 중...
@@ -428,7 +428,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               ) : (
                 <>
                   {/* 판매자일 때만 거래완료 버튼이 보이게 하고, 거래 완료 상태면 버튼 숨김 */}
-                  {isSeller ? (
+                  {isSeller && product.productId ? (
                     <Button
                       size={"xl"}
                       className={"ScrollBarContainer"}
@@ -445,11 +445,13 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                   ) : purchased ? (
                     <></>
                   ) : (
-                    <Payment
-                      chatRoom={chatRoom}
-                      statusControl={statusControl}
-                      onComplete={handleTransactionState}
-                    />
+                    product.productId && (
+                      <Payment
+                        chatRoom={chatRoom}
+                        statusControl={statusControl}
+                        onComplete={handleTransactionState}
+                      />
+                    )
                   )}
 
                   {purchased && (
@@ -469,11 +471,12 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
                   )}
                 </>
               )}
-
-              <DialogCompo
-                roomId={realChatRoomId}
-                onDelete={onDelete || (() => removeChatRoom(roomId, id))}
-              />
+              <Flex justifyContent="flex-end">
+                <DialogCompo
+                  roomId={realChatRoomId}
+                  onDelete={onDelete || (() => removeChatRoom(roomId, id))}
+                />
+              </Flex>
             </Flex>
           </Box>
         </Box>
