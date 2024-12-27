@@ -179,11 +179,20 @@ public class MemberService {
     public boolean update(MemberEdit member) {
         int cnt = 0;
         Member db = mapper.selectById(member.getMemberId());
+        // db에 회원이 존재하는 경우
         if (db != null) {
-            if (db.getPassword().equals(member.getOldPassword())) {
+            // 일반 회원 (비밀번호가 있는 경우)
+            if (db.getPassword() != null) {
+                if (db.getPassword().equals(member.getOldPassword())) {
+                    cnt = mapper.update(member);
+                }
+            }
+            // 소셜 로그인 회원 (비밀번호가 없는 경우)
+            else {
                 cnt = mapper.update(member);
             }
         }
+
         return cnt == 1;
     }
 

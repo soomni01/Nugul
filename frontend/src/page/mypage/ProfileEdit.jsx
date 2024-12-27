@@ -20,6 +20,7 @@ export function ProfileEdit({ id, onCancel, onSave }) {
   const [member, setMember] = useState(null);
   const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [nickname, setNickName] = useState("");
   const [nickNameCheck, setNickNameCheck] = useState(null); // 닉네임 유효성 상태 (null: 확인 안됨, true: 중복 아님, false: 중복)
   const [open, setOpen] = useState(false);
@@ -36,7 +37,7 @@ export function ProfileEdit({ id, onCancel, onSave }) {
       const response = await axios.get(`/api/member/${id}`);
       const memberData = response.data;
       setMember(memberData);
-      setPassword(memberData.password || "");
+      setPassword(memberData.password || null);
       setNickName(memberData.nickname || "");
     } catch (error) {
       toaster.create({
@@ -242,15 +243,25 @@ export function ProfileEdit({ id, onCancel, onSave }) {
               </DialogHeader>
               <DialogBody>
                 <Stack gap={5}>
-                  <Field>
-                    <Input
-                      placeholder={"기존 비밀번호를 입력해 주세요."}
-                      value={oldPassword}
-                      onChange={(e) => {
-                        setOldPassword(e.target.value);
-                      }}
-                    />
-                  </Field>
+                  {password ? (
+                    <Field>
+                      <Input
+                        placeholder={"기존 비밀번호를 입력해 주세요."}
+                        value={password}
+                        onChange={(e) => {
+                          setOldPassword(e.target.value);
+                        }}
+                      />
+                    </Field>
+                  ) : (
+                    <Field label={"이메일"}>
+                      <Input
+                        placeholder={"이메일을 입력해 주세요."}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </Field>
+                  )}
                 </Stack>
               </DialogBody>
               <DialogFooter>
