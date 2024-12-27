@@ -2,7 +2,7 @@ import { Badge, Box, Flex, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import "./chat.css";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthenticationContext } from "../../components/context/AuthenticationProvider.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
@@ -23,8 +23,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const [clientMessage, setClientMessage] = useState("");
   const [chatRoom, setChatRoom] = useState({});
   const [stompClient, setStompClient] = useState(null);
-  const { roomId } = useParams();
-  const [isloading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [purchased, setPurchased] = useState(false);
@@ -33,7 +32,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState({});
-  const [reviewText, setReviewText] = useState("후기");
   const [reviewComplete, setReviewComplete] = useState(false);
   const [transactionComplete, setTransactionComplete] = useState(false);
   const { fontColor, buttonColor } = useTheme();
@@ -43,7 +41,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   ).replace(/\/+$/, "");
 
   // 경로에 따라서  받아줄 변수를 다르게 설정
-  let realChatRoomId = chatRoomId ? chatRoomId : roomId;
+  let realChatRoomId = chatRoomId;
 
   //  stomp 객체 생성 및, 연결
   useEffect(() => {
@@ -100,11 +98,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     const initializeData = async () => {
       await loadInitialMessages();
       await handleSetData();
-
-      // if (chatBoxRef.current) {
-      //   chatBoxRef.current.scrollTop =
-      //     chatBoxRef.current.scrollHeight - chatBoxRef.current.clientHeight;
-      // }
     };
 
     initializeData();
@@ -189,7 +182,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
 
   // 초기 메세지 로딩
   const loadInitialMessages = async () => {
-    setIsloading(true);
+    setIsLoading(true);
     try {
       const response = await axios.get(
         `/api/chat/view/${realChatRoomId}/messages`,
@@ -207,7 +200,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
     } catch (error) {
       console.error("메시지 로딩 중 오류:", error);
     } finally {
-      setIsloading(false);
+      setIsLoading(false);
       setPage(page + 1);
     }
   };
@@ -218,7 +211,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       return null;
     }
 
-    setIsloading(true);
+    setIsLoading(true);
 
     try {
       const response = await axios.get(
@@ -247,7 +240,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
       const reach = chatBox.scrollHeight - chatBox.scrollHeight * 0.2;
       chatBoxRef.current.scrollTop = reach;
       setPage((prev) => prev + 1);
-      setIsloading(false);
+      setIsLoading(false);
     }
   };
 
@@ -279,7 +272,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
         } else {
           console.error("응답 데이터에 message가 없습니다:", data); // 'message'가 없을 경우 에러 처리
         }
-        // setReviewComplete(true);
         setTransactionComplete(true);
         statusControl();
       })
@@ -328,8 +320,6 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
   };
 
   const handleReviewComplete = (productId) => {
-    // 이떄 상태가 바뀌는거니까
-    setReviewText("거래 완료 ");
     setReviewComplete(true);
     setIsModalOpen(false);
   };
@@ -431,7 +421,7 @@ export function ChatView({ chatRoomId, onDelete, statusControl }) {
               </ProductDetailDrawer>
             )}
             <Flex>
-              {isloading ? (
+              {isLoading ? (
                 <Button size={"xl"} isDisabled cursor="default" bg="gray.200">
                   로딩 중...
                 </Button>
