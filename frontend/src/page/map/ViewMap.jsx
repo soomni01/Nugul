@@ -297,26 +297,27 @@ function ViewMap() {
           )}
         </Box>
         {/* 카테고리 마커 */}
-        {categorySearchResultList.map((item, index) => {
-          return (
-            <MapMarker
-              key={index}
-              position={{ lat: item.y, lng: item.x }}
-              image={{
-                src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
-                size: { width: 27, height: 28 },
-                options: {
-                  spriteSize: { width: 72, height: 208 },
-                  spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
-                  offset: { x: 11, y: 28 },
-                },
-              }}
-              onClick={() => {
-                displayPlaceInfo(item);
-              }}
-            ></MapMarker>
-          );
-        })}
+        {Array.isArray(categorySearchResultList) &&
+          categorySearchResultList.map((item, index) => {
+            return (
+              <MapMarker
+                key={index}
+                position={{ lat: item.y, lng: item.x }}
+                image={{
+                  src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png",
+                  size: { width: 27, height: 28 },
+                  options: {
+                    spriteSize: { width: 72, height: 208 },
+                    spriteOrigin: { x: 46, y: categoryImageNumber * 36 },
+                    offset: { x: 11, y: 28 },
+                  },
+                }}
+                onClick={() => {
+                  displayPlaceInfo(item);
+                }}
+              ></MapMarker>
+            );
+          })}
         {/* 오버레이  */}
         {isoverlayOpen && selectedPlace && (
           <CustomOverlayMap
