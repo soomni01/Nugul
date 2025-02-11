@@ -6,10 +6,10 @@
  **너굴마켓**은 경제적 효율성을 높이는 중고거래 플랫폼입니다.
  원하는 상품을 쉽게 검색하여 구매하고 판매하여 사용자 편의성을 높이고 실시간 채팅으로 구매자와 판매자 간의 소통을 원활하게 합니다. 
  [너굴마켓 바로기기](http://13.124.228.250:8080/ "너굴마켓 바로가기")
- 
+<br></br>
  ## 📆 프로젝트 기간
  2024/11/26 ~ 2024/12/27
-
+<br></br>
  ## 🧑‍💻팀원
 <table style="width: 100%; border-collapse: collapse;">
   <thead>
@@ -52,9 +52,7 @@
   </tbody>
 </table>
 
-
- 
- ## 📚 기술스택
+## 📚 기술스택
  ### frontend
  <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/chakra--ui-319795?style=for-the-badge&logo=chakra-ui&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=HTML5&logoColor=white"> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=CSS3&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white">
 
@@ -64,23 +62,10 @@
  
  ### tools
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white">
- 
+<br></br>
  ## 🗂️ ERD
  ![KakaoTalk_20241223_190733002](https://github.com/user-attachments/assets/7f5009e2-87ba-49e0-b55d-96165de058c5)
- 
- ## 📚 기술스택
- ### frontend
- <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/chakra--ui-319795?style=for-the-badge&logo=chakra-ui&logoColor=white">
- 
- ### backend
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white"> <img src="https://img.shields.io/badge/STOMP-000000?style=for-the-badge&logo=socket.io&logoColor=white">
-
- ### tools
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white">
- 
- ## 🗂️ ERD
- ![KakaoTalk_20241223_190733002](https://github.com/user-attachments/assets/7f5009e2-87ba-49e0-b55d-96165de058c5)
- 
+<br></br>
  ## ⚙ 화면구현
 <details><summary>회원가입/로그인</summary> 
  
@@ -192,10 +177,8 @@
 
  ##### 관리자 문의 작성 페이지
 ![문의2](https://github.com/user-attachments/assets/f12171a3-f751-461e-8f38-c8fac5baa957)
-
 </details>
 
- 
  ## ⁉ 트러블 슈팅
 <details><summary>회원 탈퇴, 상품 삭제 시 데이터 보존</summary>
 1. 문제 식별<br>
