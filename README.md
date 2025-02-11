@@ -56,37 +56,17 @@
  
  ## 📚 기술스택
  ### frontend
- <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/chakra--ui-319795?style=for-the-badge&logo=chakra-ui&logoColor=white">
+ <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/chakra--ui-319795?style=for-the-badge&logo=chakra-ui&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=HTML5&logoColor=white"> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=CSS3&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white">
+
  
  ### backend
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"> <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white"> <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white"> <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white"> <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/MyBatis-000000?style=for-the-badge&logo=MyBatis&logoColor=white">
  
  ### tools
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white">
  
  ## 🗂️ ERD
  ![KakaoTalk_20241223_190733002](https://github.com/user-attachments/assets/7f5009e2-87ba-49e0-b55d-96165de058c5)
- 
- ## ⚙ 화면구현  <div style="text-align: center; width: 100%;">
-          <a href="https://github.com/soomni01" title="soomni01">soomni01</a>
-        </div>
-      </td>
-      <td style="text-align: center; vertical-align: middle;">
-        <div style="text-align: center; width: 100%;">
-          <a href="https://github.com/seokminlee24" title="seokminlee24">seokminlee24</a>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align: center;">• 채팅 CRUD<br>－실시간 채팅<br>• 지도(카카오 Api)<br>－카테고리별 검색, 장소 검색</td>
-      <td style="text-align: center;">• 관리자<br>－회원 관리<br>－문의 관리<br>• 1:1 문의 CRUD<br>• 마이페이지<br>－가계부<br>• 결제(카카오페이)
-      <td style="text-align: center;">• 메인페이지<br>• 상품<br>－상품 CRUD<br>－찜 CRUD<br>• SNS 로그인(카카오, 네이버)<br>• 후기 CRUD<br>• 마이페이지<br>－구매, 판매 / 찜 / 후기 내역 조회</td>
-      <td style="text-align: center;">• 게시판<br>－게시판 CRUD<br>－댓글 CRUD<br>• 회원<br>－회원가입<br>－로그인<br>• 마이페이지<br>－회원 정보 조회/수정</td>
-    </tr>
-  </tbody>
-</table>
-
-
  
  ## 📚 기술스택
  ### frontend
